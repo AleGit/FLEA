@@ -3,20 +3,17 @@
 
 // print version of installed Yices
 print("Yices \(Yices.version) installed.")
+CTptpParsingApiSamples.printTypes()
+print("=================================")
 
 // FilePath.demo()
 
-if let tptpFile = TptpFile(path:"Problems/PUZ001-1.p") {
-  print(tptpFile.dynamicType, tptpFile)
+for path in ["Problems/PUZ001-1.p", "Problems/PUZ002-1.p"] {
+  if let tptpFile = TptpFile(path:path) {
+    print(tptpFile.dynamicType, tptpFile)
+  }
 }
 
-// demonstrate quantifier free predicate logic
-// Yices.Samples.demo()
 
-// Parsing.demoStore()
-// Parsing.demoParse()
-
-
-CTptpParsingApiSamples.printTypes()
 
 // CTptpParsingApiSamples.demoStore()

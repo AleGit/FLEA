@@ -5,18 +5,24 @@ class TptpFile {
   private var root : UnsafeMutablePointer<prlc_tree_node>?
 
   init?(path:FilePath) {
+    print("\(#function) '\(path)'")
     let code = prlcParseFile(path, &store, &root)
-    guard code == 0 else {
+    guard code == 0 && store != nil && root != nil else {
       if let store = store {
         prlcDestroyStore(store)
       }
       return nil
     }
-
   }
 
+  var path: FilePath {
+    guard let cstring = root?.pointee.symbol else { return "n/a" }
+    return String(validatingUTF8:cstring) ?? "n/a"
+  }
+
+
   deinit {
-    print("\(#function)")
+    print("\(#function) '\(self.path)'")
     if let store = store {
       prlcDestroyStore(store)
     }
