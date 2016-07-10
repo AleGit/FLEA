@@ -1,20 +1,9 @@
 import CYices
 
 struct Yices {
-	static var info : String {
+	static var version : String {
 		return String(validatingUTF8:yices_version) ?? "n/a"
 	}
-
-/// Converts and prints C-String `yices_version`
-static func version() {
-
-    print("======================")             // print separator line before all output
-    defer { print("======================") }   // print separator line after all output
-
-
-    print("Yices",self.info,"installed.")
-
-}
 
 private static func status(context:OpaquePointer, term: term_t) {
 

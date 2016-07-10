@@ -27,7 +27,10 @@ struct Parsing {
     }
 
     print(path, size)
-    var store = prlcCreateStore(size)
+    guard let store = prlcCreateStore(size) else {
+      print("Error")
+      return
+    }
     defer {
       print("destroy store")
       prlcDestroyStore(store)

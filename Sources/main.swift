@@ -6,6 +6,9 @@ print("Yices \(Yices.version) installed.")
 
 // FilePath.demo()
 
+if let tptpFile = TptpFile(path:"Problems/PUZ001-1.p") {
+  print(tptpFile.dynamicType, tptpFile)
+}
 
 // demonstrate quantifier free predicate logic
 // Yices.Samples.demo()
