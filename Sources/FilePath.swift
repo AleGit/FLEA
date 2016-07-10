@@ -37,7 +37,7 @@ extension FilePath {
         return true
       }
     }
-    
+
     extension FilePath {
       static func demo() {
         print("\(#file).\(#function)")

@@ -33,10 +33,14 @@ struct CTptpParsingApiSamples {
     print("prlc_parse :", prlc_parse.dynamicType,"// int prlc_parse(void);")
     print("prlc_error :", prlc_error.dynamicType,"// int prlc_error (const char * _Nullable s);")
 
+    print("-- --")
+    print("prlcParseFile", prlcParseFile.dynamicType)
     print("=========================================================")
     print("*** 'PrlcData.h' ***")
     print("prlcDestroyStore :", prlcDestroyStore.dynamicType)
     print("prlcStoreNodeFile :", prlcStoreNodeFile.dynamicType)
+
+        print("=========================================================")
 
 
 

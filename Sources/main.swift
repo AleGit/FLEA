@@ -4,7 +4,7 @@
 // print version of installed Yices
 print("Yices \(Yices.version) installed.")
 
-FilePath.demo()
+// FilePath.demo()
 
 
 // demonstrate quantifier free predicate logic
@@ -14,6 +14,6 @@ FilePath.demo()
 // Parsing.demoParse()
 
 
-// CTptpParsingApiSamples.printTypes()
+CTptpParsingApiSamples.printTypes()
 
 // CTptpParsingApiSamples.demoStore()
