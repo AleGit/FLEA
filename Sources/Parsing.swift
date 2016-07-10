@@ -30,7 +30,7 @@ struct Parsing {
     var store = prlcCreateStore(size)
     defer {
       print("destroy store")
-      prlcDestroyStore(&store)
+      prlcDestroyStore(store)
     }
 
     /* parsing */

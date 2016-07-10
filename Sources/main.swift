@@ -10,4 +10,7 @@ print("Yices \(Yices.version) installed.")
 // Parsing.demoStore()
 // Parsing.demoParse()
 
+
 CTptpParsingApiSamples.printTypes()
+
+CTptpParsingApiSamples.demoStore()
