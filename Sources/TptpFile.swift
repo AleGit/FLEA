@@ -6,6 +6,9 @@ class TptpFile {
 
   init?(path:FilePath) {
     print("\(#function) '\(path)'")
+    guard let size = path.fileSize where size > 0 else {
+      return nil;
+    }
     let code = prlcParseFile(path, &store, &root)
     guard code == 0 && store != nil && root != nil else {
       if let store = store {

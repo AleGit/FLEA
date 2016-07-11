@@ -1,6 +1,24 @@
 import CYices
 
 struct CYicesApiSamples {
+
+	static func printTypes() {
+
+			print("yices_init",yices_init.dynamicType)
+			print("yices_exit",yices_exit.dynamicType)
+			print("yices_new_context",yices_new_context.dynamicType)
+			print("yices_free_context",yices_free_context.dynamicType)
+
+			print("yices_bool_type",yices_bool_type.dynamicType)
+			print("yices_new_uninterpreted_term",yices_new_uninterpreted_term.dynamicType)
+			print("yices_set_term_name",yices_set_term_name.dynamicType)
+			print("yices_function_type",yices_function_type.dynamicType)
+			print("yices_application",yices_application.dynamicType)
+
+
+
+	}
+
 		private static func status(context:OpaquePointer, term: term_t) {
 
 			defer { print("-----------------------------------------------") } // print separator line after all output
