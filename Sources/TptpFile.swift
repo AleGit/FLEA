@@ -10,8 +10,8 @@ class TptpFile {
       return nil;
     }
     let code = prlcParseFile(path, &store, &root)
-    guard code == 0 && store != nil && root != nil else {
-      if let store = store {
+    guard code == 0 && self.store != nil && self.root != nil else {
+      if let store = self.store {
         prlcDestroyStore(store)
       }
       return nil
@@ -34,7 +34,7 @@ class TptpFile {
 
 extension TptpFile {
   func printNodes() {
-    guard let store = store else {
+    guard let store = self.store else {
       print("No nodes available")
       return
     }
@@ -49,5 +49,33 @@ extension TptpFile {
       node = prlcNextTreeNode(store, node)
 
     }
+  }
+
+  private func printThe(node : UnsafeMutablePointer<prlc_tree_node>, prefix:String ) {
+    if let cstring = node.pointee.symbol, let string = String(validatingUTF8:cstring) {
+        print("\(prefix)'\(string)'")
+    }
+      else {
+        print("'n/a'")
+      }
+
+      if let child = node.pointee.child {
+        printThe(node:child, prefix:prefix + "  ")
+      }
+
+      if let sibling = node.pointee.sibling {
+        printThe(node:sibling, prefix:prefix)
+      }
+
+    }
+
+  func printIt() {
+    guard let root = self.root else {
+      print("no tree nodes to print")
+      return
+    }
+
+    printThe(node:root,prefix:"")
+
   }
 }
