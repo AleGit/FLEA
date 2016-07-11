@@ -18,11 +18,22 @@ struct CTptpParsingApiSamples {
   static func printTypes() {
     print("=========================================================")
     print("types:")
+    print("prlcParsingStore :", prlcParsingStore.dynamicType)
+    print("prlcParsingRoot :", prlcParsingRoot.dynamicType)
+    print(" ")
 
     print("prlcParseFile :", prlcParseFile.dynamicType)
     print("prlcDestroyStore :", prlcDestroyStore.dynamicType)
     print(" ")
     print("prlcStoreSymbol :", prlcStoreSymbol.dynamicType)
+    print("prlcGetSymbol :", prlcGetSymbol.dynamicType)
+    print("prlcFirstSymbol :", prlcGetSymbol.dynamicType)
+    print("prlcNextSymbol :", prlcGetSymbol.dynamicType)
+
+
+    print(" ")
+
+    print("prlcStoreNodeFile :", prlcStoreNodeFile.dynamicType)
 
     print("=========================================================")
 

@@ -20,8 +20,7 @@ extension FilePath {
       }
 
       var isAccessibleDirectory : Bool {
-        let d = opendir(self)
-        guard d != nil else {
+        guard let d = opendir(self) else {
           return false
         }
         closedir(d)
@@ -29,8 +28,7 @@ extension FilePath {
       }
 
       var isAccessibleFile : Bool {
-        let f = fopen(self,"r")
-        guard f != nil else {
+        guard let f = fopen(self,"r") else {
           return false
         }
         fclose(f)
