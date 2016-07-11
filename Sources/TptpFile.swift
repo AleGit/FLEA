@@ -31,3 +31,23 @@ class TptpFile {
     }
   }
 }
+
+extension TptpFile {
+  func printNodes() {
+    guard let store = store else {
+      print("No nodes available")
+      return
+    }
+    var node = prlcFirstTreeNode(store)
+    while node != nil {
+      guard let cstring = node?.pointee.symbol else {
+        print("n/a")
+        continue
+      }
+      let string = String(validatingUTF8:cstring) ?? "n/a"
+      print(string)
+      node = prlcNextTreeNode(store, node)
+
+    }
+  }
+}
