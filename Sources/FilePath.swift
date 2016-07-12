@@ -9,28 +9,17 @@ import Foundation
 typealias FilePath = String
 
 extension FilePath {
-  // var fileSize : Int? {
-  //   var status = stat()
-  //   let code = stat(self, &status)
-  //   switch (code, S_IFREG & status.st_mode) {
-  //     case (0,S_IFREG):
-  //       return Int(status.st_size)
-  //     default:
-  //       // Nylog.warn("\(code) \(status.st_mode)")
-  //       return nil
-  //     }
-  //   }
 
   var fileSize : Int? {
     guard let attributes = try? FileManager.default.attributesOfItem(atPath:self) else {
       return nil
     }
 
-    guard let mySize = attributes[FileAttributeKey.size] else {
+    guard let size = attributes[FileAttributeKey.size] else {
       return nil
     }
 
-    return mySize.intValue
+    return size.intValue
   }
 
   var isAccessible : Bool {
@@ -48,6 +37,18 @@ extension FilePath {
 
     return isDirectory.boolValue
   }
+
+  // var fileSize : Int? {
+  //   var status = stat()
+  //   let code = stat(self, &status)
+  //   switch (code, S_IFREG & status.st_mode) {
+  //     case (0,S_IFREG):
+  //       return Int(status.st_size)
+  //     default:
+  //       // Nylog.warn("\(code) \(status.st_mode)")
+  //       return nil
+  //     }
+  //   }
 
   // var isAccessibleFile : Bool {
   //   guard let f = fopen(self,"r") else {
