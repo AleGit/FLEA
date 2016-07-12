@@ -1,11 +1,12 @@
 # FLEA
 **F***irst* *order* **L***ogic* w*ith* **E***quality* *theorem* **A***ttester*
 
-### Supported Platforms:
-- macOS Sierra
-- Ubuntu 14.04
+### Platforms:
+- Mac (OS X El Capitan, macOS Sierra)
+- Linux 64-bit (Ubuntu 14.04 or 15.10)
+- Platform with clang, libicu-dev, Swift 3 (untested)
 
-###Installation
+### Installation
 
 - Install [Yices](http://yices.csl.sri.com) and check:
 ```
