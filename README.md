@@ -3,8 +3,7 @@
 
 ### Platforms:
 - Mac (OS X El Capitan, macOS Sierra)
-- Linux 64-bit (Ubuntu 14.04 or 15.10)
-- Platform with clang, libicu-dev, Swift 3 (untested)
+- Linux 64-bit (Ubuntu 14.04, 15.10)
 
 ### Installation
 
@@ -13,7 +12,7 @@
 $ yices -V
 Yices 2.4.2
 ```
-- Install [Swift 3](https://swift.org/download/) and check:
+- Install [Swift 3](https://swift.org/download/) (1.-6.) and check:
 ```
 $ swift -version
 Apple Swift version 3.0 ...
