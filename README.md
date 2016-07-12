@@ -27,7 +27,7 @@ $ pushd Packages/CTptpParsing-1.0.0       # or 1.0.1 or ...
 $ sudo make install                       # will intall tptp parsing lib
 $ popd
 $ swift build                             # Linux
-$ swift build -Xlinker -L/usr/local/lib   # macOS needs path to lib
+$ swift build -Xlinker -L/usr/local/lib   # Mac: linker needs path to lib
 $ .build/debug/FLEA --demo                # run a demo
 ```
 
