@@ -17,7 +17,7 @@ Yices 2.4.2
 $ swift -version
 Apple Swift version 3.0 ...
 ```
-- Build and run [FLEA](https://github.com/AleGit/FLEA):
+- Clone, build and run [FLEA](https://github.com/AleGit/FLEA):
 ```
 $ git clone https://github.com/AleGit/FLEA
 $ cd FLEA
