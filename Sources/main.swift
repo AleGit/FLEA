@@ -10,7 +10,6 @@ for name in ["PATH", "USER", "TPTP_PATH"] {
 }
 
 
-let fm = FileManager()
 
 /*
 
