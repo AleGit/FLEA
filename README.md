@@ -12,7 +12,7 @@
 $ yices -V
 Yices 2.4.2
 ```
-- Install [Swift 3](https://swift.org/download/) (1.-6.) and check:
+- Install [Swift 3](https://swift.org/download/) and check:
 ```
 $ swift -version
 Apple Swift version 3.0 ...
