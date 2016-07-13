@@ -1,10 +1,39 @@
 import Foundation
+#if os(Linux)
+import Glibc
+#else
+import Darwin
+#endif
 
 
-func measure<R>(f:()->R) -> (R, CFTimeInterval){
-    let start = CFAbsoluteTimeGetCurrent()
-    return (f(), CFAbsoluteTimeGetCurrent()-start)
+// func measure<R>(f:()->R) -> (R, CFTimeInterval){
+//     let start = CFAbsoluteTimeGetCurrent()
+//     return (f(), CFAbsoluteTimeGetCurrent()-start)
+// }
+
+func -(lhs:timeval, rhs:timeval) -> Double {
+  let nsec = Double(lhs.tv_usec - rhs.tv_usec) / 1_000_000.0
+
+  let result = Double( lhs.tv_sec - rhs.tv_sec) + nsec
+  print(lhs,rhs,result)
+  return result
+
 }
+
+func measure<R>(f:()->R) -> (R, Double) {
+  var start = timeval()
+  var end = timeval()
+
+  let _ = gettimeofday(&start, nil)
+
+  let result = f()
+  let _ = gettimeofday(&end,nil)
+
+  return (result, end - start)
+
+}
+
+
 
 struct UtileIterator<S,T> : IteratorProtocol {
     private var this : S?
