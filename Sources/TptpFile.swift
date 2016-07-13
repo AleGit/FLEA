@@ -1,8 +1,11 @@
 import CTptpParsing
 
+typealias StoreRef = UnsafeMutablePointer<prlc_store>
+typealias TreeNodeRef = UnsafeMutablePointer<prlc_tree_node>
+
 class TptpFile {
-  private var store : UnsafeMutablePointer<prlc_store>?
-  private var root : UnsafeMutablePointer<prlc_tree_node>?
+  private(set) var store : StoreRef?
+  private(set) var root : TreeNodeRef?
 
   init?(path:FilePath) {
     print("\(#function) '\(path)'")
@@ -16,6 +19,8 @@ class TptpFile {
       }
       return nil
     }
+
+
   }
 
   var path: FilePath {
@@ -29,53 +34,5 @@ class TptpFile {
     if let store = store {
       prlcDestroyStore(store)
     }
-  }
-}
-
-extension TptpFile {
-  func printNodes() {
-    guard let store = self.store else {
-      print("No nodes available")
-      return
-    }
-    var node = prlcFirstTreeNode(store)
-    while node != nil {
-      guard let cstring = node?.pointee.symbol else {
-        print("n/a")
-        continue
-      }
-      let string = String(validatingUTF8:cstring) ?? "n/a"
-      print(string)
-      node = prlcNextTreeNode(store, node)
-
-    }
-  }
-
-  private func printThe(node : UnsafeMutablePointer<prlc_tree_node>, prefix:String ) {
-    if let cstring = node.pointee.symbol, let string = String(validatingUTF8:cstring) {
-        print("\(prefix)'\(string)'")
-    }
-      else {
-        print("'n/a'")
-      }
-
-      if let child = node.pointee.child {
-        printThe(node:child, prefix:prefix + "  ")
-      }
-
-      if let sibling = node.pointee.sibling {
-        printThe(node:sibling, prefix:prefix)
-      }
-
-    }
-
-  func printIt() {
-    guard let root = self.root else {
-      print("no tree nodes to print")
-      return
-    }
-
-    printThe(node:root,prefix:"")
-
   }
 }

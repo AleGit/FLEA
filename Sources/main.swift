@@ -4,10 +4,10 @@
 
 import Foundation
 
-print("\(Process.arguments)")
-for name in ["PATH", "USER", "TPTP_PATH"] {
-  print(name, Process.Environment.get(variable:name))
-}
+// print("\(Process.arguments)")
+// for name in ["PATH", "USER", "TPTP_PATH"] {
+//   print(name, Process.Environment.get(variable:name))
+// }
 
 
 
@@ -20,11 +20,11 @@ for name in ["PATH", "USER", "TPTP_PATH"] {
 // CTptpParsingApiSamples.printTypes()
 // print("=================================")
 */
-FilePath.demo()
-/*
+// FilePath.demo()
+
 for path in ["Problems/PUZ001-1.p", "Problems/PUZ002-1.p", "Problems",
 "Problems/PUZ001+1.p"] {
-  print(">", path,path.fileSize, path.isAccessibleDirectory, path.isAccessibleFile)
+  print(">", path,path.fileSize, path.isAccessibleDirectory, path.isAccessible)
   if let tptpFile = TptpFile(path:path) {
     print(tptpFile.dynamicType, tptpFile)
     tptpFile.printIt()
@@ -33,6 +33,6 @@ for path in ["Problems/PUZ001-1.p", "Problems/PUZ002-1.p", "Problems",
 
 
 // CTptpParsingApiSamples.demoStore()
-*/
+
 
 print ("DONE")
