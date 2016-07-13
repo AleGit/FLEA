@@ -6,13 +6,13 @@ typealias CStringRef = UnsafePointer<Int8>
 
 // MARK: - define C-structure protocols
 protocol SymbolNodeProtocol {
-    var symbol : UnsafePointer<Int8>! { get }
+    var symbol : CStringRef! { get }
 }
 
 protocol TreeNodeProtocol : SymbolNodeProtocol {
   var type : PRLC_TREE_NODE_TYPE { get }
-  var sibling : UnsafeMutablePointer<prlc_tree_node>! { get }
-  var child : UnsafeMutablePointer<prlc_tree_node>! { get }
+  var sibling : TreeNodeRef! { get }
+  var child : TreeNodeRef! { get }
 }
 
 // MARK: - let C-structures conform to protocols
@@ -68,7 +68,7 @@ extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
   }
 
   func children<T>(where predicate:(TreeNodeRef)->Bool = { _ in true}, data:(TreeNodeRef)->T) -> UtileSequence<TreeNodeRef,T> {
-    return UtileSequence(first: self.child, step:{$0.pointee.sibling}, where:predicate, data: data)
+    return UtileSequence(first: self.child, step:{$0.sibling}, where:predicate, data: data)
   }
 
   var children : UtileSequence<TreeNodeRef,TreeNodeRef> {
