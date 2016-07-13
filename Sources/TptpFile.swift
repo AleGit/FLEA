@@ -1,7 +1,8 @@
 import CTptpParsing
 
 typealias StoreRef = UnsafeMutablePointer<prlc_store>
-typealias TreeNodeRef = UnsafeMutablePointer<prlc_tree_node>
+
+
 
 class TptpFile {
   private(set) var store : StoreRef?

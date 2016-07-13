@@ -46,4 +46,31 @@ extension TptpFile {
     printThe(node:root,prefix:"")
 
   }
+
+  func printInputs() {
+
+
+    print(root?.pointee.symbol.dynamicType)
+    print(root?.pointee.sibling.dynamicType)
+    print(root?.pointee.child.dynamicType)
+
+    let seq = self.tptpSequence
+
+    for ref in seq {
+      print(ref, String(treeNode:ref))
+    }
+
+    let a = seq.flatMap { String(treeNode:$0) }
+    let b = self.tptpSequence { String(treeNode:$0) }
+    let c = b.flatMap { $0 }
+    print("a:", a)
+    print("b:", b)
+    print("c:", c)
+
+    if let child = root?.first(start:{$0?.pointee.child}, step:{$0?.pointee.sibling}) {
+
+    print(String(treeNode:child))
+    }
+
+  }
 }
