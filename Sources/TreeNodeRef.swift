@@ -9,6 +9,7 @@ protocol SymbolNodeProtocol {
 }
 
 protocol TreeNodeProtocol : SymbolNodeProtocol {
+  var type : PRLC_TREE_NODE_TYPE { get }
   var sibling : UnsafeMutablePointer<prlc_tree_node>! { get }
   var child : UnsafeMutablePointer<prlc_tree_node>! { get }
 }
@@ -27,16 +28,21 @@ extension UnsafeMutablePointer where Pointee : SymbolNodeProtocol {
   }
 }
 
+extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
+  var type : PRLC_TREE_NODE_TYPE {
+    return self.pointee.type
+  }
 
+  var sibling : TreeNodeRef? {
+    return self.pointee.sibling
+  }
+
+  var child : TreeNodeRef? {
+    return self.pointee.child
+  }
+}
 
 extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
-  // var sibling: TreeNodeRef? {
-  //   return self.pointee.sibling
-  // }
-  //
-  // var child: TreeNodeRef? {
-  //   return self.pointee.child
-  // }
 
   func first(
     start:(UnsafeMutablePointer?)->UnsafeMutablePointer? = { $0 },
@@ -59,4 +65,9 @@ extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
     }
     return nil
   }
+
+  func children<T>(where predicate:(TreeNodeRef)->Bool = { _ in true}, data:(TreeNodeRef)->T) -> FleaSequence<TreeNodeRef,T> {
+    return FleaSequence(first: self.child, step:{$0.pointee.sibling}, where:predicate, data: data)
+  }
+
 }
