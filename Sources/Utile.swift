@@ -1,5 +1,11 @@
 import Foundation
 
+
+func measure<R>(f:()->R) -> (R, CFTimeInterval){
+    let start = CFAbsoluteTimeGetCurrent()
+    return (f(), CFAbsoluteTimeGetCurrent()-start)
+}
+
 struct UtileIterator<S,T> : IteratorProtocol {
     private var this : S?
     private let step : (S) -> S?

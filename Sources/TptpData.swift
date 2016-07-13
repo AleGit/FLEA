@@ -45,27 +45,27 @@ extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
 
 extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
 
-  func first(
-    start:(UnsafeMutablePointer?)->UnsafeMutablePointer? = { $0 },
-    step:(UnsafeMutablePointer?)->UnsafeMutablePointer?,
-    where predicate: (UnsafeMutablePointer) -> Bool = { _ in true }
-  ) -> UnsafeMutablePointer? {
-    guard let start = start(self) else { return nil }
-    if predicate(start) { return start }
-    return start.next(step:step, where:predicate)
-  }
+  // func first(
+  //   start:(UnsafeMutablePointer?)->UnsafeMutablePointer? = { $0 },
+  //   step:(UnsafeMutablePointer?)->UnsafeMutablePointer?,
+  //   where predicate: (UnsafeMutablePointer) -> Bool = { _ in true }
+  // ) -> UnsafeMutablePointer? {
+  //   guard let start = start(self) else { return nil }
+  //   if predicate(start) { return start }
+  //   return start.next(step:step, where:predicate)
+  // }
 
-  func next(
-    step:(UnsafeMutablePointer?)->UnsafeMutablePointer?,
-    where predicate:(UnsafeMutablePointer)->Bool = { _ in true }
-  ) -> UnsafeMutablePointer? {
-    var input = self
-    while let next = step(input) {
-      if predicate(next) { return next}
-      input = next
-    }
-    return nil
-  }
+  // func next(
+  //   step:(UnsafeMutablePointer?)->UnsafeMutablePointer?,
+  //   where predicate:(UnsafeMutablePointer)->Bool = { _ in true }
+  // ) -> UnsafeMutablePointer? {
+  //   var input = self
+  //   while let next = step(input) {
+  //     if predicate(next) { return next}
+  //     input = next
+  //   }
+  //   return nil
+  // }
 
   func children<T>(where predicate:(TreeNodeRef)->Bool = { _ in true}, data:(TreeNodeRef)->T) -> UtileSequence<TreeNodeRef,T> {
     return UtileSequence(first: self.child, step:{$0.sibling}, where:predicate, data: data)

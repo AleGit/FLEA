@@ -32,6 +32,21 @@ for path in ["Problems/PUZ001-1.p", "Problems/PUZ002-1.p", "Problems",
   }
 }
 
+let (tptpFile,runtime) = measure {
+  TptpFile(path:"/Users/Shared/TPTP/Problems/HWV/HWV134-1.p")
+}
+
+
+
+if let tptpFile = tptpFile {
+  print("\(tptpFile) was parsed in \(runtime) s.")
+  let all = measure {tptpFile.inputs.reduce(0) { (a,_) in a + 1}}
+  let c = measure {tptpFile.cnfs.reduce(0) { (a,_) in a + 1 }}
+  let f = measure {tptpFile.fofs.reduce(0) { (a,_) in a + 1 }}
+  let i = measure {tptpFile.includes.reduce(0) { (a,_) in a + 1 }}
+  print("\(tptpFile)", all, c,f,i)
+}
+
 
 // CTptpParsingApiSamples.demoStore()
 
