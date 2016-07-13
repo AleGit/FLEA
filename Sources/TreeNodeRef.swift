@@ -25,6 +25,7 @@ extension UnsafeMutablePointer where Pointee : SymbolNodeProtocol {
   var symbol: String? {
     guard let cstring = self.pointee.symbol else { return nil }
     return String(validatingUTF8:cstring)
+
   }
 }
 
@@ -68,6 +69,10 @@ extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
 
   func children<T>(where predicate:(TreeNodeRef)->Bool = { _ in true}, data:(TreeNodeRef)->T) -> FleaSequence<TreeNodeRef,T> {
     return FleaSequence(first: self.child, step:{$0.pointee.sibling}, where:predicate, data: data)
+  }
+
+  var children : FleaSequence<TreeNodeRef,TreeNodeRef> {
+    return self.children { $0 }
   }
 
 }

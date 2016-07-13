@@ -5,8 +5,8 @@ typealias StoreRef = UnsafeMutablePointer<prlc_store>
 
 
 class TptpFile {
-  private(set) var store : StoreRef?
-  private(set) var root : TreeNodeRef?
+  private var store : StoreRef?
+  private var root : TreeNodeRef?
 
   init?(path:FilePath) {
     print("\(#function) '\(path)'")
@@ -20,8 +20,6 @@ class TptpFile {
       }
       return nil
     }
-
-
   }
 
   var path: FilePath {
@@ -35,5 +33,33 @@ class TptpFile {
     if let store = store {
       prlcDestroyStore(store)
     }
+  }
+}
+
+extension TptpFile {
+
+  var inputs : FleaSequence<TreeNodeRef,TreeNodeRef>{
+    return root!.children { $0 }
+  }
+
+  var includes : FleaSequence<TreeNodeRef,TreeNodeRef>{
+    return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
+  }
+
+  var cnfs : FleaSequence<TreeNodeRef,TreeNodeRef>{
+    return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
+  }
+
+  var fofs : FleaSequence<TreeNodeRef,TreeNodeRef>{
+    return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
+  }
+}
+
+extension TptpFile {
+  func printInputs() {
+    Swift.print("* inputs  :", self.inputs.map { $0.symbol! })
+    Swift.print("* includes:", self.includes.map { $0.symbol! })
+    Swift.print("* cnfs    :", self.cnfs.map { $0.symbol! })
+    Swift.print("* fofs    :", self.fofs.map { $0.symbol! })
   }
 }
