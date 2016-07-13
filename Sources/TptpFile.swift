@@ -38,23 +38,23 @@ class TptpFile {
 
 extension TptpFile {
 
-  var inputs : FleaSequence<TreeNodeRef,TreeNodeRef>{
+  var inputs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children { $0 }
   }
 
-  var includes : FleaSequence<TreeNodeRef,TreeNodeRef>{
+  var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
   }
 
-  var cnfs : FleaSequence<TreeNodeRef,TreeNodeRef>{
+  var cnfs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
   }
 
-  var fofs : FleaSequence<TreeNodeRef,TreeNodeRef>{
+  var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
   }
 
-  var symbols : FleaSequence<CStringRef,String?> {
+  var symbols : UtileSequence<CStringRef,String?> {
     let step = {
       (cstring : CStringRef) in
       prlcNextSymbol(self.store!,cstring)
@@ -64,7 +64,7 @@ extension TptpFile {
       String(validatingUTF8:cstring)
     }
 
-    return FleaSequence(first:prlcFirstSymbol(store!), step:step, data:data)
+    return UtileSequence(first:prlcFirstSymbol(store!), step:step, data:data)
   }
 }
 

@@ -1,6 +1,6 @@
 import Foundation
 
-struct FleaIterator<S,T> : IteratorProtocol {
+struct UtileIterator<S,T> : IteratorProtocol {
     private var this : S?
     private let step : (S) -> S?
     private let data : (S) -> T
@@ -26,7 +26,7 @@ struct FleaIterator<S,T> : IteratorProtocol {
     }
 }
 
-struct FleaSequence<S,T> : Sequence {
+struct UtileSequence<S,T> : Sequence {
     private let this : S?
     private let step : (S) -> S?
     private let predicate : (S) -> Bool
@@ -39,8 +39,8 @@ struct FleaSequence<S,T> : Sequence {
         self.data = data
     }
 
-    func makeIterator() -> FleaIterator<S,T> {
-        return FleaIterator(first: this, step: step, where:predicate, data: data)
+    func makeIterator() -> UtileIterator<S,T> {
+        return UtileIterator(first: this, step: step, where:predicate, data: data)
     }
 
 }
