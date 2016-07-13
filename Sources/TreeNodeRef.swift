@@ -2,6 +2,7 @@ import CTptpParsing
 
 typealias TreeNodeRef = UnsafeMutablePointer<prlc_tree_node>
 typealias PrefixNodeRef = UnsafeMutablePointer<prlc_prefix_node>
+typealias CStringRef = UnsafePointer<Int8>
 
 // MARK: - define C-structure protocols
 protocol SymbolNodeProtocol {
@@ -25,7 +26,6 @@ extension UnsafeMutablePointer where Pointee : SymbolNodeProtocol {
   var symbol: String? {
     guard let cstring = self.pointee.symbol else { return nil }
     return String(validatingUTF8:cstring)
-
   }
 }
 

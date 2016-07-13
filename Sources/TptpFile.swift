@@ -53,6 +53,19 @@ extension TptpFile {
   var fofs : FleaSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
   }
+
+  var symbols : FleaSequence<CStringRef,String?> {
+    let step = {
+      (cstring : CStringRef) in
+      prlcNextSymbol(self.store!,cstring)
+    }
+    let data = {
+      (cstring : CStringRef) in
+      String(validatingUTF8:cstring)
+    }
+
+    return FleaSequence(first:prlcFirstSymbol(store!), step:step, data:data)
+  }
 }
 
 extension TptpFile {
@@ -61,5 +74,6 @@ extension TptpFile {
     Swift.print("* includes:", self.includes.map { $0.symbol! })
     Swift.print("* cnfs    :", self.cnfs.map { $0.symbol! })
     Swift.print("* fofs    :", self.fofs.map { $0.symbol! })
+    Swift.print("* symbols :", self.symbols.map { $0! })
   }
 }
