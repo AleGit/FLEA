@@ -25,9 +25,9 @@ import Foundation
 for path in ["Problems/PUZ001-1.p", "Problems/PUZ002-1.p", "Problems",
 "Problems/PUZ001+1.p"] {
   print(">", path,path.fileSize, path.isAccessibleDirectory, path.isAccessible)
-  if let tptpFile = TptpFile(path:path) {
-    print(tptpFile.dynamicType, tptpFile)
-    // tptpFile.printIt()
+  let (tptpFile,runtime) = measure { TptpFile(path:path) }
+  print(path,runtime)
+  if let tptpFile = tptpFile {
     tptpFile.printInputs()
   }
 }

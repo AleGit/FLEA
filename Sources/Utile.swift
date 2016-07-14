@@ -5,10 +5,14 @@ import Glibc
 import Darwin
 #endif
 
-let ticksPerSecond = Double(sysconf(_SC_CLK_TCK))
+
 
 /// Substitute for CFAbsoluteTime which does not seem to be available on Linux.
 typealias UtileTime = (user:Double,system:Double,absolute:Double)
+
+func ticksPerSecond() -> Double {
+  return Double(sysconf(Int32(_SC_CLK_TCK)))
+}
 
 /// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
 func UtileTimeGetCurrent() -> UtileTime {
@@ -19,8 +23,8 @@ func UtileTimeGetCurrent() -> UtileTime {
 
 
   return (
-    user:Double(ptime.tms_utime)/ticksPerSecond,
-    system:Double(ptime.tms_stime)/ticksPerSecond,
+    user:Double(ptime.tms_utime)/ticksPerSecond(),
+    system:Double(ptime.tms_stime)/ticksPerSecond(),
     absolute:Double(atime.tv_sec) + Double(atime.tv_usec)/1_000_000.0     // s + µs
   )
 }
