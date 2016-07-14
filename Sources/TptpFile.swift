@@ -1,9 +1,5 @@
 import CTptpParsing
 
-typealias StoreRef = UnsafeMutablePointer<prlc_store>
-
-
-
 class TptpFile {
   private var store : StoreRef?
   private var root : TreeNodeRef?

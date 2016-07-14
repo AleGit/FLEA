@@ -62,8 +62,8 @@ struct UtileIterator<S,T> : IteratorProtocol {
         while let current = self.this {
           self.this = step(current)
 
-          if let next = self.this where predicate(next) {
-            return data(next)
+          if predicate(current) {
+            return data(current)
           }
         }
 
