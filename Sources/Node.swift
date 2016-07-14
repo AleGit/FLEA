@@ -1,9 +1,12 @@
 protocol Node : Hashable {
   associatedtype Symbol : Hashable
-  var symbol : Symbol { get set }
-  var nodes : [Self]? { get set }
+
+  static func share(node:Self) -> Self
 
   init()
+
+  var symbol : Symbol { get set }
+  var nodes : [Self]? { get set }
 }
 
 extension Node {
@@ -11,6 +14,7 @@ extension Node {
     self.init()
     self.symbol = symbol
     self.nodes = nodes
+    self = Self.share(node:self)
   }
 }
 
@@ -22,8 +26,6 @@ extension Node {
     return nodes.reduce(self.symbol.hashValue) { $0 &+ $1.hashValue }
   }
 }
-
-
 
 extension Node {
   func isEqual(to other:Self) -> Bool {
@@ -41,7 +43,6 @@ func ==<N:Node>(lhs:N, rhs:N) -> Bool {
 }
 
 func ==<N:Node where N:AnyObject>(lhs:N, rhs:N) -> Bool {
-  print("\(lhs.dynamicType) \(rhs.dynamicType)")
   if lhs === rhs { return true }
   else { return lhs.isEqual(to:rhs) }
 }
