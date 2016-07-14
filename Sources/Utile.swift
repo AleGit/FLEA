@@ -6,18 +6,22 @@ import Darwin
 #endif
 
 
-// CFAbsoluteTime seems not available on Linux
+/// Substitute for CFAbsoluteTime which does not seem to be available on Linux.
 typealias UtileAbsoluteTime = Double
 
+/// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
 func UtileAbsoluteTimeGetCurrent() -> UtileAbsoluteTime {
-  var tval = timeval()
-  let _ = gettimeofday(&tval,nil)
-  return Double(tval.tv_sec) + Double(tval.tv_usec)/1_000_000.0
+  var tval = timeval()                                              // C struct
+  let _ = gettimeofday(&tval,nil)                                   // will return 0
+  return Double(tval.tv_sec) + Double(tval.tv_usec)/1_000_000.0     // s + µs
 }
 
-func measure<R>(f:()->R) -> (R, Double) {
+/// Measure the absolute runtime of a code block.
+/// Usage: `let (result,runtime) = measure { *code to measure* }`
+func measure<R>(f:()->R) -> (R, UtileAbsoluteTime) {
   let start = UtileAbsoluteTimeGetCurrent()
-  return (f(), UtileAbsoluteTimeGetCurrent() - start)
+  let result = f()
+  return (result, UtileAbsoluteTimeGetCurrent() - start)
 }
 
 struct UtileIterator<S,T> : IteratorProtocol {
