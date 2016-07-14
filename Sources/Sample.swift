@@ -1,26 +1,26 @@
 struct Sample {
   final class Node : FLEA.Node {
-    static func share (node: Node) -> Node { return node }
-
     var symbol: String = ""
     var nodes : [Sample.Node]? = nil
   }
 
-  final class SharingNode : FLEA.Node {
+  final class SharingNode : FLEA.SharingNode {
+    static var counter = 0
 
-      static var sharedNodes = Set<Sample.SharingNode>()
+    static var sharedNodes = Set<Sample.SharingNode>()
 
-      static func share (node:SharingNode) -> SharingNode {
-        if let index = sharedNodes.index(of:node) {
-          return sharedNodes[index]
-        }
-        else {
-          sharedNodes.insert(node)
-          return node
-        }
-      }
+    var symbol: String = ""
+    var nodes : [Sample.SharingNode]? = nil
+    var c : Int = {
+      let a = SharingNode.counter
+      SharingNode.counter += 1
+      return a
+    }()
 
-      var symbol: String = ""
-      var nodes : [Sample.SharingNode]? = nil
+    lazy var hashValue : Int = self.calcHashValue()
+
+    deinit {
+      print("\(#function) \(self.symbol).\(self.c)")
+    }
   }
 }

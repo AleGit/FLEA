@@ -7,6 +7,8 @@ protocol Node : Hashable {
 
   var symbol : Symbol { get set }
   var nodes : [Self]? { get set }
+
+  func calcHashValue() -> Int
 }
 
 extension Node {
@@ -19,11 +21,19 @@ extension Node {
 }
 
 extension Node {
-  var hashValue : Int {
+  static func share(node:Self)->Self {
+    return node
+  }
+
+  func calcHashValue() -> Int {
     guard let nodes = self.nodes else {
       return self.symbol.hashValue
     }
     return nodes.reduce(self.symbol.hashValue) { $0 &+ $1.hashValue }
+  }
+
+  var hashValue : Int {
+    return calcHashValue()
   }
 }
 

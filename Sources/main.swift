@@ -37,6 +37,9 @@ print("snX1 == snY1", snX1 == snY1)
 print("snX1 == snX2", snX1 == snX2)
 print("snX1 == snY2", snX1 == snY2)
 
+let fxy1 = Sample.SharingNode(symbol:"f", nodes:[snX1,snY1])
+let fxy2 = Sample.SharingNode(symbol:"f", nodes:[snX2,snY2])
+
 print("")
 
 print("snX1 === snX1", snX1 === snX1)
@@ -45,3 +48,5 @@ print("snX1 === snX2", snX1 === snX2)
 print("snX1 === snY2", snX1 === snY2)
 
 print(Sample.SharingNode.sharedNodes.count)
+
+print(Sample.SharingNode.sharedNodes.contains(snX1))
