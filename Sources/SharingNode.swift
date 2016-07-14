@@ -1,3 +1,14 @@
+protocol Nodes {
+  associatedtype Element : Hashable
+  func index(of:Element) -> SetIndex<Element>?
+  subscript(positions:SetIndex<Element>) -> Element { get }
+
+}
+
+extension Set : Nodes {
+
+}
+
 protocol SharingNode : Node {
   static var sharedNodes : Set<Self> { get set }
 }

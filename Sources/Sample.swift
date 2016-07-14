@@ -7,6 +7,7 @@ struct Sample {
   }
 
   final class SharingNode : FLEA.SharingNode {
+    typealias S = Set<Sample.SharingNode>
 
       static var sharedNodes = Set<Sample.SharingNode>()
 

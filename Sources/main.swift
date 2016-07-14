@@ -2,7 +2,7 @@ import Foundation
 
 print(Process.arguments)
 
-// Demo.demo()
+Demo.demo()
 
 print("")
 
