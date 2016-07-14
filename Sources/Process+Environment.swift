@@ -4,8 +4,6 @@ import Glibc
 import Darwin
 #endif
 
-import CoreFoundation
-
 extension Process {
   struct Environment {
     static func get(variable name: String) -> String? {
