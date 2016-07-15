@@ -30,3 +30,8 @@ $ swift build -Xlinker -L/usr/local/lib   # Mac: linker needs path to lib
 $ .build/debug/FLEA --demo                # run a demo
 ```
 
+- Release build with optimizatins
+```
+swift build -c release -L/usr/local/lib
+.build/release/FLEA --demo 
+```
