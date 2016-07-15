@@ -21,18 +21,21 @@ struct Sample {
     lazy var description : String = self.tptpDescription()
 
     deinit {
-      print("\(#function) \(self.symbol).\(self.c)")
+      print("\(#function)#\(self.c): \(self)")
     }
   }
 }
 
 private func sampleShowNodes<N:Node where N:AnyObject>(nodes:[N]) {
-  print(nodes.count, nodes, Set(nodes))
+  print("nodes:\(nodes).count=\(nodes.count)")
+  let s = Set(nodes)
+  print("uniqe:\(s).count=\(s.count)")
 
   for (i, a) in nodes.enumerated() {
     for (j,b) in nodes.enumerated().map({$0})[(i+1)..<nodes.count] {
-      if (a == b) {
-        print("\(a)#\(i) === \(b)#\(j)", a===b) }
+      guard a == b else { continue }
+        let s = a === b ? "===" : ">-<"
+        print("\(a) == \(b) : #\(i) \(s) #\(j)")
       }
   }
 }
