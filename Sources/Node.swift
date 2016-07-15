@@ -1,4 +1,4 @@
-protocol Node : Hashable {
+protocol Node : Hashable, CustomStringConvertible {
   associatedtype Symbol : Hashable
 
   static func share(node:Self) -> Self
@@ -13,10 +13,21 @@ protocol Node : Hashable {
 
 extension Node {
   init(symbol:Symbol, nodes:[Self]?) {
+    // print("\(#function) \(symbol) \(nodes?.count ?? -1)")
     self.init()
     self.symbol = symbol
     self.nodes = nodes
     self = Self.share(node:self)
+  }
+
+  init(symbol:Symbol) {
+    // print("\(#function) \(symbol)")
+    self.init(symbol:symbol, nodes:nil)
+  }
+
+  init<S:Sequence where S.Iterator.Element == Self>(symbol:Symbol, nodes:S?) {
+    // print("\(#function) \(symbol)")
+    self.init(symbol:symbol, nodes: nodes?.map ({ $0 }))
   }
 }
 

@@ -1,10 +1,13 @@
 
 struct Demo {
+  static let line = Array(repeating:"=", count:80).joined(separator:"")
 
   static let demos = [
-    "PUZ001cnf" : Demo.puz001cnf,
-    "PUZ001fof" : Demo.puz001fof,
-    "HWV134cnf" : Demo.hwv134cnf
+    "puz001-1" : Demo.puz001cnf,
+    "puz001+1" : Demo.puz001fof,
+    "hwv134-1" : Demo.hwv134cnf,
+    "noshare" : Sample.Node.demo,
+    "sharing" : Sample.SharingNode.demo
   ]
 
   static func puz001cnf() {
@@ -47,6 +50,7 @@ struct Demo {
     }
 
     for n in Process.arguments[2..<Process.arguments.count] {
+      print(line)
       guard let f = demos[n] else {
         print("DEMO '\(n)' does not exist.")
         continue

@@ -46,6 +46,12 @@ extension TptpFile {
     return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
   }
 
+  var clauses : UtileSequence<TreeNodeRef,String>{
+    return root!.children(where: {$0.type==PRLC_CNF}) {
+      "\($0.symbol!)"
+      }
+    }
+
   var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
   }
@@ -66,10 +72,13 @@ extension TptpFile {
 
 extension TptpFile {
   func printInputs() {
-    Swift.print("* inputs  :", self.inputs.map { $0.symbol! })
-    Swift.print("* includes:", self.includes.map { $0.symbol! })
-    Swift.print("* cnfs    :", self.cnfs.map { $0.symbol! })
+    // Swift.print("* inputs  :", self.inputs.map { $0.symbol! })
+    // Swift.print("* includes:", self.includes.map { $0.symbol! })
+    Swift.print("* cnfs    :", self.cnfs.map {
+      ("\($0.dynamicType)",
+        $0.symbol!, $0.type.rawValue, $0.child!.symbol!, $0.child!.sibling!.symbol!) })
     Swift.print("* fofs    :", self.fofs.map { $0.symbol! })
-    Swift.print("* symbols :", self.symbols.map { $0! })
+    // Swift.print("* symbols :", self.symbols.map { $0! })
+    // Swift.print("* clauses :", self.clauses.map { $0 })
   }
 }
