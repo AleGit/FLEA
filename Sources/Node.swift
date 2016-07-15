@@ -23,7 +23,7 @@ extension Node {
   init(variable:Symbol) {
     self.init(symbol:variable, nodes:nil)
   }
-  
+
   init(constant:Symbol) {
     self.init(symbol:constant, nodes:[Self]())
   }
