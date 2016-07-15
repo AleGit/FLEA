@@ -3,99 +3,38 @@ struct Demo {
   static let line = Array(repeating:"=", count:80).joined(separator:"")
 
   static let demos = [
-    "puz001-1" : Demo.puz001cnf,
-    "puz001+1" : Demo.puz001fof,
-    "hwv134-1" : Demo.hwv134cnf,
-    "noshare" : Sample.Node.demo,
-    "sharing" : Sample.SharingNode.demo
+  "puz001-1" : Demo.Problem.puz001cnf,
+  "puz001+1" : Demo.Problem.puz001fof,
+  "hwv134-1" : Demo.Problem.hwv134cnf,
+  "noshare" : Demo.Node.demo,
+  "sharing" : Demo.SharingNode.demo
   ]
 
-  static func puz001cnf() {
-    let path = "Problems/PUZ001-1.p"
-    guard let tptpFile = TptpFile(path:path) else {
-      print("\(path) could not be parsed.")
-      return
-    }
-    tptpFile.printInputs()
-  }
-
-  static func puz001fof() {
-    let path = "Problems/PUZ001+1.p"
-    guard let tptpFile = TptpFile(path:path) else {
-      print("\(path) could not be parsed.")
-      return
-    }
-    tptpFile.printInputs()
-  }
-
-  static func hwv134cnf() {
-    let path = "/Users/Shared/TPTP/Problems/HWV/HWV134-1.p"
-    guard let tptpFile = TptpFile(path:path) else {
-      print("\(path) could not be parsed.")
-      return
-    }
-    let count = tptpFile.inputs.reduce(0) { (a,_) in a + 1 }
-    print(path, count)
-  }
-
   static func demo() {
+    // check if ther are arguments all and if the first argument is `--demo`
     guard Process.arguments.count > 1 && Process.arguments[1] == "--demo"
-    else {
-      return
-    }
+    else { return }
 
+    // check if there are any argumenst after `--demo`
     if Process.arguments.count == 2 {
-      let args = demos.map { $0 }.reduce("--demo") { $0 + " \($1.0)"}
-      print(args)
-    }
-
-    for n in Process.arguments[2..<Process.arguments.count] {
-      print(line)
-      guard let f = demos[n] else {
-        print("DEMO '\(n)' does not exist.")
-        continue
+      let keys = demos.map { $0.0 }
+      let prefix = "  $ \(Process.arguments[0]) --demo"
+      print("You've selected '--demo' with no list of demos.")
+      print("  \(keys)")
+      print("To execute all demos type the following line:")
+      let args = demos.map { $0 }.reduce(prefix) { $0 + " \($1.0)"}
+        print(args)
       }
-      print("MEASURE DEMO '\(n)'")
-      let (_,runtime) = measure(f:f)
-      print("RUNTIME OF DEMO '\(n)'",runtime)
-    }
 
-
-
-
-
-  }
-
-  private static func hwv134() {
-    print("\(#function)")
-    defer {
-      print("\(#function) DONE")
-    }
-
-    let (tptpFile,runtime) = measure {
-      TptpFile(path:"/Users/Shared/TPTP/Problems/HWV/HWV134-1.p")
-    }
-    print(tptpFile, runtime)
-  }
-
-
-  private static func files() {
-    print("\(#function)")
-    defer {
-      print("\(#function) DONE")
-    }
-
-    for path in ["Problems/PUZ001-1.p", "Problems/PUZ002-1.p", "Problems",
-    "Problems/PUZ001+1.p"] {
-      print(">", path,path.fileSize, path.isAccessibleDirectory, path.isAccessible)
-      let (tptpFile,runtime) = measure { TptpFile(path:path) }
-      print(path,runtime)
-      if let tptpFile = tptpFile {
-        tptpFile.printInputs()
+      for n in Process.arguments[2..<Process.arguments.count] {
+        print(line)
+        guard let f = demos[n] else {
+          print("DEMO '\(n)' does not exist.")
+          continue
+        }
+        print("MEASURE DEMO '\(n)'")
+        let (_,runtime) = measure(f:f)
+        print("RUNTIME OF DEMO '\(n)'",runtime)
       }
     }
   }
-
-
-
-}

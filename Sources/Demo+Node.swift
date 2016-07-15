@@ -1,16 +1,16 @@
-struct Sample {
+extension Demo {
   final class Node : FLEA.Node {
     var symbol: String = ""
-    var nodes : [Sample.Node]? = nil
+    var nodes : [Demo.Node]? = nil
   }
 
   final class SharingNode : FLEA.SharingNode {
     static var counter = 0
 
-    static var sharedNodes = Set<Sample.SharingNode>()
+    static var sharedNodes = Set<Demo.SharingNode>()
 
     var symbol: String = ""
-    var nodes : [Sample.SharingNode]? = nil
+    var nodes : [Demo.SharingNode]? = nil
     var c : Int = {
       let a = SharingNode.counter
       SharingNode.counter += 1
@@ -65,16 +65,16 @@ private func sampleCreateNodes<N:Node where N:AnyObject, N.Symbol == String>() -
 
 
 
-extension Sample.Node {
-  typealias N = Sample.Node
+extension Demo.Node {
+  typealias N = Demo.Node
   static func demo() {
     let nodes : [N] = sampleCreateNodes()
     sampleShowNodes(nodes:nodes)
   }
 }
 
-extension Sample.SharingNode {
-  typealias N = Sample.SharingNode
+extension Demo.SharingNode {
+  typealias N = Demo.SharingNode
   static func demo() {
       let nodes : [N] = sampleCreateNodes()
       sampleShowNodes(nodes:nodes)
