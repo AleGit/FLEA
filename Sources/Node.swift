@@ -20,9 +20,12 @@ extension Node {
     self = Self.share(node:self)
   }
 
-  init(symbol:Symbol) {
-    // print("\(#function) \(symbol)")
-    self.init(symbol:symbol, nodes:nil)
+  init(variable:Symbol) {
+    self.init(symbol:variable, nodes:nil)
+  }
+  
+  init(constant:Symbol) {
+    self.init(symbol:constant, nodes:[Self]())
   }
 
   init<S:Sequence where S.Iterator.Element == Self>(symbol:Symbol, nodes:S?) {
