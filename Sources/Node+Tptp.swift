@@ -1,16 +1,8 @@
 import CTptpParsing
 
 struct TPTP {
-  static var inits = 0
-  static var deinits = 0
 
   final class Node : FLEA.SharingNode {
-    init() {
-      TPTP.inits += 1
-    }
-    deinit {
-      TPTP.deinits += 1
-    }
 
     static var sharedNodes = Set<TPTP.Node>()
 

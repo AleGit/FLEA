@@ -19,8 +19,7 @@ extension Demo {
 
     static func hwv134cnf() {
       let path = "/Users/Shared/TPTP/Problems/HWV/HWV134-1.p"
-      let _ : [Demo.Node] = demoParseFile(path:path)
-      print(TPTP.inits, TPTP.deinits)
+      let _ : [TPTP.Node] = demoParseFile(path:path)
     }
   }
 }
