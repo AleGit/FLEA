@@ -71,16 +71,3 @@ extension Tptp.File {
     return UtileSequence(first:prlcFirstSymbol(store!), step:step, data:data)
   }
 }
-
-extension Tptp.File {
-  func printInputs() {
-    // Swift.print("* inputs  :", self.inputs.map { $0.symbol! })
-    // Swift.print("* includes:", self.includes.map { $0.symbol! })
-    Swift.print("* cnfs    :", self.cnfs.map {
-      ("\($0.dynamicType)",
-        $0.symbol!, $0.type.rawValue, $0.child!.symbol!, $0.child!.sibling!.symbol!) })
-    Swift.print("* fofs    :", self.fofs.map { $0.symbol! })
-    // Swift.print("* symbols :", self.symbols.map { $0! })
-    // Swift.print("* clauses :", self.clauses.map { $0 })
-  }
-}

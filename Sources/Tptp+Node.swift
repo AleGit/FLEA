@@ -24,5 +24,4 @@ extension Node where Symbol == String {
 
     self.init(symbol:name, nodes:nodes)
   }
-
 }
