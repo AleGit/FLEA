@@ -6,22 +6,38 @@ struct Tptp {
 
     static var sharedNodes = Set<Tptp.Node>()
 
-    var symbol: String = ""
+    var symbol = ""
     var nodes : [Tptp.Node]? = nil
 
     lazy var hashValue : Int = self.calcHashValue()
-    lazy var description : String = self.tptpDescription()
+    lazy var description : String = self.defaultDescription()
   }
 }
 
 extension Node where Symbol == String {
   init(tree:TreeNodeRef) {
+    let symbol = tree.symbol ?? "n/a"
 
-    let name = tree.symbol ?? "n/a"
-    let nodes : [Self]? =
-      tree.type == PRLC_VARIABLE ?
-      nil : tree.children.map { Self(tree:$0) }
+    switch tree.type {
+    case PRLC_VARIABLE, PRLC_NAME, PRLC_ROLE:
+      self.init(symbol:symbol, nodes:nil)
+    default:
+      let nodes = tree.children.map { Self(tree:$0) }
+      self.init(symbol:symbol, nodes:nodes)
+    }
+  }
+}
 
-    self.init(symbol:name, nodes:nodes)
+extension Node where Symbol == Tptp.Symbol {
+  init(tree:TreeNodeRef) {
+    let symbol = Tptp.Symbol(type:tree.type, symbol:tree.symbol ?? "n/a")
+
+    switch tree.type {
+    case PRLC_VARIABLE, PRLC_NAME, PRLC_ROLE:
+      self.init(symbol:symbol, nodes:nil)
+    default:
+      let nodes = tree.children.map { Self(tree:$0) }
+      self.init(symbol:symbol, nodes:nodes)
+    }
   }
 }

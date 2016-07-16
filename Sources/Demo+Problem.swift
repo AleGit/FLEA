@@ -26,16 +26,33 @@ extension Demo {
     }
   }
 }
+
 func demoParseFile<N:Node where N.Symbol == String>(path:String) -> [N] {
-  guard let tptpFile = Tptp.File(path:path) else {
-    print("\(path) could not be parsed.")
+  let (parseResult, parseTime) = measure {
+    Tptp.File(path:path)
+  }
+  guard let tptpFile = parseResult else {
+      print("\(path) could not be parsed.")
+      return [N]()
+  }
+  print("parse time: \(parseTime) '\(path)'")
+
+  let (countResult, countTime) = measure {
+    tptpFile.inputs.reduce(0) { (a,_) in a + 1 }
+  }
+
+  print("count=\(countResult), time=\(countTime) '\(path)'")
+
+  let (result,time) = measure {
+    // tptpFile.inputs.map { N(tree:$0) }
+    tptpFile.ast() as N?
+  }
+
+  guard let inputs = result?.nodes else {
+    print("\(path) did not convert to \(N.self)")
     return [N]()
   }
-  let count = tptpFile.inputs.reduce(0) { (a,_) in a + 1 }
-  let (inputs,runtime) = measure {
-    tptpFile.inputs.map { N(tree:$0) }
-  }
-  print(path, count, inputs.count)
-  print("runtime",runtime)
+
+  print("init=\(result!.nodes!.count), time=\(time) '\(path)'")
   return inputs
 }

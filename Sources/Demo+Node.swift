@@ -18,7 +18,7 @@ extension Demo {
     }()
 
     lazy var hashValue : Int = self.calcHashValue()
-    lazy var description : String = self.tptpDescription()
+    lazy var description : String = self.defaultDescription()
 
     deinit {
       print("\(#function)#\(self.c): \(self)")
