@@ -10,6 +10,8 @@ struct Demo {
   "sharing" : Demo.SharingNode.demo
   ]
 
+  
+
   static func demo() {
     // check if ther are arguments all and if the first argument is `--demo`
     guard Process.arguments.count > 1 && Process.arguments[1] == "--demo"

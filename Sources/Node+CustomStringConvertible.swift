@@ -15,6 +15,18 @@ extension Node {
   }
 }
 
+extension Node where Symbol == String {
+  var description : String {
+    guard let nodes = self.nodes?.map({"\($0)"})
+    where nodes.count > 0
+    else {
+      return self.symbol
+    }
+    let tuple = nodes.map{ "\($0)" }.joined(separator:",")
+    return "\(self.symbol)(\(tuple))"
+  }
+}
+
 extension Node where Symbol : CustomDebugStringConvertible {
   var debugDescription : String {
     guard let nodes = self.nodes?.map({$0.debugDescription})

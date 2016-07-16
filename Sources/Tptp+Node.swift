@@ -19,7 +19,7 @@ extension Node where Symbol == String {
     let symbol = tree.symbol ?? "n/a"
 
     switch tree.type {
-    case PRLC_VARIABLE, PRLC_NAME, PRLC_ROLE:
+    case PRLC_VARIABLE:
       self.init(symbol:symbol, nodes:nil)
     default:
       let nodes = tree.children.map { Self(tree:$0) }
@@ -33,7 +33,7 @@ extension Node where Symbol == Tptp.Symbol {
     let symbol = Tptp.Symbol(symbol:tree.symbol ?? "n/a", type:tree.type)
 
     switch tree.type {
-    case PRLC_VARIABLE, PRLC_NAME, PRLC_ROLE:
+    case PRLC_VARIABLE:
       self.init(symbol:symbol, nodes:nil)
     default:
       let nodes = tree.children.map { Self(tree:$0) }

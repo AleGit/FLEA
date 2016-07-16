@@ -1,4 +1,4 @@
-protocol Node : Hashable, CustomStringConvertible {
+protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
   associatedtype Symbol : Hashable
 
   static func share(node:Self) -> Self
