@@ -8,16 +8,19 @@ extension Node where Symbol == String {
       return self.symbol
     }
 
-    let tuple = nodes.joined(separator:",")
+    switch self.symbol {
+      case "|", "!=", "=": // infix
+        return nodes.joined(separator:self.symbol)
+        default: // prefix
+          let tuple = nodes.joined(separator:",")
+          return "\(self.symbol)(\(tuple))"
+        }
+      }
 
-    return "\(self.symbol)(\(tuple))"
-
-  }
-
-  var description : String {
-    return tptpDescription()
-  }
+      var description : String {
+        return tptpDescription()
+      }
 
 
 
-}
+    }

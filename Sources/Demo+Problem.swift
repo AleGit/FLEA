@@ -19,7 +19,7 @@ extension Demo {
 
     static func hwv134cnf() {
       let path = "/Users/Shared/TPTP/Problems/HWV/HWV134-1.p"
-      let inputs : [TPTP.Node] = demoParseFile(path:path)
+      let inputs : [Tptp.Node] = demoParseFile(path:path)
       print(path, "count :", inputs.count)
       print("#1", inputs[0])
       print("#\(inputs.count)",inputs[inputs.count-1])
