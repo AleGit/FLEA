@@ -6,7 +6,7 @@ extension Node {
     else {
       return "\(self.symbol)"
     }
-    let tuple = nodes.map{ "\($0)" }.joined(separator:",")
+    let tuple = nodes.map{ $0 }.joined(separator:",")
     return "\(self.symbol)(\(tuple))"
   }
 

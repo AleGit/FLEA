@@ -3,26 +3,19 @@ extension Demo {
 
     static func puz001cnf() {
       let path = "Problems/PUZ001-1.p"
-      let X = Demo.Node(variable:"X")
-      let Z = Demo.Node(variable:"Z")
-      let fZ = Demo.Node(symbol:"f", nodes:[Z])
-      let σ = [X:fZ]
 
       let inputs : [Demo.Node] = demoParseFile(path:path)
       for (i,input) in inputs.enumerated() {
         print(i,input)
-        print("*->Z", input ** Demo.Node(variable:"Z"))
-        print(σ, input * σ)
       }
     }
 
     static func puz001fof() {
       let path = "Problems/PUZ001+1.p"
+      
       let inputs : [Tptp.Node] = demoParseFile(path:path)
       for (i,input) in inputs.enumerated() {
         print(i,input)
-        print("d:",input.debugDescription)
-        print("⊥:",input⊥)
       }
     }
 
