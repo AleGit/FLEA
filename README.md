@@ -23,7 +23,7 @@ Apple Swift version 3.0 ...
 ```
 $ git clone https://github.com/AleGit/FLEA
 $ cd FLEA
-$ make build                                        # fails after download
+$ swift build                                       # fails after download
 $ pushd Packages/CTptpParsing-1.0.0                 # or 1.0.1 or ...
 $ sudo make install                                 # install tptp parsing lib
 $ popd
@@ -31,4 +31,4 @@ $ swift build -c release                            # Linux
 $ swift build -c release -Xlinker -L/usr/local/lib  # Mac path to lib
 $ .build/release/FLEA --demo                        # list available demos
 ```
-The first failing build is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
+The first (failing) `swift build` is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
