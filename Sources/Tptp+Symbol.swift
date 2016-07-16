@@ -1,122 +1,89 @@
 import CTptpParsing
 
-enum PredicateType {
-}
-
-enum ConnectiveType {
-}
-
 extension Tptp {
-  enum SymbolType {
-    case Undefined
-
-    /* names */
-
-    case File
-    case Fof
-    case Cnf
-    case Include
-    case Name
-    case Role
-    case Annoation
-
-    /* connectives */
-
-    case Universal
-    case Existential
-
-    case Negation
-    case Disjunction
-    case Conjunction
-    case Implication
-
-    /*  */
-
-      case Equation
-      case Inequation
-      case Predicate
-
-      case Function
-      case Variable
-
-
-  }
-
-
-
-
   enum Symbol : Hashable {
-
-
-    case Undefined
+    case Undefined(String)
 
     /// <TPTP_file>
-    // case File(String)
+    case File(String)
 
-    /// <cnf_annotated>, <fof_annotated>
-    //case Annotated(String)
+    /// <fof_annotated>
+    case Fof(String)
+    /// <cnf_annotated>
+    case Cnf(String)
+    /// <include>
+    case Include(String)    // file name
 
-    //case Include(String)
-    // file, fof, cnf, inlcude, name, role, annoations
-    case Name(String, SymbolType)
+    case Name(String)
 
-    /// Quantifiers and connectives
-    case Connective(String, SymbolType)
+    case Role(String)
+    case Annotation(String)
 
-    /// Equationals, Predicates and Propositions
-    case Predicate(String, SymbolType)
+    case Universal(String)    // ! X Y s
+    case Existential(String)  // ? X Y s
 
-    /// Function and Constants
-    case Function(String)
+    case Negation(String)     // ~ s
+    case Disjunction(String)  // s | t ...
+    case Conjunction(String)  // s & t ...
+    case Implication(String)  // s => t
 
-    /// Variables
-    case Variable(String)
+    case Equation(String)   // s = t
+    case Inequation(String) // s != t
+
+    case Predicate(String)  // predicates and propositions
+    case Function(String)   // functions and constants
+    case Variable(String)   // variables
   }
 }
-
-// extension TypeSymbol {
-//   var name : Symbol {
-//
-//   }
-// }
 
 extension Tptp.Symbol {
   init(symbol:String, type:PRLC_TREE_NODE_TYPE) {
     switch (symbol,type) {
+
       case (_, PRLC_FILE):
-        self = .Name(symbol, .File)
+        self = .File(symbol)
+
       case (_, PRLC_FOF):
-        self = .Name(symbol, .Fof)
+        self = .Fof(symbol)
       case (_, PRLC_CNF):
-        self = .Name(symbol, .Cnf)
+        self = .Cnf(symbol)
       case (_, PRLC_INCLUDE):
-        self = .Name(symbol, .Include)
+        self = .Include(symbol)
+
       case (_, PRLC_ROLE):
-        self = .Name(symbol, .Role)
+        self = .Role(symbol)
       case (_, PRLC_ANNOTATION):
-        self = .Name(symbol, .Annoation)
+        self = .Annotation(symbol)
 
       case ("!", _):
-        self = .Connective(symbol, .Universal)
+        assert (type == PRLC_QUANTIFIER)
+        self = .Universal(symbol)
       case ("?", _):
-        self = .Connective(symbol, .Existential)
+        assert (type == PRLC_QUANTIFIER)
+        self = .Existential(symbol)
 
       case ("|", _):
-        self = .Connective(symbol, .Disjunction)
+        assert (type == PRLC_CONNECTIVE)
+        self = .Disjunction(symbol)
       case ("&", _):
-        self = .Connective(symbol, .Conjunction)
+        assert (type == PRLC_CONNECTIVE)
+        self = .Conjunction(symbol)
       case ("=>", _):
-        self = .Connective(symbol, .Implication)
+        assert (type == PRLC_CONNECTIVE)
+        self = .Implication(symbol)
       case ("~", _):
-        self = .Connective(symbol, .Negation)
+        assert (type == PRLC_CONNECTIVE)
+        self = .Negation(symbol)
 
       case ("=", _):
-        self = .Predicate(symbol, .Equation)
+        assert (type == PRLC_EQUATIONAL)
+        self = .Equation(symbol)
       case ("!=", _):
-        self = .Predicate(symbol, .Inequation)
+        assert (type == PRLC_EQUATIONAL)
+        self = .Inequation(symbol)
 
       case (_, PRLC_PREDICATE):
-        self = .Predicate(symbol,.Predicate)
+        self = .Predicate(symbol)
 
       case (_, PRLC_FUNCTION):
         self = .Function(symbol)
@@ -124,7 +91,7 @@ extension Tptp.Symbol {
         self = .Variable(symbol)
 
       default:
-        self = .Name(symbol,.Undefined)
+        self = .Undefined(symbol)
     }
   }
 }
@@ -132,18 +99,45 @@ extension Tptp.Symbol {
 extension Tptp.Symbol {
   var symbol : String {
     switch(self) {
-      case (.Name(let string, _)):
+      case .Undefined(let string):
         return string
-      case (.Connective(let string, _)):
+      case .File(let string):
         return string
-      case (.Predicate(let string,_)):
+      case .Fof(let string):
         return string
-      case (.Function(let string)):
+      case .Cnf(let string):
         return string
-      case (.Variable(let string)):
+      case .Include(let string):
         return string
-      default:
-        return "n/a"
+      case .Name(let string):
+        return string
+      case .Role(let string):
+        return string
+      case .Annotation(let string):
+        return string
+
+      case .Universal(let string):
+        return string
+      case .Existential(let string):
+        return string
+      case .Negation(let string):
+        return string
+      case .Disjunction(let string):
+        return string
+      case .Conjunction(let string):
+        return string
+      case .Implication(let string):
+        return string
+      case .Equation(let string):
+        return string
+      case .Inequation(let string):
+        return string
+      case .Predicate(let string):
+        return string
+      case .Function(let string):
+        return string
+      case .Variable(let string):
+        return string
       }
   }
 
@@ -154,15 +148,6 @@ extension Tptp.Symbol {
 
 func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
   guard lhs.symbol == rhs.symbol else { return false }
-  switch (lhs,rhs) {
-    case (.Name, .Name),
-    (.Connective,.Connective),
-    (.Predicate, .Predicate),
-    (.Function, .Function),
-    (.Variable, .Variable):
-    return true
-    default:
-      return false
 
-  }
+  return true
 }

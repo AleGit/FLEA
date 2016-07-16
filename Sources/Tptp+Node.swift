@@ -6,7 +6,7 @@ struct Tptp {
 
     static var sharedNodes = Set<Tptp.Node>()
 
-    var symbol = Tptp.Symbol.Undefined
+    var symbol = Tptp.Symbol.Undefined("n/a")
     var nodes : [Tptp.Node]? = nil
 
     lazy var hashValue : Int = self.calcHashValue()
