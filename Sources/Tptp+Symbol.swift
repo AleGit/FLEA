@@ -1,38 +1,54 @@
 import CTptpParsing
 
 extension Tptp {
-  enum Symbol : Hashable {
-    case Undefined(String)
+  enum SymbolType {
+    case Undefined
 
     /// <TPTP_file>
-    case File(String)
+    case File
 
     /// <fof_annotated>
-    case Fof(String)
+    case Fof
     /// <cnf_annotated>
-    case Cnf(String)
+    case Cnf
     /// <include>
-    case Include(String)    // file name
+    case Include    // file name
 
-    case Name(String)
+    case Name
 
-    case Role(String)
-    case Annotation(String)
+    case Role
+    case Annotation
 
-    case Universal(String)    // ! X Y s
-    case Existential(String)  // ? X Y s
+    case Universal    // ! X Y s
+    case Existential  // ? X Y s
 
-    case Negation(String)     // ~ s
-    case Disjunction(String)  // s | t ...
-    case Conjunction(String)  // s & t ...
-    case Implication(String)  // s => t
+    case Negation     // ~ s
+    case Disjunction  // s | t ...
+    case Conjunction  // s & t ...
+    case Implication  // s => t
 
-    case Equation(String)   // s = t
-    case Inequation(String) // s != t
+    case Equation   // s = t
+    case Inequation // s != t
 
-    case Predicate(String)  // predicates and propositions
-    case Function(String)   // functions and constants
-    case Variable(String)   // variables
+    case Predicate  // predicates and propositions
+    case Function   // functions and constants
+    case Variable   // variables
+  }
+
+  struct Symbol : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
+    let symbol : String
+    let type : SymbolType
+
+    init(_ symbol: String, _ type: SymbolType ) {
+      self.symbol = symbol
+      self.type = type
+    }
+    var description:String {
+      return self.symbol
+    }
+    var debugDescription:String {
+      return "\(self.type)(\(self.symbol))"
+    }
   }
 }
 
@@ -41,113 +57,67 @@ extension Tptp.Symbol {
     switch (symbol,type) {
 
       case (_, PRLC_FILE):
-        self = .File(symbol)
+        self = Tptp.Symbol(symbol,.File)
 
       case (_, PRLC_FOF):
-        self = .Fof(symbol)
+        self = Tptp.Symbol(symbol,.Fof)
       case (_, PRLC_CNF):
-        self = .Cnf(symbol)
+        self = Tptp.Symbol(symbol,.Cnf)
       case (_, PRLC_INCLUDE):
-        self = .Include(symbol)
+        self = Tptp.Symbol(symbol,.Include)
 
       case (_, PRLC_ROLE):
-        self = .Role(symbol)
+        self = Tptp.Symbol(symbol,.Role)
       case (_, PRLC_ANNOTATION):
-        self = .Annotation(symbol)
+        self = Tptp.Symbol(symbol,.Annotation)
 
       case ("!", _):
         assert (type == PRLC_QUANTIFIER)
-        self = .Universal(symbol)
+        self = Tptp.Symbol(symbol,.Universal)
       case ("?", _):
         assert (type == PRLC_QUANTIFIER)
-        self = .Existential(symbol)
+        self = Tptp.Symbol(symbol,.Existential)
 
       case ("|", _):
         assert (type == PRLC_CONNECTIVE)
-        self = .Disjunction(symbol)
+        self = Tptp.Symbol(symbol,.Disjunction)
       case ("&", _):
         assert (type == PRLC_CONNECTIVE)
-        self = .Conjunction(symbol)
+        self = Tptp.Symbol(symbol,.Conjunction)
       case ("=>", _):
         assert (type == PRLC_CONNECTIVE)
-        self = .Implication(symbol)
+        self = Tptp.Symbol(symbol,.Implication)
       case ("~", _):
         assert (type == PRLC_CONNECTIVE)
-        self = .Negation(symbol)
+        self = Tptp.Symbol(symbol,.Negation)
 
       case ("=", _):
         assert (type == PRLC_EQUATIONAL)
-        self = .Equation(symbol)
+        self = Tptp.Symbol(symbol,.Equation)
       case ("!=", _):
         assert (type == PRLC_EQUATIONAL)
-        self = .Inequation(symbol)
+        self = Tptp.Symbol(symbol,.Inequation)
 
       case (_, PRLC_PREDICATE):
-        self = .Predicate(symbol)
+        self = Tptp.Symbol(symbol,.Predicate)
 
       case (_, PRLC_FUNCTION):
-        self = .Function(symbol)
+        self = Tptp.Symbol(symbol,.Function)
       case (_, PRLC_VARIABLE):
-        self = .Variable(symbol)
+        self = Tptp.Symbol(symbol,.Variable)
 
       default:
-        self = .Undefined(symbol)
+        self = Tptp.Symbol(symbol,.Undefined)
     }
   }
 }
 
 extension Tptp.Symbol {
-  var symbol : String {
-    switch(self) {
-      case .Undefined(let string):
-        return string
-      case .File(let string):
-        return string
-      case .Fof(let string):
-        return string
-      case .Cnf(let string):
-        return string
-      case .Include(let string):
-        return string
-      case .Name(let string):
-        return string
-      case .Role(let string):
-        return string
-      case .Annotation(let string):
-        return string
-
-      case .Universal(let string):
-        return string
-      case .Existential(let string):
-        return string
-      case .Negation(let string):
-        return string
-      case .Disjunction(let string):
-        return string
-      case .Conjunction(let string):
-        return string
-      case .Implication(let string):
-        return string
-      case .Equation(let string):
-        return string
-      case .Inequation(let string):
-        return string
-      case .Predicate(let string):
-        return string
-      case .Function(let string):
-        return string
-      case .Variable(let string):
-        return string
-      }
-  }
-
   var hashValue : Int {
     return self.symbol.hashValue
   }
 }
 
 func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
-  guard lhs.symbol == rhs.symbol else { return false }
-
-  return true
+  return lhs.symbol == rhs.symbol && lhs.type == rhs.type
 }
