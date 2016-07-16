@@ -1,7 +1,5 @@
 # FLEA
-**F***irst* *order* **L***ogic* w*ith* **E***quality* *theorem* **A***ttester*
-
-Still in development.
+A **F***irst* *order* **L***ogic* w*ith* **E***quality* *theorem* **A***ttester* still in development.
 
 ### Platforms:
 - Mac (OS X El Capitan, macOS Sierra)
