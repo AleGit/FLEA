@@ -1,6 +1,7 @@
 import CTptpParsing
 
-class TptpFile {
+extension Tptp {
+final class File {
   private var store : StoreRef?
   private var root : TreeNodeRef?
 
@@ -31,8 +32,9 @@ class TptpFile {
     }
   }
 }
+}
 
-extension TptpFile {
+extension Tptp.File {
 
   var inputs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children { $0 }
@@ -70,7 +72,7 @@ extension TptpFile {
   }
 }
 
-extension TptpFile {
+extension Tptp.File {
   func printInputs() {
     // Swift.print("* inputs  :", self.inputs.map { $0.symbol! })
     // Swift.print("* includes:", self.includes.map { $0.symbol! })

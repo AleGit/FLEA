@@ -20,7 +20,4 @@ extension Node where Symbol == String {
       var description : String {
         return tptpDescription()
       }
-
-
-
     }

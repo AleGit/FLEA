@@ -27,7 +27,7 @@ extension Demo {
   }
 }
 func demoParseFile<N:Node where N.Symbol == String>(path:String) -> [N] {
-  guard let tptpFile = TptpFile(path:path) else {
+  guard let tptpFile = Tptp.File(path:path) else {
     print("\(path) could not be parsed.")
     return [N]()
   }
