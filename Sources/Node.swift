@@ -4,6 +4,7 @@ protocol Node : Hashable, CustomStringConvertible {
   static func share(node:Self) -> Self
 
   init()
+  init(tree:TreeNodeRef)
 
   var symbol : Symbol { get set }
   var nodes : [Self]? { get set }

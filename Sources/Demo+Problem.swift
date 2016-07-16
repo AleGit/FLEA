@@ -11,7 +11,7 @@ extension Demo {
 
     static func puz001fof() {
       let path = "Problems/PUZ001+1.p"
-      let inputs : [Demo.Node] = demoParseFile(path:path)
+      let inputs : [Tptp.Node] = demoParseFile(path:path)
       for (i,input) in inputs.enumerated() {
         print(i,input)
       }
@@ -22,12 +22,14 @@ extension Demo {
       let inputs : [Tptp.Node] = demoParseFile(path:path)
       print(path, "count :", inputs.count)
       print("#1", inputs[0])
-      print("#\(inputs.count)",inputs[inputs.count-1])
+
+      print("#1", inputs[0].debugDescription)
+      print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
     }
   }
 }
 
-func demoParseFile<N:Node where N.Symbol == String>(path:String) -> [N] {
+func demoParseFile<N:Node>(path:String) -> [N] {
   let (parseResult, parseTime) = measure {
     Tptp.File(path:path)
   }

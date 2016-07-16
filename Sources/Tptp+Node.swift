@@ -6,11 +6,11 @@ struct Tptp {
 
     static var sharedNodes = Set<Tptp.Node>()
 
-    var symbol = ""
+    var symbol = Tptp.Symbol.Undefined
     var nodes : [Tptp.Node]? = nil
 
     lazy var hashValue : Int = self.calcHashValue()
-    lazy var description : String = self.defaultDescription()
+    lazy var description : String = self.tptpDescription
   }
 }
 
