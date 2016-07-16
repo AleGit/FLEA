@@ -30,7 +30,7 @@ extension Node where Symbol == String {
 
 extension Node where Symbol == Tptp.Symbol {
   init(tree:TreeNodeRef) {
-    let symbol = Tptp.Symbol(type:tree.type, symbol:tree.symbol ?? "n/a")
+    let symbol = Tptp.Symbol(symbol:tree.symbol ?? "n/a", type:tree.type)
 
     switch tree.type {
     case PRLC_VARIABLE, PRLC_NAME, PRLC_ROLE:

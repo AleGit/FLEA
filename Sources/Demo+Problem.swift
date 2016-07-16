@@ -14,6 +14,7 @@ extension Demo {
       let inputs : [Tptp.Node] = demoParseFile(path:path)
       for (i,input) in inputs.enumerated() {
         print(i,input)
+        print(i,input.debugDescription)
       }
     }
 
