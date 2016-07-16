@@ -31,5 +31,4 @@ $ swift build -c release                            # Linux
 $ swift build -c release -Xlinker -L/usr/local/lib  # Mac path to lib
 $ .build/release/FLEA --demo                        # list available demos
 ```
-The first failing build is necessary to download the packages.
-But it will fail, because shared library `TptpParsing` is not installed yet.
+The first failing build is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
