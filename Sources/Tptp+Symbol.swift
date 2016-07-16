@@ -43,8 +43,6 @@ extension Tptp {
       self.symbol = symbol
       self.type = type
     }
-
-
   }
 }
 

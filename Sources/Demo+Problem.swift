@@ -22,8 +22,10 @@ extension Demo {
       let path = "/Users/Shared/TPTP/Problems/HWV/HWV134-1.p"
       let inputs : [Tptp.Node] = demoParseFile(path:path)
       print(path, "count :", inputs.count)
-      print("#1", inputs[0])
 
+      guard inputs.count > 0 else { return }
+
+      print("#1", inputs[0])
       print("#1", inputs[0].debugDescription)
       print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
     }
