@@ -35,7 +35,7 @@ extension Tptp {
     case Variable   // variables
   }
 
-  struct Symbol : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
+  struct Symbol : Hashable, CustomDebugStringConvertible {
     let symbol : String
     let type : SymbolType
 
@@ -43,13 +43,33 @@ extension Tptp {
       self.symbol = symbol
       self.type = type
     }
-    var description:String {
-      return self.symbol
-    }
-    var debugDescription:String {
-      return "\(self.type)(\(self.symbol))"
-    }
+
+
   }
+}
+
+extension Tptp.Symbol {
+  /// Hashable
+  var hashValue : Int {
+    return self.symbol.hashValue
+  }
+}
+
+extension Tptp.Symbol {
+  /// CustomStringConvertible
+  var description:String {
+    return self.symbol
+  }
+
+  /// CustomDebugStringConvertible
+  var debugDescription:String {
+    return "\(self.type)(\(self.symbol))"
+  }
+}
+
+/// Tptp.Symbol : Hashable : Equatable
+func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
+  return lhs.symbol == rhs.symbol && lhs.type == rhs.type
 }
 
 extension Tptp.Symbol {
@@ -110,14 +130,4 @@ extension Tptp.Symbol {
         self = Tptp.Symbol(symbol,.Undefined)
     }
   }
-}
-
-extension Tptp.Symbol {
-  var hashValue : Int {
-    return self.symbol.hashValue
-  }
-}
-
-func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
-  return lhs.symbol == rhs.symbol && lhs.type == rhs.type
 }
