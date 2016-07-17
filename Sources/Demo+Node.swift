@@ -1,6 +1,6 @@
 extension Demo {
   final class Node : FLEA.Node {
-    var symbol: String = ""
+    var symbol = Tptp.Symbol("n/a",.Undefined)
     var nodes : [Demo.Node]? = nil
   }
 
@@ -9,7 +9,7 @@ extension Demo {
 
     static var sharedNodes = Set<Demo.SharingNode>()
 
-    var symbol: String = ""
+    var symbol = Tptp.Symbol("n/a",.Undefined)
     var nodes : [Demo.SharingNode]? = nil
     var c : Int = {
       let a = SharingNode.counter
@@ -26,21 +26,21 @@ extension Demo {
   }
 }
 
-extension Demo.Node {
-  typealias N = Demo.Node
-  static func demo() {
-    let nodes : [N] = demoCreateNodes()
-    demoShow(nodes:nodes)
-  }
-}
-
-extension Demo.SharingNode {
-  typealias N = Demo.SharingNode
-  static func demo() {
-    let nodes : [N] = demoCreateNodes()
-    demoShow(nodes:nodes)
-  }
-}
+// extension Demo.Node {
+//   typealias N = Demo.Node
+//   static func demo() {
+//     let nodes : [N] = demoCreateNodes()
+//     demoShow(nodes:nodes)
+//   }
+// }
+//
+// extension Demo.SharingNode {
+//   typealias N = Demo.SharingNode
+//   static func demo() {
+//     let nodes : [N] = demoCreateNodes()
+//     demoShow(nodes:nodes)
+//   }
+// }
 
 
 

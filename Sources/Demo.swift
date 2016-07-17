@@ -6,11 +6,11 @@ struct Demo {
   "puz001-1" : Demo.Problem.puz001cnf,
   "puz001+1" : Demo.Problem.puz001fof,
   "hwv134-1" : Demo.Problem.hwv134cnf,
-  "noshare" : Demo.Node.demo,
-  "sharing" : Demo.SharingNode.demo
+  // "noshare" : Demo.Node.demo,
+  // "sharing" : Demo.SharingNode.demo
   ]
 
-  
+
 
   static func demo() {
     // check if ther are arguments all and if the first argument is `--demo`
