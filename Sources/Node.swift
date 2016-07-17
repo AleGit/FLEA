@@ -2,7 +2,7 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
   associatedtype Symbol : Hashable
 
   static func share(node:Self) -> Self
-  static func register(symbol:TreeNodeRef) -> Symbol
+  static func symbol(of node:TreeNodeRef) -> Symbol
 
   init()
 

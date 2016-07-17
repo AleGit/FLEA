@@ -16,15 +16,16 @@ struct Tptp {
 
 extension Node {
   init(tree:TreeNodeRef) {
-    self.init(tree:tree, f:Self.register)
+    self.init(tree:tree, f: Self.symbol)
   }
 
-  init(tree:TreeNodeRef, f:(symbol:TreeNodeRef) -> Symbol) {
-    let symbol = f(symbol:tree)
+  init(tree:TreeNodeRef, f: (_:TreeNodeRef) -> Symbol) {
+    let symbol = f(tree)
 
     switch tree.type {
     case PRLC_VARIABLE:
-      self.init(symbol:symbol, nodes:nil)
+      assert (tree.child == nil)
+      self.init(variable:symbol)
     default:
       let nodes = tree.children.map { Self(tree:$0) }
       self.init(symbol:symbol, nodes:nodes)
@@ -33,13 +34,13 @@ extension Node {
 }
 
 extension Node where Symbol == String {
-  static func register(symbol:TreeNodeRef) -> String {
-    return symbol.symbol ?? "n/a"
+  static func symbol(of tree:TreeNodeRef) -> String {
+    return tree.symbol ?? "n/a"
   }
 }
 
 extension Node where Symbol == Tptp.Symbol {
-  static func register(symbol:TreeNodeRef) -> Tptp.Symbol {
-    return Tptp.Symbol(symbol:symbol.symbol ?? "n/a", type:symbol.type)
+  static func symbol(of tree:TreeNodeRef) -> Tptp.Symbol {
+    return Tptp.Symbol(symbol:tree.symbol ?? "n/a", type:tree.type)
   }
 }
