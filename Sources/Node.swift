@@ -2,6 +2,7 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
   associatedtype Symbol : Hashable
 
   static func share(node:Self) -> Self
+  static func register(symbol:TreeNodeRef) -> Symbol
 
   init()
 
@@ -9,10 +10,6 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
   var nodes : [Self]? { get set }
 
   func calcHashValue() -> Int
-
-
-  static func register(symbol:TreeNodeRef) -> Symbol
-  init(tree:TreeNodeRef)
 }
 
 extension Node {
