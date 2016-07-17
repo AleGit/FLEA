@@ -14,9 +14,9 @@ struct Tptp {
   }
 }
 
-extension Node where Symbol == String {
+extension Node {
   init(tree:TreeNodeRef) {
-    let symbol = tree.symbol ?? "n/a"
+    let symbol = Self.register(symbol:tree)
 
     switch tree.type {
     case PRLC_VARIABLE:
@@ -28,16 +28,14 @@ extension Node where Symbol == String {
   }
 }
 
-extension Node where Symbol == Tptp.Symbol {
-  init(tree:TreeNodeRef) {
-    let symbol = Tptp.Symbol(symbol:tree.symbol ?? "n/a", type:tree.type)
+extension Node where Symbol == String {
+  static func register(symbol:TreeNodeRef) -> String {
+    return symbol.symbol ?? "n/a"
+  }
+}
 
-    switch tree.type {
-    case PRLC_VARIABLE:
-      self.init(symbol:symbol, nodes:nil)
-    default:
-      let nodes = tree.children.map { Self(tree:$0) }
-      self.init(symbol:symbol, nodes:nodes)
-    }
+extension Node where Symbol == Tptp.Symbol {
+  static func register(symbol:TreeNodeRef) -> Tptp.Symbol {
+    return Tptp.Symbol(symbol:symbol.symbol ?? "n/a", type:symbol.type)
   }
 }

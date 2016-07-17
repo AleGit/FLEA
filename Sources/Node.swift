@@ -4,12 +4,15 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
   static func share(node:Self) -> Self
 
   init()
-  init(tree:TreeNodeRef)
 
   var symbol : Symbol { get set }
   var nodes : [Self]? { get set }
 
   func calcHashValue() -> Int
+
+
+  static func register(symbol:TreeNodeRef) -> Symbol
+  init(tree:TreeNodeRef)
 }
 
 extension Node {
