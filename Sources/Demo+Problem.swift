@@ -2,7 +2,7 @@ extension Demo {
   struct Problem {
 
     static func puz001cnf() {
-      typealias NodeType = Demo.Node
+      typealias NodeType = Demo.SharingNode
       let path = "Problems/PUZ001-1.p"
 
       let inputs : [NodeType] = demoParseFile(path:path)
@@ -47,7 +47,7 @@ extension Demo {
 
 func demoParseFile<N:Node>(path:String) -> [N] {
   print("N:Node == \(String(reflecting:N.self))")
-  
+
   let (parseResult, parseTime) = measure {
     Tptp.File(path:path)
   }

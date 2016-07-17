@@ -7,7 +7,7 @@ extension Demo {
   final class SharingNode : FLEA.SharingNode {
     static var counter = 0
 
-    static var sharedNodes = Set<Demo.SharingNode>()
+    static var allNodes = Set<Demo.SharingNode>()
 
     var symbol = Tptp.Symbol("n/a",.Undefined)
     var nodes : [Demo.SharingNode]? = nil
@@ -17,8 +17,8 @@ extension Demo {
       return a
     }()
 
-    lazy var hashValue : Int = self.calcHashValue()
-    lazy var description : String = self.debugDescription
+    lazy var hashValue : Int = self.defaultHashValue
+    lazy var description : String = self.tptpDescription
 
     deinit {
       print("\(#function)#\(self.c): \(self)")
