@@ -16,11 +16,11 @@ struct Tptp {
 
 extension Node {
   init(tree:TreeNodeRef) {
-    self.init(tree:tree, f: Self.symbol)
+    self.init(tree:tree, symbol: Self.symbol)
   }
 
-  init(tree:TreeNodeRef, f: (_:TreeNodeRef) -> Symbol) {
-    let symbol = f(tree)
+  init(tree:TreeNodeRef, symbol: (of:TreeNodeRef) -> Symbol) {
+    let symbol = symbol(of:tree)
 
     switch tree.type {
     case PRLC_VARIABLE:
