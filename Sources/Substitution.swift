@@ -1,6 +1,6 @@
 
+/// 't * σ' returns the substitution of term t with σ.
 
-/// 't * σ' applies substitution σ on term t.
 func *<N:Node>(t:N, σ:[N:N]) -> N {
     assert(σ.isSubstitution)
 
@@ -12,26 +12,23 @@ func *<N:Node>(t:N, σ:[N:N]) -> N {
     return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })
 }
 
-
-/// 't ** s' replaces all variables in t with term s.
-func **<N:Node>(t:N, s:N) -> N {
+/// 't * s' returns the substitution of all variables in t with term s.
+func *<N:Node>(t:N, s:N) -> N {
     guard let nodes = t.nodes else { return s } // a variable
 
-    return N(symbol:t.symbol, nodes: nodes.map { $0 ** s })
+    return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
 }
 
 
-/// 't⊥' replaces all variables in t with constant '⊥'.
-postfix func ⊥<T:Node where T.Symbol == String>(t:T) -> T {
-    return t ** T(constant:"⊥")
+/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+postfix func ⊥<N:Node where N.Symbol == String>(t:N) -> N {
+    return t * N(constant:"⊥")
 }
 
-/// 't⊥' replaces all variables in t with constant '⊥'.
-postfix func ⊥<T:Node where T.Symbol == Tptp.Symbol>(t:T) -> T {
-    return t ** T(constant:Tptp.Symbol("⊥",.Function))
+/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
+    return t * N(constant:Tptp.Symbol("⊥",.Function))
 }
-
-
 
 extension Dictionary where Key:Node, Value:Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?
@@ -60,19 +57,16 @@ extension Dictionary where Key:Node, Value:Node { // , Key == Value does not wor
 
     /// A substitution maps variables to terms.
     var isSubstitution : Bool {
-        assert(self.isHomogenous)
         return allKeysAreVariables
     }
 
     /// A variable substitution maps variables to variables.
     var isVariableSubstitution : Bool {
-        assert(self.isHomogenous)
         return allKeysAreVariables && allValuesAreVariables
     }
 
     /// A (variable) renaming maps distinct variables to distinguishable variables.
     var isRenaming : Bool {
-        assert(self.isHomogenous)
         return allKeysAreVariables && allValuesAreVariables && isInjective
     }
 }

@@ -16,13 +16,6 @@ infix operator ~?= {
 associativity none
 }
 
-/// - `t:term ** u:term` substitutes all variables in `t` with term `u`.
-/// - `t:term ** i:int` appends "@i" to any variable name.
-/// - `t:term ** s:string` replaces every variable name with string `s`.
-infix operator ** {
-associativity left
-}
-
 /// `t⊥` substitutes all veriables in `t` with constant `⊥`.
 postfix operator ⊥ { }
 
