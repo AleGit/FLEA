@@ -3,9 +3,9 @@ extension Demo {
 
     static func puz001cnf() {
       typealias NodeType = Tptp.Node
-      let path = "Problems/PUZ001-1.p"
+      let problem = "PUZ001-1"
 
-      let inputs : [NodeType] = demoParseFile(path:path)
+      let inputs : [NodeType] = demoParse(problem:problem)
       for (i,input) in inputs.enumerated() {
         print(i,input)
         guard input.variables.count > 0 else { continue }
@@ -17,9 +17,9 @@ extension Demo {
 
     static func puz001fof() {
       typealias NodeType = Tptp.Node
-      let path = "Problems/PUZ001+1.p"
+      let problem = "Problems/PUZ001+1"
 
-      let inputs : [NodeType] = demoParseFile(path:path)
+      let inputs : [NodeType] = demoParse(problem:problem)
       for (i,input) in inputs.enumerated() {
         print(i,input.description)
       }
@@ -29,9 +29,9 @@ extension Demo {
 
     static func broken() {
       typealias NodeType = Tptp.Node
-      let path = "Package.swift"
+      let problem = "Package.swift"
 
-      let inputs : [NodeType] = demoParseFile(path:path)
+      let inputs : [NodeType] = demoParse(problem:problem)
       for (i,input) in inputs.enumerated() {
         print(i,input.description)
       }
@@ -41,14 +41,10 @@ extension Demo {
 
     static func hwv134cnf() {
       typealias NodeType = Tptp.Node
-      let problem = "HWV134-1"
-      guard let path = problem.p else {
-        print("Problem '\(problem)' was not found.")
-        return
-      }
+      let problem = "Problems/HWV134-1"
 
-      let inputs : [NodeType] = demoParseFile(path:path)
-      print(path, "count :", inputs.count)
+      let inputs : [NodeType] = demoParse(problem:problem)
+      print(problem, "count :", inputs.count)
 
       guard inputs.count > 0 else { return }
 
@@ -61,8 +57,13 @@ extension Demo {
   }
 }
 
-func demoParseFile<N:Node>(path:String) -> [N] {
+func demoParse<N:Node>(problem:String) -> [N] {
   print("N:Node == \(String(reflecting:N.self))")
+
+  guard let path = problem.p else {
+    print("Path for '\(problem)' could not be found.")
+    return [N]()
+  }
 
   let (parseResult, parseTime) = measure {
     Tptp.File(path:path)

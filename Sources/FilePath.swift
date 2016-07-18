@@ -10,13 +10,34 @@ extension String {
   /// get absolute path to problem file by problem name
   /// "PUZ001-1".p => ./PUZ001.p" ?? "tptp_root/Problems/PUZ/PUZ001-1.p"
   var p : FilePath? {
-    let name = self.hasSuffix(".p") ? self : self.appending(".p")
+    // accept every accessible file (with arbitray suffixes),
+    // e.g. 'noproblem.txt' or ''/absolute/path/to/problem.txt'
+    if self.isAccessible { return self }
+
+    // append '.p' if necessary,
+    // e.g. 'PUZ001+1' => 'PUZ001+1.p' or
+    // 'Problems/PUZ001-1' => 'Problems/PUZ001-1.p'
+    var name = self.hasSuffix(".p") ? self : self.appending(".p")
+
+    // accept every accessible file with suffix '.p'
     if name.isAccessible { return name }
+
+    // strip leading 'Problems', e.g. 'Problems/PUZ001-1.p' => 'PUZ001-1.p'
+
+    if let range = name.range(of:"Problems/") {
+      name.removeSubrange(range)
+    }
+    if name.isAccessible { return name }
+
 
     let endIndex = name.index(name.startIndex, offsetBy:3)
     let prefix3 = name[name.startIndex..<endIndex]
 
+    // insert three letter prefix (TPTP file structure convention),
+    // e.g. 'PUZ001-1.p' => 'PUZ/PUZ001-1.p'
     let relativePath = name.hasPrefix("\(prefix3)/") ? name : "\(prefix3)/\(name)"
+
+    // a
     if relativePath.isAccessible { return relativePath }
 
     if let absolutePath = (FilePath.tptpRoot)?.appending("/Problems/\(relativePath)")
