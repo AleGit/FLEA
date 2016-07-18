@@ -3,9 +3,9 @@
 /// Otherwise it returns *nil*.
 func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
 
-    //    if lhs == rhs {
-    //        return [T:T]() // trivially unifiable
-    //    }
+  if lhs == rhs {
+    return [T:T]() // trivially unifiable
+  }
     //   assert(lhs != rhs, "terms are variable distinct, hence they cannot be equal")
 
     switch(lhs.isVariable,rhs.isVariable) {

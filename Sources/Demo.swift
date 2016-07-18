@@ -7,7 +7,8 @@ struct Demo {
   "puz001+1" : Demo.Problem.puz001fof,
   "hwv134-1" : Demo.Problem.hwv134cnf,
   "broken" : Demo.Problem.broken,
-  "sharing" : Demo.sharing
+  "sharing" : Demo.sharing,
+  "unifying" : Demo.Unification.demo
   // "noshare" : Demo.Node.demo,
   // "sharing" : Demo.SharingNode.demo
   ]
@@ -15,7 +16,6 @@ struct Demo {
 
 
   static func demo() {
-
       guard let names = Process.option(name:"--demo")?.1 else {
         return
       }

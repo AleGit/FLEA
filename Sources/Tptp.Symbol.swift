@@ -61,7 +61,7 @@ extension Tptp.Symbol {
 
   /// CustomDebugStringConvertible
   var debugDescription:String {
-    return "\(self.symbol):\(self.type)"
+    return "\(self.symbol)-\(self.type)"
   }
 }
 

@@ -117,25 +117,3 @@ private func demoShow<N:Node where N:AnyObject>(nodes:[N]) {
     }
   }
 }
-
-private func demoCreateNodes<N:Node where N:AnyObject, N.Symbol == String>() -> [N] {
-  let v = [
-  N(variable:"X"),
-  N(constant:"a"),
-  N(constant:"a"),
-  N(variable:"Y")]
-
-  let f = [
-  N(symbol:"f", nodes:v[1...2]),
-  N(symbol:"g", nodes:v[0...0]),
-  N(symbol:"g", nodes:v[2...2]),
-  N(symbol:"f", nodes:[ v[3], v[0] ])
-  ]
-
-  let p = [ N(symbol:"p", nodes:[f[0], v[1]]),
-  N(symbol:"q", nodes:[f[1]]),
-  N(symbol:"q", nodes:[f[2]]),
-  N(symbol:"p", nodes:[f[3], v[3]])
-  ]
-  return v + f + p
-}

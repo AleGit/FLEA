@@ -10,9 +10,9 @@ extension Node {
     return "\(self.symbol)(\(tuple))"
   }
 
-  var descritpion : String {
-    return debugDescription
-  }
+  // var descritpion : String {
+  //   return debugDescription
+  // }
 }
 
 extension Node where Symbol : CustomDebugStringConvertible {
