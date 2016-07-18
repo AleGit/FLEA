@@ -20,6 +20,10 @@ extension Demo {
       return a
     }()
 
+    init() {
+      print("\(#function)#\(self.c)")
+    }
+
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.debugDescription
 
@@ -54,6 +58,45 @@ extension Demo {
 //     demoShow(nodes:nodes)
 //   }
 // }
+extension Demo {
+static func sharing() {
+  typealias N = Demo.SharingNode
+  typealias S = Tptp.Symbol
+
+
+  func fxy() -> N {
+    let X = N(variable:S("X",.Variable))
+    let Y = N(variable:S("Y",.Variable))
+    return N(symbol:S("f",.Function), nodes: [ X, Y ])
+  }
+
+  func pfxyz() -> N {
+    let Z = N(variable:S("Z",.Variable))
+    let fXY = fxy()
+    return N(symbol:S("p",.Predicate), nodes: [fXY, Z])
+
+  }
+
+  print("Perfect sharing")
+  print("Create 'p(f(X,Y),Z)'")
+  let p  = pfxyz()
+  print("'p(f(X,Y),Z)':",p)
+
+
+  print("Create 'f(X,Y)'")
+  let f  = fxy()
+  print("'f(X,Y)':",f)
+
+  print("Perfect sharing")
+  print("Create 'p(f(X,Y),Z)'")
+  let q  = pfxyz()
+  print("'p(f(X,Y),Z)':",q)
+
+
+  print("all nodes", N.allNodes)
+
+}
+}
 
 
 

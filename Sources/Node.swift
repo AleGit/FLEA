@@ -24,6 +24,7 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
 /// Unique instances of nodes are shared between (sub)trees.
 /// Sharing is suitable for immutable reference types.
 protocol SharingNode : class, Node {
+
   static var allNodes : Set<Self> { get set }
 }
 
