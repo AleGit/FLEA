@@ -15,9 +15,6 @@ extension Tptp {
       }
       let code = prlcParseFile(path, &store, &root)
       guard code == 0 && self.store != nil && self.root != nil else {
-        if let store = self.store {
-          prlcDestroyStore(store)
-        }
         return nil
       }
     }

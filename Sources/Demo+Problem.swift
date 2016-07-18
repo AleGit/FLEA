@@ -27,6 +27,18 @@ extension Demo {
       print("Node == \(String(reflecting:NodeType.self))")
     }
 
+    static func broken() {
+      typealias NodeType = Tptp.Node
+      let path = "Package.swift"
+
+      let inputs : [NodeType] = demoParseFile(path:path)
+      for (i,input) in inputs.enumerated() {
+        print(i,input.description)
+      }
+
+      print("Node == \(String(reflecting:NodeType.self))")
+    }
+
     static func hwv134cnf() {
       typealias NodeType = Tptp.Node
       let path = "/Users/Shared/TPTP/Problems/HWV/HWV134-1.p"

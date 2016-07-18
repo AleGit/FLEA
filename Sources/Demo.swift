@@ -6,6 +6,7 @@ struct Demo {
   "puz001-1" : Demo.Problem.puz001cnf,
   "puz001+1" : Demo.Problem.puz001fof,
   "hwv134-1" : Demo.Problem.hwv134cnf,
+  "broken" : Demo.Problem.broken,
   "sharing" : Demo.sharing
   // "noshare" : Demo.Node.demo,
   // "sharing" : Demo.SharingNode.demo
