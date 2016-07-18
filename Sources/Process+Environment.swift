@@ -6,17 +6,15 @@ import Darwin
 
 
 extension Process {
-  typealias Option = (String,[String])
+  typealias Option = (name:String,params:[String])
 
   private static func get (option name: String) -> [String]? {
 
     guard name.hasPrefix("--") else {
-      print("ERROR \(name) is not an option")
       return nil
     }
 
     guard let startIndex = Process.arguments.index(of:name) else {
-      print("DEBUG \(name) is not in the list")
       return nil
     }
 
@@ -31,11 +29,11 @@ extension Process {
   }
 
   static var options : [Option] = Process.arguments.filter { $0.hasPrefix("--") }.map {
-    ($0, Process.get(option:$0)!)
+    (name:$0, params:Process.get(option:$0)!)
   }
 
   static func option(name:String) -> Option? {
-    return Process.options.first {$0.0 == name}
+    return Process.options.first {$0.name == name}
 
   }
 

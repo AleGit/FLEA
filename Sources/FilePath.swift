@@ -15,10 +15,15 @@ extension FilePath {
   static var tptpRoot : FilePath? {
 
     // process option --tptp_root has the highest priority
-    if let path = Process.option(name:"--tptp_root")?.1.first(where:{$0.isAccessibleDirectory}) {
-      print("--tptp_root",path)
-      return path
+    if let option = Process.option(name:"--tptp_root") {
+      if let path = option.params.first(where:{$0.isAccessibleDirectory}) {
+        return path
+      }
+      else {
+        print("WARNING: Option\(option) includes no accessible directory!")
+      }
     }
+
 
     // try to read tptp root from environment
     if let path = Process.Environment.get(variable:"TPTP_ROOT")
