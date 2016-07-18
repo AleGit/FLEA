@@ -7,8 +7,8 @@ import Darwin
 typealias FilePath = String
 
 extension String {
-  /// get absolute path to problem file by problem name
-  /// "PUZ001-1".p => ./PUZ001.p" ?? "tptp_root/Problems/PUZ/PUZ001-1.p"
+  /// find accessible path to problem file by problem name
+  /// "PUZ001-1".p => "./PUZ001.p" ?? "tptp_root/Problems/PUZ/PUZ001-1.p"
   var p : FilePath? {
     // accept every accessible file (with arbitray suffixes),
     // e.g. 'noproblem.txt' or ''/absolute/path/to/problem.txt'
