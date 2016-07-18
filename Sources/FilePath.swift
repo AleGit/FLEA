@@ -6,9 +6,48 @@ import Darwin
 
 typealias FilePath = String
 
+extension String {
+  /// get absolute path to problem file by problem name
+  /// "PUZ001-1".p => ./PUZ001.p" ?? "tptp_root/Problems/PUZ/PUZ001-1.p"
+  var p : FilePath? {
+    let name = self.hasSuffix(".p") ? self : self.appending(".p")
+    if name.isAccessible { return name }
+
+    let endIndex = name.index(name.startIndex, offsetBy:3)
+    let prefix3 = name[name.startIndex..<endIndex]
+
+    let relativePath = name.hasPrefix("\(prefix3)/") ? name : "\(prefix3)/\(name)"
+    if relativePath.isAccessible { return relativePath }
+
+    if let absolutePath = (FilePath.tptpRoot)?.appending("/Problems/\(relativePath)")
+    where absolutePath.isAccessible {
+      return absolutePath
+    }
+
+    return nil
+  }
+
+  var ax : FilePath? {
+    let name = self.hasSuffix(".ax") ? self : self.appending(".ax")
+
+    if name.isAccessible { return name }
+
+    let relativePath = name.hasPrefix("Axioms/") ? name : "Axioms/\(name)"
+
+    if relativePath.isAccessible { return relativePath }
+
+    if let absolutePath = (FilePath.tptpRoot)?.appending(relativePath)
+    where absolutePath.isAccessible {
+      return absolutePath
+    }
+
+    return nil
+  }
+}
+
 extension FilePath {
 
-  static var home : FilePath? {
+  private static var home : FilePath? {
     return Process.Environment.get(variable:"HOME")
   }
 

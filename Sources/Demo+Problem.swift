@@ -41,7 +41,11 @@ extension Demo {
 
     static func hwv134cnf() {
       typealias NodeType = Tptp.Node
-      let path = "/Users/Shared/TPTP/Problems/HWV/HWV134-1.p"
+      let problem = "HWV134-1"
+      guard let path = problem.p else {
+        print("Problem '\(problem)' was not found.")
+        return
+      }
 
       let inputs : [NodeType] = demoParseFile(path:path)
       print(path, "count :", inputs.count)
