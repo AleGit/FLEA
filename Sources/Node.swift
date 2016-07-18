@@ -7,7 +7,7 @@
 protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
   associatedtype Symbol : Hashable
 
-  /// Value of the node
+  /// The Value of the node.
   var symbol : Symbol { get set }
   /// References to nodes (the "children")
   var nodes : [Self]? { get set }
@@ -21,24 +21,25 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
 
 /// A sharing node is a specialized node where
 /// a collection of all created nodes is held.
-protocol SharingNode : Node {
+/// Unique instances of nodes are shared between (sub)trees.
+/// Sharing is suitable for immutable reference types.
+protocol SharingNode : class, Node {
   static var allNodes : Set<Self> { get set }
 }
 
-/// Node extension with dedicated initializer
 extension Node {
-}
-
-extension Node {
-  /// By default nodes are not shared between trees.
+  /// By default nodes are not shared between trees,
+  /// e.g. three instances of variable `X` in `p(X,f(X,X))`
+  /// This is suitable for value types.
   static func share(node:Self) -> Self {
     return node
   }
 }
 
 extension SharingNode {
-  /// By default sharing nodes are shared between trees.
-  static func share (node:Self) -> Self {
+  /// By default sharing nodes are shared between trees,
+  /// e.g. one unique instance of variable `X` in `p(X,f(X,X))`.
+  static func share(node:Self) -> Self {
     if let index = allNodes.index(of:node) {
       return allNodes[index]
     }
@@ -49,14 +50,16 @@ extension SharingNode {
   }
 }
 
+/// MARK: - node initializers
 extension Node {
 
   /// *Dedicated* initializer for all nodes and sharing nodes.
+  /// This enables automatic sharing for all sharing node classes.
   init(symbol:Symbol, nodes:[Self]?) {
-    self.init()
+    self.init()                   // self must be initialized ...
     self.symbol = symbol
     self.nodes = nodes
-    self = Self.share(node:self)
+    self = Self.share(node:self)  // ... before it can be used
   }
 
   /// Conveniance initializer for variables.

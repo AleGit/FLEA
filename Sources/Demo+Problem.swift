@@ -2,7 +2,7 @@ extension Demo {
   struct Problem {
 
     static func puz001cnf() {
-      typealias NodeType = Demo.SharingNode
+      typealias NodeType = Tptp.Node
       let path = "Problems/PUZ001-1.p"
 
       let inputs : [NodeType] = demoParseFile(path:path)
@@ -16,12 +16,12 @@ extension Demo {
     }
 
     static func puz001fof() {
-      typealias NodeType = Demo.SharingNode
+      typealias NodeType = Tptp.Node
       let path = "Problems/PUZ001+1.p"
 
       let inputs : [NodeType] = demoParseFile(path:path)
       for (i,input) in inputs.enumerated() {
-        print(i,input)
+        print(i,input.description)
       }
 
       print("Node == \(String(reflecting:NodeType.self))")

@@ -2,6 +2,9 @@ extension Demo {
   final class Node : FLEA.Node {
     var symbol = Tptp.Symbol("n/a",.Undefined)
     var nodes : [Demo.Node]? = nil
+
+    lazy var hashValue : Int = self.defaultHashValue
+    lazy var description : String = self.debugDescription
   }
 
   final class SharingNode : FLEA.SharingNode {
@@ -18,7 +21,17 @@ extension Demo {
     }()
 
     lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.tptpDescription
+    lazy var description : String = self.debugDescription
+
+    var debugDescription : String {
+      guard let nodes = self.nodes?.map({$0.description})
+      where nodes.count > 0
+      else {
+        return "\(self.symbol)'\(self.c)"
+      }
+      let tuple = nodes.map{ $0 }.joined(separator:",")
+      return "\(self.symbol)'\(self.c)(\(tuple))"
+    }
 
     deinit {
       print("\(#function)#\(self.c): \(self)")

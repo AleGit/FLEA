@@ -1,9 +1,9 @@
 import CTptpParsing
 
-typealias StoreRef = UnsafeMutablePointer<prlc_store>
 typealias TreeNodeRef = UnsafeMutablePointer<prlc_tree_node>
-typealias PrefixNodeRef = UnsafeMutablePointer<prlc_prefix_node>
 typealias CStringRef = UnsafePointer<Int8>
+typealias PrefixNodeRef = UnsafeMutablePointer<prlc_prefix_node>
+typealias StoreRef = UnsafeMutablePointer<prlc_store>
 
 // MARK: - define C-structure protocols
 protocol SymbolNodeProtocol {
