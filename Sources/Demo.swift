@@ -15,22 +15,24 @@ struct Demo {
 
 
   static func demo() {
-    // check if ther are arguments all and if the first argument is `--demo`
-    guard Process.arguments.count > 1 && Process.arguments[1] == "--demo"
-    else { return }
 
-    // check if there are any argumenst after `--demo`
-    if Process.arguments.count == 2 {
-      let keys = demos.map { $0.0 }
-      let prefix = "  $ \(Process.arguments[0]) --demo"
-      print("You've selected '--demo' with no list of demos.")
-      print("  \(keys)")
-      print("To execute all demos type the following line:")
-      let args = demos.map { $0 }.reduce(prefix) { $0 + " \($1.0)"}
-        print(args)
+      guard let names = Process.option(name:"--demo")?.1 else {
+        return
       }
 
-      for n in Process.arguments[2..<Process.arguments.count] {
+      guard names.count > 0 else {
+        let keys = demos.map { $0.0 }
+        let prefix = "  $ \(Process.arguments[0]) --demo"
+
+        print("You've selected '--demo' with no list of demos.")
+        print("  \(keys)")
+        print("To execute all demos type the following line:")
+        let args = demos.map { $0 }.reduce(prefix) { $0 + " \($1.0)"}
+          print(args)
+          return
+        }
+
+      for n in names {
         print(line)
         guard let f = demos[n] else {
           print("DEMO '\(n)' does not exist.")

@@ -8,6 +8,35 @@ typealias FilePath = String
 
 extension FilePath {
 
+  static var home : FilePath? {
+    return Process.Environment.get(variable:"HOME")
+  }
+
+  static var tptpRoot : FilePath? {
+
+    // process option --tptp_root has the highest priority
+    if let path = Process.option(name:"--tptp_root")?.1.first(where:{$0.isAccessibleDirectory}) {
+      print("--tptp_root",path)
+      return path
+    }
+
+    // try to read tptp root from environment
+    if let path = Process.Environment.get(variable:"TPTP_ROOT")
+    where path.isAccessibleDirectory {
+      return path
+    }
+
+    // home directory has the lowest priority
+    if let path = FilePath.home?.appending("/TPTP")
+    where path.isAccessibleDirectory {
+      return path
+    }
+
+    // * no tptp root directory available
+    return nil
+
+  }
+
   var fileSize : Int? {
     var status = stat()
 

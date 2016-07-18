@@ -4,7 +4,41 @@ import Glibc
 import Darwin
 #endif
 
+
 extension Process {
+  typealias Option = (String,[String])
+
+  private static func get (option name: String) -> [String]? {
+
+    guard name.hasPrefix("--") else {
+      print("ERROR \(name) is not an option")
+      return nil
+    }
+
+    guard let startIndex = Process.arguments.index(of:name) else {
+      print("DEBUG \(name) is not in the list")
+      return nil
+    }
+
+    let s = Array(Process.arguments.suffix(from:startIndex+1))
+
+    guard let endIndex = s.index(where: { $0.hasPrefix("--")} ) else {
+      return s
+    }
+
+    return Array(s[0..<endIndex])
+
+  }
+
+  static var options : [Option] = Process.arguments.filter { $0.hasPrefix("--") }.map {
+    ($0, Process.get(option:$0)!)
+  }
+
+  static func option(name:String) -> Option? {
+    return Process.options.first {$0.0 == name}
+
+  }
+
   struct Environment {
     static func get(variable name: String) -> String? {
       guard let value = getenv(name) else { return nil }
@@ -17,4 +51,6 @@ extension Process {
       setenv(name, value, overwrite ? 1 : 0)
     }
   }
+
+
 }
