@@ -30,3 +30,20 @@ $ swift build -c release -Xlinker -L/usr/local/lib  # Mac path to lib
 $ .build/release/FLEA --demo                        # list available demos
 ```
 The first (failing) `swift build` is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
+
+### Issues
+
+- Testing with XCTest does not work yet
+
+```
+$ swift build -Xlinker -L/usr/local/lib
+$ swift test
+```
+builds and runs all tests in FLEA/Tests on macOS. 
+The compiler accepts the import of module FLEA, 
+but the linker fails whenever (even public) methods from FLEA are used.
+```
+Linking .build/debug/FLEATests.xctest/Contents/MacOS/FLEATests
+Undefined symbols for architecture x86_64:
+  "__TFCV4FLEA4Tptp4NodeCfT_S1_", referenced from:
+```
