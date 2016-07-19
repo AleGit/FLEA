@@ -1,5 +1,5 @@
 # FLEA
-A **F***irst* *order* **L***ogic* w*ith* **E***quality* *theorem* **A***ttester* still in development.
+A **F***irst* *order* **L***ogic* w*ith* **E***quality* *theorem* **A***ttester* library still in development.
 
 ### Platforms:
 - Mac (OS X El Capitan, macOS Sierra)
@@ -17,7 +17,7 @@ Yices 2.4.2
 $ swift -version
 Apple Swift version 3.0 ...
 ```
-- Clone, build and run [FLEA](https://github.com/AleGit/FLEA):
+- Clone and build [FLEA](https://github.com/AleGit/FLEA):
 ```
 $ git clone https://github.com/AleGit/FLEA
 $ cd FLEA
@@ -25,18 +25,11 @@ $ swift build                                       # fails after download
 $ pushd Packages/CTptpParsing-1.0.0                 # or 1.0.1 or ...
 $ sudo make install                                 # install tptp parsing lib
 $ popd
-$ swift build -c release                            # Linux
-$ swift build -c release -Xlinker -L/usr/local/lib  # Mac path to lib
-$ .build/release/FLEA --demo                        # list available demos
+$ swift build                                       # Linux
+$ swift build -Xlinker -L/usr/local/lib             # Mac path to lib
+$ swift test                                        # run all tests
 ```
 The first (failing) `swift build` is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
 
-### Testing
-
-- macOS: run all tests
-
-```
-$ swift build -Xlinker -L/usr/local/lib
-$ swift test
-```
-
+See [FleaBite] [FleaBite](https://github.com/AleGit/FleaBite) for an
+executable with a list of nice demos.
