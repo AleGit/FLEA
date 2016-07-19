@@ -31,5 +31,5 @@ $ swift test                                        # run all tests
 ```
 The first (failing) `swift build` is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
 
-See [FleaBite] [FleaBite](https://github.com/AleGit/FleaBite) for an
+See [FleaBite](https://github.com/AleGit/FleaBite) for an
 executable with a list of nice demos.
