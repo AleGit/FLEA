@@ -1,5 +1,5 @@
 
-struct Demo {
+public struct Demo {
   static let line = Array(repeating:"=", count:80).joined(separator:"")
 
   static let demos = [
@@ -15,7 +15,7 @@ struct Demo {
 
 
 
-  static func demo() {
+  public static func demo() {
       guard let names = Process.option(name:"--demo")?.1 else {
         return
       }
