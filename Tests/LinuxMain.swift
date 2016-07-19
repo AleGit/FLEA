@@ -1,8 +1,5 @@
 import XCTest
 
-import FLEA
-
 var tests = [XCTestCaseEntry]()
-// tests += MiscFirstTestCase.allTests()
-
+tests += FirstTests.allTests()
 XCTMain(tests)

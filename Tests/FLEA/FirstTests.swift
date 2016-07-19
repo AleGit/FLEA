@@ -3,11 +3,11 @@
     // import Foundation
 #else
     import XCTest
-    import Darwin
+    // import Darwin
     // import SwiftFoundation
 #endif
 
-import Foundation
+// import Foundation
 
 @testable import FLEA
 
@@ -17,10 +17,9 @@ class FirstTests : XCTestCase {
   #if os(Linux)
   static var allTests = {
     return [
-    ("testHelloWorld", testHelloWorld)
-    // ("testFilePath", testFilePath)
-    // ("testNodeEquality", testNodeEquality)
-    // ("testFilePath", testFilePath)
+    ("testHelloWorld", testHelloWorld),
+    ("testHelloWorld", testNodeEquality),
+    ("testFilePath", testFilePath)
     ]
   }()
   #endif
@@ -39,7 +38,7 @@ class FirstTests : XCTestCase {
     XCTAssertEqual(a, b,"'\(a)' is not equal to '\(b)'")
   }
 
-  func testSymbolEquality() {
+  func testNodeEquality() {
     typealias Node = FLEA.Tptp.Node
     typealias Symbol = FLEA.Tptp.Symbol
 
