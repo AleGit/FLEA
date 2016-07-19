@@ -10,7 +10,7 @@
 
 // XCTMain([testCase(MiscFirstTestCase.allTests)])
 
-class MiscFirstTestCase : XCTestCase {
+class FirstTests : XCTestCase {
   #if os(Linux)
   static var allTests = {
     return [
@@ -26,6 +26,9 @@ class MiscFirstTestCase : XCTestCase {
 
     let a = "Hello World!"
     let b = "Hello" + " " + "World" + "!"
+
+
+    print("***",a,b,"***")
 
     XCTAssertTrue(true,"true is not true")
     XCTAssertFalse(false,"false is not false")
