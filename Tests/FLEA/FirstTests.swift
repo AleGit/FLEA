@@ -1,6 +1,6 @@
 #if os(Linux) || os(FreeBSD)
     import XCTest
-    // import Foundation
+    import Foundation
 #else
     import XCTest
     // import Darwin
@@ -11,18 +11,16 @@
 
 @testable import FLEA
 
-// XCTMain([testCase(MiscFirstTestCase.allTests)])
-
-class FirstTests : XCTestCase {
+public class FirstTests : XCTestCase {
   #if os(Linux)
-  static var allTests = {
+  static var allTests : [(String, (FirstTests) -> () throws -> Void)]  {
     return [
     ("testHelloWorld", testHelloWorld),
     ("testHelloWorld", testNodeEquality),
     ("testFilePath", testFilePath)
     ]
-  }()
-  #endif
+  }
+#endif
 
   func testHelloWorld() {
 

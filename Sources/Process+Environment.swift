@@ -4,6 +4,7 @@ import Glibc
 import Darwin
 #endif
 
+import Foundation
 
 extension Process {
   typealias Option = (name:String,params:[String])
