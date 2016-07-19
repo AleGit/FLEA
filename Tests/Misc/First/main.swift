@@ -11,14 +11,16 @@
 // XCTMain([testCase(MiscFirstTestCase.allTests)])
 
 class MiscFirstTestCase : XCTestCase {
-  // static var allTests = {
-  //   return [
-  //   ("testHelloWorld", testHelloWorld)
-  //   // ("testFilePath", testFilePath)
-  //   // ("testNodeEquality", testNodeEquality)
-  //   // ("testFilePath", testFilePath)
-  //   ]
-  // }()
+  #if os(Linux)
+  static var allTests = {
+    return [
+    ("testHelloWorld", testHelloWorld)
+    // ("testFilePath", testFilePath)
+    // ("testNodeEquality", testNodeEquality)
+    // ("testFilePath", testFilePath)
+    ]
+  }()
+  #endif
 
   func testHelloWorld() {
 
