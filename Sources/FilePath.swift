@@ -4,7 +4,7 @@ import Glibc
 import Darwin
 #endif
 
-public typealias FilePath = String
+typealias FilePath = String
 
 extension String {
   /// find accessible path to problem file by problem name
@@ -66,16 +66,18 @@ extension String {
   }
 }
 
-public extension FilePath {
+extension FilePath {
 
   private static var home : FilePath? {
     return Process.Environment.get(variable:"HOME")
   }
 
-  public static var tptpRoot : FilePath? {
+  static var tptpRoot : FilePath? {
+    print("\(#function)")
 
     // process option --tptp_root has the highest priority
     if let option = Process.option(name:"--tptp_root") {
+      print("\(#function) \(option)")
       if let path = option.params.first(where:{$0.isAccessibleDirectory}) {
         return path
       }
@@ -84,6 +86,8 @@ public extension FilePath {
       }
     }
 
+    print("\(#function) B")
+
 
     // try to read tptp root from environment
     if let path = Process.Environment.get(variable:"TPTP_ROOT")
@@ -91,11 +95,15 @@ public extension FilePath {
       return path
     }
 
+    print("\(#function) C")
+
     // home directory has the lowest priority
     if let path = FilePath.home?.appending("/TPTP")
     where path.isAccessibleDirectory {
       return path
     }
+
+    print("\(#function) D")
 
     // * no tptp root directory available
     return nil
