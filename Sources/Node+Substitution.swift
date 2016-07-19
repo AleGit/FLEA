@@ -70,3 +70,11 @@ extension Dictionary where Key:Node, Value:Node { // , Key == Value does not wor
         return allKeysAreVariables && allValuesAreVariables && isInjective
     }
 }
+
+extension Dictionary where Key:Node, Value:Node {
+  var description : String {
+    let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
+    return "{\(pairs)}"
+
+  }
+}

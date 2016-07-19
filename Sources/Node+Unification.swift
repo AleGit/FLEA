@@ -2,72 +2,55 @@
 /// iff terms lhs and rhs are unifiable.
 /// Otherwise it returns *nil*.
 func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
-
+  // delete
   if lhs == rhs {
-    return [T:T]() // trivially unifiable
+    return [T:T]() // trivially unifiable, empty unifier
   }
-    //   assert(lhs != rhs, "terms are variable distinct, hence they cannot be equal")
 
-    switch(lhs.isVariable,rhs.isVariable) {
-    case (true, true) where lhs.symbol == rhs.symbol:
-        return [T:T]() // empty substitution
-    case (true, true):
-        return [lhs:rhs] // variable renaming
-    case (true,_):
-        guard !rhs.variables.contains(lhs) else { return nil } // occur check
-        return [lhs:rhs]
-    case (_,true):
-        guard !lhs.variables.contains(rhs) else { return nil }  // occur check
-        return [rhs:lhs]
-    case (_, _) where lhs.symbol == rhs.symbol:
+  // variable elimination
 
-        // f(s1,s2,s3) =?= f(t1,t2,t3)
+  if lhs.isVariable {
+    guard !rhs.variables.contains(lhs) else { return nil } // occur check
+    return [lhs:rhs]
+  }
+  if rhs.isVariable {
+    guard !lhs.variables.contains(rhs) else { return nil } // occur check
+  }
 
-        var mgu = [T:T]()
+  // both lhs and rhs are not variables
 
-        guard var lnodes = lhs.nodes, var rnodes = rhs.nodes
-            where lnodes.count == rnodes.count
-            else { return nil }
+  // conflict
 
-        while lnodes.count > 0 {
-            guard let unifier = lnodes[0] =?= rnodes[0] else { return nil }
+  guard lhs.symbol == rhs.symbol else { return nil }
 
-            lnodes.removeFirst()
-            rnodes.removeFirst()
+  // decompositon
 
-            lnodes = lnodes.map { $0 * unifier }
-            rnodes = rnodes.map { $0 * unifier }
+  guard var lnodes = lhs.nodes, var rnodes = rhs.nodes
+  where lnodes.count == rnodes.count
+  else { return nil }
 
-            mgu *= unifier
+  // signatures match
 
-            for (key,value) in unifier {
-                if let term = mgu[key] where term != value  { return nil }
-                mgu[key] = value
+  var mgu = [T:T]()
 
-            }
+  while lnodes.count > 0 {
+    guard let unifier = lnodes[0] =?= rnodes[0] else { return nil }
 
-        }
+    lnodes.removeFirst()
+    rnodes.removeFirst()
 
-        let decomposition = zip(lhs.nodes!, rhs.nodes!)
+    lnodes = lnodes.map { $0 * unifier }
+    rnodes = rnodes.map { $0 * unifier }
 
-        for (s,t) in decomposition {
-            guard let unifier = s =?= t else { return nil }
+    mgu *= unifier
 
-            mgu *= unifier
+    for (key,value) in unifier {
+      if let term = mgu[key] where term != value  { return nil }
 
-
-
-        }
-
-
-        return mgu
-
-    case (_,_) where lhs.symbol == rhs.symbol:
-        //        assert(lhs.symbol == "|", "\(lhs.symbol) must not be variadic (\(lhs.nodes!.count),\(rhs.nodes!.count)")
-        return nil
-    default:
-        return nil
+      mgu[key] = value
     }
+  }
+  return mgu
 }
 
 func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {

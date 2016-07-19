@@ -1,4 +1,6 @@
 
+
+
 extension Node {
   /// Default calculation for a consistent hash value,
   /// (i.e. equal nodes have an eqqul hash value)
