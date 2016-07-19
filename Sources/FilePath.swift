@@ -4,7 +4,7 @@ import Glibc
 import Darwin
 #endif
 
-typealias FilePath = String
+public typealias FilePath = String
 
 extension String {
   /// find accessible path to problem file by problem name
@@ -66,13 +66,13 @@ extension String {
   }
 }
 
-extension FilePath {
+public extension FilePath {
 
   private static var home : FilePath? {
     return Process.Environment.get(variable:"HOME")
   }
 
-  static var tptpRoot : FilePath? {
+  public static var tptpRoot : FilePath? {
 
     // process option --tptp_root has the highest priority
     if let option = Process.option(name:"--tptp_root") {
