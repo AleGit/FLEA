@@ -3,8 +3,11 @@
     // import Foundation
 #else
     import XCTest
+    import Darwin
     // import SwiftFoundation
 #endif
+
+import Foundation
 
 @testable import FLEA
 
@@ -37,22 +40,30 @@ class FirstTests : XCTestCase {
   }
 
   func testSymbolEquality() {
-    typealias N = FLEA.Tptp.Node
-    typealias T = FLEA.Tptp.Symbol
+    typealias Node = FLEA.Tptp.Node
+    typealias Symbol = FLEA.Tptp.Symbol
 
-    let X = N(variable:T("X", .Variable))
-    let a = N(variable:T("a", .Function))
-    let fX = N(symbol:T("f", .Function), nodes:[X])
-    let fa = N(symbol:T("f", .Function), nodes:[a])
+    let X = Node(variable:Symbol("X", .Variable))
+    let a = Node(variable:Symbol("a", .Function))
+    let fX = Node(symbol:Symbol("f", .Function), nodes:[X])
+    let fa = Node(symbol:Symbol("f", .Function), nodes:[a])
 
     let fX_a = fX * [X:a]
 
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
-    XCTAssertEqual(N.allNodes.count,4)
+    XCTAssertEqual(Node.allNodes.count,4)
 
-    print(N.allNodes)
+    print(Node.allNodes)
+  }
+
+  func testFilePath() {
+
+    let tptpRoot = FilePath.tptpRoot
+    XCTAssertNotNil(tptpRoot)
+
+    XCTAssertTrue(tptpRoot?.hasSuffix("TPTP") ?? false)
   }
 
 

@@ -69,15 +69,13 @@ extension String {
 extension FilePath {
 
   private static var home : FilePath? {
-    return Process.Environment.get(variable:"HOME")
+    return Process.Environment.getValue(for:"HOME")
   }
 
   static var tptpRoot : FilePath? {
-    print("\(#function)")
 
     // process option --tptp_root has the highest priority
     if let option = Process.option(name:"--tptp_root") {
-      print("\(#function) \(option)")
       if let path = option.params.first(where:{$0.isAccessibleDirectory}) {
         return path
       }
@@ -86,24 +84,18 @@ extension FilePath {
       }
     }
 
-    print("\(#function) B")
-
 
     // try to read tptp root from environment
-    if let path = Process.Environment.get(variable:"TPTP_ROOT")
+    if let path = Process.Environment.getValue(for:"TPTP_ROOT")
     where path.isAccessibleDirectory {
       return path
     }
-
-    print("\(#function) C")
 
     // home directory has the lowest priority
     if let path = FilePath.home?.appending("/TPTP")
     where path.isAccessibleDirectory {
       return path
     }
-
-    print("\(#function) D")
 
     // * no tptp root directory available
     return nil
