@@ -42,19 +42,15 @@ func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
     lnodes = lnodes.map { $0 * unifier }
     rnodes = rnodes.map { $0 * unifier }
 
-    mgu *= unifier
+    guard let concat = mgu * unifier else { return nil }
 
-    for (key,value) in unifier {
-      if let term = mgu[key] where term != value  { return nil }
+    mgu = concat
 
-      mgu[key] = value
-    }
+    // for (key,value) in unifier {
+    //   if let term = mgu[key] where term != value  { return nil }
+    //
+    //   mgu[key] = value
+    // }
   }
   return mgu
-}
-
-func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
-    for (key,value) in lhs {
-        lhs[key] = value * rhs
-    }
 }

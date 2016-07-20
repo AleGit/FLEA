@@ -30,6 +30,30 @@ postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
     return t * N(constant:Tptp.Symbol("⊥",.Function))
 }
 
+func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
+    for (key,value) in lhs {
+        lhs[key] = value * rhs
+    }
+}
+
+func *<T:Node>(lhs:[T:T], rhs:[T:T]) -> [T:T]? {
+  var subs = lhs
+  for (key,value) in rhs {
+    subs[key] = value * rhs
+  }
+  for (key,value) in rhs {
+    if let term = subs[key] {
+      // allready set and different
+      guard term == value else { return nil }
+    }
+    else {
+      // not set yet
+      subs[key] = value
+    }
+  }
+  return subs
+}
+
 extension Dictionary where Key:Node, Value:Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?
     private var isHomogenous : Bool {

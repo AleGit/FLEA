@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-private typealias Node = SmartNode
+private typealias Node = Nodes.SmartNode
 
 public class SmartNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.

@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-private typealias Node = SharingNode
+private typealias Node = Nodes.SharingNode
 
 public class SharingNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
