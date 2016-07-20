@@ -37,14 +37,18 @@ func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
 }
 
 func *<T:Node>(lhs:[T:T], rhs:[T:T]) -> [T:T]? {
-  var subs = lhs
-  for (key,value) in rhs {
+  var subs = [T:T]()
+  for (key,value) in lhs {
     subs[key] = value * rhs
   }
   for (key,value) in rhs {
     if let term = subs[key] {
-      // allready set and different
-      guard term == value else { return nil }
+      // allready set
+      guard term == value else {
+        // and different
+        return nil
+      }
+      // but equal
     }
     else {
       // not set yet
