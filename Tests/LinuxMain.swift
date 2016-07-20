@@ -6,5 +6,6 @@ XCTMain([
   testCase(SharingNodeTests.allTests),
   testCase(SmartNodeTests.allTests),
   testCase(SubstitutionTests.allTests),
+  testCase(UnificationTests.allTests),
   testCase(WeakCollectionTests.allTests)
   ])
