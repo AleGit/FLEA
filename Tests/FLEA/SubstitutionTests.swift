@@ -10,7 +10,7 @@ public class SubstitutionTests : XCTestCase {
   }
 
   func testBasics() {
-    XCTAsserTrue(true)
+    XCTAssertTrue(true)
 
   }
 }
