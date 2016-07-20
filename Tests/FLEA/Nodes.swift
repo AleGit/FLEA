@@ -2,8 +2,9 @@
 
 @testable import FLEA
 
-let ok = "✅"
-let nok = "❌"
+let ok = "✅ "
+let nok = "❌ "
+let err = "⛔️ "
 
 struct Nodes {
 
