@@ -1,39 +1,53 @@
-#if os(Linux) || os(FreeBSD)
-    import XCTest
-    import Foundation
-#else
-    import XCTest
-    // import Darwin
-    // import SwiftFoundation
-#endif
-
-// import Foundation
+import XCTest
 
 @testable import FLEA
 
 public class FirstTests : XCTestCase {
-  #if os(Linux)
+  /// Collect all tests by hand for Linux.
   static var allTests : [(String, (FirstTests) -> () throws -> Void)]  {
     return [
-    ("testHelloWorld", testHelloWorld),
-    ("testHelloWorld", testNodeEquality),
-    ("testFilePath", testFilePath)
+    ("testOS", testOS),
+    ("testFilePath", testTptpRoot)
     ]
   }
-#endif
 
-  func testHelloWorld() {
-
-    let a = "Hello World!"
-    let b = "Hello" + " " + "World" + "!"
+  let ok = "✅"
+  let nok = "❌"
 
 
-    print("***",a,b,"***")
 
-    XCTAssertTrue(true,"true is not true")
-    XCTAssertFalse(false,"false is not false")
+  /// This test is not put into allTests
+  /// - it will execute on OSX
+  /// - it will not run on Linux
+  func testMacOS() {
+    #if os(OSX)
+    print("\(ok)  \(#function) executed on macOS.")
+    #elseif os(Linux)
+    XCTFail("\(nok) \(#function) executed on Linux.")
+    #else
+    XCTFail("\(nok) \(#function) executed on unsupported OS.")
+    #endif
+  }
 
-    XCTAssertEqual(a, b,"'\(a)' is not equal to '\(b)'")
+  /// This test should run on every platform.
+  func testOS() {
+    #if os(OSX)
+    print("\(ok)  \(#function) executed on supported macOS.")
+    #elseif os(Linux)
+    print("\(ok) \(#function) executed on supported Linux.")
+    #else
+    XCTFail("\(nok) \(#function) executed on unsupported OS.")
+    #endif
+  }
+
+  func testTptpRoot() {
+    guard let tptpRoot = FilePath.tptpRoot else {
+      XCTFail("TPTP root path is not available.")
+      return
+    }
+
+    XCTAssertTrue(tptpRoot.hasSuffix("TPTP"),
+    "TPTP root path '\(tptpRoot) does not end with 'TPTP'")
   }
 
   func testNodeEquality() {
@@ -45,7 +59,7 @@ public class FirstTests : XCTestCase {
     let fX = Node(symbol:Symbol("f", .Function), nodes:[X])
     let fa = Node(symbol:Symbol("f", .Function), nodes:[a])
 
-    let fX_a = fX * [X:a]
+    let fX_a = fX * [X:Node(variable:Symbol("a", .Function))]
 
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
@@ -55,13 +69,7 @@ public class FirstTests : XCTestCase {
     print(Node.allNodes)
   }
 
-  func testFilePath() {
 
-    let tptpRoot = FilePath.tptpRoot
-    XCTAssertNotNil(tptpRoot)
-
-    XCTAssertTrue(tptpRoot?.hasSuffix("TPTP") ?? false)
-  }
 
 
 
