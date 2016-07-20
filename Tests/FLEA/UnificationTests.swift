@@ -16,12 +16,12 @@ public class UnificationTests : XCTestCase {
     switch (actual, expected) {
       case (.none, .none):
         break
-      case (.none, let e0):
-        XCTFail("\n \(l) =?= \(r) => nil ≠ \(e0) \(label)")
-      case (let a0, .none):
-        XCTFail("\n \(l) =?= \(r) => \(a0) ≠ nil \(label)")
-      case (let a, let e):
-        XCTAssertEqual(a! , e!, "\n \(l) =?= \(r) => \(a) ≠ \(e) \(label)")
+      case (.none, _):
+        XCTFail("\n \(l) =?= \(r) => nil ≠ \(expected!) \(label)")
+      case (_, .none):
+        XCTFail("\n \(l) =?= \(r) => \(actual!) ≠ nil \(label)")
+      default:
+        XCTAssertEqual(actual! , expected!, "\n \(l) =?= \(r) => \(actual!) ≠ \(expected!) \(label)")
     }
   }
 
