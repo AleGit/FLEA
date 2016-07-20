@@ -45,12 +45,6 @@ func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
     guard let concat = mgu * unifier else { return nil }
 
     mgu = concat
-
-    // for (key,value) in unifier {
-    //   if let term = mgu[key] where term != value  { return nil }
-    //
-    //   mgu[key] = value
-    // }
   }
   return mgu
 }

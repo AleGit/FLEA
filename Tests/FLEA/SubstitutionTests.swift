@@ -5,11 +5,11 @@ import XCTest
 public class SubstitutionTests : XCTestCase {
   static var allTests : [(String, (SubstitutionTests) -> () throws -> Void)] {
     return [
-      ("testBasics", testBasics)
+      ("testSubstitutionBasics", testSubstitutionBasics)
     ]
   }
 
-  func testBasics() {
+  func testSubstitutionBasics() {
     XCTAssertTrue(true)
 
     let X_a = [Nodes.X : Nodes.a]
