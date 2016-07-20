@@ -8,8 +8,8 @@ public class SharingNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SharingNodeTests) -> () throws -> Void)]  {
     return [
-      ("testNodeEquality X", testSharingNodeEqualityX),
-      ("testNodeEquality Y", testSharingNodeEqualityY)
+      ("testSharingNodeEqualityX", testSharingNodeEqualityX),
+      ("testSharingNodeEqualityY", testSharingNodeEqualityY)
     ]
   }
 

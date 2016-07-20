@@ -5,5 +5,6 @@ XCTMain([
   // testCase(FirstTests.allTests),
   testCase(SharingNodeTests.allTests),
   testCase(SmartNodeTests.allTests),
-  testCase(SubstitutionTests.allTests)
+  testCase(SubstitutionTests.allTests),
+  testCase(WeakCollectionTests.allTests)
   ])
