@@ -8,9 +8,9 @@ public class SmartNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SmartNodeTests) -> () throws -> Void)]  {
     return [
-      ("testSmartNodeEqualityX", testSmartNodeEqualityX),
-      ("testSmartNodeEqualityY", testSmartNodeEqualityY),
-      ("testWeakEntry", testWeakEntry)
+      // ("testSmartNodeEqualityX", testSmartNodeEqualityX),
+      // ("testSmartNodeEqualityY", testSmartNodeEqualityY),
+      // ("test_WeakEntry", test_WeakEntry)
     ]
   }
 
@@ -49,54 +49,8 @@ public class SmartNodeTests : XCTestCase {
 
 
 
-  func testWeakEntry() {
-    var collection = WeakCollection<TestClass>()
-
-    var s : TestClass? = TestClass("s")
-    var t : TestClass? = TestClass("t")
-    var x : TestClass? = TestClass("s")
-
-    XCTAssertEqual(s,x)
-    XCTAssertFalse(s! === x!)
-    XCTAssertEqual(collection.count, 0)
-
-     s = collection.insert(newElement:s!)
-     t = collection.insert(newElement:t!)
-     x = collection.insert(newElement:x!)
-    XCTAssertEqual(collection.count, 2)
-
-    XCTAssertEqual(s,x)
-    XCTAssertTrue(s! === x!)
-
-    s = nil
-    t = nil
-    x = nil
-    XCTAssertEqual(collection.count, 1)
 
 
 
-  }
 
-
-
-}
-
-class TestClass : Hashable {
-  let name : String
-  var hashValue : Int { return name.hashValue }
-
-  init(_ name:String) {
-    self.name = name
-  }
-
-  deinit {
-    print("\(#function) \(self.name)")
-  }
-
-}
-
-
-
-func ==(lhs:TestClass, rhs:TestClass) -> Bool {
-  return lhs.name == rhs.name
 }

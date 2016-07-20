@@ -1,12 +1,19 @@
 /// Idea by Adam Preble on 2/19/15.
 /// [WeakSet](https://gist.github.com/preble/13ab713ac044876c89b5)
 
-private struct WeakEntry<T where T: AnyObject, T: Hashable> {
+private struct WeakEntry<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> : CustomStringConvertible {
     weak var element: T?
+
+    var description : String {
+      guard let e = self.element else {
+        return "nillified"
+      }
+      return e.description
+    }
 }
 
 /// Weak, unordered collection of objects.
-struct WeakCollection<T where T: AnyObject, T: Hashable> {
+struct WeakCollection<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     private var contents = [Int: [WeakEntry<T>]]()
 
     /// Add an element (and get it's substitution).
@@ -53,8 +60,6 @@ struct WeakCollection<T where T: AnyObject, T: Hashable> {
     }
 
     var count : Int {
-      let x = contents.flatMap({$0})
-      print(x)
-      return x.count
+      return contents.flatMap({$0.1}).filter { $0.element != nil}.count
     }
 }
