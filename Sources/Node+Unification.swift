@@ -15,6 +15,7 @@ func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
   }
   if rhs.isVariable {
     guard !lhs.variables.contains(rhs) else { return nil } // occur check
+    return [rhs:lhs]
   }
 
   // both lhs and rhs are not variables

@@ -15,14 +15,17 @@ struct Nodes {
   static var a = Node(constant:"a")
   static var b = Node(constant:"b")
   static var c = Node(constant:"c")
-  
+
   static var fXY = Node(symbol:"f",nodes:[X,Y])
   static var gXYZ = Node(symbol:"g",nodes:[X,Y,Z])
   static var hX = Node(symbol:"h",nodes:[X])
 
   static var fab = Node(symbol:"f",nodes:[a,b])
+  static var faa = Node(symbol:"f",nodes:[a,b])
   static var gabc = Node(symbol:"g",nodes:[a,b,c])
   static var ha = Node(symbol:"h",nodes:[a])
+
+  static var ffaaZ = Node(symbol:"f",nodes:[faa,Z])
 
   final class SmartNode : FLEA.SmartNode {
     static var allNodes = WeakCollection<SmartNode>()
