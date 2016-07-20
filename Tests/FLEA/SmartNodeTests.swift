@@ -8,9 +8,8 @@ public class SmartNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SmartNodeTests) -> () throws -> Void)]  {
     return [
-      // ("testSmartNodeEqualityX", testSmartNodeEqualityX),
-      // ("testSmartNodeEqualityY", testSmartNodeEqualityY),
-      // ("test_WeakEntry", test_WeakEntry)
+      ("testSmartNodeEqualityX", testSmartNodeEqualityX),
+      ("testSmartNodeEqualityY", testSmartNodeEqualityY)
     ]
   }
 

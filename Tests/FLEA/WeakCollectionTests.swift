@@ -8,9 +8,7 @@ public class WeakCollectionTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (WeakCollectionTests) -> () throws -> Void)]  {
     return [
-      // ("testSmartNodeEqualityX", testSmartNodeEqualityX),
-      // ("testSmartNodeEqualityY", testSmartNodeEqualityY),
-      // ("test_WeakEntry", test_WeakEntry)
+      ("testWeakStringCollection", testWeakStringCollection)
     ]
   }
 
