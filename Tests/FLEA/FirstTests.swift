@@ -11,11 +11,6 @@ public class FirstTests : XCTestCase {
     ]
   }
 
-  let ok = "✅"
-  let nok = "❌"
-
-
-
   /// This test is not put into allTests
   /// - it will execute on OSX
   /// - it will not run on Linux
@@ -34,9 +29,9 @@ public class FirstTests : XCTestCase {
     #if os(OSX)
     print("\(ok)  \(#function) executed on supported macOS.")
     #elseif os(Linux)
-    print("\(ok) \(#function) executed on supported Linux.")
+    print("\(ok)  \(#function) executed on supported Linux.")
     #else
-    XCTFail("\(nok) \(#function) executed on unsupported OS.")
+    XCTFail("\(nok)  \(#function) executed on unsupported OS.")
     #endif
   }
 
@@ -55,11 +50,11 @@ public class FirstTests : XCTestCase {
     typealias Symbol = FLEA.Tptp.Symbol
 
     let X = Node(variable:Symbol("X", .Variable))
-    let a = Node(variable:Symbol("a", .Function))
+    let a = Node(constant:Symbol("a", .Function))
     let fX = Node(symbol:Symbol("f", .Function), nodes:[X])
     let fa = Node(symbol:Symbol("f", .Function), nodes:[a])
 
-    let fX_a = fX * [X:Node(variable:Symbol("a", .Function))]
+    let fX_a = fX * [X:Node(constant:Symbol("a", .Function))]
 
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
