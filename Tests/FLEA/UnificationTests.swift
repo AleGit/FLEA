@@ -31,12 +31,19 @@ public class UnificationTests : XCTestCase {
     check( Q.Z, Q.fXY, [Q.Z : Q.fXY],"\(#line) \(#file) \(nok)")
     check( Q.fXY, Q.Z, [Q.Z : Q.fXY],"\(#line) \(#file) \(nok)")
 
-    check( Q.fXY, Q.ffaaZ, [Q.X:Q.faa,Q.Y:Q.Z],"\(#line) \(#file) \(nok)")
-    check( Q.ffaaZ, Q.fXY, [Q.X:Q.faa,Q.Z:Q.Y],"\(#line) \(#file) \(nok)")
+    check( Q.fXY, Q.ffaaZ, [Q.X:Q.faa, Q.Y:Q.Z],"\(#line) \(#file) \(nok)")
+    check( Q.ffaaZ, Q.fXY, [Q.X:Q.faa, Q.Z:Q.Y],"\(#line) \(#file) \(nok)")
+
+    check( Q.fXX, Q.fYZ, [Q.X:Q.Z, Q.Y:Q.Z], "\(#line) \(#file) \(nok)")
+    check( Q.fYZ, Q.fXX, [Q.Y:Q.X, Q.Z:Q.X], "\(#line) \(#file) \(nok)")
+
+    check( Q.fXX, Q.fXZ, [Q.X:Q.Z], "\(#line) \(#file) \(nok)")
+    check( Q.fXZ, Q.fXX, [Q.Z:Q.X], "\(#line) \(#file) \(nok)")
   }
 
   func testNotUnifiable() {
     check( Q.a, Q.b, nil, "\(#line) \(#file) \(nok)")
+
     check( Q.X, Q.fXY, nil, "\(#line) \(#file) \(nok)")
     check( Q.Y, Q.fXY, nil, "\(#line) \(#file) \(nok)")
 

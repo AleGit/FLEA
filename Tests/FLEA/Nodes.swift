@@ -18,6 +18,11 @@ struct Q {
   static var c = Node(constant:"c")
 
   static var fXY = Node(symbol:"f",nodes:[X,Y])
+  static var fXZ = fXY * [Y:Z]
+  static var fYZ = fXZ * [X:Y]
+  static var fXX = fXY * X
+
+
   static var gXYZ = Node(symbol:"g",nodes:[X,Y,Z])
   static var hX = Node(symbol:"h",nodes:[X])
 

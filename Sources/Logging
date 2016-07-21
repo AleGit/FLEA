@@ -1,0 +1,172 @@
+extension Nylog.LogLevel {
+    init(literal:String) {
+        switch literal.uppercased() {
+
+        case "0", "OFF":
+            self = .off
+        case "1", "FATAL":
+            self = .fatal
+        case "2", "ERROR":
+            self = .error
+        case "3", "WARN":
+            self = .warn
+        case "4", "INFO":
+            self = .info
+        case "5", "DEBUG":
+            self = .debug
+        case "6", "TRACE":
+            self = .trace
+        case "7", "ALL":
+            self = .all
+        default:
+            self = .error
+        }
+    }
+}
+
+struct Nylog {
+    enum LogLevel : Int {
+        case off = 0
+        case fatal = 1
+        case error = 2
+        case warn = 3
+        case info = 4
+        case debug = 5
+        case trace = 6
+        case all = 7
+    }
+
+    private static var index = 0
+
+    private static var zero = CFAbsoluteTimeGetCurrent()
+    private static var lastprint = zero
+    private static var logentries = [(LogLevel, String, CFTimeInterval?, CFAbsoluteTime)]()
+
+    private static var logprintinterval : CFTimeInterval = 0.0
+    private static var logloglevel:LogLevel = .info
+
+    private static func printconditional() {
+        guard logprintinterval > 0 && (CFAbsoluteTimeGetCurrent() - lastprint) > logprintinterval
+            else { return }
+
+
+        printparts()
+        lastprint = CFAbsoluteTimeGetCurrent()
+
+    }
+
+    static func reset(_ printinterval:CFTimeInterval = 0.0, loglevel:LogLevel = .info) {
+        logentries.removeAll()
+        index = 0
+        zero = CFAbsoluteTimeGetCurrent()
+
+        lastprint = zero
+        logprintinterval = printinterval
+        logloglevel = loglevel
+
+        let count = Process.arguments.count
+        log("\(Process.arguments[0])")
+        log("\(Process.arguments[1..<count])")
+    }
+
+
+    private static func printit(_ range:Range<Int>) {
+        for (level,key,duration,moment) in logentries[range] {
+            let prefix : String = "*\(level)>>> \(key) •••"
+            let suffix : String = "at \(moment.prettyTimeIntervalDescription)"
+
+            if let runtime = duration {
+                print(prefix,"runtime = \(runtime.prettyTimeIntervalDescription)",suffix)
+            } else {
+                print(prefix,suffix)
+            }
+        }
+    }
+
+    private static func printit() {
+        printit(0..<logentries.count)
+    }
+
+    static func printparts() {
+        let range = index..<logentries.count
+        index = range.endIndex
+        printit(range)
+
+    }
+
+    private static func logappend(@autoclosure _ msg:()->String, loglevel:LogLevel, @autoclosure duration:()->CFTimeInterval?) {
+        assert(loglevel != .off)
+        assert(loglevel != .all)
+
+        // check if the log level of the application is higher than the log level of the message
+        if logloglevel.rawValue >= loglevel.rawValue {
+            logentries.append((loglevel, msg(), duration() , CFAbsoluteTimeGetCurrent()-zero))
+            printconditional()
+        }
+    }
+
+    static func measure<R>(@autoclosure _ msg:()->String, loglevel:LogLevel = .info, f:()->R) -> (R,CFTimeInterval) {
+        let start = CFAbsoluteTimeGetCurrent()
+        let result = f()
+        let end = CFAbsoluteTimeGetCurrent()
+
+        logappend(msg, loglevel:loglevel,duration:end-start)
+
+
+        return (result,end-start)
+    }
+
+    private static func log(@autoclosure _ msg:()->String, loglevel:LogLevel = .info) {
+        logappend(msg, loglevel:loglevel, duration:nil)
+    }
+
+
+
+    static func fatal(@autoclosure _ msg:()->String) {
+        log(msg, loglevel:.fatal)
+    }
+
+    static func error( _ msg:@autoclosure ()->String) {
+        log(msg, loglevel:.error)
+    }
+
+    static func warn(@autoclosure _ msg:()->String) {
+        log(msg, loglevel:.warn)
+    }
+
+    static func info(@autoclosure _ msg:()->String) {
+        log(msg, loglevel:.info)
+    }
+
+    static func debug(@autoclosure _ msg:()->String) {
+        log(msg, loglevel:.debug)
+    }
+
+    static func trace(@autoclosure _ msg:()->String) {
+        log(msg, loglevel:.trace)
+    }
+}
+
+func measure<R>(_ f:()->R) -> (R, CFAbsoluteTime){
+    let start = CFAbsoluteTimeGetCurrent()
+    let result = f()
+    let end = CFAbsoluteTimeGetCurrent()
+
+    return (result, end-start)
+}
+
+func doitif(@autoclosure _ condition: ()->Bool, action:()->Void) {
+    if condition() {
+        action()
+    }
+}
+
+func errorNumberAndDescription() -> (Int32,String) {
+    let errorNumber = errno
+    let cstring = strerror(errorNumber) // will always return a valid c string.
+    guard let errorString = String(validatingUTF8: cstring!) else {
+        let message = "Invalid Error Number: \(errorNumber) (this should be impossible)"
+        return (errorNumber,message)
+    }
+    return (errorNumber,errorString)
+}

@@ -2,9 +2,23 @@ import XCTest
 
 @testable import FLEA
 
-private typealias Node = Q.SmartNode
+private final class SmartNode : FLEA.SmartNode {
+  static var allNodes = WeakSet<SmartNode>()
 
-/// Test the accumulation of nodes in Q.SmartNode.allNodes.
+  var symbol = ""
+  var nodes : [SmartNode]? = nil
+
+  lazy var hashValue : Int = self.defaultHashValue
+  lazy var description : String = self.defaultDescription
+
+  deinit {
+    print("\(#function) \(self)")
+  }
+}
+
+private typealias Node = SmartNode
+
+/// Test the accumulation of nodes in SmartNode.allNodes.
 /// Nodes MUST NOT accumulate between tests.
 public class SmartNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
@@ -28,8 +42,11 @@ public class SmartNodeTests : XCTestCase {
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
+
     let count = Node.allNodes.count
     XCTAssertEqual(count,4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
+
+
   }
 
   /// accumulate four distict nodes
@@ -45,15 +62,12 @@ public class SmartNodeTests : XCTestCase {
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
+
     let count = Node.allNodes.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
+
+
+
   }
-
-
-
-
-
-
-
 }

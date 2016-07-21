@@ -2,14 +2,26 @@
 
 
 extension Node {
-  /// Default calculation for a consistent hash value,
+  /// Simple calculation for a consistent hash value,
   /// (i.e. equal nodes have an eqqul hash value)
   /// O(n)
-  var defaultHashValue : Int {
+  var simpleHashValue : Int {
     guard let nodes = self.nodes else {
       return self.symbol.hashValue
     }
     return nodes.reduce(self.symbol.hashValue) { ($0 &* 2) &+ $1.hashValue }
+  }
+
+  /// Default calculation for a consistent hash value,
+  /// (i.e. equal nodes have an eqqul hash value)
+  /// O(n)
+  var defaultHashValue: Int {
+    guard let nodes = self.nodes else {
+      return self.symbol.hashValue
+    }
+    return nodes.reduce(5381 &+ self.symbol.hashValue) {
+      ($0 << 5) &+ $0 &+ $1.hashValue
+    }
   }
 
   /// Default hashValue for all Nodes without own implementation.

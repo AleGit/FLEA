@@ -103,6 +103,5 @@ extension Dictionary where Key:Node, Value:Node {
   var description : String {
     let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
     return "{\(pairs)}"
-
   }
 }

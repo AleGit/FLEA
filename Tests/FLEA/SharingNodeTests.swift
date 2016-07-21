@@ -2,7 +2,21 @@ import XCTest
 
 @testable import FLEA
 
-private typealias Node = Q.SharingNode
+private final class SharingNode : FLEA.SharingNode {
+  static var allNodes = Set<SharingNode>()
+
+  var symbol = ""
+  var nodes : [SharingNode]? = nil
+
+  lazy var hashValue : Int = self.defaultHashValue
+  lazy var description : String = self.defaultDescription
+
+  deinit {
+    print("\(#function) \(self)")
+  }
+}
+
+private typealias Node = SharingNode
 
 /// Test the accumulation of nodes in Q.SharingNode.allNodes.
 /// Nodes MAY accumulate between tests.
