@@ -37,10 +37,16 @@ public class SubstitutionTests : XCTestCase {
     let substitution : Substitution = [Q.X : Q.Y]
 
     XCTAssertEqual(Q.Y, Q.X * substitution)
+  }
 
+  func testInstantiator() {
+    // print(FLEA.Substitution.dynamicType)
+    let X_Y : FLEA.Instantiator = [Q.X : Q.Y]
+    let Y_X: FLEA.Instantiator = [Q.Y : Q.X]
 
+    let i1 = X_Y * Y_X
+    let i2 = Y_X * X_Y
 
-    print(Q.X_a.makeIterator().dynamicType)
-
+    print(i1,i2)
   }
 }
