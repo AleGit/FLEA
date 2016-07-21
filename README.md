@@ -31,7 +31,7 @@ Axioms		Documents	Generators	Problems	README		Scripts		TPTP2X
 This will enable the unit tests to find problems and axioms.
 (Alternatively you can set the environment variable `TPTP_ROOT`
 to the full path to the unpacked `TPTP-v6.4.0` directory.)
-- Clone and build [FLEA](https://github.com/AleGit/FLEA):
+- Clone, build and run [FLEA](https://github.com/AleGit/FLEA) tests:
 ```
 $ git clone https://github.com/AleGit/FLEA
 $ cd FLEA
@@ -44,6 +44,3 @@ $ swift build -Xlinker -L/usr/local/lib             # Mac path to lib
 $ swift test                                        # run all tests
 ```
 The first (failing) `swift build` is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
-
-See [FleaBite](https://github.com/AleGit/FleaBite) for an
-executable with a list of nice demos.
