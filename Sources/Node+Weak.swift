@@ -1,7 +1,7 @@
 
 protocol SmartNode : class, Node {
 
-  static var allNodes : WeakCollection<Self> { get set }
+  static var allNodes : WeakSet<Self> { get set }
 }
 
 extension SmartNode {

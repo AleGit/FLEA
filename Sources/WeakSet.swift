@@ -13,7 +13,7 @@ private struct WeakEntry<T where T: AnyObject, T: Hashable, T:CustomStringConver
 }
 
 /// Weak, unordered collection of objects.
-struct WeakCollection<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
+struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     private var contents = [Int: [WeakEntry<T>]]()
 
     /// Add an element (and get it's substitution).

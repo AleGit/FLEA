@@ -36,7 +36,7 @@ struct Q {
 extension Q {
 
   final class SmartNode : FLEA.SmartNode {
-    static var allNodes = WeakCollection<SmartNode>()
+    static var allNodes = WeakSet<SmartNode>()
 
     var symbol = ""
     var nodes : [SmartNode]? = nil

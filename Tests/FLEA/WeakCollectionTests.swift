@@ -4,9 +4,9 @@ import XCTest
 
 private typealias Node = SmartNode
 
-public class WeakCollectionTests : XCTestCase {
+public class WeakSetTests : XCTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (WeakCollectionTests) -> () throws -> Void)]  {
+  static var allTests : [(String, (WeakSetTests) -> () throws -> Void)]  {
     return [
       ("testWeakStringCollection", testWeakStringCollection)
     ]
@@ -14,7 +14,7 @@ public class WeakCollectionTests : XCTestCase {
 
   func testWeakStringCollection() {
     // create a set with weak references
-    var collection = WeakCollection<Stringly>()
+    var collection = WeakSet<Stringly>()
 
     var s : Stringly? = "s"
     var t : Stringly? = "t"
