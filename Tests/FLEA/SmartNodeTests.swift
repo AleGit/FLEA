@@ -10,13 +10,13 @@ public class SmartNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SmartNodeTests) -> () throws -> Void)]  {
     return [
-      ("testSmartNodeEqualityX", testSmartNodeEqualityX),
-      ("testSmartNodeEqualityY", testSmartNodeEqualityY)
+      ("testEqualityX", testEqualityX),
+      ("testEqualityY", testEqualityY)
     ]
   }
 
   /// accumulate four distict nodes
-  func testSmartNodeEqualityX() {
+  func testEqualityX() {
 
     let X = Node(variable:"X")
     let a = Node(constant:"a")
@@ -33,7 +33,7 @@ public class SmartNodeTests : XCTestCase {
   }
 
   /// accumulate four distict nodes
-  func testSmartNodeEqualityY() {
+  func testEqualityY() {
 
     let X = Node(variable:"Y")
     let a = Node(constant:"a")

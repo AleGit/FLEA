@@ -10,13 +10,13 @@ public class SharingNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SharingNodeTests) -> () throws -> Void)]  {
     return [
-      ("testSharingNodeEqualityX", testSharingNodeEqualityX),
-      ("testSharingNodeEqualityY", testSharingNodeEqualityY)
+      ("testEqualityX", testEqualityX),
+      ("testEqualityY", testEqualityY)
     ]
   }
 
   /// accumulate additional four distict nodes
-  func testSharingNodeEqualityX() {
+  func testEqualityX() {
 
     let X = Node(variable:"X")
     let a = Node(constant:"a")
@@ -39,7 +39,7 @@ public class SharingNodeTests : XCTestCase {
   }
 
   /// accumulate additional four distict nodes
-  func testSharingNodeEqualityY() {
+  func testEqualityY() {
 
     let X = Node(variable:"Y")
     let a = Node(constant:"a")
