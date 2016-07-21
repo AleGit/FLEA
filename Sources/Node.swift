@@ -19,35 +19,12 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
   static func symbol(of node:TreeNodeRef) -> Symbol
 }
 
-/// A sharing node is a specialized node where
-/// a collection of all created nodes is held.
-/// Unique instances of nodes are shared between (sub)trees.
-/// Sharing is suitable for immutable reference types.
-protocol SharingNode : class, Node {
-
-  static var allNodes : Set<Self> { get set }
-}
-
 extension Node {
   /// By default nodes are not shared between trees,
   /// e.g. three instances of variable `X` in `p(X,f(X,X))`
   /// This is suitable for value types.
   static func share(node:Self) -> Self {
     return node
-  }
-}
-
-extension SharingNode {
-  /// By default sharing nodes are shared between trees,
-  /// e.g. one unique instance of variable `X` in `p(X,f(X,X))`.
-  static func share(node:Self) -> Self {
-    if let index = allNodes.index(of:node) {
-      return allNodes[index]
-    }
-    else {
-      allNodes.insert(node)
-      return node
-    }
   }
 }
 
