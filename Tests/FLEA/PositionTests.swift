@@ -9,15 +9,27 @@ public class PositionTests : XCTestCase {
     ]
   }
 
-  func check<N:FLEA.Node>(_ t:N, _ expected:[Position], _ label:String) {
-    let actual = t.positions
-    XCTAssertEqual(actual,expected,"\(t).positions \(nok) \(label)")
+  func check<N:FLEA.Node>(
+    _ term:N,
+    _ expected:[Position],
+    _ message:String = "",
+    _ file: String = #file,
+    _ function : String = #function,
+    _ line : Int = #line
+  ) {
+    let actual = term.positions
+    XCTAssertEqual(actual,expected,"\n\(nok):\(line) \(term).positions = \(actual) ≠ \(expected)")
   }
 
   func testBasics() {
     check(Q.X, [ε], "\(#line)")
     check(Q.fXY, [ε,[0],[1]], "\(#line)")
 
+    check(Q.fXY, [ε,[0],[1]], "\(#line)")
+
+
+    let a = [1,5,6]
+    print (a, a.dynamicType)
 
   }
 }
