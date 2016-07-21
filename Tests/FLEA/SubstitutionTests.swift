@@ -31,4 +31,16 @@ public class SubstitutionTests : XCTestCase {
 
     XCTAssertEqual(XYZ_abc,rcombined,"\(XYZ_abc) ≠ \(rcombined)")
   }
+
+  func testDictionaryLiteralConvetible() {
+    typealias Substitution = FLEA.Instantiator
+    let substitution : Substitution = [Q.X : Q.Y]
+
+    XCTAssertEqual(Q.Y, Q.X * substitution)
+
+
+
+    print(Q.X_a.makeIterator().dynamicType)
+
+  }
 }
