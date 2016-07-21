@@ -22,14 +22,17 @@ public class PositionTests : XCTestCase {
   }
 
   func testBasics() {
-    check(Q.X, [ε], "\(#line)")
-    check(Q.fXY, [ε,[0],[1]], "\(#line)")
+    check(Q.X, [ε])
+    check(Q.fXY, [ε,[0],[1]])
+    check(Q.gXYZ, [ε,[0],[1],[2]])
+    check(Q.hX, [ε,[0]])
+    check(Q.ffaaZ, [ε,[0],[0,0],[0,1],[1]])
 
-    check(Q.fXY, [ε,[0],[1]], "\(#line)")
-
-
-    let a = [1,5,6]
-    print (a, a.dynamicType)
+    XCTAssertEqual(Q.ffaaZ[ε],Q.ffaaZ)
+    XCTAssertEqual(Q.ffaaZ[[0]],Q.faa)
+    XCTAssertEqual(Q.ffaaZ[[0,0]],Q.a)
+    XCTAssertEqual(Q.ffaaZ[[0,1]],Q.a)
+    XCTAssertEqual(Q.ffaaZ[[1]],Q.Z)
 
   }
 }
