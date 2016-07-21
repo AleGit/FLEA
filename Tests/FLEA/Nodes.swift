@@ -8,7 +8,7 @@ let err = "⛔️ "
 
 struct Q {
 
-  typealias Node = SmartNode
+  typealias Node = Tptp.SmartNode
 
   static var X = Node(variable:"X")
   static var Y = Node(variable:"Y")

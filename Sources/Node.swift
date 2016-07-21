@@ -55,3 +55,19 @@ extension Node {
     self.init(symbol:symbol, nodes: nodes?.map ({ $0 }))
   }
 }
+
+extension Node where Symbol == Tptp.Symbol {
+  init(variable:String) {
+    self.init(variable:Tptp.Symbol(variable,.Variable))
+  }
+  init(constant:String) {
+    self.init(constant:Tptp.Symbol(constant,.Function))
+  }
+  init(symbol:String, nodes:[Self]?) {
+    guard let nodes = nodes else {
+      self.init(variable:symbol)
+      return 
+    }
+    self.init(symbol:Tptp.Symbol(symbol,.Function), nodes:nodes)
+  }
+}
