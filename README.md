@@ -1,5 +1,7 @@
-# FLEA
-A **F***irst* *order* **L***ogic* w*ith* **E***quality* *theorem* **A***ttester* library still in development.
+# FLEA *library*
+**F** irst order **L** ogic with **E** quality theorem **A** ttester
+
+- *library still in development*
 
 ### Platforms:
 - Mac (OS X El Capitan, macOS Sierra)
@@ -16,6 +18,14 @@ Yices 2.4.2
 ```
 $ swift -version
 Apple Swift version 3.0 ...
+$ xcode-select -pxcode-select -p
+/Applications/Xcode-beta.app/Contents/Developer
+```
+- Download package [TPTP-v6.i.j.tgz](http://www.cs.miami.edu/~tptp/) from http://www.cs.miami.edu/~tptp/, unpack it,
+create a symbolic in your home directory, and check.
+```
+ls ~/TPTP
+Axioms		Documents	Generators	Problems	README		Scripts		TPTP2X
 ```
 - Clone and build [FLEA](https://github.com/AleGit/FLEA):
 ```
