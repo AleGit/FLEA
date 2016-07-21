@@ -2,10 +2,11 @@
 
 struct Tptp {
 
+  typealias S = String
   typealias Node = SmartNode  // choose an implementation
 
   final class SimpleNode : FLEA.Node {
-    var symbol = Tptp.Symbol("n/a",.Undefined)
+    var symbol = S.empty
     var nodes : [Tptp.SimpleNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -17,7 +18,7 @@ struct Tptp {
   final class SharingNode : FLEA.SharingNode {
     static var allNodes = Set<Tptp.SharingNode>()
 
-    var symbol = Tptp.Symbol("",.Undefined)
+    var symbol = S.empty
     var nodes : [Tptp.SharingNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -30,7 +31,7 @@ struct Tptp {
   final class SmartNode : FLEA.SmartNode {
     static var allNodes = WeakSet<Tptp.SmartNode>()
 
-    var symbol = Tptp.Symbol("",.Undefined)
+    var symbol = S.empty
     var nodes : [Tptp.SmartNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue

@@ -3,9 +3,11 @@ import XCTest
 @testable import FLEA
 
 private final class SmartNode : FLEA.SmartNode {
+  typealias S = String
+
   static var allNodes = WeakSet<SmartNode>()
 
-  var symbol = ""
+  var symbol = S.empty
   var nodes : [SmartNode]? = nil
 
   lazy var hashValue : Int = self.defaultHashValue

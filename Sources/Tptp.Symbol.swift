@@ -1,5 +1,15 @@
 import CTptpParsing
 
+protocol Symbolable : Hashable {
+  static var empty: Self { get }
+}
+
+extension String : Symbolable {
+  static var empty : String { return "" }
+}
+
+
+
 extension Tptp {
   enum SymbolType {
     case Undefined
@@ -43,6 +53,12 @@ extension Tptp {
       self.symbol = symbol
       self.type = type
     }
+  }
+}
+
+extension Tptp.Symbol : Symbolable {
+  static var empty : Tptp.Symbol {
+    return Tptp.Symbol("",.Undefined)
   }
 }
 

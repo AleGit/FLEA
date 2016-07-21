@@ -5,7 +5,7 @@
 /// with the constraints that no reference is duplicated, and none points to the root.
 /// <a href="https://en.wikipedia.org/wiki/Tree_(data_structure)">wikipedia</a>
 protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
-  associatedtype Symbol : Hashable
+  associatedtype Symbol : Symbolable
 
   /// The Value of the node.
   var symbol : Symbol { get set }
@@ -66,7 +66,7 @@ extension Node where Symbol == Tptp.Symbol {
   init(symbol:String, nodes:[Self]?) {
     guard let nodes = nodes else {
       self.init(variable:symbol)
-      return 
+      return
     }
     self.init(symbol:Tptp.Symbol(symbol,.Function), nodes:nodes)
   }

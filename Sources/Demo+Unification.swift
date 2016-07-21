@@ -6,14 +6,14 @@ extension Demo {
 
       // let nodes : [Tptp.Node] = demoCreateNodes()
 
-      let X = Tptp.Node(variable: Tptp.Symbol("X",.Variable))
-      let Y = Tptp.Node(variable: Tptp.Symbol("Y",.Variable))
-      let Z = Tptp.Node(variable: Tptp.Symbol("Z",.Variable))
+      let X = Tptp.Node(variable: "X")
+      let Y = Tptp.Node(variable: "Y")
+      let Z = Tptp.Node(variable: "Z")
 
-      let a = Tptp.Node(constant: Tptp.Symbol("a",.Function))
-      let b = Tptp.Node(constant: Tptp.Symbol("a",.Function))
+      let a = Tptp.Node(constant: "a")
+      let b = Tptp.Node(constant: "a")
 
-      let fXY = Tptp.Node(symbol: Tptp.Symbol("f",.Function), nodes:[X,Y])
+      let fXY = Tptp.Node(symbol: "f", nodes:[X,Y])
 
       let fYX = fXY * [X:Y, Y:X]
       let fYZ = fXY * [X:Y, Y:Z]

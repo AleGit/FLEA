@@ -2,10 +2,13 @@ import XCTest
 
 @testable import FLEA
 
+
 private final class SharingNode : FLEA.SharingNode {
+  typealias S = String
+
   static var allNodes = Set<SharingNode>()
 
-  var symbol = ""
+  var symbol = S.empty
   var nodes : [SharingNode]? = nil
 
   lazy var hashValue : Int = self.defaultHashValue
