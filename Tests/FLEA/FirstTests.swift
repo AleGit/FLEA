@@ -45,25 +45,6 @@ public class FirstTests : XCTestCase {
     "TPTP root path '\(tptpRoot) does not end with 'TPTP'")
   }
 
-  func testNodeEquality() {
-    typealias Node = FLEA.Tptp.Node
-    typealias Symbol = FLEA.Tptp.Symbol
-
-    let X = Node(variable:Symbol("X", .Variable))
-    let a = Node(constant:Symbol("a", .Function))
-    let fX = Node(symbol:Symbol("f", .Function), nodes:[X])
-    let fa = Node(symbol:Symbol("f", .Function), nodes:[a])
-
-    let fX_a = fX * [X:Node(constant:Symbol("a", .Function))]
-
-    XCTAssertEqual(fX_a,fa)
-    XCTAssertTrue(fX_a == fa)
-    XCTAssertTrue(fX_a === fa)
-    XCTAssertEqual(Node.allNodes.count,4)
-
-    print(Node.allNodes)
-  }
-
 
 
 

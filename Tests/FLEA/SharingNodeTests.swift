@@ -2,8 +2,10 @@ import XCTest
 
 @testable import FLEA
 
-private typealias Node = Nodes.SharingNode
+private typealias Node = Q.SharingNode
 
+/// Test the accumulation of nodes in Q.SharingNode.allNodes.
+/// Nodes MAY accumulate between tests.
 public class SharingNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SharingNodeTests) -> () throws -> Void)]  {
@@ -13,6 +15,7 @@ public class SharingNodeTests : XCTestCase {
     ]
   }
 
+  /// accumulate additional four distict nodes
   func testSharingNodeEqualityX() {
 
     let X = Node(variable:"X")
@@ -35,6 +38,7 @@ public class SharingNodeTests : XCTestCase {
 
   }
 
+  /// accumulate additional four distict nodes
   func testSharingNodeEqualityY() {
 
     let X = Node(variable:"Y")

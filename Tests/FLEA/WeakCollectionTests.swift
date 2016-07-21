@@ -13,28 +13,35 @@ public class WeakCollectionTests : XCTestCase {
   }
 
   func testWeakStringCollection() {
+    // create a set with weak references
     var collection = WeakCollection<Stringly>()
 
     var s : Stringly? = "s"
     var t : Stringly? = "t"
-    var x : Stringly? = "s"
+    var x : Stringly? = "s"      // a reference to s
 
-    XCTAssertEqual(s,x)
-    XCTAssertFalse(s! === x!)
+    XCTAssertEqual(s, x)        // s and x are equal
+    XCTAssertFalse(s! === x!)   // but distinct instances
+
+    // the set is empty
     XCTAssertEqual(collection.count, 0)
 
+    // add three objects to the set
      s = collection.insert(newElement:s!)
      t = collection.insert(newElement:t!)
      x = collection.insert(newElement:x!)
+
+    // just two objects are in the set
     XCTAssertEqual(collection.count, 2)
 
-    XCTAssertEqual(s,x)
-    XCTAssertTrue(s! === x!)
+    XCTAssertEqual(s, x)        // s and x are equal
+    XCTAssertTrue(s! === x!)    // and the same
 
-    s = nil
-    t = nil
+    s = nil // discard reference to 's'
+    t = nil // discard reference to 't'
     XCTAssertEqual(collection.count, 1)
-    x = nil
+
+    x = nil // discard last reference to 's'
     XCTAssertEqual(collection.count, 0)
   }
 }

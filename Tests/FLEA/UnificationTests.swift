@@ -26,19 +26,19 @@ public class UnificationTests : XCTestCase {
   }
 
   func testUnifiable() {
-    check( Nodes.X, Nodes.Y, [Nodes.X : Nodes.Y],"\(#line) \(#file) \(nok)")
+    check( Q.X, Q.Y, [Q.X : Q.Y],"\(#line) \(#file) \(nok)")
 
-    check( Nodes.Z, Nodes.fXY, [Nodes.Z : Nodes.fXY],"\(#line) \(#file) \(nok)")
-    check( Nodes.fXY, Nodes.Z, [Nodes.Z : Nodes.fXY],"\(#line) \(#file) \(nok)")
+    check( Q.Z, Q.fXY, [Q.Z : Q.fXY],"\(#line) \(#file) \(nok)")
+    check( Q.fXY, Q.Z, [Q.Z : Q.fXY],"\(#line) \(#file) \(nok)")
 
-    check( Nodes.fXY, Nodes.ffaaZ, [Nodes.X:Nodes.faa,Nodes.Y:Nodes.Z],"\(#line) \(#file) \(nok)")
-    check( Nodes.ffaaZ, Nodes.fXY, [Nodes.X:Nodes.faa,Nodes.Z:Nodes.Y],"\(#line) \(#file) \(nok)")
+    check( Q.fXY, Q.ffaaZ, [Q.X:Q.faa,Q.Y:Q.Z],"\(#line) \(#file) \(nok)")
+    check( Q.ffaaZ, Q.fXY, [Q.X:Q.faa,Q.Z:Q.Y],"\(#line) \(#file) \(nok)")
   }
 
   func testNotUnifiable() {
-    check( Nodes.a, Nodes.b, nil, "\(#line) \(#file) \(nok)")
-    check( Nodes.X, Nodes.fXY, nil, "\(#line) \(#file) \(nok)")
-    check( Nodes.Y, Nodes.fXY, nil, "\(#line) \(#file) \(nok)")
+    check( Q.a, Q.b, nil, "\(#line) \(#file) \(nok)")
+    check( Q.X, Q.fXY, nil, "\(#line) \(#file) \(nok)")
+    check( Q.Y, Q.fXY, nil, "\(#line) \(#file) \(nok)")
 
   }
 }

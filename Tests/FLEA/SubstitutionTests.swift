@@ -12,10 +12,10 @@ public class SubstitutionTests : XCTestCase {
   func testSubstitutionBasics() {
     XCTAssertTrue(true)
 
-    let X_a = [Nodes.X : Nodes.a]
-    let Y_b = [Nodes.Y: Nodes.b]
-    let Z_c = [Nodes.Z : Nodes.c]
-    let XYZ_abc = [Nodes.X : Nodes.a, Nodes.Y: Nodes.b, Nodes.Z : Nodes.c]
+    let X_a = [Q.X : Q.a]
+    let Y_b = [Q.Y: Q.b]
+    let Z_c = [Q.Z : Q.c]
+    let XYZ_abc = [Q.X : Q.a, Q.Y: Q.b, Q.Z : Q.c]
 
     guard let lc = (X_a * Y_b), let lcombined = lc * Z_c else {
       XCTFail("\(X_a) * \(Y_b) * \(Z_c) was not derived.")
