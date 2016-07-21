@@ -1,7 +1,8 @@
-# FLEA *library*
+# FLEA *library* & *tests*
 **F** irst order **L** ogic with **E** quality theorem **A** ttester
 
 - *library still in development*
+- *see [FleaBite](https://AleGit/FleaBite) for an executable and some demos.*
 
 ### Platforms:
 - Mac (OS X El Capitan, macOS Sierra)
@@ -21,12 +22,15 @@ Apple Swift version 3.0 ...
 $ xcode-select -pxcode-select -p
 /Applications/Xcode-beta.app/Contents/Developer
 ```
-- Download package [TPTP-v6.i.j.tgz](http://www.cs.miami.edu/~tptp/) from http://www.cs.miami.edu/~tptp/, unpack it,
-create a symbolic in your home directory, and check.
+- Download and unpack package [TPTP-v6.4.0.tgz](http://www.cs.miami.edu/~tptp/) (or newer).
+In your home directory create a symbolic to the unpacked `TPTP-v6.4.0` directory and check.
 ```
 ls ~/TPTP
 Axioms		Documents	Generators	Problems	README		Scripts		TPTP2X
 ```
+This will enable the unit tests to find problems and axioms.
+(Alternatively you can set the environment variable `TPTP_ROOT`
+to the full path to the unpacked `TPTP-v6.4.0` directory.)
 - Clone and build [FLEA](https://github.com/AleGit/FLEA):
 ```
 $ git clone https://github.com/AleGit/FLEA
