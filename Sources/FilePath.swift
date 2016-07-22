@@ -76,7 +76,7 @@ extension FilePath {
 
     // process option --tptp_root has the highest priority
     if let option = Process.option(name:"--tptp_root") {
-      if let path = option.params.first(where:{$0.isAccessibleDirectory}) {
+      if let path = option.settings.first(where:{$0.isAccessibleDirectory}) {
         return path
       }
       else {
@@ -84,22 +84,26 @@ extension FilePath {
       }
     }
 
-
     // try to read tptp root from environment
     if let path = Process.Environment.getValue(for:"TPTP_ROOT")
     where path.isAccessibleDirectory {
       return path
     }
 
-    // home directory has the lowest priority
+    // home directory has a low priority
     if let path = FilePath.home?.appending("/TPTP")
+    where path.isAccessibleDirectory {
+      return path
+    }
+
+    // ~/Downloads has a very low priority
+    if let path = FilePath.home?.appending("/Downloads/TPTP")
     where path.isAccessibleDirectory {
       return path
     }
 
     // * no tptp root directory available
     return nil
-
   }
 
   var fileSize : Int? {
@@ -129,7 +133,7 @@ extension FilePath {
       return false
     }
     closedir(d)
-    return true
+    return self.isAccessible
   }
 
 

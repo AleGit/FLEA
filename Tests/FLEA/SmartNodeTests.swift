@@ -3,7 +3,7 @@ import XCTest
 @testable import FLEA
 
 private final class SmartNode : FLEA.SmartNode {
-  typealias S = String
+  typealias S = String // choose the symbol
 
   static var allNodes = WeakSet<SmartNode>()
 

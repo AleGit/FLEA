@@ -4,10 +4,8 @@
 
 let ok = "✅ "
 let nok = "❌ "
-let err = "⛔️ "
 
 struct Q {
-
   typealias Node = Tptp.SmartNode
 
   static var X = Node(variable:"X")
@@ -21,7 +19,6 @@ struct Q {
   static var fXZ = fXY * [Y:Z]
   static var fYZ = fXZ * [X:Y]
   static var fXX = fXY * X
-
 
   static var gXYZ = Node(symbol:"g",nodes:[X,Y,Z])
   static var hX = Node(symbol:"h",nodes:[X])

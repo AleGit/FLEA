@@ -48,3 +48,10 @@ func measure<R>(f:()->R) -> (R, UtileTimes) {
   let end = UtileTimesGetCurrent()
   return (result, end - start)
 }
+
+func mymeasure<R>(f:()->R) -> (R, UtileTimes) {
+  let start = UtileTimesGetCurrent()
+  let result = f()
+  let end = UtileTimesGetCurrent()
+  return (result, end - start)
+}
