@@ -5,8 +5,16 @@ import XCTest
 public class StringPathTests : XCTestCase {
   static var allTests : [(String, (StringPathTests) -> () throws -> Void)] {
     return [
-    ("testBasics", testBasics)
+    ("testBasics", testBasics),
+    ("testStrings", testStrings)
     ]
+  }
+
+  func testStrings() {
+    let s = "//path/to/nowhere/"
+    let cs = s.components(separatedBy:"/")
+    XCTAssertEqual(cs,["","","path","to","nowhere",""])
+
   }
 
 
