@@ -33,8 +33,11 @@ public class StringPathTests : XCTestCase {
 
     print(axiom.ax)
 
+    #if os(Mac)
+
     var outputName = "Helo"
     var array = [String]()
+
 
     print(FilePath.tptpRoot?.completePath(
       into:&outputName,
@@ -43,6 +46,7 @@ public class StringPathTests : XCTestCase {
     ))
     print(outputName)
     print(array)
+    #endif
 
 
   }

@@ -18,7 +18,9 @@ public class PositionTests : XCTestCase {
     _ line : Int = #line
   ) {
     let actual = term.positions
+    #if os(Mac)
     XCTAssertEqual(actual,expected,"\n\(nok):\(line) \(term).positions = \(actual) ≠ \(expected)")
+    #endif
   }
 
   func testBasics() {
