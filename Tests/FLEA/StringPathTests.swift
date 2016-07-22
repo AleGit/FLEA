@@ -11,9 +11,38 @@ public class StringPathTests : XCTestCase {
   }
 
   func testStrings() {
-    let s = "//path/to/nowhere/"
-    let cs = s.components(separatedBy:"/")
-    XCTAssertEqual(cs,["","","path","to","nowhere",""])
+    let s = "//Path/To/NÖWHERE/"
+    let cs = ["","","Path","To","NÖWHERE",""]
+
+    XCTAssertEqual(cs, s.components(separatedBy:"/"),nok)
+
+    XCTAssertEqual(s.capitalized,"//Path/To/Nöwhere/",nok)
+    XCTAssertEqual(s.uppercased(),"//PATH/TO/NÖWHERE/",nok)
+    XCTAssertEqual(s.lowercased(),"//path/to/nöwhere/",nok)
+
+    print(s.startIndex)
+    print(s.endIndex)
+    print(s.hash)
+    print(s.hashValue)
+
+    print(s.isEmpty)
+
+        print(s.characters)
+    print(s.smallestEncoding)
+print(s.fastestEncoding)
+
+print(String.availableStringEncodings)
+
+let a = "a/path/to/where/"
+let b = "a/path/zu/whom/"
+
+let c = b.commonPrefix(with:a)
+
+XCTAssertEqual(c,"a/path/")
+XCTAssertTrue(a.hasPrefix(c))
+
+XCTAssertTrue(b.hasPrefix(c))
+
 
   }
 
