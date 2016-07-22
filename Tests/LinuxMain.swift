@@ -8,7 +8,7 @@ XCTMain([
   testCase(SmartNodeTests.allTests),
   testCase(StringPathTests.allTests),
   testCase(SubstitutionTests.allTests),
-  testCase(TptpFile.allTests),
+  testCase(TptpFileTests.allTests),
   testCase(UnificationTests.allTests),
   testCase(WeakSetTests.allTests)
   ])

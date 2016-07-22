@@ -33,7 +33,7 @@ public class StringPathTests : XCTestCase {
 
     print(axiom.ax)
 
-    #if os(Mac)
+    #if os(OSX)
 
     var outputName = "Helo"
     var array = [String]()
