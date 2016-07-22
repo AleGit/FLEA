@@ -3,54 +3,19 @@ import Foundation
 
 typealias FilePath = String
 
-extension String {
-  // func suffix(after c:Character) -> String? {
-  //   guard let index = self.characters.index(of:c) else { return nil }
-  //   let start = self.characters.index(after:index)
-  //
-  //   let cs = self.characters.suffix(from:start)
-  //   return String(cs)
-  // }
-
-  func presuffix(separator:String) -> (String,String)? {
-    guard let range = self.range(of:separator) else {
-      return nil
-    }
-    let pre = self[self.startIndex..<range.lowerBound]
-    let suf = self[range.upperBound..<self.endIndex]
-
-    return (pre,suf)
+extension FilePath {
+  var pathComponents : [FilePath] {
+    return self.components(separatedBy:"/")
   }
 
-  func suffix(after:String) -> String? {
-    guard let (_,s) = presuffix(separator:after) else { return nil }
-    return s
-  }
-
-  func prefix(before:String) -> String? {
-    guard let (p,_) = presuffix(separator:before) else { return nil }
-    return p
-  }
-}
-
-extension String {
   ///
-  var lastPathElement : String {
-    guard let remainder = self.suffix(after:"/") else {
-      return self
-    }
-    return remainder.lastPathElement
+  var lastPathComponent : String {
+    return self.pathComponents.last ?? self
   }
 
   func appending(component:String) -> String {
-    switch (self.hasSuffix("/"), component.hasPrefix("/")) {
-      case (true,true):
-        return self + component.suffix(after:"/")!
-      case (false,false):
-        return "\(self)/\(component)"
-      default:
-        return self + component
-    }
+    let cs = self.pathComponents + component.pathComponents
+    return cs.joined(separator:"/")
   }
 
   /// find accessible path to problem file by problem name
@@ -67,7 +32,7 @@ extension String {
     // accept every accessible file with suffix '.p'
     if path.isAccessible { return path }
 
-    path = path.lastPathElement
+    path = path.lastPathComponent
     if path.isAccessible { return path }
 
     // insert three letter prefix (TPTP file structure convention),
@@ -79,7 +44,10 @@ extension String {
     if path.isAccessible { return path }
 
     path = "Problems".appending(component:path)
+    print(path)
     if path.isAccessible { return path }
+
+    print(FilePath.tptpRoot?.appending(component:path))
 
     if let absolutePath = (FilePath.tptpRoot)?.appending(component:path)
     where absolutePath.isAccessible {
@@ -89,6 +57,13 @@ extension String {
     return nil
   }
 
+  var problemsPrefix : String {
+    let separator = "Problems"
+    var cs = self.components(separatedBy:separator)
+    cs.removeLast()
+    return cs.joined(separator:separator)
+  }
+
   /// Find path to axiom
   func pathTo(axiom:String) -> FilePath? {
     if axiom.isAccessible { return axiom }
@@ -96,12 +71,12 @@ extension String {
     let path = self.hasSuffix(".ax") ? self : self.appending(".ax")
     if path.isAccessible { return path }
 
-    guard let (root,_) = self.presuffix(separator:"Problems") else { return axiom.ax }
+    let root = self.problemsPrefix
 
-    let relativePath = root.appending("Axioms").appending(axiom.lastPathElement)
+    let relativePath = root.appending("Axioms").appending(axiom.lastPathComponent)
     if relativePath.isAccessible { return relativePath }
 
-    if let absolutePath = FilePath.tptpRoot?.appending(component:axiom.lastPathElement)
+    if let absolutePath = FilePath.tptpRoot?.appending(component:axiom.lastPathComponent)
     where absolutePath.isAccessible { return absolutePath }
 
     return axiom.ax
@@ -114,7 +89,7 @@ extension String {
     var path = self.hasSuffix(".ax") ? self : self.appending(".ax")
     if path.isAccessible { return path }
 
-    path = path.lastPathElement
+    path = path.lastPathComponent
     if path.isAccessible { return path }
 
     path = "Axioms".appending(component:path)

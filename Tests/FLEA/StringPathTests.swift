@@ -2,8 +2,8 @@ import XCTest
 
 @testable import FLEA
 
-public class FilePathTests : XCTestCase {
-  static var allTests : [(String, (FilePathTests) -> () throws -> Void)] {
+public class StringPathTests : XCTestCase {
+  static var allTests : [(String, (StringPathTests) -> () throws -> Void)] {
     return [
     ("testBasics", testBasics)
     ]
@@ -23,7 +23,8 @@ public class FilePathTests : XCTestCase {
     let apath = ppath.pathTo(axiom:axiom) ?? nok
     let path = "Problems".pathTo(axiom:axiom) ?? nok
 
-    print("Problems".presuffix(separator:"Problems"))
+    print(ppath.problemsPrefix)
+    print(apath.problemsPrefix)
 
     print("\(problem) -> \(ppath)")
     print("\(axiom) -> \(apath)")

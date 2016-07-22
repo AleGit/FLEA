@@ -28,8 +28,6 @@ public class TptpFileTests : XCTestCase {
         return
       }
 
-      print(">>>>>>>>",path, path.presuffix(separator:"Problems/"))
-
       guard let file = Tptp.File(path:path) else {
         XCTFail("\(nok):\(line) \(path) could not be parsed.")
         return
