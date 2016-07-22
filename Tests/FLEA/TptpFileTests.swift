@@ -6,8 +6,10 @@ public class TptpFileTests : XCTestCase {
   static var allTests : [(String, (TptpFileTests) -> () throws -> Void)] {
     return [
     ("testNonFile", testNonFile),
-    ("testPuzFiles", testPuzFiles),
-    ("testHwvFiles", testHwvFiles),
+    ("testPuzFiles", testPUZ),
+    ("testHwvFiles", testHWV),
+
+    ("testHWV039f", testHWV039f),
     ]
   }
 
@@ -25,6 +27,8 @@ public class TptpFileTests : XCTestCase {
         XCTFail("\(nok):\(line) \(name).p not found.")
         return
       }
+
+      print(">>>>>>>>",path, path.presuffix(separator:"Problems/"))
 
       guard let file = Tptp.File(path:path) else {
         XCTFail("\(nok):\(line) \(path) could not be parsed.")
@@ -53,24 +57,24 @@ public class TptpFileTests : XCTestCase {
   }
 
   func testNonFile() {
-    let name = "PUZ001"
+    let name = "Problems/PUZ001"
     if let path = name.p {
       XCTFail("(nok) \(name).p \(path)")
     }
   }
 
-  func testPuzFiles() {
+  func testPUZ() {
     check("PUZ001-1", 12, 0.005)
-    check("PUZ001+1", 14, 0.005)
+    check("Problems/PUZ001+1", 14, 0.005)
   }
 
-  func testHwvFiles() {
-    check("HWV001-1", 42, 0.01)
+  func testHWV() {
+    check("HWV/HWV001-1", 42, 0.01)
     // check("HWV134-1", 2332428, 400.0) // debug build is slow
     // check("HWV134+1", 128975, 200.003)
   }
 
-  func testHWV039fof1() {
-    check("HWV039+1", 744, 0.1)
+  func testHWV039f() {
+    check("Problems/HWV/HWV039+1", 744, 0.1)
   }
 }

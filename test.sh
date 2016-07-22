@@ -1,5 +1,6 @@
 #!/bin/bash
 
+clear
 # swift build --clean
 swift build -Xlinker -L/usr/local/lib
 
