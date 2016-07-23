@@ -1,6 +1,4 @@
-
 /// 't * σ' returns the substitution of term t with σ.
-
 func *<N:Node>(t:N, σ:[N:N]) -> N {
     assert(σ.isSubstitution)
 
@@ -12,36 +10,14 @@ func *<N:Node>(t:N, σ:[N:N]) -> N {
     return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })
 }
 
-/// 't * s' returns the substitution of all variables in t with term s.
-func *<N:Node>(t:N, s:N) -> N {
-    guard let nodes = t.nodes else { return s } // a variable
-
-    return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
-}
-
-
-/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N.Symbol == String>(t:N) -> N {
-    return t * N(constant:"⊥")
-}
-
-/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
-    return t * N(constant:Tptp.Symbol("⊥",.Function))
-}
-
-func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
-    for (key,value) in lhs {
-        lhs[key] = value * rhs
-    }
-}
-
-// concationation of substitutions
+/// concationation of substitutions (specialized for Substitution)
 func *<T:Node>(lhs:[T:T], rhs:[T:T]) -> [T:T]? {
   var subs = [T:T]()
+
   for (key,value) in lhs {
     subs[key] = value * rhs
   }
+
   for (key,value) in rhs {
     if let term = subs[key] {
       // allready set
@@ -58,6 +34,29 @@ func *<T:Node>(lhs:[T:T], rhs:[T:T]) -> [T:T]? {
   }
   return subs
 }
+
+/// 't * s' returns the substitution of all variables in t with term s.
+func *<N:Node>(t:N, s:N) -> N {
+    guard let nodes = t.nodes else { return s } // a variable
+
+    return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
+}
+
+/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+postfix func ⊥<N:Node where N.Symbol == String>(t:N) -> N {
+    return t * N(constant:"⊥")
+}
+
+/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
+    return t * N(constant:Tptp.Symbol("⊥",.Function))
+}
+
+// func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
+//     for (key,value) in lhs {
+//         lhs[key] = value * rhs
+//     }
+// }
 
 extension Dictionary where Key:Node, Value:Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?

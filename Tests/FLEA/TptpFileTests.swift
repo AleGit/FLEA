@@ -63,7 +63,7 @@ public class TptpFileTests : XCTestCase {
 
   func testPUZ() {
     check("PUZ001-1", 12, 0.005)
-    check("Problems/PUZ001+1", 14, 0.005)
+    check("Problems/PUZ001+1", 14, 0.007)
   }
 
   func testHWV() {

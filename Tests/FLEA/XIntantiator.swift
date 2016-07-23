@@ -1,6 +1,7 @@
 @testable import FLEA
 
-struct Instantiator<N:Node> : Substitution, Equatable {
+final class Instantiator<N:Node> : Substitution, Equatable {
+// struct Instantiator<N:Node> : Substitution, Equatable {
   private(set) var storage = [N:N]()
 
   subscript(key:N) -> N? {
@@ -8,19 +9,19 @@ struct Instantiator<N:Node> : Substitution, Equatable {
     set { storage[key] = newValue }
   }
 
-  // convenience
+  convenience
   init(dictionaryLiteral elements: (N, N)...) {
     // print("\(#function):\(elements)")
-    // self.init()
+    self.init()
     for (key, value) in elements {
       self.storage[key] = value
     }
   }
 
-  // convenience
+  convenience
   init(dictionary: [N:N]) {
     // print("\(#function):\(dictionary)")
-    // self.init()
+    self.init()
     self.storage = dictionary
   }
 
@@ -33,7 +34,7 @@ struct Instantiator<N:Node> : Substitution, Equatable {
     return "{\(pairs)}"
   }
 
-  mutating
+  // mutating
   func clean() {
     let keys = storage.filter { $0.0 == $0.1 }.map { $0.0 }
     for key in keys {
