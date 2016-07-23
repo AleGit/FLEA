@@ -33,20 +33,21 @@ public class SubstitutionTests : XCTestCase {
   }
 
   func testDictionaryLiteralConvetible() {
-    typealias Substitution = FLEA.Instantiator
-    let substitution : Substitution = [Q.X : Q.Y]
+    let substitution = [Q.X : Q.Y] as Instantiator
 
     XCTAssertEqual(Q.Y, Q.X * substitution)
   }
 
   func testInstantiator() {
     // print(FLEA.Substitution.dynamicType)
-    let X_Y : FLEA.Instantiator = [Q.X : Q.Y]
-    let Y_X: FLEA.Instantiator = [Q.Y : Q.X]
+    let X_Y : Instantiator = [Q.X : Q.Y]
+    // let Y_X: Instantiator = [Q.Y : Q.X]
 
-    let i1 = X_Y * Y_X
-    let i2 = Y_X * X_Y
+    // let i1 = X_Y * Y_X
+    // let i2 = Y_X * X_Y
 
-    print(i1,i2)
+    let mgu : Instantiator? = Q.X =?= Q.Y
+    XCTAssertEqual("\(X_Y)","\(mgu!)",nok)
   }
+
 }

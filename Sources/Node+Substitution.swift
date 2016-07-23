@@ -36,6 +36,7 @@ func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
     }
 }
 
+// concationation of substitutions
 func *<T:Node>(lhs:[T:T], rhs:[T:T]) -> [T:T]? {
   var subs = [T:T]()
   for (key,value) in lhs {
