@@ -1,6 +1,6 @@
 @testable import FLEA
 
-final class Instantiator<N:Node> : Substitution {
+final class Instantiator<N:Node> : Substitution, Equatable {
   private(set) var storage = [N:N]()
 
   subscript(key:N) -> N? {

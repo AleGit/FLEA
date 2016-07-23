@@ -2,7 +2,6 @@
 
 protocol Substitution : DictionaryLiteralConvertible, Sequence,
 CustomStringConvertible
-// Equatable
 {
   associatedtype K : Hashable
   associatedtype V
@@ -34,6 +33,10 @@ extension Dictionary : Substitution {
 func *<N:Node,S:Substitution>(t:N, σ:S) -> N {
   return t
 }
+//
+// func ==<S:Substitution>(lhs:S, rhs:S) -> Bool {
+//   return false
+// }
 
 /// 't * σ' returns the substitution of term t with σ.
 func *<S:Substitution

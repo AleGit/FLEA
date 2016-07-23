@@ -57,9 +57,12 @@ extension FilePath {
     return nil
   }
 
+  /// '/a/path/to/Problems/folders' -> /a/path/to/
+  /// '/from/Problems/to/Problems/folders' -> /from/Problems/to/
   var problemsPrefix : String {
     let separator = "Problems"
     var cs = self.components(separatedBy:separator)
+
     cs.removeLast()
     return cs.joined(separator:separator)
   }

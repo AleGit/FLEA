@@ -10,8 +10,6 @@ public class SubstitutionTests : XCTestCase {
   }
 
   func testSubstitutionBasics() {
-    XCTAssertTrue(true)
-
     let X_a = [Q.X : Q.a]
     let Y_b = [Q.Y: Q.b]
     let Z_c = [Q.Z : Q.c]
@@ -31,23 +29,4 @@ public class SubstitutionTests : XCTestCase {
 
     XCTAssertEqual(XYZ_abc,rcombined,"\(XYZ_abc) ≠ \(rcombined)")
   }
-
-  func testDictionaryLiteralConvetible() {
-    let substitution = [Q.X : Q.Y] as Instantiator
-
-    XCTAssertEqual(Q.Y, Q.X * substitution)
-  }
-
-  func testInstantiator() {
-    // print(FLEA.Substitution.dynamicType)
-    let X_Y : Instantiator = [Q.X : Q.Y]
-    // let Y_X: Instantiator = [Q.Y : Q.X]
-
-    // let i1 = X_Y * Y_X
-    // let i2 = Y_X * X_Y
-
-    let mgu : Instantiator? = Q.X =?= Q.Y
-    XCTAssertEqual("\(X_Y)","\(mgu!)",nok)
-  }
-
 }
