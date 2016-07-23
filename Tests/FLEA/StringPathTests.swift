@@ -3,51 +3,62 @@ import XCTest
 @testable import FLEA
 
 public class StringPathTests : XCTestCase {
+
+
   static var allTests : [(String, (StringPathTests) -> () throws -> Void)] {
     return [
-    ("testBasics", testBasics),
-    ("testStrings", testStrings)
+    ("testStringBasics", testStringBasics),
+    ("testStringIndices", testStringIndices),
+    ("testStringRanges", testStringRanges),
+    ("testStringPaths", testStringPaths)
     ]
   }
 
-  func testStrings() {
-    let s = "//Path/To/NÖWHERE/"
-    let cs = ["","","Path","To","NÖWHERE",""]
+  let path = "//Pαth/To/NÖWHERE/"
+  let components = ["","","Pαth","To","NÖWHERE",""]
 
-    XCTAssertEqual(cs, s.components(separatedBy:"/"),nok)
+  /// test basic string methods to demonstrate usage
+  func testStringBasics() {
+    XCTAssertEqual(components, path.components(separatedBy:"/"),nok)
 
-    XCTAssertEqual(s.capitalized,"//Path/To/Nöwhere/",nok)
-    XCTAssertEqual(s.uppercased(),"//PATH/TO/NÖWHERE/",nok)
-    XCTAssertEqual(s.lowercased(),"//path/to/nöwhere/",nok)
+    XCTAssertEqual(path.capitalized,"//Pαth/To/Nöwhere/",nok)
+    XCTAssertEqual(path.uppercased(),"//PΑTH/TO/NÖWHERE/",nok)
+    XCTAssertEqual(path.lowercased(),"//pαth/to/nöwhere/",nok)
 
-    print(s.startIndex)
-    print(s.endIndex)
-    print(s.hash)
-    print(s.hashValue)
+    print("hash = \(path.hash), hashValue = \(path.hashValue)")
 
-    print(s.isEmpty)
+    XCTAssertFalse(path.isEmpty,nok)
 
-        print(s.characters)
-    print(s.smallestEncoding)
-print(s.fastestEncoding)
+    XCTAssertEqual(path.characters.count,18,nok)
+    XCTAssertEqual(path.smallestEncoding,String.Encoding.utf16,nok)
+    XCTAssertEqual(path.fastestEncoding,String.Encoding.utf16,nok)
 
-print(String.availableStringEncodings)
+    // print(String.availableStringEncodings)
 
-let a = "a/path/to/where/"
-let b = "a/path/zu/whom/"
+    let a = "a/path/to/where/"
+    let b = "a/path/zu/whom/"
+    let c = b.commonPrefix(with:a)
 
-let c = b.commonPrefix(with:a)
+    XCTAssertEqual(c,"a/path/")
+    XCTAssertTrue(a.hasPrefix(c))
+    XCTAssertTrue(b.hasPrefix(c))
 
-XCTAssertEqual(c,"a/path/")
-XCTAssertTrue(a.hasPrefix(c))
+  }
 
-XCTAssertTrue(b.hasPrefix(c))
+  func testStringIndices() {
+
+        print(path.startIndex)
+        print(path.endIndex)
+
+  }
+
+  func testStringRanges() {
 
 
   }
 
 
-  func testBasics() {
+  func testStringPaths() {
     // /Users/Shared/TPTP/Problems/PUZ/PUZ024-1.p
     // /Users/Shared/TPTP/Problems/PUZ/PUZ024-1.p
     // tptpPathTo(file: Axioms/PUZ002-0.ax ) ->
@@ -57,18 +68,20 @@ XCTAssertTrue(b.hasPrefix(c))
     let axiom = "PUZ002-0"
 
     let ppath = problem.p ?? nok
-    let apath = ppath.pathTo(axiom:axiom) ?? nok
-    let path = "Problems".pathTo(axiom:axiom) ?? nok
+    XCTAssertTrue(ppath.hasSuffix("/TPTP/Problems/PUZ/PUZ024-1.p"),nok)
 
-    print(ppath.problemsPrefix)
-    print(apath.problemsPrefix)
+    let apath = axiom.ax ?? nok
+    XCTAssertTrue(apath.hasSuffix("/TPTP/Axioms/PUZ002-0.ax"),nok)
 
-    print("\(problem) -> \(ppath)")
-    print("\(axiom) -> \(apath)")
+    XCTAssertEqual(ppath.pathTo(axiom:axiom) ?? nok ?? nok, apath, nok)
+    XCTAssertEqual("Problems".pathTo(axiom:axiom) ?? nok, apath, nok)
 
-    print("\(axiom) -> \(path)")
+    let cpre = ppath.commonPrefix(with:apath)
+    print(cpre)
+    XCTAssertTrue(cpre.hasSuffix("/TPTP/"),nok)
 
-    print(axiom.ax)
+    if ppath != nok { print("\(ok) '\(problem)'.p -> '\(ppath)'") }
+    if ppath != nok { print("\(ok) '\(axiom)'.ax -> '\(apath)'") }
 
     #if os(OSX)
 
