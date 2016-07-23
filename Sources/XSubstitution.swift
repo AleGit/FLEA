@@ -29,30 +29,18 @@ extension Dictionary : Substitution {
   }
 }
 
-/// The most generic substitution does nothing
-func *<N:Node,S:Substitution>(t:N, σ:S) -> N {
-  return t
-}
-//
-// func ==<S:Substitution>(lhs:S, rhs:S) -> Bool {
-//   return false
-// }
-
 /// 't * σ' returns the substitution of term t with σ.
-func *<S:Substitution
-where S.K:Node, S.V:Node, S.K.Symbol==S.V.Symbol>(t:S.K, σ:S) -> S.V {
+func *<N:Node, S:Substitution where N == S.K, N == S.V>(t:N, σ:S) -> N {
     // assert(σ.isSubstitution)
-    print("\(#function) \(t) \(σ)")
-
     if let tσ = σ[t] { return tσ }      // t is (variable) in σ.keys
 
-    guard let nodes = t.nodes where nodes.count > 0
-    else { return S.V(constant:t.symbol) } // t is a variable not in σ or has not children
+    guard let nodes = t.nodes
+    else { return t } // t is a variable not in σ or has no children
 
-    return S.V(symbol:t.symbol, nodes: nodes.map { $0 * σ })
+    return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })
 }
 
-func *<S:Substitution where S.K:Node,S.V:Node>(lhs:S,rhs:S) -> S? {
+func *<N:Node, S:Substitution where S.K==N,S.V==N>(lhs:S,rhs:S) -> S? {
   var subs = S()
   // for (key,value) in lhs {
   //   subs[key] = value * rhs

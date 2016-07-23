@@ -38,7 +38,9 @@ extension Node {
     guard self.symbol == other.symbol else { return false }
     if self.nodes == nil && other.nodes == nil { return true }
 
-    guard let lnodes = self.nodes, let rnodes = other.nodes else { return false }
+    guard let lnodes = self.nodes, let rnodes = other.nodes else {
+      print(self,self)
+      return false }
 
     return lnodes == rnodes
   }
