@@ -7,18 +7,19 @@ public class StringPathTests : XCTestCase {
 
   static var allTests : [(String, (StringPathTests) -> () throws -> Void)] {
     return [
-    ("testStringBasics", testStringBasics),
-    ("testStringIndices", testStringIndices),
-    ("testStringRanges", testStringRanges),
-    ("testStringPaths", testStringPaths)
+    ("testStringBasics", testBasics),
+    ("testStringIndices", testIndices),
+    ("testStringRanges", testRanges),
+    ("testStringPaths", testPaths)
     ]
   }
 
+  let ascii = "//Path/To/Nowhere/"
   let path = "//Pαth/To/NÖWHERE/"
   let components = ["","","Pαth","To","NÖWHERE",""]
 
   /// test basic string methods to demonstrate usage
-  func testStringBasics() {
+  func testBasics() {
     XCTAssertEqual(components, path.components(separatedBy:"/"),nok)
 
     XCTAssertEqual(path.capitalized,"//Pαth/To/Nöwhere/",nok)
@@ -29,36 +30,116 @@ public class StringPathTests : XCTestCase {
 
     XCTAssertFalse(path.isEmpty,nok)
 
-    XCTAssertEqual(path.characters.count,18,nok)
     XCTAssertEqual(path.smallestEncoding,String.Encoding.utf16,nok)
     XCTAssertEqual(path.fastestEncoding,String.Encoding.utf16,nok)
 
+    XCTAssertEqual(ascii.smallestEncoding,String.Encoding.ascii,nok)
+    XCTAssertEqual(ascii.fastestEncoding,String.Encoding.utf16,nok)
+
     // print(String.availableStringEncodings)
 
-    let a = "a/path/to/where/"
-    let b = "a/path/zu/whom/"
-    let c = b.commonPrefix(with:a)
+    let c = path.commonPrefix(with:ascii)
 
-    XCTAssertEqual(c,"a/path/")
-    XCTAssertTrue(a.hasPrefix(c))
-    XCTAssertTrue(b.hasPrefix(c))
+    XCTAssertEqual(c,"//P")
+    XCTAssertTrue(path.hasPrefix(c),nok)
+    XCTAssertTrue(ascii.hasPrefix(c),nok)
+
+    XCTAssertEqual(
+      Array(path.characters),["/", "/", "P",
+      "α",
+      "t", "h", "/", "T", "o", "/", "N",
+      "Ö",
+      "W", "H", "E", "R", "E", "/"],
+      nok)
+
+      XCTAssertEqual(
+        Array(path.unicodeScalars), ["/", "/", "P",
+        "\u{03B1}", // α
+        "t", "h", "/", "T", "o", "/", "N",
+        "\u{00D6}", //Ö
+        "W", "H", "E", "R", "E", "/"],
+      nok)
+
+    XCTAssertEqual(
+      Array(path.utf16),[47, 47, 80,
+      945, // α
+      116, 104, 47, 84, 111, 47, 78,
+      214, // Ö
+      87, 72, 69, 82, 69, 47],
+      nok)
+
+    XCTAssertEqual(
+      Array(path.utf8),[47, 47, 80,
+      206, 177, // α
+      116, 104, 47, 84, 111, 47, 78,
+      195, 150, // Ö
+      87, 72, 69, 82, 69, 47],
+      nok)
+
+
+      print(Array(path.unicodeScalars).dynamicType)
+
+      print(Array(path.characters).dynamicType)
+      print(Array(path.utf16).dynamicType)
+      print(Array(path.utf8).dynamicType)
 
   }
 
-  func testStringIndices() {
+  func testLengths() {
 
-        print(path.startIndex)
-        print(path.endIndex)
+    XCTAssertEqual(18, ascii.unicodeScalars.count,nok)
+    XCTAssertEqual(18, ascii.characters.count,nok)
+    XCTAssertEqual(18, ascii.utf16.count,nok)
+    XCTAssertEqual(18, ascii.utf8.count,nok)
+
+    XCTAssertEqual(18, path.unicodeScalars.count,nok)
+    XCTAssertEqual(18, path.characters.count,nok)
+    XCTAssertEqual(18, path.utf16.count,nok)
+    XCTAssertEqual(20, path.utf8.count,nok)
+  }
+
+  func testIndices() {
+    let cidx = path.characters.index(of:"Ö")!
+    let uidx = cidx.samePosition(in: path.unicodeScalars)
+    let utf8idx = cidx.samePosition(in: path.utf8)
+    let utf16idx = cidx.samePosition(in: path.utf16)
+
+    print(cidx)
+    print(uidx)
+    print(utf8idx)
+    print(utf16idx)
+
+    //XCTAssertEqual(cidx,uidx.samePosition(in: path.characters)!)
+    //XCTAssertEqual(cidx,utf8idx.samePosition(in :path.characters)!)
+    //XCTAssertEqual(cidx,utf16idx.samePosition(in :path.characters)!)
+
+
+        let name = "Marie Curie"
+        let firstSpace = name.characters.index(of: " ")!
+        let firstName = String(name.characters.prefix(upTo: firstSpace))
+        XCTAssertEqual("Marie", firstName,nok)
+  }
+
+
+  func testRanges() {
+    let range = path.range(of:"To")!
+    let first = path[path.startIndex..<range.lowerBound]
+    XCTAssertEqual(first,"//Pαth/")
+    let second = path[range.upperBound..<path.endIndex]
+    XCTAssertEqual(second,"/NÖWHERE/")
+
+
+    XCTAssertEqual(7,path.distance(from:path.startIndex, to: range.lowerBound),nok)
+    XCTAssertEqual(9,path.distance(from:path.startIndex, to: range.upperBound),nok)
+    XCTAssertEqual(-11,path.distance(from:path.endIndex, to: range.lowerBound),nok)
+    XCTAssertEqual(-9,path.distance(from:path.endIndex, to: range.upperBound),nok)
+
+
 
   }
 
-  func testStringRanges() {
 
-
-  }
-
-
-  func testStringPaths() {
+  func testPaths() {
     // /Users/Shared/TPTP/Problems/PUZ/PUZ024-1.p
     // /Users/Shared/TPTP/Problems/PUZ/PUZ024-1.p
     // tptpPathTo(file: Axioms/PUZ002-0.ax ) ->
