@@ -33,17 +33,17 @@ public class StringPathTests : XCTestCase {
     #if os(OSX)
     XCTAssertEqual(path.smallestEncoding,String.Encoding.ascii,nok)
     XCTAssertEqual(path.fastestEncoding,String.Encoding.utf16,nok)
-    #elseif os(Linux)
-    print(path.smallestEncoding, ascii.smalltesEncoding.dynamicType)
-    print(path.fastestEncoding, ascii.fastestEncoding.dynamicType)
+    // #elseif os(Linux)
+    // print(path.smallestEncoding, ascii.smalltesEncoding.dynamicType)
+    // print(path.fastestEncoding, ascii.fastestEncoding.dynamicType)
     #endif
 
     #if os(OSX)
     XCTAssertEqual(ascii.smallestEncoding,String.Encoding.ascii,nok)
     XCTAssertEqual(ascii.fastestEncoding,String.Encoding.utf16,nok)
-    #elseif os(Linux)
-    print(ascii.smallestEncoding, ascii.smalltesEncoding.dynamicType)
-    print(ascii.fastestEncoding, ascii.fastestEncoding.dynamicType)
+    // #elseif os(Linux)
+    // print(ascii.smallestEncoding, ascii.smalltesEncoding.dynamicType)
+    // print(ascii.fastestEncoding, ascii.fastestEncoding.dynamicType)
     #endif
     // print(String.availableStringEncodings)
 
