@@ -9,6 +9,7 @@ public class StringPathTests : XCTestCase {
     return [
     ("testStringBasics", testBasics),
     ("testStringIndices", testIndices),
+    ("testStringIndices", testLengths),
     ("testStringRanges", testRanges),
     ("testStringPaths", testPaths)
     ]
