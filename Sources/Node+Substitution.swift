@@ -1,39 +1,39 @@
 /// 't * σ' returns the substitution of term t with σ.
-func *<N:Node>(t:N, σ:[N:N]) -> N {
-    assert(σ.isSubstitution)
-
-    if let tσ = σ[t] { return tσ }      // t is (variable) in σ.keys
-
-    guard let nodes = t.nodes where nodes.count > 0
-    else { return t } // t is a variable not in σ or has not children
-
-    return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })
-}
+// func *<N:Node>(t:N, σ:[N:N]) -> N {
+//     assert(σ.isSubstitution)
+//
+//     if let tσ = σ[t] { return tσ }      // t is (variable) in σ.keys
+//
+//     guard let nodes = t.nodes where nodes.count > 0
+//     else { return t } // t is a variable not in σ or has not children
+//
+//     return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })
+// }
 
 /// concationation of substitutions (specialized for Substitution)
-func *<T:Node>(lhs:[T:T], rhs:[T:T]) -> [T:T]? {
-  var subs = [T:T]()
-
-  for (key,value) in lhs {
-    subs[key] = value * rhs
-  }
-
-  for (key,value) in rhs {
-    if let term = subs[key] {
-      // allready set
-      guard term == value else {
-        // and different
-        return nil
-      }
-      // but equal
-    }
-    else {
-      // not set yet
-      subs[key] = value
-    }
-  }
-  return subs
-}
+// func *<T:Node>(lhs:[T:T], rhs:[T:T]) -> [T:T]? {
+//   var subs = [T:T]()
+//
+//   for (key,value) in lhs {
+//     subs[key] = value * rhs
+//   }
+//
+//   for (key,value) in rhs {
+//     if let term = subs[key] {
+//       // allready set
+//       guard term == value else {
+//         // and different
+//         return nil
+//       }
+//       // but equal
+//     }
+//     else {
+//       // not set yet
+//       subs[key] = value
+//     }
+//   }
+//   return subs
+// }
 
 /// 't * s' returns the substitution of all variables in t with term s.
 func *<N:Node>(t:N, s:N) -> N {

@@ -33,14 +33,6 @@ final class Instantiator<N:Node> : Substitution, Equatable {
     let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
     return "{\(pairs)}"
   }
-
-  // mutating
-  func clean() {
-    let keys = storage.filter { $0.0 == $0.1 }.map { $0.0 }
-    for key in keys {
-      storage.removeValue(forKey:key)
-    }
-  }
 }
 
 func ==<N:Node>(lhs:Instantiator<N>, rhs:Instantiator<N>) -> Bool {
