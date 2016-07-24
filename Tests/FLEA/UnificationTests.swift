@@ -31,6 +31,7 @@ public class UnificationTests : XCTestCase {
       case (_, .none):
         XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ nil \(message)")
       default:
+        print("\(actual!),\(expected!)")
         XCTAssertEqual(actual! , expected!, "\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ \(expected!) \(message)")
     }
   }

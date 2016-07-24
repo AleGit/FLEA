@@ -1,6 +1,6 @@
-
-
-
+/// 'lhs =?= rhs' constructs most common unifier mgu(lhs,rhs)
+/// iff terms lhs and rhs are unifiable.
+/// Otherwise it returns *nil*.
 func =?=<T:Node,S:Substitution where S.K == T, S.V == T>(lhs:T,rhs:T) -> S? {
   // delete
   if lhs == rhs {
@@ -35,10 +35,7 @@ func =?=<T:Node,S:Substitution where S.K == T, S.V == T>(lhs:T,rhs:T) -> S? {
   var mgu = S()
 
   while lnodes.count > 0 {
-    let x : S? = lnodes[0] =?= rnodes[0]
-    guard let unifier : S = x else {
-      return nil
-    }
+    guard let unifier : S = (lnodes[0] =?= rnodes[0]) else { return nil }
 
     lnodes.removeFirst()
     rnodes.removeFirst()
@@ -46,11 +43,9 @@ func =?=<T:Node,S:Substitution where S.K == T, S.V == T>(lhs:T,rhs:T) -> S? {
     lnodes = lnodes.map { $0 * unifier }
     rnodes = rnodes.map { $0 * unifier }
 
-
     guard let concat = mgu * unifier else { return nil }
 
     mgu = concat
   }
   return mgu
-
 }

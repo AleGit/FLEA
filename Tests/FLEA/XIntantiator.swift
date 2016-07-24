@@ -29,10 +29,10 @@ final class Instantiator<N:Node> : Substitution, Equatable {
     return storage.makeIterator()
   }
 
-  // var description : String {
-  //   let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
-  //   return "{\(pairs)}"
-  // }
+  var description : String {
+    let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
+    return "{\(pairs)}"
+  }
 }
 
 func ==<N:Node>(lhs:Instantiator<N>, rhs:Instantiator<N>) -> Bool {

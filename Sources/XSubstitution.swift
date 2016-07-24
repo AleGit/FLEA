@@ -19,12 +19,12 @@ extension Dictionary : Substitution {
 }
 
 /// default implementation for substitutions
-extension Substitution where K : Node, V: Node {
-  var description : String {
-    let pairs = Array(self).map { "\($0)"  }.joined(separator:",")
-    return "{\(pairs)}"
-  }
-}
+// extension Substitution where K : Node, V: Node {
+//   var description : String {
+//     let array = self.map{ "\($0)" }.joined(separator:",")
+//     return "{\(array)}"
+//   }
+// }
 
 /// 't * σ' returns the substitution of term t with σ.
 func *<N:Node, S:Substitution where N == S.K, N == S.V>(t:N, σ:S) -> N {

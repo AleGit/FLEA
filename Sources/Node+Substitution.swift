@@ -100,9 +100,9 @@ extension Dictionary where Key:Node, Value:Node { // , Key == Value does not wor
 }
 
 /// A node dictionary has a specialized description.
-// extension Dictionary where Key:Node, Value:Node {
-//   var description : String {
-//     let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
-//     return "{\(pairs)}"
-//   }
-// }
+extension Dictionary where Key:Node, Value:Node {
+  var description : String {
+    let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
+    return "{\(pairs)}"
+  }
+}
