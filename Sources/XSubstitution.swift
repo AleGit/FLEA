@@ -11,6 +11,7 @@ protocol Substitution : DictionaryLiteralConvertible, Sequence, CustomStringConv
     init(dictionary:[K:V])
 }
 
+/// A dictionary is a substitution.
 extension Dictionary : Substitution {
   init(dictionary:[Key:Value]) {
     self = dictionary
@@ -18,6 +19,12 @@ extension Dictionary : Substitution {
 }
 
 /// default implementation for substitutions
+extension Substitution where K : Node, V: Node {
+  var description : String {
+    let pairs = Array(self).map { "\($0)"  }.joined(separator:",")
+    return "{\(pairs)}"
+  }
+}
 
 /// 't * σ' returns the substitution of term t with σ.
 func *<N:Node, S:Substitution where N == S.K, N == S.V>(t:N, σ:S) -> N {
