@@ -35,7 +35,7 @@ public class MiscPerformanceTests : XCTestCase {
 
   func testSubstitution() {
     Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
-    let _ = Syslog.setLogMask(upTo:.warning)
+    let _ = Syslog.setLogMask(upTo:.debug)
     measure {
       let X_a = [Q.X : Q.a]
       let Y_b = [Q.Y: Q.b]

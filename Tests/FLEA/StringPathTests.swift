@@ -194,4 +194,14 @@ public class StringPathTests : XCTestCase {
 
 
   }
+
+  func testContents() {
+    if let x = try? String(contentsOfFile:"Nodes.swift") {
+      print(x)
+    }
+    if let x = try? String(contentsOfFile:"logging.config") {
+      print(x)
+    }
+
+  }
 }
