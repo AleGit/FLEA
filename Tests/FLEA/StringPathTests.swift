@@ -132,7 +132,6 @@ public class StringPathTests : XCTestCase {
         XCTAssertEqual("Marie", firstName,nok)
   }
 
-
   func testRanges() {
     let range = path.range(of:"To")!
     let first = path[path.startIndex..<range.lowerBound]
@@ -140,14 +139,10 @@ public class StringPathTests : XCTestCase {
     let second = path[range.upperBound..<path.endIndex]
     XCTAssertEqual(second,"/NÖWHERE/")
 
-
     XCTAssertEqual(7,path.distance(from:path.startIndex, to: range.lowerBound),nok)
     XCTAssertEqual(9,path.distance(from:path.startIndex, to: range.upperBound),nok)
     XCTAssertEqual(-11,path.distance(from:path.endIndex, to: range.lowerBound),nok)
     XCTAssertEqual(-9,path.distance(from:path.endIndex, to: range.upperBound),nok)
-
-
-
   }
 
 
@@ -196,9 +191,8 @@ public class StringPathTests : XCTestCase {
   }
 
   func testContents() {
-    if let x = try? String(contentsOfFile:"Nodes.swift") {
-      print(x)
-    }
+    print(Process.name, Process.parameters)
+
     if let x = try? String(contentsOfFile:"logging.config") {
       print(x)
     }
