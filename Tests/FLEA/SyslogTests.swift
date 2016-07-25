@@ -1,3 +1,9 @@
+#if os(OSX)
+import Darwin
+#elseif os(Linux)
+import Glibc
+#endif
+
 import XCTest
 
 @testable import FLEA
@@ -21,7 +27,7 @@ public class SyslogTests : XCTestCase {
     #if os(OSX)
     let ident = "at.maringele.flea.xctest"
     #elseif os(Linux)
-    let ident = "xctest" // up to 6 charactes on Linux
+    let ident = "" // up to 6 charactes on Linux
     #endif
 
     // let options = [Syslog.Option.console,.pid,.perror] // (LOG_CONS|LOG_PERROR|LOG_PID)

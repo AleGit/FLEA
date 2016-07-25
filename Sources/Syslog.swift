@@ -97,8 +97,24 @@ struct Syslog {
   static func setLogMask(priorities:Syslog.Priority...) -> Int32 {
     let raws = priorities.map { $0.priority }
     let priority = Set(raws).reduce(0) { $0 + (1 << $1) }
-    return setlogmask(priority)
+    let oldPriority = setlogmask(priority)
+
+    if let minimal = raws.min() {
+      Syslog.sysLog(priority:minimal,message:"setlogmask(%d) -> %d",args:priority, oldPriority)
+    }
+
+    return oldPriority
+
+
   }
+  private static func sysLog(
+      priority : Int32,
+      message : String,
+      args : CVarArg...) {
+        withVaList(args) {
+          vsyslog(priority, message, $0)
+        }
+    }
   // void syslog(int priority, const char *format, ...);
   // void vsyslog(int priority, const char *format, va_list ap);
   static func sysLog(
