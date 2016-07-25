@@ -32,7 +32,7 @@ public class StringPathTests : XCTestCase {
     XCTAssertFalse(path.isEmpty,nok)
 
     #if os(OSX)
-    XCTAssertEqual(path.smallestEncoding,String.Encoding.ascii,nok)
+    print(path.smallestEncoding,String.Encoding.utf16,String.Encoding.ascii)
     XCTAssertEqual(path.fastestEncoding,String.Encoding.utf16,nok)
     // #elseif os(Linux)
     // print(path.smallestEncoding, ascii.smalltesEncoding.dynamicType)
