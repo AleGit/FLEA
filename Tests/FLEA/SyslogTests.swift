@@ -37,24 +37,22 @@ public class SyslogTests : XCTestCase {
     let _ = Syslog.setLogMask(priorities: .debug, .emergency)
 
     // log last error
-    Syslog.debug(message:"Previous error:", errno:errno)
+    // Syslog.debug(message:"Previous error:", errcode:errno)
 
     // create new error and log it
     let _ = open("/fictitious_file", O_RDONLY, 0); // sets errno to ENOENT
 
     let newerror = Syslog.setLogMask(priorities:.debug, .critical, .debug)
 
-
-
-    Syslog.debug(message:"File not found.", errno:newerror)
+    Syslog.debug { "üüüüüüüüüüüüüüüüüüüüüüüüüühhhhhhhhhhhhhhhhhhhhhiiiiiii"}
+    Syslog.warning { "ääääääääähhhhhhhhhhhhhhhhhhiiiiiii"}
+    Syslog.debug(errcode: newerror) { " File not found "}
 
     // log it again
-    for priority in Syslog.Priority.all {
-      print(#line,priority)
-      // void syslog(int priority, const char *format, ...);
-      // void vsyslog(int priority, const char *format, va_list ap);
-      Syslog.sysLog(priority:priority, message: "This is a silly test: Error '%m': %d", args:#line);
-    }
+    Syslog.multiple(errcode: newerror) { "This is a silly test." }
+
+    let _ = Syslog.setLogMask(upTo:.debug)
+    Syslog.multiple(errcode: newerror) { "This was a silly test." }
 
     //  void closelog(void);
     Syslog.closeLog();

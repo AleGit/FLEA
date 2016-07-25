@@ -34,6 +34,8 @@ public class MiscPerformanceTests : XCTestCase {
   }
 
   func testSubstitution() {
+    Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
+    let _ = Syslog.setLogMask(upTo:.warning)
     measure {
       let X_a = [Q.X : Q.a]
       let Y_b = [Q.Y: Q.b]
@@ -53,6 +55,8 @@ public class MiscPerformanceTests : XCTestCase {
       }
 
       XCTAssertEqual(XYZ_abc,rcombined,"\(XYZ_abc) ≠ \(rcombined)")
+      Syslog.debug { "\(X_a) \(Y_b) \(Z_c) \(XYZ_abc)" }
     }
+    Syslog.closeLog()
   }
 }

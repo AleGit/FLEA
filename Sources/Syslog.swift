@@ -5,6 +5,7 @@ import Darwin
 import Glibc
 #endif
 
+import Foundation
 
 struct Syslog {
   enum Priority {
@@ -94,20 +95,27 @@ struct Syslog {
     closelog()
   }
 
-  static func setLogMask(priorities:Syslog.Priority...) -> Int32 {
-    let raws = priorities.map { $0.priority }
-    let priority = Set(raws).reduce(0) { $0 + (1 << $1) }
-    let oldPriority = setlogmask(priority)
+  private static var available = Set<Priority>()
 
-    if let minimal = raws.min() {
-      Syslog.sysLog(priority:minimal,message:"setlogmask(%d) -> %d",args:priority, oldPriority)
-    }
-
-    return oldPriority
-
-
+  private static func setLogMask() -> Int32 {
+    let priority = Syslog.available.reduce(0) { $0 + (1 << $1.priority)}
+    return setlogmask(priority)
   }
-  private static func sysLog(
+
+  static func setLogMask(upTo:Syslog.Priority) -> Int32 {
+    Syslog.available = Set(
+      Syslog.Priority.all.filter { $0.priority <= upTo.priority }
+    )
+    return setLogMask()
+  }
+
+  static func setLogMask(priorities:Syslog.Priority...) -> Int32 {
+    Syslog.available = Set(priorities)
+    return setLogMask()
+  }
+
+  /// void syslog(int priority, const char *format, ...);
+  private static func syslog(
       priority : Int32,
       message : String,
       args : CVarArg...) {
@@ -115,36 +123,100 @@ struct Syslog {
           vsyslog(priority, message, $0)
         }
     }
-  // void syslog(int priority, const char *format, ...);
+
   // void vsyslog(int priority, const char *format, va_list ap);
-  static func sysLog(
+  private static func sysLog(
     priority : Priority,
-    message : String,
-    args : CVarArg...) {
+    args : CVarArg...,
+    message : () -> String
+  ) {
       withVaList(args) {
-        vsyslog(priority.priority, message, $0)
+        vsyslog(priority.priority, message(), $0)
       }
   }
 
-  static func debug(
-    message: String,
-    errno : Int32 = 0,
+  private static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
+    guard Syslog.available.contains(priority) else { return false }
+
+    // TODO: register and unregister files, functions, lines for logging
+
+    return true
+  }
+
+  private static func log(
+    _ priority: Priority,
+    errcode : Int32 = 0,
     file : String = #file,
     function : String = #function,
     line : Int = #line,
-    column : Int = #column
+    column : Int = #column,
+    message : () -> String
   ) {
-    if errno != 0 {
-      Syslog.sysLog(priority:.debug,
-        message:"\(message) '%m' (%d)\n'\(file)'.\(function)[\(line):\(column)]",
-        args:errno)
+    if errcode != 0 {
+      Syslog.sysLog(priority:priority,
+        args: errcode, line, column) {
+          "\(file.lastPathComponent)[%d:%d].\(function) '%m'(%d) \(message())"
+        }
     }
-
-
+    else {
+      Syslog.sysLog(priority:priority,
+        args: line, column) {
+          "\(file.lastPathComponent)[%d:%d].\(function) \(message())"
+        }
+    }
   }
 
+  static func multiple (
+    errcode : Int32 = 0,
+    file : String = #file,
+    function : String = #function,
+    line : Int = #line,
+    column : Int = #column,
+    message : () -> String
+  ) {
+    for p in Syslog.Priority.all {
+      guard Syslog.loggable(p,file,function,line) else { continue }
+      Syslog.log (p, errcode:errcode, file:file, function:function, line:line, column:column) {
+        "{\(p)} \(message())"
+      }
+    }
+  }
 
+  static func warning(
+    errcode : Int32 = 0,
+    file : String = #file,
+    function : String = #function,
+    line : Int = #line,
+    column : Int = #column,
+    message : () -> String
+  ) {
+    guard Syslog.loggable(.warning, file, function, line) else { return }
+    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+  }
 
+  static func info(
+    errcode : Int32 = 0,
+    file : String = #file,
+    function : String = #function,
+    line : Int = #line,
+    column : Int = #column,
+    message : () -> String
+  ) {
+    guard Syslog.loggable(.info, file, function, line) else { return }
+    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+  }
 
-
+  static func debug(
+    errcode : Int32 = 0,
+    file : String = #file,
+    function : String = #function,
+    line : Int = #line,
+    column : Int = #column,
+    message : () -> String
+  ) {
+    guard Syslog.loggable(.debug, file, function, line) else { return }
+    //#if DEBUG
+    log (.debug, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    //#endif
+  }
 }
