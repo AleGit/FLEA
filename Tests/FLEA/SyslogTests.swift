@@ -19,10 +19,9 @@ public class SyslogTests : XCTestCase {
   //   withVaList(args) { vsyslog(priority, message, $0) }
   // }
 
-  /// not a real test, just a demo how to use syslog.
-  /// messages should appear near the output of the test
+  /// [syslog](https://en.wikipedia.org/wiki/Syslog) wrapper demo.
+  /// Messages should appear near the output of the test,
   func testSyslog() {
-    print("\(#function) started")
 
     #if os(OSX)
     let ident = "at.maringele.flea.xctest"
@@ -30,13 +29,16 @@ public class SyslogTests : XCTestCase {
     let ident = "" // up to 6 charactes on Linux
     #endif
 
-    // let options = [Syslog.Option.console,.pid,.perror] // (LOG_CONS|LOG_PERROR|LOG_PID)
+    XCTAssertEqual(Syslog.configured, Syslog.Priority.all, nok)
 
-    /// void openlog(const char *ident, int option, int facility);
-
-    XCTAssertEqual(Syslog.configured, Syslog.Priority.all)
-
+    // void openlog(const char *ident, int logopt, int facility);
     Syslog.openLog(ident:ident, options:.console,.pid,.perror)
+    defer {
+      //  void closelog(void);
+      Syslog.closeLog();
+    }
+
+    // int setlogmask(int maskpri);
     let logmask0 = Syslog.setLogMask(priorities: .debug, .error)
     XCTAssertEqual(Int32(255),logmask0)
 
@@ -60,8 +62,6 @@ public class SyslogTests : XCTestCase {
 
     Syslog.multiple(errcode: newerror) { "This was a silly test." }
 
-    //  void closelog(void);
-    Syslog.closeLog();
 
     print("\(#function) finished")}
 }

@@ -1,4 +1,4 @@
-/// Wrapper for [syslog](https://en.wikipedia.org/wiki/Syslog)
+
 #if os(OSX)
 import Darwin
 #elseif os(Linux)
@@ -7,6 +7,8 @@ import Glibc
 
 import Foundation
 
+/// Static wrapper for [syslog](https://en.wikipedia.org/wiki/Syslog),
+/// see [man 3 syslog]http://www.unix.com/man-page/POSIX/3posix/syslog/
 struct Syslog {
   enum Priority {
     case emergency
@@ -81,59 +83,67 @@ struct Syslog {
     }
   }
 
-  static func openLog(ident:String, options:Syslog.Option..., facility:Int32 = LOG_USER) {
-    let option = options.reduce(0) { $0 | $1.option }
-    openlog(ident, option, facility);
+  private static var activePriorities = Syslog.maskedPriorities
+}
+
+extension Syslog {
+  private static var maskedPriorities : Set<Priority> {
+    let mask = setlogmask(255)
+
+    let _ = setlogmask(mask)
+    let array = Priority.all.filter {
+      ((1 << $0.priority) | mask) > 0
+    }
+    return Set(array)
   }
 
-  // static func openLog(ident:String, options:[Syslog.Option], facility:Int32 = LOG_USER) {
-  //   let option = options.reduce(0) { $0 | $1.option }
-  //   openlog(ident, option, facility);
-  // }
+  static var configured : [Priority] {
+    return Syslog.activePriorities.sorted { $0.priority < $1.priority }
+  }
+}
+
+extension Syslog {
+
+  /* void closelog(void); */
 
   static func closeLog() {
     closelog()
   }
 
-  private static var available = Syslog.getLogMask()
+  /* void openlog(const char *ident, int logopt, int facility); */
 
-  static var configured : [Priority] {
-    return Syslog.available.sorted { $0.priority < $1.priority }
+  static func openLog(ident:String, options:Syslog.Option..., facility:Int32 = LOG_USER) {
+    let option = options.reduce(0) { $0 | $1.option }
+    openlog(ident, option, facility);
   }
 
-  private static func getLogMask() -> Set<Priority> {
-    let original = setlogmask(255)
-    let _ = setlogmask(original)
-
-    let array = Priority.all.filter {
-      (1 << $0.priority) | original > 0
-    }
-    return Set(array)
-  }
+  /* int setlogmask(int maskpri); */
 
   private static func setLogMask() -> Int32 {
-    let priority = Syslog.available.reduce(0) { $0 + (1 << $1.priority)}
-    return setlogmask(priority)
+    let mask = Syslog.activePriorities.reduce(0) { $0 + (1 << $1.priority)}
+    return setlogmask(mask)
   }
 
   static func setLogMask(upTo:Syslog.Priority) -> Int32 {
-    Syslog.available = Set(
+    Syslog.activePriorities = Set(
       Syslog.Priority.all.filter { $0.priority <= upTo.priority }
     )
     return setLogMask()
   }
 
   static func setLogMask(priorities:Syslog.Priority...) -> Int32 {
-    Syslog.available = Set(priorities)
+    Syslog.activePriorities = Set(priorities)
     return setLogMask()
   }
 
   static func clearLogMask() -> Int32 {
-    Syslog.available = Set<Priority>()
+    Syslog.activePriorities = Set<Priority>()
     return setLogMask()
   }
 
-  /// void syslog(int priority, const char *format, ...);
+  /*  void syslog(int priority, const char *format, ...); */
+  /*  void vsyslog(int priority, const char *format, va_list ap); */
+
   private static func syslog(
       priority : Int32,
       message : String,
@@ -143,7 +153,6 @@ struct Syslog {
         }
     }
 
-  // void vsyslog(int priority, const char *format, va_list ap);
   private static func sysLog(
     priority : Priority,
     args : CVarArg...,
@@ -155,7 +164,7 @@ struct Syslog {
   }
 
   private static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
-    guard Syslog.available.contains(priority) else { return false }
+    guard Syslog.activePriorities.contains(priority) else { return false }
 
     // TODO: register and unregister files, functions, lines for logging
 
