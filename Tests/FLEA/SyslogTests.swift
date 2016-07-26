@@ -64,20 +64,21 @@ public class SyslogTests : XCTestCase {
     XCTAssertEqual(255,oldmask)
 
     Syslog.multiple(errcode: newerror) { "This was a silly test." }
+
+    let _ = Syslog.setLogMask(upTo:.debug)
   }
 
   func testContent() {
     let path = "Config/sample.default"
-    guard let content = try? String(contentsOfFile:path) else {
+    guard let content = path.content else {
       XCTFail("\(nok) config file '\(path)' not found.")
       return
     }
     print(content)
 
-    let ws = CharacterSet.whitespaces
 
     let entries = content.lines.filter {
-      !($0.hasPrefix("#") || $0.trimmingCharacters(in:ws).isEmpty)
+      !($0.hasPrefix("#") || $0.isEmpty)
      }
      print(entries)
 

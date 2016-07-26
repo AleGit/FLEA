@@ -143,6 +143,33 @@ extension FilePath {
     return self.isAccessible
   }
 
+  var content : String? {
+    #if os(OSX)
+    return try? String(contentsOfFile:self)
+    #elseif os(Linux)
+    Syslog.notice {
+      "(Linux) init(contentsOfFile:usedEncoding:) is not yet implemented."
+    }
+
+    guard let f = fopen(self,"r") else {
+      return nil
+    }
+    defer { fclose(f) }
+
+    guard let bufsize = self.fileSize else {
+      return nil
+    }
+    var buf = [CChar](repeating:CChar(0), count:bufsize+16)
+    guard fread(&buf, 1, bufsize, f) == bufsize else { return nil }
+    print("buffer:",buf)
+    return String(UTF8String:buf)
+
+    #endif
+
+  }
+
+
+
 
       // var fileSize : Int? {
       //   guard let attributes = try? FileManager.default.attributesOfItem(atPath:self) else {
@@ -184,7 +211,9 @@ extension FilePath {
         return path
       }
       else {
-        Syslog.warning { "Option \(option) includes no accessible directory!" }
+        Syslog.warning {
+          "Option \(option) includes no accessible directory!"
+        }
       }
     }
 
@@ -221,7 +250,6 @@ extension FilePath {
         path = "Config/default.default"
     }
     guard let p = path where p.isAccessible else {
-      print(path)
       return nil
     }
     return p
@@ -230,11 +258,18 @@ extension FilePath {
 
 extension String {
     var lines:[String] {
+      #if os(OSX)
         var result = [String]()
         enumerateLines {
           (l,_) -> () in
-          result.append(l) 
+          result.append(l)
         }
         return result
+      #elseif os (Linux)
+      Syslog.notice {
+        "(Linux) enumerateSubstrings(in:options:using:) is not yet implemented."
+      }
+      return self.components(separatedBy:"\n")
+      #endif
     }
 }

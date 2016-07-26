@@ -183,13 +183,13 @@ extension Syslog {
     if errcode != 0 {
       Syslog.sysLog(priority:priority,
         args: errcode, line, column) {
-          "\(file.lastPathComponent)[%d:%d].\(function) '%m'(%d) \(message())"
+          "\(file.lastPathComponent)[%d:%d].\(function) '%m'(%d) \(message()) #\(priority)"
         }
     }
     else {
       Syslog.sysLog(priority:priority,
         args: line, column) {
-          "\(file.lastPathComponent)[%d:%d].\(function) \(message())"
+          "\(file.lastPathComponent)[%d:%d].\(function) \(message()) #\(priority)"
         }
     }
   }
@@ -231,6 +231,18 @@ extension Syslog {
     message : () -> String
   ) {
     guard Syslog.loggable(.warning, file, function, line) else { return }
+    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+  }
+
+  static func notice(
+    errcode : Int32 = 0,
+    file : String = #file,
+    function : String = #function,
+    line : Int = #line,
+    column : Int = #column,
+    message : () -> String
+  ) {
+    guard Syslog.loggable(.notice, file, function, line) else { return }
     log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
   }
 
