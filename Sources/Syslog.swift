@@ -210,6 +210,18 @@ extension Syslog {
     }
   }
 
+  static func error(
+    errcode : Int32 = 0,
+    file : String = #file,
+    function : String = #function,
+    line : Int = #line,
+    column : Int = #column,
+    message : () -> String
+  ) {
+    guard Syslog.loggable(.error, file, function, line) else { return }
+    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+  }
+
   static func warning(
     errcode : Int32 = 0,
     file : String = #file,

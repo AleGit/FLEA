@@ -227,3 +227,14 @@ extension FilePath {
     return p
   }
 }
+
+extension String {
+    var lines:[String] {
+        var result = [String]()
+        enumerateLines {
+          (l,_) -> () in
+          result.append(l) 
+        }
+        return result
+    }
+}

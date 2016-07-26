@@ -1,0 +1,7 @@
+# sample configuration
+
+"*" : .error
+"String+Path.swift" : .debug
+
+
+"Demo.swift" : .error
