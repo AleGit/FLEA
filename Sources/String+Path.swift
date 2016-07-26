@@ -148,7 +148,7 @@ extension FilePath {
     return try? String(contentsOfFile:self)
     #elseif os(Linux)
     Syslog.notice {
-      "(Linux) init(contentsOfFile:usedEncoding:) is not yet implemented."
+      "#Linux #workaround : init(contentsOfFile:usedEncoding:) is not yet implemented."
     }
 
     guard let f = fopen(self,"r") else {
@@ -161,7 +161,6 @@ extension FilePath {
     }
     var buf = [CChar](repeating:CChar(0), count:bufsize+16)
     guard fread(&buf, 1, bufsize, f) == bufsize else { return nil }
-    print("buffer:",buf)
     return String(UTF8String:buf)
 
     #endif
@@ -267,9 +266,30 @@ extension String {
         return result
       #elseif os (Linux)
       Syslog.notice {
-        "(Linux) enumerateSubstrings(in:options:using:) is not yet implemented."
+        "#Linux #workaround : enumerateSubstrings(in:options:using:) is not yet implemented."
       }
       return self.components(separatedBy:"\n")
       #endif
+    }
+
+    var trimmingWhitespace : String {
+      #if os(OSX)
+      let whitespaces = CharacterSet.whitespaces
+      return self.trimmingCharacters(in: CharacterSet.whitespaces)
+
+      #elseif os(Linux)
+      Syslog.debug {
+        "#Linux #workaround use of unresolved identifier 'CharacterSet'"
+      }
+      var cs = self.characters
+      while let f = cs.first where f == " " || f == "\t" {
+        cs.removeFirst()
+      }
+      while let l = cs.last where l == " " || l == "\t" {
+        cs.removeLast()
+      }
+      return String(cs)
+      #endif
+
     }
 }

@@ -183,13 +183,13 @@ extension Syslog {
     if errcode != 0 {
       Syslog.sysLog(priority:priority,
         args: errcode, line, column) {
-          "\(file.lastPathComponent)[%d:%d].\(function) '%m'(%d) \(message()) #\(priority)"
+          "#\(priority)#\(file.lastPathComponent)[%d:%d]#\(function) '%m'(%d) \(message()) #\(priority)"
         }
     }
     else {
       Syslog.sysLog(priority:priority,
         args: line, column) {
-          "\(file.lastPathComponent)[%d:%d].\(function) \(message()) #\(priority)"
+          "#\(priority)#\(file.lastPathComponent)[%d:%d]#\(function) \(message()) #\(priority)"
         }
     }
   }
@@ -205,7 +205,7 @@ extension Syslog {
     for p in Syslog.Priority.all {
       guard Syslog.loggable(p,file,function,line) else { continue }
       Syslog.log (p, errcode:errcode, file:file, function:function, line:line, column:column) {
-        "{\(p)} \(message())"
+        "\(message())"
       }
     }
   }

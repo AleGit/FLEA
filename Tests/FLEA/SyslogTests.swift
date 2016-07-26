@@ -74,13 +74,16 @@ public class SyslogTests : XCTestCase {
       XCTFail("\(nok) config file '\(path)' not found.")
       return
     }
-    print(content)
 
+    var lines = content.lines
+    lines[4] = "  "
+    lines[5] = "\t"
 
-    let entries = content.lines.filter {
-      !($0.hasPrefix("#") || $0.isEmpty)
+    let entries = lines.filter {
+      !($0.hasPrefix("#") || $0.trimmingWhitespace.isEmpty)
      }
-     print(entries)
+     // print(lines)
+     // print(entries)
 
 
 
