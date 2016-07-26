@@ -190,12 +190,4 @@ public class StringPathTests : XCTestCase {
 
   }
 
-  func testContents() {
-    print(Process.name, Process.parameters)
-
-    if let x = try? String(contentsOfFile:"logging.config") {
-      print(x)
-    }
-
-  }
 }

@@ -14,7 +14,7 @@ public class SyslogTests : XCTestCase {
   static var allTests : [(String, (SyslogTests) -> () throws -> Void)] {
     return [
     ("testSyslog", testSyslog),
-    ("testContent",testContent)
+    ("testContent", testContent)
     ]
   }
 

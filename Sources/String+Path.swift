@@ -265,8 +265,8 @@ extension String {
         }
         return result
       #elseif os (Linux)
-      Syslog.notice { Syslog.Tags.workaround }
-      
+      Syslog.notice { Syslog.Tags.system() + " " + Syslog.Tags.workaround() }
+
       return self.components(separatedBy:"\n")
       #endif
     }
@@ -276,7 +276,7 @@ extension String {
       return self.trimmingCharacters(in: CharacterSet.whitespaces)
 
       #elseif os(Linux)
-      Syslog.debug { Syslog.Tags.workaround }
+      Syslog.debug {  Syslog.Tags.system() + " " + Syslog.Tags.workaround() }
       var cs = self.characters
       while let f = cs.first where f == " " || f == "\t" {
         cs.removeFirst()

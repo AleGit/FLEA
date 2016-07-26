@@ -275,20 +275,18 @@ extension Syslog {
 
 extension Syslog {
   struct Tags {
-    static var system : String = {
+    static var system : () -> String = {
       #if os(OSX)
       return "#OSX"
       #elseif os(Linux)
       return "#Linux"
       #else
-      return "#OS"
+      return "#aOS"
       #endif
-    }()
-
-    static var workaround = {
-      return Syslog.Tags.system + " #Workaround"
-
     }
 
+    static var workaround: () -> String = {
+      return "#Workaround"
+    }
   }
 }
