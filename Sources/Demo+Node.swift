@@ -73,7 +73,7 @@ static func sharing() {
   func pfxyz() -> N {
     let Z = N(variable:S("Z",.Variable))
     let fXY = fxy()
-    return N(symbol:S("p",.Predicate), nodes: [fXY, Z])
+    return N(symbol:S("p",.predicate), nodes: [fXY, Z])
 
   }
 

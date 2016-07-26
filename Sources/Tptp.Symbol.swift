@@ -2,10 +2,21 @@ import CTptpParsing
 
 protocol Symbolable : Hashable {
   static var empty: Self { get }
+  var symbol : String { get }
+  var type : Tptp.SymbolType { get }
 }
 
 extension String : Symbolable {
   static var empty : String { return "" }
+  var symbol : String { return self }
+  var type: Tptp.SymbolType {
+    switch self {
+      case "|":
+        return .disjunction
+      default:
+        return .Undefined
+    }
+  }
 }
 
 
@@ -32,15 +43,15 @@ extension Tptp {
     case Universal    // ! X Y s
     case Existential  // ? X Y s
 
-    case Negation     // ~ s
-    case Disjunction  // s | t ...
+    case negation     // ~ s
+    case disjunction  // s | t ...
     case Conjunction  // s & t ...
     case Implication  // s => t
 
-    case Equation   // s = t
-    case Inequation // s != t
+    case equation   // s = t
+    case inequation // s != t
 
-    case Predicate  // predicates and propositions
+    case predicate  // predicates and propositions
     case Function   // functions and constants
     case Variable   // variables
   }
@@ -114,7 +125,7 @@ extension Tptp.Symbol {
 
       case ("|", _):
         assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.Disjunction)
+        self = Tptp.Symbol(symbol,.disjunction)
       case ("&", _):
         assert (type == PRLC_CONNECTIVE)
         self = Tptp.Symbol(symbol,.Conjunction)
@@ -123,17 +134,17 @@ extension Tptp.Symbol {
         self = Tptp.Symbol(symbol,.Implication)
       case ("~", _):
         assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.Negation)
+        self = Tptp.Symbol(symbol,.negation)
 
       case ("=", _):
         assert (type == PRLC_EQUATIONAL)
-        self = Tptp.Symbol(symbol,.Equation)
+        self = Tptp.Symbol(symbol,.equation)
       case ("!=", _):
         assert (type == PRLC_EQUATIONAL)
-        self = Tptp.Symbol(symbol,.Inequation)
+        self = Tptp.Symbol(symbol,.inequation)
 
       case (_, PRLC_PREDICATE):
-        self = Tptp.Symbol(symbol,.Predicate)
+        self = Tptp.Symbol(symbol,.predicate)
 
       case (_, PRLC_FUNCTION):
         self = Tptp.Symbol(symbol,.Function)

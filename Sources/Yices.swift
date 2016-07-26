@@ -4,6 +4,33 @@ struct Yices {
 	static var version : String {
 		return String(validatingUTF8:yices_version) ?? "n/a"
 	}
+}
+
+extension Yices {
+    static func check(_ code : Int32, label: String) -> Bool {
+        if code < 0 {
+          Syslog.error { "\(label) \(code) \(errorString)" }
+          return false
+        }
+
+        return true
+    }
+
+    static var errorString : String {
+        let cstring = yices_error_string()
+        guard cstring != nil else {
+            return "yices_error_string() n/a"
+        }
+
+        guard let string = String(validatingUTF8: cstring!) else {
+            return "yices_error_string() n/c"
+        }
+
+        return string
+    }
+}
+
+extension Yices {
 
 private static func status(context:OpaquePointer, term: term_t) {
 
@@ -55,50 +82,50 @@ private static func status(context:OpaquePointer, term: term_t) {
 /// - a negative literal clause
 /// an checks satisfiability.
 static func demo() {
-    yices_init()
-    defer { yices_exit() }
+	yices_init()
+	defer { yices_exit() }
 
-    guard let context = yices_new_context(nil) else { return }
-    defer { yices_free_context(context) }
+	guard let context = yices_new_context(nil) else { return }
+	defer { yices_free_context(context) }
 
-    let bool_tau = yices_bool_type()
-    let free_tau = yices_int_type()
+	let bool_tau = yices_bool_type()
+	let free_tau = yices_int_type()
 
-    // constant 'a'
-    let a = yices_new_uninterpreted_term(free_tau)
-    yices_set_term_name(a, "a")
+	// constant 'a'
+	let a = yices_new_uninterpreted_term(free_tau)
+	yices_set_term_name(a, "a")
 
-    // constant 'b'
-    let b = yices_new_uninterpreted_term(free_tau)
-    yices_set_term_name(b, "b")
+	// constant 'b'
+	let b = yices_new_uninterpreted_term(free_tau)
+	yices_set_term_name(b, "b")
 
-    // tpye '(free,free)->free'
-    let f_domain = [type_t](repeating:free_tau, count:2)
-    let f_tau = yices_function_type(UInt32(f_domain.count), f_domain, free_tau)
-    let f = yices_new_uninterpreted_term(f_tau)
-    yices_set_term_name(f, "f")
+	// tpye '(free,free)->free'
+	let f_domain = [type_t](repeating:free_tau, count:2)
+	let f_tau = yices_function_type(UInt32(f_domain.count), f_domain, free_tau)
+	let f = yices_new_uninterpreted_term(f_tau)
+	yices_set_term_name(f, "f")
 
-    // function 'f(a,b)'
-    var args = [a,b]
-    let fab = yices_application(f,UInt32(args.count), args)
+	// function 'f(a,b)'
+	var args = [a,b]
+	let fab = yices_application(f,UInt32(args.count), args)
 
-    // type '(free,free,free)->bool'
-    let p_domain = [ free_tau, free_tau, free_tau ]
-    let p_tau = yices_function_type(UInt32(p_domain.count), p_domain, bool_tau)
-    let p = yices_new_uninterpreted_term(p_tau)
-    yices_set_term_name(p, "p")
+	// type '(free,free,free)->bool'
+	let p_domain = [ free_tau, free_tau, free_tau ]
+	let p_tau = yices_function_type(UInt32(p_domain.count), p_domain, bool_tau)
+	let p = yices_new_uninterpreted_term(p_tau)
+	yices_set_term_name(p, "p")
 
-    // predicate 'p(fab,a,b)'
-    args = [fab,a,b]
-    let pfab = yices_application(p,UInt32(args.count), args)
+	// predicate 'p(fab,a,b)'
+	args = [fab,a,b]
+	let pfab = yices_application(p,UInt32(args.count), args)
 
-    // 'NOT p(fab,a,b)'
-    let npfab = yices_not(pfab)
-    // 'p(fab,a,b) OR NOT p(fab,a,b)'
-    let tautology = yices_or2(pfab,npfab)
+	// 'NOT p(fab,a,b)'
+	let npfab = yices_not(pfab)
+	// 'p(fab,a,b) OR NOT p(fab,a,b)'
+	let tautology = yices_or2(pfab,npfab)
 
-    status(context:context, term:tautology)
-    status(context:context, term:pfab)
-    status(context:context, term:npfab)
+	status(context:context, term:tautology)
+	status(context:context, term:pfab)
+	status(context:context, term:npfab)
 }
 }

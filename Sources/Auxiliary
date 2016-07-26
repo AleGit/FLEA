@@ -252,10 +252,10 @@ extension Int {
 
 
 
-func eqfunc(_ symbols:[String : SymbolQuadruple]) -> (hasEquations:Bool, functors:[(String, SymbolQuadruple)]) {
-    let hasEquations = symbols.reduce(false) { (a:Bool,b:(String,SymbolQuadruple)) in a || b.1.category == .equational }
+func eqfunc(_ symbols:[String : SymbolQuadruple]) -> (hasequations:Bool, functors:[(String, SymbolQuadruple)]) {
+    let hasequations = symbols.reduce(false) { (a:Bool,b:(String,SymbolQuadruple)) in a || b.1.category == .equational }
     let functors = symbols.filter { (a:String,q:SymbolQuadruple) in q.category == .functor }
-    return (hasEquations,functors)
+    return (hasequations,functors)
 }
 
 func maxarity(_ functors:[(String , SymbolQuadruple)]) -> Int {
@@ -265,11 +265,11 @@ func maxarity(_ functors:[(String , SymbolQuadruple)]) -> Int {
 func axioms(_ symbols:[String : SymbolQuadruple]) -> [TptpNode]? {
     Nylog.trace("\(#function) \(#line) \(#file)")
 
-    let (hasEquations, functors) = eqfunc(globalStringSymbols)
+    let (hasequations, functors) = eqfunc(globalStringSymbols)
 
-    Nylog.info(hasEquations ? "Problem is equational" : "problem is not equational")
+    Nylog.info(hasequations ? "Problem is equational" : "problem is not equational")
 
-    guard hasEquations else {
+    guard hasequations else {
         return nil
     }
 

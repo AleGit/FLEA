@@ -1,3 +1,4 @@
 # debug configuration
 
-* : .debug 
+* : .debug    # in general log up to .debug
+ 
