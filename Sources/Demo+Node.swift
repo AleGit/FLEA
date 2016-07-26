@@ -1,6 +1,6 @@
 extension Demo {
   final class Node : FLEA.Node {
-    var symbol = Tptp.Symbol("n/a",.Undefined)
+    var symbol = Tptp.Symbol.empty
     var nodes : [Demo.Node]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -12,7 +12,7 @@ extension Demo {
 
     static var allNodes = Set<Demo.SharingNode>()
 
-    var symbol = Tptp.Symbol("n/a",.Undefined)
+    var symbol = Tptp.Symbol.empty
     var nodes : [Demo.SharingNode]? = nil
     var c : Int = {
       let a = SharingNode.counter
