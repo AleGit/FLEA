@@ -274,7 +274,6 @@ extension String {
 
     var trimmingWhitespace : String {
       #if os(OSX)
-      let whitespaces = CharacterSet.whitespaces
       return self.trimmingCharacters(in: CharacterSet.whitespaces)
 
       #elseif os(Linux)

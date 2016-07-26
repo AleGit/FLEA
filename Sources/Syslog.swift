@@ -183,13 +183,13 @@ extension Syslog {
     if errcode != 0 {
       Syslog.sysLog(priority:priority,
         args: errcode, line, column) {
-          "#\(priority)#\(file.lastPathComponent)[%d:%d]#\(function) '%m'(%d) \(message()) #\(priority)"
+          "#\(priority) \(file.lastPathComponent)[%d:%d]\(function) '%m'(%d) \(message())"
         }
     }
     else {
       Syslog.sysLog(priority:priority,
         args: line, column) {
-          "#\(priority)#\(file.lastPathComponent)[%d:%d]#\(function) \(message()) #\(priority)"
+          "#\(priority)#\(file.lastPathComponent)[%d:%d]#\(function) \(message())"
         }
     }
   }
