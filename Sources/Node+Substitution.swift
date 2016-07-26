@@ -49,7 +49,7 @@ postfix func ⊥<N:Node where N.Symbol == String>(t:N) -> N {
 
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
 postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
-    return t * N(constant:Tptp.Symbol("⊥",.Function))
+    return t * N(constant:Tptp.Symbol("⊥",.function))
 }
 
 // func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {

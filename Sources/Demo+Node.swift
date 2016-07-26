@@ -65,13 +65,13 @@ static func sharing() {
 
 
   func fxy() -> N {
-    let X = N(variable:S("X",.Variable))
-    let Y = N(variable:S("Y",.Variable))
-    return N(symbol:S("f",.Function), nodes: [ X, Y ])
+    let X = N(variable:S("X",.variable))
+    let Y = N(variable:S("Y",.variable))
+    return N(symbol:S("f",.function), nodes: [ X, Y ])
   }
 
   func pfxyz() -> N {
-    let Z = N(variable:S("Z",.Variable))
+    let Z = N(variable:S("Z",.variable))
     let fXY = fxy()
     return N(symbol:S("p",.predicate), nodes: [fXY, Z])
 

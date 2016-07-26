@@ -26,34 +26,34 @@ extension Tptp {
     case Undefined
 
     /// <TPTP_file>
-    case File
+    case file
 
     /// <fof_annotated>
-    case Fof
+    case fof
     /// <cnf_annotated>
-    case Cnf
+    case cnf
     /// <include>
-    case Include    // file name
+    case include    // file name
 
-    case Name
+    case name
 
-    case Role
-    case Annotation
+    case role
+    case annotation
 
-    case Universal    // ! X Y s
-    case Existential  // ? X Y s
+    case universal    // ! X Y s
+    case existential  // ? X Y s
 
     case negation     // ~ s
     case disjunction  // s | t ...
-    case Conjunction  // s & t ...
-    case Implication  // s => t
+    case conjunction  // s & t ...
+    case implication  // s => t
 
     case equation   // s = t
     case inequation // s != t
 
     case predicate  // predicates and propositions
-    case Function   // functions and constants
-    case Variable   // variables
+    case function   // functions and constants
+    case variable   // variables
   }
 
   struct Symbol : Hashable, CustomDebugStringConvertible {
@@ -102,36 +102,36 @@ extension Tptp.Symbol {
     switch (symbol,type) {
 
       case (_, PRLC_FILE):
-        self = Tptp.Symbol(symbol,.File)
+        self = Tptp.Symbol(symbol,.file)
 
       case (_, PRLC_FOF):
-        self = Tptp.Symbol(symbol,.Fof)
+        self = Tptp.Symbol(symbol,.fof)
       case (_, PRLC_CNF):
-        self = Tptp.Symbol(symbol,.Cnf)
+        self = Tptp.Symbol(symbol,.cnf)
       case (_, PRLC_INCLUDE):
-        self = Tptp.Symbol(symbol,.Include)
+        self = Tptp.Symbol(symbol,.include)
 
       case (_, PRLC_ROLE):
-        self = Tptp.Symbol(symbol,.Role)
+        self = Tptp.Symbol(symbol,.role)
       case (_, PRLC_ANNOTATION):
-        self = Tptp.Symbol(symbol,.Annotation)
+        self = Tptp.Symbol(symbol,.annotation)
 
       case ("!", _):
         assert (type == PRLC_QUANTIFIER)
-        self = Tptp.Symbol(symbol,.Universal)
+        self = Tptp.Symbol(symbol,.universal)
       case ("?", _):
         assert (type == PRLC_QUANTIFIER)
-        self = Tptp.Symbol(symbol,.Existential)
+        self = Tptp.Symbol(symbol,.existential)
 
       case ("|", _):
         assert (type == PRLC_CONNECTIVE)
         self = Tptp.Symbol(symbol,.disjunction)
       case ("&", _):
         assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.Conjunction)
+        self = Tptp.Symbol(symbol,.conjunction)
       case ("=>", _):
         assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.Implication)
+        self = Tptp.Symbol(symbol,.implication)
       case ("~", _):
         assert (type == PRLC_CONNECTIVE)
         self = Tptp.Symbol(symbol,.negation)
@@ -147,9 +147,9 @@ extension Tptp.Symbol {
         self = Tptp.Symbol(symbol,.predicate)
 
       case (_, PRLC_FUNCTION):
-        self = Tptp.Symbol(symbol,.Function)
+        self = Tptp.Symbol(symbol,.function)
       case (_, PRLC_VARIABLE):
-        self = Tptp.Symbol(symbol,.Variable)
+        self = Tptp.Symbol(symbol,.variable)
 
       default:
         self = Tptp.Symbol(symbol,.Undefined)

@@ -58,16 +58,16 @@ extension Node {
 
 extension Node where Symbol == Tptp.Symbol {
   init(variable:String) {
-    self.init(variable:Tptp.Symbol(variable,.Variable))
+    self.init(variable:Tptp.Symbol(variable,.variable))
   }
   init(constant:String) {
-    self.init(constant:Tptp.Symbol(constant,.Function))
+    self.init(constant:Tptp.Symbol(constant,.function))
   }
   init(symbol:String, nodes:[Self]?) {
     guard let nodes = nodes else {
       self.init(variable:symbol)
       return
     }
-    self.init(symbol:Tptp.Symbol(symbol,.Function), nodes:nodes)
+    self.init(symbol:Tptp.Symbol(symbol,.function), nodes:nodes)
   }
 }
