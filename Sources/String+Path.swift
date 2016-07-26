@@ -113,40 +113,6 @@ extension FilePath {
     return Process.Environment.getValue(for:"HOME")
   }
 
-  static var tptpRoot : FilePath? {
-
-    // process option --tptp_root has the highest priority
-    if let option = Process.option(name:"--tptp_root") {
-      if let path = option.settings.first(where:{$0.isAccessibleDirectory}) {
-        return path
-      }
-      else {
-        print("WARNING: Option\(option) includes no accessible directory!")
-      }
-    }
-
-    // try to read tptp root from environment
-    if let path = Process.Environment.getValue(for:"TPTP_ROOT")
-    where path.isAccessibleDirectory {
-      return path
-    }
-
-    // home directory has a low priority
-    if let path = FilePath.home?.appending("/TPTP")
-    where path.isAccessibleDirectory {
-      return path
-    }
-
-    // ~/Downloads has a very low priority
-    if let path = FilePath.home?.appending("/Downloads/TPTP")
-    where path.isAccessibleDirectory {
-      return path
-    }
-
-    // * no tptp root directory available
-    return nil
-  }
-
   var fileSize : Int? {
     var status = stat()
 
@@ -209,15 +175,55 @@ extension FilePath {
 
     }
 
-    extension FilePath {
-      static func demo() {
-        print("\(#file).\(#function)")
+extension FilePath {
+  static var tptpRoot : FilePath? {
 
-        for path in ["README.md", "Sources/main.swift", "Sources", "Problems", "main.swift", "/Users/aXm/", "/Users/aXm/ldir", "/Users/aXm/lfil"] {
-          print("'\(path)'.isAccessible = \(path.isAccessible)")
-          print("'\(path)'.isAccessibleDirectory = \(path.isAccessibleDirectory)")
-
-          print("'\(path)'.fileSize = \(path.fileSize)")
-        }
+    // process option --tptp_root has the highest priority
+    if let option = Process.option(name:"--tptp_root") {
+      if let path = option.settings.first(where:{$0.isAccessibleDirectory}) {
+        return path
+      }
+      else {
+        Syslog.warning { "Option \(option) includes no accessible directory!" }
       }
     }
+
+    // try to read tptp root from environment
+    if let path = Process.Environment.getValue(for:"TPTP_ROOT")
+    where path.isAccessibleDirectory {
+      return path
+    }
+
+    // home directory has a low priority
+    if let path = FilePath.home?.appending("/TPTP")
+    where path.isAccessibleDirectory {
+      return path
+    }
+
+    // ~/Downloads has a very low priority
+    if let path = FilePath.home?.appending("/Downloads/TPTP")
+    where path.isAccessibleDirectory {
+      return path
+    }
+
+    // * no tptp root directory available
+    return nil
+  }
+}
+
+extension FilePath {
+  static var configPath : FilePath? {
+    var path : FilePath?
+    switch Process.name {
+      case "n/a":
+        path = "Config/xctest.default"
+      default:
+        path = "Config/default.default"
+    }
+    guard let p = path where p.isAccessible else {
+      print(path)
+      return nil
+    }
+    return p
+  }
+}

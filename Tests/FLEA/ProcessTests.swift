@@ -48,6 +48,10 @@ public class ProcessTests : XCTestCase {
     print("\(ok) \(#function) \(tptpRoot)")
   }
 
+  func testConfigPath() {
+    XCTAssertEqual("Config/xctest.default",FilePath.configPath)
+  }
+
 
 
 

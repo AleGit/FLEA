@@ -33,25 +33,31 @@ public class SyslogTests : XCTestCase {
     // let options = [Syslog.Option.console,.pid,.perror] // (LOG_CONS|LOG_PERROR|LOG_PID)
 
     /// void openlog(const char *ident, int option, int facility);
-    Syslog.openLog(ident:ident, options:.console,.pid,.perror)
-    let _ = Syslog.setLogMask(priorities: .debug, .emergency)
 
-    // log last error
-    // Syslog.debug(message:"Previous error:", errcode:errno)
+    XCTAssertEqual(Syslog.configured, Syslog.Priority.all)
+
+    Syslog.openLog(ident:ident, options:.console,.pid,.perror)
+    let logmask0 = Syslog.setLogMask(priorities: .debug, .error)
+    XCTAssertEqual(Int32(255),logmask0)
+
+    Syslog.debug { "MUST APPEAR"}
+    Syslog.warning { "MUST NOT APPEAR "}
+
+    let logmask1 = Syslog.clearLogMask()
+    XCTAssertEqual(Int32(128+8),logmask1)
+    Syslog.multiple { "THIS MULTIPLE MUST NOT APPEAR"}
 
     // create new error and log it
-    let _ = open("/fictitious_file", O_RDONLY, 0); // sets errno to ENOENT
+    let newerror = open("/fictitious_file", O_RDONLY, 0); // sets errno to ENOENT
 
-    let newerror = Syslog.setLogMask(priorities:.debug, .critical, .debug)
+    let logmask2 = Syslog.setLogMask(upTo:.debug)
+    XCTAssertEqual(Int32(128+8),logmask2)
 
-    Syslog.debug { "üüüüüüüüüüüüüüüüüüüüüüüüüühhhhhhhhhhhhhhhhhhhhhiiiiiii"}
-    Syslog.warning { "ääääääääähhhhhhhhhhhhhhhhhhiiiiiii"}
     Syslog.debug(errcode: newerror) { " File not found "}
 
-    // log it again
-    Syslog.multiple(errcode: newerror) { "This is a silly test." }
+    let oldmask = Syslog.setLogMask(priorities:.debug, .warning, .debug)
+    XCTAssertEqual(255,oldmask)
 
-    let _ = Syslog.setLogMask(upTo:.debug)
     Syslog.multiple(errcode: newerror) { "This was a silly test." }
 
     //  void closelog(void);

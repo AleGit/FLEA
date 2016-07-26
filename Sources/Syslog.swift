@@ -95,7 +95,21 @@ struct Syslog {
     closelog()
   }
 
-  private static var available = Set<Priority>()
+  private static var available = Syslog.getLogMask()
+
+  static var configured : [Priority] {
+    return Syslog.available.sorted { $0.priority < $1.priority }
+  }
+
+  private static func getLogMask() -> Set<Priority> {
+    let original = setlogmask(255)
+    let _ = setlogmask(original)
+
+    let array = Priority.all.filter {
+      (1 << $0.priority) | original > 0
+    }
+    return Set(array)
+  }
 
   private static func setLogMask() -> Int32 {
     let priority = Syslog.available.reduce(0) { $0 + (1 << $1.priority)}
@@ -111,6 +125,11 @@ struct Syslog {
 
   static func setLogMask(priorities:Syslog.Priority...) -> Int32 {
     Syslog.available = Set(priorities)
+    return setLogMask()
+  }
+
+  static func clearLogMask() -> Int32 {
+    Syslog.available = Set<Priority>()
     return setLogMask()
   }
 

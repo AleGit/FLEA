@@ -80,6 +80,4 @@ extension Process {
       setenv(name, value, overwrite ? 1 : 0)
     }
   }
-
-
 }

@@ -9,7 +9,7 @@ extension Tptp {
     private(set) var root : TreeNodeRef?
 
     init?(path:FilePath) {
-      print("\(#function) '\(path)'")
+      Syslog.info { path }
       guard let size = path.fileSize where size > 0 else {
         return nil;
       }
@@ -20,7 +20,7 @@ extension Tptp {
     }
 
     deinit {
-      print("\(#function) '\(self.path)'")
+      Syslog.info { self.path }
       if let store = store {
         prlcDestroyStore(store)
       }
