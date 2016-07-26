@@ -272,3 +272,23 @@ extension Syslog {
     //#endif
   }
 }
+
+extension Syslog {
+  struct Tags {
+    static var system : String = {
+      #if os(OSX)
+      return "#OSX"
+      #elseif os(Linux)
+      return "#Linux"
+      #else
+      return "#OS"
+      #endif
+    }()
+
+    static var workaround = {
+      return Syslog.Tags.system + " #Workaround"
+
+    }
+
+  }
+}

@@ -265,9 +265,8 @@ extension String {
         }
         return result
       #elseif os (Linux)
-      Syslog.notice {
-        "#Linux #workaround : enumerateSubstrings(in:options:using:) is not yet implemented."
-      }
+      Syslog.notice { Syslog.Tags.workaround }
+      
       return self.components(separatedBy:"\n")
       #endif
     }
@@ -277,9 +276,7 @@ extension String {
       return self.trimmingCharacters(in: CharacterSet.whitespaces)
 
       #elseif os(Linux)
-      Syslog.debug {
-        "#Linux #workaround use of unresolved identifier 'CharacterSet'"
-      }
+      Syslog.debug { Syslog.Tags.workaround }
       var cs = self.characters
       while let f = cs.first where f == " " || f == "\t" {
         cs.removeFirst()
