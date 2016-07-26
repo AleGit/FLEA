@@ -2,6 +2,7 @@ import CTptpParsing
 
 protocol Symbolable : Hashable {
   static var empty: Self { get }
+
   var symbol : String { get }
   var type : Tptp.SymbolType { get }
 }
@@ -11,10 +12,25 @@ extension String : Symbolable {
   var symbol : String { return self }
   var type: Tptp.SymbolType {
     switch self {
+      case "!":
+        return .universal
+      case "?":
+        return .existential
+      case "~":
+        return .negation
       case "|":
         return .disjunction
+      case "&":
+        return .conjunction
+      case "=>":
+        return .implication
+      case "=":
+        return .equation
+      case "!=":
+        return .inequation
+
       default:
-        return .Undefined
+        return .undefined
     }
   }
 }
@@ -23,7 +39,7 @@ extension String : Symbolable {
 
 extension Tptp {
   enum SymbolType {
-    case Undefined
+    case undefined
 
     /// <TPTP_file>
     case file
@@ -54,6 +70,7 @@ extension Tptp {
     case predicate  // predicates and propositions
     case function   // functions and constants
     case variable   // variables
+
   }
 
   struct Symbol : Hashable, CustomDebugStringConvertible {
@@ -69,7 +86,7 @@ extension Tptp {
 
 extension Tptp.Symbol : Symbolable {
   static var empty : Tptp.Symbol {
-    return Tptp.Symbol("",.Undefined)
+    return Tptp.Symbol("",.undefined)
   }
 }
 
@@ -152,7 +169,7 @@ extension Tptp.Symbol {
         self = Tptp.Symbol(symbol,.variable)
 
       default:
-        self = Tptp.Symbol(symbol,.Undefined)
+        self = Tptp.Symbol(symbol,.undefined)
     }
   }
 }
