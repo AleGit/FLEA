@@ -34,8 +34,7 @@ struct Tptp {
     var symbol = S.empty
     var nodes : [Tptp.SmartNode]? = nil
 
-    lazy var hashValue : Int = self.simpleHashValue
-    // lazy var hashValue : Int = self.description.hashValue
+    lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription
   }
 }

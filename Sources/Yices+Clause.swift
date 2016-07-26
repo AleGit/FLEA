@@ -47,15 +47,15 @@ extension Yices {
 
                 // unit clause
             case .predicate, .negation, .equation, .inequation:
-                let message = "\(#function)(\(clause)) Argument node was not a clause, but a literal."
-                // Nylog.info(message)
+                Syslog.warning { "'\(clause)' was not a clause, but a literal." }
 
                 let yicesLiteral = literal(clause)
                 return (yicesLiteral,[yicesLiteral],[yicesLiteral])
 
                 // not a clause at all
             default:
-                assert(false,"\(#function)(\(clause)) Argument is of type \(type)")
+              Syslog.error { "'\(clause)' is of type \(type)" }
+                assert(false, "\(#function)(\(clause)) Argument is of type \(type)")
                 return (Yices.bot, Set<term_t>(), [term_t]())
             }
 
