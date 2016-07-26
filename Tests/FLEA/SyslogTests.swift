@@ -4,6 +4,8 @@ import Darwin
 import Glibc
 #endif
 
+import Foundation
+
 import XCTest
 
 @testable import FLEA
