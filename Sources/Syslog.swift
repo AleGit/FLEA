@@ -84,6 +84,11 @@ struct Syslog {
   }
 
   private static var activePriorities = Syslog.maskedPriorities
+
+  private static var configuration : [String:Set<Priority>]? = {
+    /// TODO: read configuration
+    nil
+  }()
 }
 
 extension Syslog {
@@ -168,7 +173,21 @@ extension Syslog {
 
     // TODO: register and unregister files, functions, lines for logging
 
-    return true
+    guard let configuration = Syslog.configuration else { return true }
+
+    let fileName = file.lastPathComponent
+
+    if let ps = configuration["\(fileName).\(function)"] {
+      return ps.contains(priority)
+    }
+    if let ps = configuration["\(fileName)"] {
+      return ps.contains(priority)
+    }
+    if let ps = configuration["*"] {
+      return ps.contains(priority)
+    }
+
+    return false
   }
 
   private static func log(
