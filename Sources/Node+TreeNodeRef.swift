@@ -5,7 +5,7 @@ extension Node {
     self.init(tree:tree, symbol: Self.symbol)
   }
 
-  init(tree:TreeNodeRef, symbol: (of:TreeNodeRef) -> Symbol) {
+  private init(tree:TreeNodeRef, symbol: (of:TreeNodeRef) -> Symbol) {
     let symbol = symbol(of:tree)
 
     switch tree.type {
