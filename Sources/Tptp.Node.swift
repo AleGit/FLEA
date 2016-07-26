@@ -2,7 +2,7 @@
 
 struct Tptp {
 
-  typealias S = String
+  typealias S = Tptp.Symbol   // reliable type information
   typealias Node = SmartNode  // choose an implementation
 
   final class SimpleNode : FLEA.Node {
