@@ -12,6 +12,7 @@ public class SyslogTests : XCTestCase {
   static var allTests : [(String, (SyslogTests) -> () throws -> Void)] {
     return [
     ("testSyslog", testSyslog),
+    ("testContent",testContent)
     ]
   }
 
@@ -63,7 +64,7 @@ public class SyslogTests : XCTestCase {
     Syslog.multiple(errcode: newerror) { "This was a silly test." }
   }
 
-  func testConfiguration() {
+  func testContent() {
     let path = "Config/sample.default"
     guard let content = try? String(contentsOfFile:path) else {
       XCTFail("\(nok) config file '\(path)' not found.")
