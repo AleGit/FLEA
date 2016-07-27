@@ -1,5 +1,6 @@
 /// 't * σ' returns the substitution of term t with σ. (specialized for Dictionary)
 func *<N:Node>(t:N, σ:[N:N]) -> N {
+  Syslog.debug { "DictionarySubstitution" }
     assert(σ.isSubstitution)
 
     if let tσ = σ[t] { return tσ }      // t is (variable) in σ.keys

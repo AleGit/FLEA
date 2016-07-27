@@ -5,12 +5,26 @@ import XCTest
 public class MiscPerformanceTests : XCTestCase {
   static var allTests : [(String, (MiscPerformanceTests) -> () throws -> Void)] {
     return [
-    ("testSubstitution", testSubstitution),
-    ("testXSubstitution", testXSubstitution)
+    ("testDictionarySubstitution", testDictionarySubstitution),
+    ("testSubstitution", testSubstitution)
     ]
   }
 
-  func testXSubstitution() {
+  public override func setUp() {
+    super.setUp()
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+    Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
+    let _ = Syslog.setLogMask(upTo:.debug)
+}
+
+  public override func tearDown() {
+
+    Syslog.closeLog()
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    super.tearDown()
+}
+
+  func testSubstitution() {
     measure {
       let X_a : Instantiator = [Q.X : Q.a]
       let Y_b : Instantiator = [Q.Y: Q.b]
@@ -33,9 +47,7 @@ public class MiscPerformanceTests : XCTestCase {
     }
   }
 
-  func testSubstitution() {
-    Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
-    let _ = Syslog.setLogMask(upTo:.debug)
+  func testDictionarySubstitution() {
     measure {
       let X_a = [Q.X : Q.a]
       let Y_b = [Q.Y: Q.b]
@@ -57,6 +69,5 @@ public class MiscPerformanceTests : XCTestCase {
       XCTAssertEqual(XYZ_abc,rcombined,"\(XYZ_abc) ≠ \(rcombined)")
       // Syslog.debug { "\(X_a) \(Y_b) \(Z_c) \(XYZ_abc)" }
     }
-    Syslog.closeLog()
   }
 }

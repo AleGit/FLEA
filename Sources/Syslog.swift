@@ -171,23 +171,26 @@ extension Syslog {
   private static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
     guard Syslog.activePriorities.contains(priority) else { return false }
 
+    return false
+
     // TODO: register and unregister files, functions, lines for logging
 
-    guard let configuration = Syslog.configuration else { return true }
-
-    let fileName = file.lastPathComponent
-
-    if let ps = configuration["\(fileName).\(function)"] {
-      return ps.contains(priority)
-    }
-    if let ps = configuration["\(fileName)"] {
-      return ps.contains(priority)
-    }
-    if let ps = configuration["*"] {
-      return ps.contains(priority)
-    }
-
-    return false
+    // guard let configuration = Syslog.configuration else { return true }
+    //
+    //
+    // let fileName = file.lastPathComponent
+    //
+    // if let ps = configuration["\(fileName).\(function)"] {
+    //   return ps.contains(priority)
+    // }
+    // if let ps = configuration["\(fileName)"] {
+    //   return ps.contains(priority)
+    // }
+    // if let ps = configuration["*"] {
+    //   return ps.contains(priority)
+    // }
+    //
+    // return false
   }
 
   private static func log(
