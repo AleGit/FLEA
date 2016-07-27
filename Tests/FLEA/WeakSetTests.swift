@@ -27,9 +27,9 @@ public class WeakSetTests : XCTestCase {
     XCTAssertEqual(collection.count, 0)
 
     // add three objects to the set
-     s = collection.insert(newElement:s!)
-     t = collection.insert(newElement:t!)
-     x = collection.insert(newElement:x!)
+    s = collection.insert(s!).memberAfterInsert
+    t = collection.insert(t!).memberAfterInsert
+    x = collection.insert(x!).memberAfterInsert
 
     // just two objects are in the set
     XCTAssertEqual(collection.count, 2)

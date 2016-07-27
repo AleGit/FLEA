@@ -17,26 +17,26 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     private var contents = [Int: [WeakEntry<T>]]()
 
     /// Add an element (and get it's substitution).
-    mutating func insert(newElement: T) -> T {
+    mutating func insert(_ newElement: T) -> (inserted: Bool, memberAfterInsert: T) {
       let value = newElement.hashValue
 
       guard let validEntries = entries(at: value) else {
         // no valid entry at all
         contents[value] = [WeakEntry(element:newElement)]
-        return newElement
+        return (true,newElement)
       }
 
       for entry in validEntries {
         if let element = entry.element where element == newElement {
           // newElement is allready in the collection,
           // hence return element from collection
-          return element
+          return (false,element)
         }
       }
 
       // the new element is not in the collection
       contents[value]?.append(WeakEntry(element:newElement))
-      return newElement
+      return (true,newElement)
     }
 
     private mutating func entries(at hashValue: Int) -> [WeakEntry<T>]? {
@@ -53,7 +53,7 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
         }
 
         if entries.count != count {
-          // valid and invalid entries
+          // valid and invalid entries, hence cleanup
           contents[hashValue] = entries
         }
         return entries
