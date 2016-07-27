@@ -93,14 +93,16 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     }
 }
 
-extension WeakSet : Sequence {
-  func makeIterator() -> WeakSetIterator<T> {
-    return WeakSetIterator(contents:self.contents)
-  }
-
+extension WeakSet { // not a collection
   /// *Complexity*: O(n)
   var count : Int {
     return contents.flatMap({$0.1}).filter { $0.element != nil}.count
+  }
+}
+
+extension WeakSet : Sequence {
+  func makeIterator() -> WeakSetIterator<T> {
+    return WeakSetIterator(contents:self.contents)
   }
 
   /// this should be more efficient than the default implementation
