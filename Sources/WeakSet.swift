@@ -1,15 +1,50 @@
 /// Idea by Adam Preble on 2/19/15.
 /// [WeakSet](https://gist.github.com/preble/13ab713ac044876c89b5)
 
-private struct WeakEntry<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> : CustomStringConvertible {
+private struct WeakEntry<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     weak var element: T?
+}
 
-    var description : String {
-      guard let e = self.element else {
-        return "nillified"
-      }
-      return e.description
+extension WeakEntry : CustomStringConvertible {
+  var description : String {
+    guard let e = self.element else {
+      return "nillified"
     }
+    return e.description
+  }
+}
+
+struct WeakSetIterator<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> : IteratorProtocol {
+  private var contents : [Int : [WeakEntry<T>]]
+
+  private init(contents:[Int : [WeakEntry<T>]]) {
+    self.contents = contents
+  }
+
+  mutating func next() -> T? {
+    guard let first = contents.first else { return nil }
+
+    guard var entries = contents[first.0]?.filter({$0.element != nil})
+    where entries.count > 0 else {
+      // no valid entries at all
+      contents[first.0] = nil
+      return self.next()
+    }
+
+    guard let member = entries.last?.element else {
+      Syslog.warning { "*** WeakSetInterator failed ***"}
+      return nil
+    }
+    entries.removeLast()
+    contents[first.0] = entries
+    return member
+  }
+}
+
+extension WeakSet : Sequence {
+  func makeIterator() -> WeakSetIterator<T> {
+    return WeakSetIterator(contents:self.contents)
+  }
 }
 
 /// Weak, unordered collection of objects.

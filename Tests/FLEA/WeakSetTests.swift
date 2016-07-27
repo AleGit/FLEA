@@ -29,6 +29,8 @@ public class WeakSetTests : XCTestCase {
     t = collection.insert(t!).memberAfterInsert
     x = collection.insert(x!).memberAfterInsert
 
+    XCTAssertEqual([t!,x!] as Set,Set(collection.map { $0 }),nok)
+
     // just two objects are in the set
     XCTAssertEqual(collection.count, 2)
 
@@ -60,8 +62,6 @@ private final class Stringly : Hashable, CustomStringConvertible {
     return string
   }
 }
-
-
 
 private func ==(lhs:Stringly, rhs:Stringly) -> Bool {
   return lhs.string == rhs.string
