@@ -2,6 +2,7 @@ import XCTest
 @testable import FLEATestSuite
 
 XCTMain([
+  testCase(KinNodeTests.allTests),
   testCase(MiscPerformanceTests.allTests),
   testCase(PositionTests.allTests),
   testCase(ProcessTests.allTests),
