@@ -6,7 +6,7 @@ import XCTest
 private final class SmartNode : FLEA.SharingNode {
   typealias S = String // choose the symbol
 
-  static var allNodes = WeakSet<SmartNode>()
+  static var pool = WeakSet<SmartNode>()
 
   var symbol = S.empty
   var nodes : [SmartNode]? = nil
@@ -21,7 +21,7 @@ private final class SmartNode : FLEA.SharingNode {
 
 private typealias Node = SmartNode // use local implementation
 
-/// Test the accumulation of nodes in SmartNode.allNodes.
+/// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
 public class SmartNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
@@ -46,7 +46,7 @@ public class SmartNodeTests : XCTestCase {
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
 
-    let count = Node.allNodes.count
+    let count = Node.pool.count
     XCTAssertEqual(count,4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
 
@@ -66,7 +66,7 @@ public class SmartNodeTests : XCTestCase {
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
 
-    let count = Node.allNodes.count
+    let count = Node.pool.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
 

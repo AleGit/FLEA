@@ -36,22 +36,22 @@ public class ParseHWV106Tests
     typealias NodeType = Tptp.SharingNode
     let inputs : [NodeType] = parseProblem()
     XCTAssertEqual(287949,inputs.count,nok)
-    XCTAssertEqual(807725,NodeType.allNodes.count)
+    XCTAssertEqual(807725,NodeType.pool.count)
   }
 
   func testSmartNode() {
     typealias NodeType = Tptp.SmartNode
     let inputs : [NodeType] = parseProblem()
     XCTAssertEqual(287949,inputs.count,nok)
-    XCTAssertEqual(807725,NodeType.allNodes.count,nok)
-    XCTAssertEqual(0, NodeType.allNodes.collisionCount,nok)
+    XCTAssertEqual(807725,NodeType.pool.count,nok)
+    XCTAssertEqual(0, NodeType.pool.collisionCount,nok)
   }
 
   func testKinNode() {
     typealias NodeType = Tptp.KinNode
     let inputs : [NodeType] = parseProblem()
     XCTAssertEqual(287949,inputs.count,nok)
-    XCTAssertEqual(807725,NodeType.allNodes.count,nok)
-    XCTAssertEqual(0, NodeType.allNodes.collisionCount,nok)
+    XCTAssertEqual(807725,NodeType.pool.count,nok)
+    XCTAssertEqual(0, NodeType.pool.collisionCount,nok)
   }
 }

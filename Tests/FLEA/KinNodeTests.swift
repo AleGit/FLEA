@@ -6,7 +6,7 @@ import XCTest
 private final class KinNode : FLEA.KinNode {
   typealias S = String // choose the symbol
 
-  static var allNodes = WeakSet<KinNode>()
+  static var pool = WeakSet<KinNode>()
 
   var symbol = S.empty
   var nodes : [KinNode]? = nil
@@ -23,7 +23,7 @@ private final class KinNode : FLEA.KinNode {
 
 private typealias Node = KinNode  // use local implementation
 
-/// Test the accumulation of nodes in SmartNode.allNodes.
+/// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
 public class KinNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
@@ -60,7 +60,7 @@ public class KinNodeTests : XCTestCase {
     XCTAssertTrue(fX_a == fa,nok)
     XCTAssertTrue(fX_a === fa,nok)
 
-    let count = Node.allNodes.count
+    let count = Node.pool.count
     XCTAssertEqual(count,4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
   }
@@ -79,7 +79,7 @@ public class KinNodeTests : XCTestCase {
     XCTAssertTrue(fX_a == fa,nok)
     XCTAssertTrue(fX_a === fa,nok)
 
-    let count = Node.allNodes.count
+    let count = Node.pool.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
 

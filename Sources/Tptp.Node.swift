@@ -16,10 +16,10 @@ struct Tptp {
   }
 
   /// equal nodes are the same objects
-  /// allNodes holds string references to all created nodes,
+  /// pool holds string references to all created nodes,
   /// i.e. all nodes are permanent
   final class SharingNode : FLEA.SharingNode {
-    static var allNodes = Set<Tptp.SharingNode>()
+    static var pool = Set<Tptp.SharingNode>()
 
     var symbol = S.empty
     var nodes : [Tptp.SharingNode]? = nil
@@ -29,9 +29,9 @@ struct Tptp {
   }
 
   /// equal nodes are the same objects
-  /// `allNodes` holds weak references to all created nodes.
+  /// `pool` holds weak references to all created nodes.
   final class SmartNode : FLEA.SharingNode {
-    static var allNodes = WeakSet<Tptp.SmartNode>()
+    static var pool = WeakSet<Tptp.SmartNode>()
 
     var symbol = S.empty
     var nodes : [Tptp.SmartNode]? = nil
@@ -41,10 +41,10 @@ struct Tptp {
   }
 
   /// equal nodes are the same objects
-  /// `allNodes` holds weak references to all created nodes,
+  /// `pool` holds weak references to all created nodes,
   /// `parents` holds weak references to node's predecessors
   final class KinNode : FLEA.KinNode {
-    static var allNodes = WeakSet<Tptp.KinNode>()
+    static var pool = WeakSet<Tptp.KinNode>()
     var symbol = S.empty
     var nodes : [Tptp.KinNode]? = nil
     var parents =  WeakSet<Tptp.KinNode>()

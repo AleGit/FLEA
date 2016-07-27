@@ -6,7 +6,7 @@ import XCTest
 private final class SharingNode : FLEA.SharingNode {
   typealias S = String
 
-  static var allNodes = Set<SharingNode>()
+  static var pool = Set<SharingNode>()
 
   var symbol = S.empty
   var nodes : [SharingNode]? = nil
@@ -21,7 +21,7 @@ private final class SharingNode : FLEA.SharingNode {
 
 private typealias Node = SharingNode // use local implementation
 
-/// Test the accumulation of nodes in Q.SharingNode.allNodes.
+/// Test the accumulation of nodes in Q.SharingNode.pool.
 /// Nodes MAY accumulate between tests.
 public class SharingNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
@@ -46,7 +46,7 @@ public class SharingNodeTests : XCTestCase {
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
 
-    let count = Node.allNodes.count
+    let count = Node.pool.count
     XCTAssertTrue(count >= 4, "\(nok)  \(#function) Just \(count) < 4 sharing nodes accumulated.")
 
     if count > 4 {
@@ -69,7 +69,7 @@ public class SharingNodeTests : XCTestCase {
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
 
-    let count = Node.allNodes.count
+    let count = Node.pool.count
     XCTAssertTrue(count >= 4, "\(nok)  \(#function) Just \(count) < 4 sharing nodes accumulated.")
 
     if count > 4 {

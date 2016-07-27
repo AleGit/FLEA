@@ -10,7 +10,7 @@ extension Demo {
   final class SharingNode : FLEA.SharingNode {
     static var counter = 0
 
-    static var allNodes = Set<Demo.SharingNode>()
+    static var pool = Set<Demo.SharingNode>()
 
     var symbol = Tptp.Symbol.empty
     var nodes : [Demo.SharingNode]? = nil
@@ -93,7 +93,7 @@ static func sharing() {
   print("'p(f(X,Y),Z)':",q)
 
 
-  print("all nodes", N.allNodes)
+  print("all nodes", N.pool)
 
 }
 }
