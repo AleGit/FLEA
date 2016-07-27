@@ -11,7 +11,7 @@ private final class KinNode : FLEA.KinNode {
   var symbol = S.empty
   var nodes : [KinNode]? = nil
 
-  var parents = WeakSet<KinNode>()
+  var folks = WeakSet<KinNode>()
 
   lazy var hashValue : Int = self.defaultHashValue
   lazy var description : String = self.defaultDescription
@@ -42,19 +42,19 @@ public class KinNodeTests : XCTestCase {
     let fX = Node(symbol:"f", nodes:[X])
     let fa = Node(symbol:"f", nodes:[a])
 
-    // check if parents are set correctly
+    // check if folks are set correctly
 
-    XCTAssertTrue(X.parents.contains(fX),"\(nok)\n \(X.parents)")
-    XCTAssertFalse(X.parents.contains(fa),"\(nok)\n \(X.parents)")
-    XCTAssertTrue(a.parents.contains(fa),"\(nok)\n \(a.parents)")
-    XCTAssertFalse(a.parents.contains(fX),"\(nok)\n \(a.parents)")
+    XCTAssertTrue(X.folks.contains(fX),"\(nok)\n \(X.folks)")
+    XCTAssertFalse(X.folks.contains(fa),"\(nok)\n \(X.folks)")
+    XCTAssertTrue(a.folks.contains(fa),"\(nok)\n \(a.folks)")
+    XCTAssertFalse(a.folks.contains(fX),"\(nok)\n \(a.folks)")
 
     let fX_a = fX * [Node(variable:"X"):Node(constant:"a")]
 
-    // check if subtistuion sets parents correctly
+    // check if subtistuion sets folks correctly
 
-    XCTAssertTrue(a.parents.contains(fX_a),"\(nok)\n \(a.parents)")
-    XCTAssertFalse(X.parents.contains(fX_a),"\(nok)\n \(a.parents)")
+    XCTAssertTrue(a.folks.contains(fX_a),"\(nok)\n \(a.folks)")
+    XCTAssertFalse(X.folks.contains(fX_a),"\(nok)\n \(a.folks)")
 
     XCTAssertEqual(fX_a,fa,nok)
     XCTAssertTrue(fX_a == fa,nok)

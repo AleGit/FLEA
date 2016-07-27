@@ -13,7 +13,7 @@ protocol Sharing : class {
 
 protocol Kin : class {
     associatedtype P : WeakPartialSetAlgebra
-    var parents : P { get set }
+    var folks : P { get set }
 }
 
 protocol WeakPartialSetAlgebra : PartialSetAlgebra {}
@@ -47,7 +47,7 @@ extension SharingNode where M.Element == Self {
 }
 
 /// kin nodes are sharing, additionally
-/// they hold weak references to all their parents
+/// they hold weak references to all their folks
 protocol KinNode : Kin, Sharing, Node { }
 
 extension Node where Self:Kin, Self:Sharing, Self.M.Element==Self, Self.P.Element==Self {
@@ -56,7 +56,7 @@ extension Node where Self:Kin, Self:Sharing, Self.M.Element==Self, Self.P.Elemen
 
     if let nodes = member.nodes {
       for n in nodes {
-        let _ = n.parents.insert(member)
+        let _ = n.folks.insert(member)
       }
     }
     return member

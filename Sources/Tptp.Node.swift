@@ -42,12 +42,12 @@ struct Tptp {
 
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes,
-  /// `parents` holds weak references to node's predecessors
+  /// `folks` holds weak references to node's predecessors
   final class KinNode : FLEA.KinNode {
     static var pool = WeakSet<Tptp.KinNode>()
     var symbol = S.empty
     var nodes : [Tptp.KinNode]? = nil
-    var parents =  WeakSet<Tptp.KinNode>()
+    var folks =  WeakSet<Tptp.KinNode>()
 
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription
