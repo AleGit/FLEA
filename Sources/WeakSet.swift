@@ -59,6 +59,7 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
         return entries
     }
 
+    /// *Complexity*: O(n)
     var count : Int {
       return contents.flatMap({$0.1}).filter { $0.element != nil}.count
     }

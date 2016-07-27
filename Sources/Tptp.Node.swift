@@ -15,7 +15,7 @@ struct Tptp {
 
   // equal nodes are the same objects
   // allNodes holds string references to all created nodes
-  final class SharingNode : FLEA.SharingNode {
+  final class SharingNode : FLEA.SmartNode {
     static var allNodes = Set<Tptp.SharingNode>()
 
     var symbol = S.empty

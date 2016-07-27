@@ -11,20 +11,6 @@ protocol MemberAfterInsert {
 extension Set : MemberAfterInsert {}
 extension WeakSet : MemberAfterInsert {}
 
-
-protocol SharingNode : class, Node {
-  /// strong references to all nodes
-  static var allNodes : Set<Self> { get set }
-}
-
-extension SharingNode {
-  /// By default sharing nodes are shared between trees,
-  /// e.g. one unique instance of variable `X` in `p(X,f(X,X))`.
-  static func share(node:Self) -> Self {
-    return allNodes.insert(node).memberAfterInsert
-  }
-}
-
 protocol SmartNode : class, Node {
   associatedtype M : MemberAfterInsert
   static var allNodes : M { get set }
