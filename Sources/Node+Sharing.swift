@@ -8,8 +8,8 @@ protocol PartialSetAlgebra {
 
 protocol Sharing : class {
   associatedtype M : PartialSetAlgebra
-  static func share(node:Self) -> Self
   static var allNodes : M { get set }
+  static func share(node:Self) -> Self
 }
 
 protocol Kin : class {
@@ -28,10 +28,7 @@ extension WeakSet : WeakPartialSetAlgebra {}
 /// a collection of all created nodes is held.
 /// Unique instances of nodes are shared between (sub)trees.
 /// Sharing is suitable for immutable reference types.
-protocol SharingNode : Sharing, Node {
-  // associatedtype M : PartialSetAlgebra
-  // static var allNodes : M { get set }
-}
+protocol SharingNode : Sharing, Node { }
 
 extension Node where Self:Sharing, Self.M.Element == Self {
   /// By default smart nodes are shared between trees,
@@ -52,12 +49,7 @@ extension SharingNode where M.Element == Self {
 
 /// kin nodes are sharing, additionally
 /// they hold weak references to all their parents
-protocol KinNode : Kin, Sharing, Node {
-  // associatedtype M : PartialSetAlgebra
-  // associatedtype P : WeakPartialSetAlgebra
-  // static var allNodes : M { get set }
-  // var parents : P { get set}
-}
+protocol KinNode : Kin, Sharing, Node { }
 
 extension Node where Self:Kin, Self:Sharing, Self.M.Element==Self, Self.P.Element==Self {
   static func share(node:Self) -> Self {
@@ -71,17 +63,3 @@ extension Node where Self:Kin, Self:Sharing, Self.M.Element==Self, Self.P.Elemen
     return member
   }
 }
-
-
-// extension KinNode where M.Element == Self, P.Element == Self {
-//   static func share(node:Self) -> Self {
-//     let member = allNodes.insert(node).memberAfterInsert
-//
-//     if let nodes = member.nodes {
-//       for n in nodes {
-//         let _ = n.parents.insert(member)
-//       }
-//     }
-//     return member
-//   }
-// }
