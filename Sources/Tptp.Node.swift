@@ -3,7 +3,7 @@
 struct Tptp {
 
   typealias S = Tptp.Symbol   // choose a symbol type
-  typealias Node = KinNode  // choose an implementation
+  typealias Node = KinNode    // choose an implementation
 
   /// equal nodes are not always the same object
   /// depending on the method to build composite nodes
@@ -29,8 +29,7 @@ struct Tptp {
   }
 
   /// equal nodes are the same objects
-  /// allNodes holds weak references to all created nodes,
-  /// i.e. temporary nodes are possible
+  /// `allNodes` holds weak references to all created nodes.
   final class SmartNode : FLEA.SharingNode {
     static var allNodes = WeakSet<Tptp.SmartNode>()
 
@@ -42,8 +41,8 @@ struct Tptp {
   }
 
   /// equal nodes are the same objects
-  /// allNodes holds weak references to all created nodes,
-  /// parents are a weak collection of a node's predecessors
+  /// `allNodes` holds weak references to all created nodes,
+  /// `parents` holds weak references to node's predecessors
   final class KinNode : FLEA.KinNode {
     static var allNodes = WeakSet<Tptp.KinNode>()
     var symbol = S.empty

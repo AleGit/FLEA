@@ -31,7 +31,8 @@ extension SharingNode where M.Element == Self {
   }
 }
 
-/// kin nodes hold references are sharing and hold references to all their parents
+/// kin nodes are sharing, additionally
+/// they hold weak references to all their parents
 protocol KinNode : class, Node {
   associatedtype M : PartialSetAlgebra
   associatedtype P : WeakPartialSetAlgebra

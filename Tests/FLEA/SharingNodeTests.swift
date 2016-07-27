@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-
+/// local minimal implementation of protocol
 private final class SharingNode : FLEA.SharingNode {
   typealias S = String
 
@@ -19,7 +19,7 @@ private final class SharingNode : FLEA.SharingNode {
   }
 }
 
-private typealias Node = SharingNode
+private typealias Node = SharingNode // use local implementation
 
 /// Test the accumulation of nodes in Q.SharingNode.allNodes.
 /// Nodes MAY accumulate between tests.

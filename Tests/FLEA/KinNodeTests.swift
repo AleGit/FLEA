@@ -2,6 +2,7 @@ import XCTest
 
 @testable import FLEA
 
+/// local minimal implementation of protocol
 private final class KinNode : FLEA.KinNode {
   typealias S = String // choose the symbol
 
@@ -20,7 +21,7 @@ private final class KinNode : FLEA.KinNode {
   }
 }
 
-private typealias Node = FLEA.Tptp.KinNode
+private typealias Node = KinNode  // use local implementation
 
 /// Test the accumulation of nodes in SmartNode.allNodes.
 /// Nodes MUST NOT accumulate between tests.
@@ -41,12 +42,16 @@ public class KinNodeTests : XCTestCase {
     let fX = Node(symbol:"f", nodes:[X])
     let fa = Node(symbol:"f", nodes:[a])
 
+    // check if parents are set correctly
+
     XCTAssertTrue(X.parents.contains(fX),"\(nok)\n \(X.parents)")
     XCTAssertFalse(X.parents.contains(fa),"\(nok)\n \(X.parents)")
     XCTAssertTrue(a.parents.contains(fa),"\(nok)\n \(a.parents)")
     XCTAssertFalse(a.parents.contains(fX),"\(nok)\n \(a.parents)")
 
     let fX_a = fX * [Node(variable:"X"):Node(constant:"a")]
+
+    // check if subtistuion sets parents correctly
 
     XCTAssertTrue(a.parents.contains(fX_a),"\(nok)\n \(a.parents)")
     XCTAssertFalse(X.parents.contains(fX_a),"\(nok)\n \(a.parents)")

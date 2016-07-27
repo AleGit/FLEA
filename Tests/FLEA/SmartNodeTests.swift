@@ -2,6 +2,7 @@ import XCTest
 
 @testable import FLEA
 
+/// local minimal implementation of protocol
 private final class SmartNode : FLEA.SharingNode {
   typealias S = String // choose the symbol
 
@@ -18,7 +19,7 @@ private final class SmartNode : FLEA.SharingNode {
   }
 }
 
-private typealias Node = SmartNode
+private typealias Node = SmartNode // use local implementation
 
 /// Test the accumulation of nodes in SmartNode.allNodes.
 /// Nodes MUST NOT accumulate between tests.
