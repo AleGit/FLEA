@@ -2,8 +2,8 @@ import XCTest
 
 @testable import FLEA
 
-public class SubstitutionTests : XCTestCase {
-  static var allTests : [(String, (SubstitutionTests) -> () throws -> Void)] {
+public class DictionarySubstitutionTests : XCTestCase {
+  static var allTests : [(String, (DictionarySubstitutionTests) -> () throws -> Void)] {
     return [
       ("testSubstitutionBasics", testSubstitutionBasics)
     ]
@@ -14,6 +14,8 @@ public class SubstitutionTests : XCTestCase {
     let Y_b = [Q.Y: Q.b]
     let Z_c = [Q.Z : Q.c]
     let XYZ_abc = [Q.X : Q.a, Q.Y: Q.b, Q.Z : Q.c]
+
+    XCTAssertEqual("\(X_a.dynamicType)","Dictionary<SmartNode, SmartNode>")
 
     guard let lc = (X_a * Y_b), let lcombined = lc * Z_c else {
       XCTFail("\(X_a) * \(Y_b) * \(Z_c) was not derived.")

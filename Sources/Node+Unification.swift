@@ -1,21 +1,23 @@
 /// 'lhs =?= rhs' constructs most common unifier mgu(lhs,rhs)
 /// iff terms lhs and rhs are unifiable.
 /// Otherwise it returns *nil*.
-func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
+func =?=<T:Node,S:Substitution where S.K == T, S.V == T,
+S.Iterator==DictionaryIterator<T,T>>(lhs:T,rhs:T) -> S? {
+  Syslog.debug { "\(S.self) as unifier" }
   // delete
   if lhs == rhs {
-    return [T:T]() // trivially unifiable, empty unifier
+    return S() // trivially unifiable, empty unifier
   }
 
   // variable elimination
 
   if lhs.isVariable {
     guard !rhs.variables.contains(lhs) else { return nil } // occur check
-    return [lhs:rhs]
+    return S(dictionary:[lhs:rhs])
   }
   if rhs.isVariable {
     guard !lhs.variables.contains(rhs) else { return nil } // occur check
-    return [rhs:lhs]
+    return S(dictionary:[rhs:lhs])
   }
 
   // both lhs and rhs are not variables
@@ -32,10 +34,10 @@ func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
 
   // signatures match
 
-  var mgu = [T:T]()
+  var mgu = S()
 
   while lnodes.count > 0 {
-    guard let unifier = lnodes[0] =?= rnodes[0] else { return nil }
+    guard let unifier : S = (lnodes[0] =?= rnodes[0]) else { return nil }
 
     lnodes.removeFirst()
     rnodes.removeFirst()

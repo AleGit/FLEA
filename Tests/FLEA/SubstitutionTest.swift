@@ -2,8 +2,8 @@ import XCTest
 
 @testable import FLEA
 
-public class XSubstitutionTests : XCTestCase {
-  static var allTests : [(String, (XSubstitutionTests) -> () throws -> Void)] {
+public class SubstitutionTests : XCTestCase {
+  static var allTests : [(String, (SubstitutionTests) -> () throws -> Void)] {
     return [
       ("testSubstitutionBasics", testSubstitutionBasics)
     ]
@@ -14,6 +14,8 @@ public class XSubstitutionTests : XCTestCase {
     let Y_b : Instantiator = [Q.Y: Q.b]
     let Z_c : Instantiator = [Q.Z : Q.c]
     let XYZ_abc : Instantiator = [Q.X : Q.a, Q.Y: Q.b, Q.Z : Q.c]
+
+    XCTAssertEqual("\(X_a.dynamicType))","Instantiator<SmartNode>)")
 
     guard let lc = (X_a * Y_b), let lcombined = lc * Z_c else {
       XCTFail("\(X_a) * \(Y_b) * \(Z_c) was not derived.")
@@ -26,7 +28,7 @@ public class XSubstitutionTests : XCTestCase {
       XCTFail("\(X_a) * \(Y_b) * \(Z_c) was not derived.")
       return
     }
-    
+
     XCTAssertEqual(XYZ_abc, rcombined,"\(XYZ_abc) ≠ \(rcombined)")
   }
 }

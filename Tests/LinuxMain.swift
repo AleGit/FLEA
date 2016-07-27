@@ -2,6 +2,9 @@ import XCTest
 @testable import FLEATestSuite
 
 XCTMain([
+  testCase(DictionarySubstitutionTests.allTests),
+  testCase(DictionaryUnificationTests.allTests),
+
   testCase(KinNodeTests.allTests),
   testCase(MiscPerformanceTests.allTests),
   testCase(PositionTests.allTests),
@@ -13,7 +16,5 @@ XCTMain([
   testCase(SyslogTests.allTests),
   testCase(TptpFileTests.allTests),
   testCase(UnificationTests.allTests),
-  testCase(WeakSetTests.allTests),
-  testCase(XSubstitutionTests.allTests),
-  testCase(XUnificationTests.allTests)
+  testCase(WeakSetTests.allTests)
   ])
