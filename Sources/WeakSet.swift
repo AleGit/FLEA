@@ -41,12 +41,6 @@ struct WeakSetIterator<T where T: AnyObject, T: Hashable, T:CustomStringConverti
   }
 }
 
-extension WeakSet : Sequence {
-  func makeIterator() -> WeakSetIterator<T> {
-    return WeakSetIterator(contents:self.contents)
-  }
-}
-
 /// Weak, unordered collection of objects.
 struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     private var contents = [Int: [WeakEntry<T>]](minimumCapacity:1)
@@ -94,26 +88,32 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
         return entries
     }
 
-    /// *Complexity*: O(n)
-    var count : Int {
-      return contents.flatMap({$0.1}).filter { $0.element != nil}.count
-    }
-
     var collisionCount : Int {
       return contents.filter({ $0.1.count > 1}).map({ $0.1 }).reduce(0) { $0 + $1.count - 1}
     }
+}
 
-    func contains(_ member: T) -> Bool {
-      let value = member.hashValue
-      guard let entries = contents[value] else {
-        return false
-      }
-      for entry in entries {
-        if let element = entry.element where element == member {
-          return true
-        }
-      }
-      return false
+extension WeakSet : Sequence {
+  func makeIterator() -> WeakSetIterator<T> {
+    return WeakSetIterator(contents:self.contents)
+  }
 
-    }
+  /// *Complexity*: O(n)
+  var count : Int {
+    return contents.flatMap({$0.1}).filter { $0.element != nil}.count
+  }
+
+  /// this should be more efficient than the default implementation
+  // func contains(_ member: T) -> Bool {
+  //   let value = member.hashValue
+  //   guard let entries = contents[value] else {
+  //     return false
+  //   }
+  //   for entry in entries {
+  //     if let element = entry.element where element == member {
+  //       return true
+  //     }
+  //   }
+  //   return false
+  // }
 }
