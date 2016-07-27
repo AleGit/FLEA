@@ -49,7 +49,7 @@ extension WeakSet : Sequence {
 
 /// Weak, unordered collection of objects.
 struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
-    private var contents = [Int: [WeakEntry<T>]]()
+    private var contents = [Int: [WeakEntry<T>]](minimumCapacity:1)
 
     /// Add an element (and get it's substitution).
     mutating func insert(_ newElement: T) -> (inserted: Bool, memberAfterInsert: T) {
@@ -97,6 +97,10 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     /// *Complexity*: O(n)
     var count : Int {
       return contents.flatMap({$0.1}).filter { $0.element != nil}.count
+    }
+
+    var collisionCount : Int {
+      return contents.filter({ $0.1.count > 1}).map({ $0.1 }).reduce(0) { $0 + $1.count - 1}
     }
 
     func contains(_ member: T) -> Bool {
