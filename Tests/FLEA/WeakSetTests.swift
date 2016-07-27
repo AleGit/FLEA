@@ -2,8 +2,6 @@ import XCTest
 
 @testable import FLEA
 
-private typealias Node = SmartNode
-
 public class WeakSetTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (WeakSetTests) -> () throws -> Void)]  {

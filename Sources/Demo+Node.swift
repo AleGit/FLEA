@@ -7,7 +7,7 @@ extension Demo {
     lazy var description : String = self.debugDescription
   }
 
-  final class SharingNode : FLEA.SmartNode {
+  final class SharingNode : FLEA.SharingNode {
     static var counter = 0
 
     static var allNodes = Set<Demo.SharingNode>()

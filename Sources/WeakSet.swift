@@ -63,4 +63,18 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     var count : Int {
       return contents.flatMap({$0.1}).filter { $0.element != nil}.count
     }
+
+    func contains(_ member: T) -> Bool {
+      let value = member.hashValue
+      guard let entries = contents[value] else {
+        return false
+      }
+      for entry in entries {
+        if let element = entry.element where element == member {
+          return true
+        }
+      }
+      return false
+
+    }
 }

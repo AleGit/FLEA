@@ -3,7 +3,7 @@ import XCTest
 @testable import FLEA
 
 
-private final class SharingNode : FLEA.SmartNode {
+private final class SharingNode : FLEA.SharingNode {
   typealias S = String
 
   static var allNodes = Set<SharingNode>()

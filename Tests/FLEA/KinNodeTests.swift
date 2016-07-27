@@ -2,13 +2,15 @@ import XCTest
 
 @testable import FLEA
 
-private final class SmartNode : FLEA.SharingNode {
+private final class KinNode : FLEA.KinNode {
   typealias S = String // choose the symbol
 
-  static var allNodes = WeakSet<SmartNode>()
+  static var allNodes = WeakSet<KinNode>()
 
   var symbol = S.empty
-  var nodes : [SmartNode]? = nil
+  var nodes : [KinNode]? = nil
+
+  var parents = WeakSet<KinNode>()
 
   lazy var hashValue : Int = self.defaultHashValue
   lazy var description : String = self.defaultDescription
@@ -18,13 +20,13 @@ private final class SmartNode : FLEA.SharingNode {
   }
 }
 
-private typealias Node = SmartNode
+private typealias Node = FLEA.Tptp.KinNode
 
 /// Test the accumulation of nodes in SmartNode.allNodes.
 /// Nodes MUST NOT accumulate between tests.
-public class SmartNodeTests : XCTestCase {
+public class KinNodeTests : XCTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (SmartNodeTests) -> () throws -> Void)]  {
+  static var allTests : [(String, (KinNodeTests) -> () throws -> Void)]  {
     return [
       ("testEqualityX", testEqualityX),
       ("testEqualityY", testEqualityY)
@@ -39,15 +41,22 @@ public class SmartNodeTests : XCTestCase {
     let fX = Node(symbol:"f", nodes:[X])
     let fa = Node(symbol:"f", nodes:[a])
 
+    XCTAssertTrue(X.parents.contains(fX),"\(nok)\n \(X.parents)")
+    XCTAssertFalse(X.parents.contains(fa),"\(nok)\n \(X.parents)")
+    XCTAssertTrue(a.parents.contains(fa),"\(nok)\n \(a.parents)")
+    XCTAssertFalse(a.parents.contains(fX),"\(nok)\n \(a.parents)")
+
     let fX_a = fX * [Node(variable:"X"):Node(constant:"a")]
 
-    XCTAssertEqual(fX_a,fa)
-    XCTAssertTrue(fX_a == fa)
-    XCTAssertTrue(fX_a === fa)
+    XCTAssertTrue(a.parents.contains(fX_a),"\(nok)\n \(a.parents)")
+    XCTAssertFalse(X.parents.contains(fX_a),"\(nok)\n \(a.parents)")
+
+    XCTAssertEqual(fX_a,fa,nok)
+    XCTAssertTrue(fX_a == fa,nok)
+    XCTAssertTrue(fX_a === fa,nok)
 
     let count = Node.allNodes.count
     XCTAssertEqual(count,4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
-
 
   }
 
@@ -61,9 +70,9 @@ public class SmartNodeTests : XCTestCase {
 
     let fX_a = fX * [Node(variable:"Y"):Node(constant:"a")]
 
-    XCTAssertEqual(fX_a,fa)
-    XCTAssertTrue(fX_a == fa)
-    XCTAssertTrue(fX_a === fa)
+    XCTAssertEqual(fX_a,fa,nok)
+    XCTAssertTrue(fX_a == fa,nok)
+    XCTAssertTrue(fX_a === fa,nok)
 
     let count = Node.allNodes.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
