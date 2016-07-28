@@ -7,7 +7,11 @@ protocol Symbolable : Hashable {
   var type : Tptp.SymbolType { get }
 
   /// Initialze a symbol with a node of the abstract syntax tree.
-  init(of node:TreeNodeRef)
+
+}
+
+protocol TptpSymbolable : Symbolable {
+    init(of node:TreeNodeRef)
 }
 
 /// A string is symbolable
@@ -37,15 +41,15 @@ extension String : Symbolable {
         return .undefined
     }
   }
+}
 
+extension String : TptpSymbolable {
   init(of node:TreeNodeRef) {
     let s = node.symbol ?? "n/a"
     // TODO: insert symbol into symbol table
     self = s
   }
 }
-
-
 
 extension Tptp {
   enum SymbolType {
@@ -124,7 +128,7 @@ func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
   return lhs.symbol == rhs.symbol && lhs.type == rhs.type
 }
 
-extension Tptp.Symbol {
+extension Tptp.Symbol : TptpSymbolable {
   // init(symbol:String, type:PRLC_TREE_NODE_TYPE) {
   init(of node:TreeNodeRef) {
     let symbol = node.symbol ?? "n/a" // hide self.symbol
