@@ -1,6 +1,6 @@
 import CTptpParsing
 
-extension Node where Symbol : TptpSymbolable {
+extension Node {
   init(tree:TreeNodeRef) {
     let symbol = Symbol(of:tree)
 

@@ -1,18 +1,21 @@
 import CTptpParsing
 
+// MARK: - protocol -
+
 protocol Symbolable : Hashable {
+
+  /// the empty symbol
   static var empty: Self { get }
 
   var symbol : String { get }
   var type : Tptp.SymbolType { get }
 
+  init(of node:TreeNodeRef)
+
   /// Initialze a symbol with a node of the abstract syntax tree.
-
 }
 
-protocol TptpSymbolable : Symbolable {
-    init(of node:TreeNodeRef)
-}
+// MARK: - String -
 
 /// A string is symbolable
 extension String : Symbolable {
@@ -43,13 +46,15 @@ extension String : Symbolable {
   }
 }
 
-extension String : TptpSymbolable {
+extension String {
   init(of node:TreeNodeRef) {
     let s = node.symbol ?? "n/a"
     // TODO: insert symbol into symbol table
     self = s
   }
 }
+
+// MARK: - Tptp.Symbol
 
 extension Tptp {
   enum SymbolType {
@@ -128,7 +133,7 @@ func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
   return lhs.symbol == rhs.symbol && lhs.type == rhs.type
 }
 
-extension Tptp.Symbol : TptpSymbolable {
+extension Tptp.Symbol {
   // init(symbol:String, type:PRLC_TREE_NODE_TYPE) {
   init(of node:TreeNodeRef) {
     let symbol = node.symbol ?? "n/a" // hide self.symbol
@@ -191,3 +196,13 @@ extension Tptp.Symbol : TptpSymbolable {
     }
   }
 }
+
+// MARK: Int
+
+// extension Int : Symbolable {
+//
+// }
+//
+// extension Int : TptpSymbolable {
+//
+// }

@@ -30,7 +30,7 @@ extension Tptp {
 
 extension Tptp.File {
 
-  func ast<N:Node where N.Symbol : TptpSymbolable>() -> N? {
+  func ast<N:Node>() -> N? {
     let t : N = N(tree:self.root!)
     return t
   }
