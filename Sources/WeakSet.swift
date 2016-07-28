@@ -78,28 +78,35 @@ extension WeakSet : WeakPartialSetAlgebra {
 
 ///
 extension WeakSet {
-  /// Number of weak entries *with* referenced object.
-  /// Calculate the current number of weakly referenced objects.
-  /// The calculated number can change between calls even when
-  /// weak set is immutable.
+  /// Number of entries *with* a referenced object.
+  /// This number can decrease even when the weak set is immutable.
+  /// An atomic insert increases this number by one.
   /// *Complexity*: O(n)
   var count : Int {
     return contents.flatMap({$0.1}).filter { $0.element != nil}.count
   }
 
-  /// Number of weak entries *with or without* refernced object.
-  /// O(n)
-  var totalCount : Int {
-    return contents.reduce(0) { $0 + $1.1.count }
-  }
-
-  /// Number of weak entries *without* referenced object.
-  /// nilCount == totalCount - count
-  /// O(n)
+  /// Number of entries *without* a referenced object.
+  /// This number can increase even when the weak set is immutable.
+  /// An atomic insert can change this number by n ∊ [-nilCount,0].
+  /// *Complexity*: O(n)
   var nilCount : Int {
     return contents.flatMap({$0.1}).filter { $0.element == nil}.count
   }
 
+  /// Number of entries *with or without* a refernced object.
+  /// This number can not change when the weak set is immutable
+  /// and 'count + nilCount = totalCount' holds.
+  /// An atomic insert can change this number by n ∊ [-nilCount,1].
+  /// *Complexity*: O(n)
+  var totalCount : Int {
+    return contents.reduce(0) { $0 + $1.1.count }
+  }
+
+  /// Number of list of entries.
+  /// This number can not change when the weak set is immutable
+  /// and 'keyCount <= totalCount' holds.
+  /// An atomic insert can change this number by n ∊ [-nilCount,1]
   /// O(1)
   var keyCount : Int {
     return contents.count
@@ -179,24 +186,30 @@ extension WeakEntry : CustomStringConvertible {
 
 extension WeakSet {
   /// Update and return list of valid (not nullified) entries for a value
-  private mutating func entries(at hashValue: Int) -> [WeakEntry<T>]? {
-    guard let count = contents[hashValue]?.count else {
+  private mutating func entries(at value: Int) -> [WeakEntry<T>]? {
+    guard let count = contents[value]?.count else {
       // no entries at all
       return nil
     }
 
-    guard let entries = contents[hashValue]?.filter({$0.element != nil})
+    guard let entries = contents[value]?.filter({$0.element != nil})
       where entries.count > 0 else {
         // invalid entries only
-        contents[hashValue] = nil
+        contents[value] = nil
         return nil
       }
 
       if entries.count != count {
         // valid and invalid entries, hence cleanup
-        contents[hashValue] = entries
+        contents[value] = entries
       }
       return entries
+  }
+
+  mutating func clean() {
+    for key in contents.keys {
+      let _ = entries(at:key)
+    }
   }
 
   /// The number of extra members (values) per hash value (key)

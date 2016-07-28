@@ -66,6 +66,16 @@ public class WeakSetTests : XCTestCase {
     // temp is immutable, nevertheless count and nil count has changed.
     XCTAssertEqual(temp.count, 0)
     XCTAssertEqual(temp.nilCount, 2)
+
+    var copy = temp
+
+    XCTAssertEqual(copy.nilCount, 2)
+    copy.clean()
+
+
+    XCTAssertEqual(temp.nilCount, 2)
+    XCTAssertEqual(copy.nilCount, 0)
+
   }
 }
 
