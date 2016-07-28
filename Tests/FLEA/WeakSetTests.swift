@@ -34,6 +34,16 @@ public class WeakSetTests : XCTestCase {
     // just two objects are in the set
     XCTAssertEqual(collection.count, 2)
 
+    var array : [String]? = collection.map { $0.string }
+    XCTAssertEqual(collection.count, 2)
+
+    var barry : [String]? = collection.map { $0.string }
+    XCTAssertEqual(collection.count, 2)
+
+    XCTAssertEqual(array!,barry!)
+    array = nil
+    barry = nil
+
     XCTAssertEqual(s, x)        // s and x are equal
     XCTAssertTrue(s! === x!)    // and the same
 

@@ -1,11 +1,3 @@
-
-/// Collections suitable for sharing nodes just implement SetAlgebra.insert(:)
-protocol PartialSetAlgebra {
-  associatedtype Element
-  mutating func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element)
-  func contains(_ member: Element) -> Bool
-}
-
 protocol Sharing : class {
   associatedtype M : PartialSetAlgebra
   static var pool : M { get set }
@@ -15,13 +7,6 @@ protocol Kin : class {
     associatedtype P : WeakPartialSetAlgebra
     var folks : P { get set }
 }
-
-protocol WeakPartialSetAlgebra : PartialSetAlgebra {}
-
-
-extension Set : PartialSetAlgebra {}       // Set : SetAlgebra
-extension WeakSet : PartialSetAlgebra {}
-extension WeakSet : WeakPartialSetAlgebra {}
 
 /// A sharing node is a specialized node where
 /// a collection of all created nodes is held.
