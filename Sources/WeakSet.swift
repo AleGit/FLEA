@@ -78,6 +78,7 @@ extension WeakSet : WeakPartialSetAlgebra {
 
 ///
 extension WeakSet {
+  /// Number of weak entries *with* referenced object.
   /// Calculate the current number of weakly referenced objects.
   /// The calculated number can change between calls even when
   /// weak set is immutable.
@@ -86,10 +87,23 @@ extension WeakSet {
     return contents.flatMap({$0.1}).filter { $0.element != nil}.count
   }
 
+  /// Number of weak entries *with or without* refernced object.
+  /// O(n)
+  var totalCount : Int {
+    return contents.reduce(0) { $0 + $1.1.count }
+  }
 
-  // func totalcount -> Int {
-  //   return contents.count
-  // }
+  /// Number of weak entries *without* referenced object.
+  /// nilCount == totalCount - count
+  /// O(n)
+  var nilCount : Int {
+    return contents.flatMap({$0.1}).filter { $0.element == nil}.count
+  }
+
+  /// O(1)
+  var keyCount : Int {
+    return contents.count
+  }
 }
 
 // MARK: Iterator protocol and Sequence

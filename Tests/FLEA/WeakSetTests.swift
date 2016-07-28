@@ -19,7 +19,10 @@ public class WeakSetTests : XCTestCase {
     var x : Stringly? = "s"      // a reference to s
 
     let temp : WeakSet<Stringly> = [s!,t!,x!,s!,t!,x!]
+    XCTAssertEqual(temp.keyCount, 2)
+    XCTAssertEqual(temp.totalCount, 2)
     XCTAssertEqual(temp.count, 2)
+    XCTAssertEqual(temp.nilCount, 0)
 
 
     XCTAssertEqual(s, x)        // s and x are equal
@@ -58,8 +61,12 @@ public class WeakSetTests : XCTestCase {
     x = nil // discard last reference to 's'
     XCTAssertEqual(collection.count, 0)
 
-    // XCTAssertEqual(temp.totalcount, 3)
+    // temp is immutable, hence key count and total count are unchanged.
+    XCTAssertEqual(temp.keyCount, 2)
+    XCTAssertEqual(temp.totalCount, 2)
+    // temp is immutable, nevertheless count and nil count has changed.
     XCTAssertEqual(temp.count, 0)
+    XCTAssertEqual(temp.nilCount, 2)
   }
 }
 

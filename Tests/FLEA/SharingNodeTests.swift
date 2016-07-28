@@ -3,6 +3,7 @@ import XCTest
 @testable import FLEA
 
 /// local minimal implementation of protocol
+/// to avoid side effects (pool) from ohter test classes
 private final class SharingNode : FLEA.SharingNode {
   typealias S = String
 
