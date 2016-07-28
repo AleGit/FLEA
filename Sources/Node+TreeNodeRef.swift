@@ -2,11 +2,7 @@ import CTptpParsing
 
 extension Node {
   init(tree:TreeNodeRef) {
-    self.init(tree:tree, symbol: Self.symbol)
-  }
-
-  private init(tree:TreeNodeRef, symbol: (of:TreeNodeRef) -> Symbol) {
-    let symbol = symbol(of:tree)
+    let symbol = Symbol(of:tree)
 
     switch tree.type {
     case PRLC_VARIABLE:
@@ -19,14 +15,14 @@ extension Node {
   }
 }
 
-extension Node where Symbol == String {
-  static func symbol(of tree:TreeNodeRef) -> String {
-    return tree.symbol ?? "n/a"
-  }
-}
-
-extension Node where Symbol == Tptp.Symbol {
-  static func symbol(of tree:TreeNodeRef) -> Tptp.Symbol {
-    return Tptp.Symbol(symbol:tree.symbol ?? "n/a", type:tree.type)
-  }
-}
+// extension Node where Symbol == String {
+//   static func symbol(of tree:TreeNodeRef) -> String {
+//     return tree.symbol ?? "n/a"
+//   }
+// }
+//
+// extension Node where Symbol == Tptp.Symbol {
+//   static func symbol(of tree:TreeNodeRef) -> Tptp.Symbol {
+//     return Tptp.Symbol(symbol:tree.symbol ?? "n/a", type:tree.type)
+//   }
+// }

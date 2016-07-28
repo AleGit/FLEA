@@ -5,8 +5,12 @@ protocol Symbolable : Hashable {
 
   var symbol : String { get }
   var type : Tptp.SymbolType { get }
+
+  /// Initialze a symbol with a node of the abstract syntax tree.
+  init(of node:TreeNodeRef)
 }
 
+/// A string is symbolable
 extension String : Symbolable {
   static var empty : String { return "" }
   var symbol : String { return self }
@@ -32,6 +36,12 @@ extension String : Symbolable {
       default:
         return .undefined
     }
+  }
+
+  init(of node:TreeNodeRef) {
+    let s = node.symbol ?? "n/a"
+    // TODO: insert symbol into symbol table
+    self = s
   }
 }
 
@@ -115,8 +125,12 @@ func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
 }
 
 extension Tptp.Symbol {
-  init(symbol:String, type:PRLC_TREE_NODE_TYPE) {
-    switch (symbol,type) {
+  // init(symbol:String, type:PRLC_TREE_NODE_TYPE) {
+  init(of node:TreeNodeRef) {
+    let symbol = node.symbol ?? "n/a" // hide self.symbol
+    let type = node.type              // hide self.type
+
+    switch (symbol, type) {
 
       case (_, PRLC_FILE):
         self = Tptp.Symbol(symbol,.file)

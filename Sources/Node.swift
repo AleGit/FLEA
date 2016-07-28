@@ -16,7 +16,6 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
   init()
 
   static func share(node:Self) -> Self
-  static func symbol(of node:TreeNodeRef) -> Symbol
 
 }
 
