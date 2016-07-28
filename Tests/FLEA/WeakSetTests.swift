@@ -18,6 +18,10 @@ public class WeakSetTests : XCTestCase {
     var t : Stringly? = "t"
     var x : Stringly? = "s"      // a reference to s
 
+    let temp : WeakSet<Stringly> = [s!,t!,x!,s!,t!,x!]
+    XCTAssertEqual(temp.count, 2)
+
+
     XCTAssertEqual(s, x)        // s and x are equal
     XCTAssertFalse(s! === x!)   // but distinct instances
 
@@ -53,6 +57,9 @@ public class WeakSetTests : XCTestCase {
 
     x = nil // discard last reference to 's'
     XCTAssertEqual(collection.count, 0)
+
+    // XCTAssertEqual(temp.totalcount, 3)
+    XCTAssertEqual(temp.count, 0)
   }
 }
 

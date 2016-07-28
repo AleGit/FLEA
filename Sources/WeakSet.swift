@@ -5,8 +5,11 @@
 /// **Caution:** The collection may contain less entries than elements inserted.
 /// When there is no strong reference to an weak entry's element, then
 /// the entry does not count and will be removed eventually.
+/// So even when it's immutable count can change between two calls.
 struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     private var contents = [Int: [WeakEntry<T>]](minimumCapacity:1)
+    init(){}
+
 }
 
 /// A weak entry holds a weak reference to an hashable object.
@@ -33,6 +36,7 @@ protocol WeakPartialSetAlgebra : PartialSetAlgebra {}
 /// A weak set is a collection of weak references
 /// and supports a subset of set algebra methods.
 extension WeakSet : WeakPartialSetAlgebra {
+
   /// Add an element (and get it's substitution).
   mutating func insert(_ newElement: T) -> (inserted: Bool, memberAfterInsert: T) {
     let value = newElement.hashValue
@@ -72,11 +76,20 @@ extension WeakSet : WeakPartialSetAlgebra {
   }
 }
 
-extension WeakSet { // not a collection
+///
+extension WeakSet {
+  /// Calculate the current number of weakly referenced objects.
+  /// The calculated number can change between calls even when
+  /// weak set is immutable.
   /// *Complexity*: O(n)
   var count : Int {
     return contents.flatMap({$0.1}).filter { $0.element != nil}.count
   }
+
+
+  // func totalcount -> Int {
+  //   return contents.count
+  // }
 }
 
 // MARK: Iterator protocol and Sequence
@@ -119,6 +132,24 @@ extension WeakSet : Sequence {
   }
 }
 
+extension WeakSet :  ArrayLiteralConvertible {
+  init(arrayLiteral: T...) {
+    self.init()
+    for element in arrayLiteral {
+      let _ = self.insert(element)
+    }
+  }
+}
+
+extension WeakSet {
+  init(set:Set<T>) {
+    self.init()
+    for s in set {
+      let _ = self.insert(s)
+    }
+  }
+}
+
 // MARK: - Misc
 
 extension WeakEntry : CustomStringConvertible {
@@ -129,6 +160,8 @@ extension WeakEntry : CustomStringConvertible {
     return e.description
   }
 }
+
+
 
 extension WeakSet {
   /// Update and return list of valid (not nullified) entries for a value
