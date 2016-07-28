@@ -24,7 +24,6 @@ public class WeakSetTests : XCTestCase {
     XCTAssertEqual(temp.count, 2)
     XCTAssertEqual(temp.nilCount, 0)
 
-
     XCTAssertEqual(s, x)        // s and x are equal
     XCTAssertFalse(s! === x!)   // but distinct instances
 
