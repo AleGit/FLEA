@@ -55,7 +55,7 @@ extension Node {
   }
 }
 
-/// MARK: convenience initializers to build nodes from strings.
+/// MARK: convenience initializers to build terms with strings.
 
 extension Node {
   init(v:String) {
@@ -66,7 +66,7 @@ extension Node {
     self.init(constant:Symbol(c,.function))
   }
 
-  init(f:String, nodes:[Self]?) {
+  init(f:String, _ nodes:[Self]?) {
     guard let nodes = nodes else {
       self.init(v:f)
       return
@@ -74,7 +74,7 @@ extension Node {
     self.init(symbol:Symbol(f,.function), nodes:nodes)
   }
 
-  init(p:String, nodes:[Self]?) {
+  init(p:String, _ nodes:[Self]?) {
     guard let nodes = nodes else {
       self.init(v:p)
       return

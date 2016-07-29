@@ -5,7 +5,7 @@ import XCTest
 /// local minimal implementation of protocol
 /// to avoid side effects (pool) from ohter test classes
 private final class KinNode : FLEA.KinNode {
-  typealias S = String // choose the symbol
+  typealias S = Tptp.Symbol // choose the symbol
 
   static var pool = WeakSet<KinNode>()
 
@@ -38,10 +38,15 @@ public class KinNodeTests : XCTestCase {
   /// accumulate four distict nodes
   func testEqualityX() {
 
-    let X = Node(variable:"X")
-    let a = Node(constant:"a")
-    let fX = Node(symbol:"f", nodes:[X])
-    let fa = Node(symbol:"f", nodes:[a])
+    let X = Node(v:"X")
+    let a = Node(c:"a")
+    let fX = Node(f:"f", [X])
+    let fa = Node(f:"f", [a])
+
+    XCTAssertEqual("X-variable",X.debugDescription,nok)
+    XCTAssertEqual("a-function",a.debugDescription,nok)
+    XCTAssertEqual("f-function(\"X-variable\")",fX.debugDescription,nok)
+    XCTAssertEqual("f-function(\"a-function\")",fa.debugDescription,nok)
 
     // check if folks are set correctly
 
@@ -50,7 +55,8 @@ public class KinNodeTests : XCTestCase {
     XCTAssertTrue(a.folks.contains(fa),"\(nok)\n \(a.folks)")
     XCTAssertFalse(a.folks.contains(fX),"\(nok)\n \(a.folks)")
 
-    let fX_a = fX * [Node(variable:"X"):Node(constant:"a")]
+    let fX_a = fX * [Node(v:"X"):Node(c:"a")]
+
 
     // check if subtistuion sets folks correctly
 
@@ -69,12 +75,12 @@ public class KinNodeTests : XCTestCase {
   /// accumulate four distict nodes
   func testEqualityY() {
 
-    let X = Node(variable:"Y")
-    let a = Node(constant:"a")
-    let fX = Node(symbol:"f", nodes:[X])
-    let fa = Node(symbol:"f", nodes:[a])
+    let X = Node(v:"Y")
+    let a = Node(c:"a")
+    let fX = Node(f:"f", [X])
+    let fa = Node(f:"f", [a])
 
-    let fX_a = fX * [Node(variable:"Y"):Node(constant:"a")]
+    let fX_a = fX * [Node(v:"Y"):Node(c:"a")]
 
     XCTAssertEqual(fX_a,fa,nok)
     XCTAssertTrue(fX_a == fa,nok)

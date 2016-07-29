@@ -13,7 +13,7 @@ extension Demo {
       let a = Tptp.Node(c: "a")
       let b = Tptp.Node(c: "a")
 
-      let fXY = Tptp.Node(f: "f", nodes:[X,Y])
+      let fXY = Tptp.Node(f: "f", [X,Y])
 
       let fYX = fXY * [X:Y, Y:X]
       let fYZ = fXY * [X:Y, Y:Z]

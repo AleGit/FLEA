@@ -4,13 +4,15 @@
 
 extension Node {
   var debugDescription : String {
+    let s = "\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)"
+
     guard let nodes = self.nodes?.map({$0.debugDescription})
     where nodes.count > 0
     else {
-      return "\(self.symbol)"
+      return s
     }
-    let tuple = nodes.map{ $0 }.joined(separator:",")
-    return "\(self.symbol)(\(tuple))"
+    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+    return "\(s)(\(tuple))"
   }
 
   // var descritpion : String {
@@ -20,13 +22,15 @@ extension Node {
 
 extension Node where Symbol : CustomDebugStringConvertible {
   var debugDescription : String {
+    let s = self.symbol.debugDescription
+
     guard let nodes = self.nodes?.map({$0.debugDescription})
     where nodes.count > 0
     else {
-      return "\(self.symbol.debugDescription)"
+      return s
     }
-    let tuple = nodes.map{ "\($0)" }.joined(separator:",")
-    return "\(self.symbol.debugDescription)(\(tuple))"
+    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+    return "\(s)(\(tuple))"
   }
 }
 
@@ -41,6 +45,21 @@ extension Node where Symbol : CustomDebugStringConvertible {
 //     return "\(self.symbol)(\(tuple))"
 //   }
 // }
+
+extension Node where Symbol == Int {
+  var debugDescription : String {
+  let s = self.symbol < 256 ?
+  "\(self.symbol.string)-\(self.symbol.type)" :
+  "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
+  guard let nodes = self.nodes?.map({$0.debugDescription})
+  where nodes.count > 0
+  else {
+    return s
+  }
+  let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+  return "\(s)(\(tuple))"
+}
+}
 
 extension Node where Symbol : Symbolable {
   var defaultDescription : String {

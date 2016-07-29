@@ -2,6 +2,7 @@
 extension String : Symbolable {
 
   var string : String { return self }
+
   var type: Tptp.SymbolType {
     switch self {
       case "!":
@@ -22,6 +23,7 @@ extension String : Symbolable {
         return .inequation
 
       default:
+
         return .undefined
     }
   }

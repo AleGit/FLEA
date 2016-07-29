@@ -1,11 +1,5 @@
-protocol SymbolTable {
-  associatedtype Symbol : Symbolable
-
-  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
-  subscript(symbol:Symbol) -> String? { get }
-}
-
 typealias StringType = (String, Tptp.SymbolType)
+
 struct IntSymbolTable : SymbolTable {
   var symbols = [String : Int]()
   var strings = [Int : StringType] ()
@@ -49,7 +43,11 @@ struct IntSymbolTable : SymbolTable {
   }
 }
 
-private var globalIntSymbolTable = IntSymbolTable()
+var globalIntSymbolTable : IntSymbolTable = {
+  var table = IntSymbolTable()
+  let _ = table.insert("",.undefined)
+  return table
+}()
 
 extension Int : Symbolable {
 
