@@ -69,11 +69,15 @@ extension Int : Symbolable {
 }
 extension Int {
   init(of node:TreeNodeRef) {
-    guard let _ = node.symbol else {
-      self = 0
+    guard let string = node.symbol else {
+      self.init("n/a",.undefined)
       return
     }
-    self = 1
+    self.init(string, .undefined)
+  }
+
+  init(_ string:String, _ type: Tptp.SymbolType) {
+    self = globalIntSymbolTable.insert(string,type)
   }
 
 

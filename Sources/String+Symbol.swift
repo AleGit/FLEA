@@ -32,6 +32,10 @@ extension String {
   init(of node:TreeNodeRef) {
     let s = node.symbol ?? "n/a"
     // TODO: insert symbol into symbol table
-    self = s
+    self.init(s,.undefined)
+  }
+
+  init(_ string:String, _ type: Tptp.SymbolType) {
+    self = string
   }
 }

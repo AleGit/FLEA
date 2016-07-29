@@ -69,3 +69,35 @@ extension Node where Symbol == Tptp.Symbol {
     self.init(symbol:Tptp.Symbol(symbol,.function), nodes:nodes)
   }
 }
+
+extension Node where Symbol == Int {
+  init(variable:String) {
+    self.init(variable:Int(variable,.variable))
+  }
+  init(constant:String) {
+    self.init(constant:Int(constant,.function))
+  }
+  init(symbol:String, nodes:[Self]?) {
+    guard let nodes = nodes else {
+      self.init(variable:symbol)
+      return
+    }
+    self.init(symbol:Int(symbol,.function), nodes:nodes)
+  }
+}
+
+// extension Node { // where Node : Symbolable
+//   init(variable:String) {
+//     self.init(variable:Symbol(variable,.variable))
+//   }
+//   init(constant:String) {
+//     self.init(constant:Symbol(constant,.function))
+//   }
+//   init(symbol:String, nodes:[Self]?) {
+//     guard let nodes = nodes else {
+//       self.init(variable:symbol)
+//       return
+//     }
+//     self.init(symbol:Symbol(symbol,.function), nodes:nodes)
+//   }
+// }

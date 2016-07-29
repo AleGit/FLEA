@@ -13,6 +13,7 @@ protocol Symbolable : Hashable {
   /// Initialze a symbol with symbol (and type)
   /// of a node in the abstract syntax tree.
   init(of node:TreeNodeRef)
+  init(_ string: String, _ type: Tptp.SymbolType)
 }
 
 
