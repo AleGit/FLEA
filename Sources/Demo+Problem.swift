@@ -91,7 +91,7 @@ extension Demo {
       print("Node == \(String(reflecting:NodeType.self))")
     }
     private static func hwv134kin() {
-      typealias NodeType = Tptp.SimpleNode
+      typealias NodeType = Tptp.KinNode
       let problem = "Problems/HWV134-1"
 
       let inputs : [NodeType] = demoParse(problem:problem)
