@@ -31,7 +31,8 @@ struct IntSymbolTable : SymbolTable {
       return type.rawValue
 
       default:
-        let value = (symbols.count << 8) // * 256
+
+        let value = (1+symbols.count) * 256 // * 256
         + type.rawValue // encode type in value
 
         symbols[string] = value
@@ -44,9 +45,6 @@ struct IntSymbolTable : SymbolTable {
   }
 
   subscript(value:Int) -> String? {
-    guard 0 <= value && value < strings.count else {
-      return nil
-    }
     return strings[value]?.0
   }
 }
@@ -56,14 +54,14 @@ private var globalIntSymbolTable = IntSymbolTable()
 extension Int : Symbolable {
 
   var string : String {
-    return globalIntSymbolTable[self] ?? "n/a"
+    return globalIntSymbolTable[self] ?? "n/a ?"
 
   }
 
   /// the type is encoded into the value
   /// as the remainder after division by 256
   var type : Tptp.SymbolType {
-    return Tptp.SymbolType(rawValue:self % (1 << 8)) ?? .undefined
+    return Tptp.SymbolType(rawValue:self % (256)) ?? .undefined
   }
 }
 extension Int {

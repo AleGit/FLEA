@@ -63,7 +63,7 @@ extension Tptp.File {
   }
 
   /// The sequence of stored tree nodes.
-  var nodes : UtileSequence<TreeNodeRef,TreeNodeRef> {
+  private var nodes : UtileSequence<TreeNodeRef,TreeNodeRef> {
     let first = prlcFirstTreeNode(self.store!)
     let step = {
       (treeNode : TreeNodeRef) in

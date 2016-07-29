@@ -44,6 +44,7 @@ public class UnificationTests : XCTestCase {
   }
 
   func testUnifiable() {
+
     check( Q.X, Q.Y, [Q.X : Q.Y] as Instantiator,"A")
 
     check( Q.Z, Q.fXY, [Q.Z : Q.fXY] as Instantiator,"B")
