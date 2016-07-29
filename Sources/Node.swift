@@ -15,6 +15,7 @@ protocol Node : Hashable, CustomStringConvertible {
   /// empty initializer to enable sharing magic
   init()
 
+  /// enables sharing magic
   static func share(node:Self) -> Self
 }
 
@@ -54,50 +55,30 @@ extension Node {
   }
 }
 
-extension Node where Symbol == Tptp.Symbol {
-  init(variable:String) {
-    self.init(variable:Tptp.Symbol(variable,.variable))
+/// MARK: convenience initializers to build nodes from strings.
+
+extension Node {
+  init(v:String) {
+    self.init(variable:Symbol(v,.variable))
   }
-  init(constant:String) {
-    self.init(constant:Tptp.Symbol(constant,.function))
+
+  init(c:String) {
+    self.init(constant:Symbol(c,.function))
   }
-  init(symbol:String, nodes:[Self]?) {
+
+  init(f:String, nodes:[Self]?) {
     guard let nodes = nodes else {
-      self.init(variable:symbol)
+      self.init(v:f)
       return
     }
-    self.init(symbol:Tptp.Symbol(symbol,.function), nodes:nodes)
+    self.init(symbol:Symbol(f,.function), nodes:nodes)
   }
-}
 
-extension Node where Symbol == Int {
-  init(variable:String) {
-    self.init(variable:Int(variable,.variable))
-  }
-  init(constant:String) {
-    self.init(constant:Int(constant,.function))
-  }
-  init(symbol:String, nodes:[Self]?) {
+  init(p:String, nodes:[Self]?) {
     guard let nodes = nodes else {
-      self.init(variable:symbol)
+      self.init(v:p)
       return
     }
-    self.init(symbol:Int(symbol,.function), nodes:nodes)
+    self.init(symbol:Symbol(p,.predicate), nodes:nodes)
   }
 }
-
-// extension Node { // where Node : Symbolable
-//   init(variable:String) {
-//     self.init(variable:Symbol(variable,.variable))
-//   }
-//   init(constant:String) {
-//     self.init(constant:Symbol(constant,.function))
-//   }
-//   init(symbol:String, nodes:[Self]?) {
-//     guard let nodes = nodes else {
-//       self.init(variable:symbol)
-//       return
-//     }
-//     self.init(symbol:Symbol(symbol,.function), nodes:nodes)
-//   }
-// }
