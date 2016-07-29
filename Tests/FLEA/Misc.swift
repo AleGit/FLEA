@@ -8,20 +8,20 @@ let nok = "❌ "
 struct Q {
   typealias Node = Tptp.SmartNode
 
-  static var X = Node(variable:"X")
-  static var Y = Node(variable:"Y")
-  static var Z = Node(variable:"Z")
-  static var a = Node(constant:"a")
-  static var b = Node(constant:"b")
-  static var c = Node(constant:"c")
+  static var X = Node(v:"X")
+  static var Y = Node(v:"Y")
+  static var Z = Node(v:"Z")
+  static var a = Node(c:"a")
+  static var b = Node(c:"b")
+  static var c = Node(c:"c")
 
-  static var fXY = Node(symbol:"f",nodes:[X,Y])
+  static var fXY = Node(f:"f",nodes:[X,Y])
   static var fXZ = fXY * [Y:Z]
   static var fYZ = fXZ * [X:Y]
   static var fXX = fXY * X
 
-  static var gXYZ = Node(symbol:"g",nodes:[X,Y,Z])
-  static var hX = Node(symbol:"h",nodes:[X])
+  static var gXYZ = Node(f:"g",nodes:[X,Y,Z])
+  static var hX = Node(f:"h",nodes:[X])
 
   static var X_a = [X:a]
   static var Y_b = [Y:b]
@@ -32,7 +32,7 @@ struct Q {
   static var gabc = gXYZ * [X:a,Y:b,Z:c]
   static var ha = hX * [X:a]
 
-  static var ffaaZ = Node(symbol:"f",nodes:[faa,Z])
+  static var ffaaZ = Node(f:"f",nodes:[faa,Z])
 }
 
 struct Misc {

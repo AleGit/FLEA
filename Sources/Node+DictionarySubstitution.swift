@@ -44,14 +44,14 @@ func *<N:Node>(t:N, s:N) -> N {
 }
 
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N.Symbol == String>(t:N) -> N {
-    return t * N(constant:"⊥")
+postfix func ⊥<N:Node>(t:N) -> N {
+    return t * N(c:"⊥")
 }
 
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
-    return t * N(constant:Tptp.Symbol("⊥",.function))
-}
+// postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
+//     return t * N(constant:Tptp.Symbol("⊥",.function))
+// }
 
 // func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
 //     for (key,value) in lhs {
