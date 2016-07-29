@@ -1,6 +1,5 @@
 /// Make strings symbolable
 extension String : Symbolable {
-  static var empty : String { return "" }
 
   var string : String { return self }
   var type: Tptp.SymbolType {

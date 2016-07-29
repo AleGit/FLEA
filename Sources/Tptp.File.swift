@@ -82,16 +82,19 @@ extension Tptp.File {
 extension Tptp.File {
 
   /// The sequence of parsed <include> nodes.
+  /// includes.count <= inputs.count
   private var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
   }
 
   /// The sequence of parsed <cnf_annotated> nodes.
+  /// cnfs.count <= inputs.count
   private var cnfs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
   }
 
   /// The sequence of parsed <fof_annotated> nodes.
+  /// fofs.count <= inputs.count
   private var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
   }

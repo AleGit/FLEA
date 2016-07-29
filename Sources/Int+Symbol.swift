@@ -54,7 +54,6 @@ struct IntSymbolTable : SymbolTable {
 private var globalIntSymbolTable = IntSymbolTable()
 
 extension Int : Symbolable {
-  static var empty : Int { return 0 }
 
   var string : String {
     return globalIntSymbolTable[self] ?? "n/a"
