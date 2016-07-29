@@ -40,7 +40,58 @@ extension Demo {
     }
 
     static func hwv134cnf() {
-      typealias NodeType = Tptp.Node
+      hwv134simple()
+      hwv134sharing()
+      hwv134smart()
+      hwv134kin()
+    }
+    private static func hwv134simple() {
+      typealias NodeType = Tptp.SimpleNode
+      let problem = "Problems/HWV134-1"
+
+      let inputs : [NodeType] = demoParse(problem:problem)
+      print(problem, "count :", inputs.count)
+
+      guard inputs.count > 0 else { return }
+
+      print("#1", inputs[0])
+      print("#1", inputs[0].debugDescription)
+      print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
+
+      print("Node == \(String(reflecting:NodeType.self))")
+    }
+    private static func hwv134sharing() {
+      typealias NodeType = Tptp.SharingNode
+      let problem = "Problems/HWV134-1"
+
+      let inputs : [NodeType] = demoParse(problem:problem)
+      print(problem, "count :", inputs.count)
+
+      guard inputs.count > 0 else { return }
+
+      print("#1", inputs[0])
+      print("#1", inputs[0].debugDescription)
+      print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
+
+      print("Node == \(String(reflecting:NodeType.self))")
+    }
+    private static func hwv134smart() {
+      typealias NodeType = Tptp.SmartNode
+      let problem = "Problems/HWV134-1"
+
+      let inputs : [NodeType] = demoParse(problem:problem)
+      print(problem, "count :", inputs.count)
+
+      guard inputs.count > 0 else { return }
+
+      print("#1", inputs[0])
+      print("#1", inputs[0].debugDescription)
+      print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
+
+      print("Node == \(String(reflecting:NodeType.self))")
+    }
+    private static func hwv134kin() {
+      typealias NodeType = Tptp.SimpleNode
       let problem = "Problems/HWV134-1"
 
       let inputs : [NodeType] = demoParse(problem:problem)
