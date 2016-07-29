@@ -4,7 +4,7 @@
 /// of a value, together with a list of references to nodes (the "children"),
 /// with the constraints that no reference is duplicated, and none points to the root.
 /// <a href="https://en.wikipedia.org/wiki/Tree_(data_structure)">wikipedia</a>
-protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
+protocol Node : Hashable, CustomStringConvertible {
   associatedtype Symbol : Symbolable
 
   /// The Value of the node.
@@ -16,7 +16,6 @@ protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible 
   init()
 
   static func share(node:Self) -> Self
-
 }
 
 extension Node {
@@ -28,10 +27,9 @@ extension Node {
   }
 }
 
-/// MARK: - node initializers
 extension Node {
 
-  /// *Dedicated* initializer for all nodes and sharing nodes.
+  /// *Dedicated* initializer for all nodes and sharing nodes types.
   /// This enables automatic sharing for all sharing node classes.
   init(symbol:Symbol, nodes:[Self]?) {
     self.init()                   // self must be initialized ...

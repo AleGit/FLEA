@@ -1,4 +1,7 @@
-// default implementations of 'CustomStringConvertible' and ''
+// default implementations for
+// 'CustomStringConvertible' and 'CustomDebugStringConvertible'
+
+
 extension Node {
   var debugDescription : String {
     guard let nodes = self.nodes?.map({$0.debugDescription})

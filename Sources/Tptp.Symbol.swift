@@ -7,7 +7,7 @@ protocol Symbolable : Hashable {
   /// the empty symbol
   static var empty: Self { get }
 
-  var symbol : String { get }
+  var string : String { get }
   var type : Tptp.SymbolType { get }
 
   init(of node:TreeNodeRef)
@@ -20,7 +20,8 @@ protocol Symbolable : Hashable {
 /// A string is symbolable
 extension String : Symbolable {
   static var empty : String { return "" }
-  var symbol : String { return self }
+
+  var string : String { return self }
   var type: Tptp.SymbolType {
     switch self {
       case "!":
@@ -93,11 +94,11 @@ extension Tptp {
   }
 
   struct Symbol : Hashable, CustomDebugStringConvertible {
-    let symbol : String
+    let string : String
     let type : SymbolType
 
-    init(_ symbol: String, _ type: SymbolType ) {
-      self.symbol = symbol
+    init(_ string: String, _ type: SymbolType ) {
+      self.string = string
       self.type = type
     }
   }
@@ -112,25 +113,25 @@ extension Tptp.Symbol : Symbolable {
 extension Tptp.Symbol {
   /// Hashable
   var hashValue : Int {
-    return self.symbol.hashValue
+    return self.string.hashValue
   }
 }
 
 extension Tptp.Symbol {
   /// CustomStringConvertible
   var description:String {
-    return self.symbol
+    return self.string
   }
 
   /// CustomDebugStringConvertible
   var debugDescription:String {
-    return "\(self.symbol)-\(self.type)"
+    return "\(self.string)-\(self.type)"
   }
 }
 
 /// Tptp.Symbol : Hashable : Equatable
 func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
-  return lhs.symbol == rhs.symbol && lhs.type == rhs.type
+  return lhs.string == rhs.string && lhs.type == rhs.type
 }
 
 extension Tptp.Symbol {
@@ -198,11 +199,49 @@ extension Tptp.Symbol {
 }
 
 // MARK: Int
+//
 
-// extension Int : Symbolable {
+
+
+// struct SymbolTable<String,Symbol:Symbolable> {
+//   var symbols = [String : S]()
+//   var strings = [String]
 //
+//   mutating func insert(_ string: String) -> Symbol {
+//     if let symbol = symbols[string] {
+//       return symbol
+//     }
+//     let count = strings.count
+//     strings.append(string)
+//     symbols[string] = count
+//   }
+//
+//   subscript(value:Int) -> String {
+//     guard 0 <= value && value < strings.count else {
+//       return String.empty
+//     }
+//     return strings[value]
+//   }
 // }
-//
-// extension Int : TptpSymbolable {
-//
-// }
+
+extension Int : Symbolable {
+  static var empty : Int { return 0 }
+
+  var string : String { return "x/a" }
+  var type : Tptp.SymbolType {
+    return .undefined
+  }
+
+}
+
+extension Int {
+  init(of node:TreeNodeRef) {
+    guard let _ = node.symbol else {
+      self = 0
+      return
+    }
+    self = 1
+  }
+
+
+}
