@@ -48,10 +48,10 @@ extension Node where Symbol == Tptp.Symbol {
       guard let nodes = self.nodes?.map({$0.description})
       where nodes.count > 0
       else {
-        return "\(self.symbol.symbol)"
+        return "\(self.symbol.string)"
       }
       let tuple = nodes.map{ "\($0)" }.joined(separator:",")
-      return "\(self.symbol.symbol)(\(tuple))"
+      return "\(self.symbol.string)(\(tuple))"
     }
 
   }

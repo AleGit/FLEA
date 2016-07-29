@@ -138,7 +138,7 @@ extension Yices {
             //literal.register(.predicate, category:.functor, notation:.prefix, arity:.fixed(nodes.count))
 
             // proposition or predicate term (an application of Boolean type)
-            return Yices.application(literal.symbol.symbol, nodes:nodes, term_tau: Yices.bool_tau)
+            return Yices.application(literal.symbol.string, nodes:nodes, term_tau: Yices.bool_tau)
 
         default:
             assert(false, "'\(#function)(\(literal))' Argument must not be a \(type).")
@@ -158,7 +158,7 @@ extension Yices {
         // term.register(.function, category:.functor, notation:.prefix, arity:.fixed(nodes.count))
 
         // function or constant term (an application of uninterpreted type)
-        return Yices.application(term.symbol.symbol, nodes:nodes, term_tau:Yices.free_tau)
+        return Yices.application(term.symbol.string, nodes:nodes, term_tau:Yices.free_tau)
     }
 
     /// Build (constant) predicate or function.
