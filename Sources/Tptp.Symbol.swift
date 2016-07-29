@@ -21,8 +21,6 @@ protocol Symbolable : Hashable {
 // MARK: - Tptp.Symbol
 
 extension Tptp {
-
-
   struct Symbol : Hashable, CustomDebugStringConvertible {
     let string : String
     let type : SymbolType
@@ -68,7 +66,67 @@ extension Tptp {
     case function   // functions and constants
     case variable   // variables
   }
+}
 
+extension Tptp.SymbolType {
+  init(of node:TreeNodeRef) {
+    let symbol = node.symbol ?? "n/a"
+    let type = node.type
+
+    switch (symbol, type) {
+      case (_, PRLC_FILE):
+        self = .file
+      case (_, PRLC_FOF):
+        self = .fof
+      case (_, PRLC_CNF):
+        self = .cnf
+      case (_, PRLC_INCLUDE):
+        self = .include
+
+      case (_, PRLC_ROLE):
+        self = .role
+      case (_, PRLC_ANNOTATION):
+        self = .annotation
+
+      case ("!", _):
+        assert (type == PRLC_QUANTIFIER)
+        self = .universal
+      case ("?", _):
+        assert (type == PRLC_QUANTIFIER)
+        self = .existential
+
+      case ("|", _):
+        assert (type == PRLC_CONNECTIVE)
+        self = .disjunction
+      case ("&", _):
+        assert (type == PRLC_CONNECTIVE)
+        self = .conjunction
+      case ("=>", _):
+        assert (type == PRLC_CONNECTIVE)
+        self = .implication
+      case ("~", _):
+        assert (type == PRLC_CONNECTIVE)
+        self = .negation
+
+      case ("=", _):
+        assert (type == PRLC_EQUATIONAL)
+        self = .equation
+      case ("!=", _):
+        assert (type == PRLC_EQUATIONAL)
+        self = .inequation
+
+      case (_, PRLC_PREDICATE):
+        self = .predicate
+
+      case (_, PRLC_FUNCTION):
+        self = .function
+      case (_, PRLC_VARIABLE):
+        self = .variable
+
+      default:
+        self = .undefined
+      }
+  }
 }
 
 extension Tptp.Symbol : Symbolable {
@@ -76,6 +134,8 @@ extension Tptp.Symbol : Symbolable {
     return Tptp.Symbol("",.undefined)
   }
 }
+
+
 
 extension Tptp.Symbol {
   /// Hashable
@@ -104,63 +164,9 @@ func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
 extension Tptp.Symbol {
   // init(symbol:String, type:PRLC_TREE_NODE_TYPE) {
   init(of node:TreeNodeRef) {
-    let symbol = node.symbol ?? "n/a" // hide self.symbol
-    let type = node.type              // hide self.type
+    let symbol = node.symbol ?? "n/a"
+    let type = Tptp.SymbolType(of:node)
 
-    switch (symbol, type) {
-
-      case (_, PRLC_FILE):
-        self = Tptp.Symbol(symbol,.file)
-
-      case (_, PRLC_FOF):
-        self = Tptp.Symbol(symbol,.fof)
-      case (_, PRLC_CNF):
-        self = Tptp.Symbol(symbol,.cnf)
-      case (_, PRLC_INCLUDE):
-        self = Tptp.Symbol(symbol,.include)
-
-      case (_, PRLC_ROLE):
-        self = Tptp.Symbol(symbol,.role)
-      case (_, PRLC_ANNOTATION):
-        self = Tptp.Symbol(symbol,.annotation)
-
-      case ("!", _):
-        assert (type == PRLC_QUANTIFIER)
-        self = Tptp.Symbol(symbol,.universal)
-      case ("?", _):
-        assert (type == PRLC_QUANTIFIER)
-        self = Tptp.Symbol(symbol,.existential)
-
-      case ("|", _):
-        assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.disjunction)
-      case ("&", _):
-        assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.conjunction)
-      case ("=>", _):
-        assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.implication)
-      case ("~", _):
-        assert (type == PRLC_CONNECTIVE)
-        self = Tptp.Symbol(symbol,.negation)
-
-      case ("=", _):
-        assert (type == PRLC_EQUATIONAL)
-        self = Tptp.Symbol(symbol,.equation)
-      case ("!=", _):
-        assert (type == PRLC_EQUATIONAL)
-        self = Tptp.Symbol(symbol,.inequation)
-
-      case (_, PRLC_PREDICATE):
-        self = Tptp.Symbol(symbol,.predicate)
-
-      case (_, PRLC_FUNCTION):
-        self = Tptp.Symbol(symbol,.function)
-      case (_, PRLC_VARIABLE):
-        self = Tptp.Symbol(symbol,.variable)
-
-      default:
-        self = Tptp.Symbol(symbol,.undefined)
-    }
+    self = Tptp.Symbol(symbol, type)
   }
 }
