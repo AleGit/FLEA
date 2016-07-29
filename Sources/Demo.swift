@@ -5,7 +5,11 @@ public struct Demo {
   static let demos = [
   "p1c" : (Demo.Problem.puz001cnf,"Parse PUZ001-1 (cnf)"),
   "p1f" : (Demo.Problem.puz001fof,"Parse PUZ001+1 (fof)"),
-  "hwv" : (Demo.Problem.hwv134cnf,"Parse HWV134-1 (expensive)"),
+  // "hwv" : (Demo.Problem.hwv134cnf,"Parse HWV134-1 (expensive)"),
+  "simple" : (Demo.Problem.simpleNode,"Parse HWV134-1 with simple node(expensive)"),
+  "sharing" : (Demo.Problem.sharingNode,"Parse HWV134-1 with sharing node (expensive)"),
+  "smart" : (Demo.Problem.smartNode,"Parse HWV134-1 with smart node (expensive)"),
+  "kin" : (Demo.Problem.kinNode,"Parse HWV134-1 with kin node (expensive)"),
   "broken" : (Demo.Problem.broken,"Parse invalid file"),
   "share" : (Demo.sharing, "Node sharing"),
   "mgu" : (Demo.Unification.demo,"Unfication")

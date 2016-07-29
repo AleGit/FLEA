@@ -39,13 +39,7 @@ extension Demo {
       print("Node == \(String(reflecting:NodeType.self))")
     }
 
-    static func hwv134cnf() {
-      hwv134simple()
-      hwv134sharing()
-      hwv134smart()
-      hwv134kin()
-    }
-    private static func hwv134simple() {
+     static func simpleNode() {
       typealias NodeType = Tptp.SimpleNode
       let problem = "Problems/HWV134-1"
 
@@ -60,7 +54,7 @@ extension Demo {
 
       print("Node == \(String(reflecting:NodeType.self))")
     }
-    private static func hwv134sharing() {
+     static func sharingNode() {
       typealias NodeType = Tptp.SharingNode
       let problem = "Problems/HWV134-1"
 
@@ -75,7 +69,7 @@ extension Demo {
 
       print("Node == \(String(reflecting:NodeType.self))")
     }
-    private static func hwv134smart() {
+     static func smartNode() {
       typealias NodeType = Tptp.SmartNode
       let problem = "Problems/HWV134-1"
 
@@ -90,7 +84,7 @@ extension Demo {
 
       print("Node == \(String(reflecting:NodeType.self))")
     }
-    private static func hwv134kin() {
+     static func kinNode() {
       typealias NodeType = Tptp.KinNode
       let problem = "Problems/HWV134-1"
 
