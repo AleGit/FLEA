@@ -51,6 +51,5 @@ struct Tptp {
 
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription
-
   }
 }

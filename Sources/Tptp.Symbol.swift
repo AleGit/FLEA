@@ -8,58 +8,34 @@ protocol Symbolable : Hashable {
   static var empty: Self { get }
 
   var string : String { get }
-  var type : Tptp.SymbolType { get }
+  var type : Tptp.Symbol.Kind { get }
 
+  /// Initialze a symbol with symbol (and type)
+  /// of a node in the abstract syntax tree.
   init(of node:TreeNodeRef)
-
-  /// Initialze a symbol with a node of the abstract syntax tree.
 }
 
-// MARK: - String -
 
-/// A string is symbolable
-extension String : Symbolable {
-  static var empty : String { return "" }
-
-  var string : String { return self }
-  var type: Tptp.SymbolType {
-    switch self {
-      case "!":
-        return .universal
-      case "?":
-        return .existential
-      case "~":
-        return .negation
-      case "|":
-        return .disjunction
-      case "&":
-        return .conjunction
-      case "=>":
-        return .implication
-      case "=":
-        return .equation
-      case "!=":
-        return .inequation
-
-      default:
-        return .undefined
-    }
-  }
-}
-
-extension String {
-  init(of node:TreeNodeRef) {
-    let s = node.symbol ?? "n/a"
-    // TODO: insert symbol into symbol table
-    self = s
-  }
-}
 
 // MARK: - Tptp.Symbol
 
 extension Tptp {
-  enum SymbolType {
-    case undefined
+
+
+  struct Symbol : Hashable, CustomDebugStringConvertible {
+    let string : String
+    let type : Symbol.Kind
+
+    init(_ string: String, _ type: Symbol.Kind ) {
+      self.string = string
+      self.type = type
+    }
+  }
+}
+
+extension Tptp.Symbol {
+  enum Kind : Int8 {
+    case undefined = 0
 
     /// <TPTP_file>
     case file
@@ -90,18 +66,8 @@ extension Tptp {
     case predicate  // predicates and propositions
     case function   // functions and constants
     case variable   // variables
-
   }
 
-  struct Symbol : Hashable, CustomDebugStringConvertible {
-    let string : String
-    let type : SymbolType
-
-    init(_ string: String, _ type: SymbolType ) {
-      self.string = string
-      self.type = type
-    }
-  }
 }
 
 extension Tptp.Symbol : Symbolable {
@@ -196,52 +162,4 @@ extension Tptp.Symbol {
         self = Tptp.Symbol(symbol,.undefined)
     }
   }
-}
-
-// MARK: Int
-//
-
-
-
-// struct SymbolTable<String,Symbol:Symbolable> {
-//   var symbols = [String : S]()
-//   var strings = [String]
-//
-//   mutating func insert(_ string: String) -> Symbol {
-//     if let symbol = symbols[string] {
-//       return symbol
-//     }
-//     let count = strings.count
-//     strings.append(string)
-//     symbols[string] = count
-//   }
-//
-//   subscript(value:Int) -> String {
-//     guard 0 <= value && value < strings.count else {
-//       return String.empty
-//     }
-//     return strings[value]
-//   }
-// }
-
-extension Int : Symbolable {
-  static var empty : Int { return 0 }
-
-  var string : String { return "x/a" }
-  var type : Tptp.SymbolType {
-    return .undefined
-  }
-
-}
-
-extension Int {
-  init(of node:TreeNodeRef) {
-    guard let _ = node.symbol else {
-      self = 0
-      return
-    }
-    self = 1
-  }
-
-
 }
