@@ -30,19 +30,19 @@ extension Node where Symbol : CustomDebugStringConvertible {
   }
 }
 
-extension Node where Symbol == String {
-  var defaultDescription : String {
-    guard let nodes = self.nodes?.map({"\($0)"})
-    where nodes.count > 0
-    else {
-      return self.symbol
-    }
-    let tuple = nodes.map{ "\($0)" }.joined(separator:",")
-    return "\(self.symbol)(\(tuple))"
-  }
-}
+// extension Node where Symbol == String {
+//   var defaultDescription : String {
+//     guard let nodes = self.nodes?.map({"\($0)"})
+//     where nodes.count > 0
+//     else {
+//       return self.symbol
+//     }
+//     let tuple = nodes.map{ "\($0)" }.joined(separator:",")
+//     return "\(self.symbol)(\(tuple))"
+//   }
+// }
 
-extension Node where Symbol == Tptp.Symbol {
+extension Node where Symbol : Symbolable {
   var defaultDescription : String {
 
       guard let nodes = self.nodes?.map({$0.description})

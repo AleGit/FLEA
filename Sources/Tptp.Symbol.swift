@@ -8,7 +8,7 @@ protocol Symbolable : Hashable {
   static var empty: Self { get }
 
   var string : String { get }
-  var type : Tptp.Symbol.Kind { get }
+  var type : Tptp.SymbolType { get }
 
   /// Initialze a symbol with symbol (and type)
   /// of a node in the abstract syntax tree.
@@ -24,17 +24,17 @@ extension Tptp {
 
   struct Symbol : Hashable, CustomDebugStringConvertible {
     let string : String
-    let type : Symbol.Kind
+    let type : SymbolType
 
-    init(_ string: String, _ type: Symbol.Kind ) {
+    init(_ string: String, _ type: SymbolType ) {
       self.string = string
       self.type = type
     }
   }
 }
 
-extension Tptp.Symbol {
-  enum Kind : Int8 {
+extension Tptp {
+  enum SymbolType : Int {
     case undefined = 0
 
     /// <TPTP_file>

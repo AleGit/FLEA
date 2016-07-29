@@ -3,7 +3,7 @@ extension String : Symbolable {
   static var empty : String { return "" }
 
   var string : String { return self }
-  var type: Tptp.Symbol.Kind {
+  var type: Tptp.SymbolType {
     switch self {
       case "!":
         return .universal

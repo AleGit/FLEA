@@ -1,64 +1,72 @@
 protocol SymbolTable {
   associatedtype Symbol : Symbolable
 
-  mutating func insert(_ string: String, _ type:Tptp.Symbol.Kind) -> Symbol
+  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
   subscript(symbol:Symbol) -> String? { get }
 }
 
+typealias StringType = (String, Tptp.SymbolType)
 struct IntSymbolTable : SymbolTable {
   var symbols = [String : Int]()
-  var strings = [Int:(String,Tptp.Symbol.Kind]()
+  var strings = [Int : StringType] ()
 
-  mutating func insert(_ string: String, _ type:Tptp.Symbol.Kind) -> Int {
+  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Int {
     if let symbol = symbols[string] {
       // symbol is allready in the table
       return symbol
     }
 
-    // symbol i
+    // if (.universal.rawValue <= type.rawValue)
+    // && (type.rawValue <= .inequation.rawValue) {
+    //   return type.rawValue
+    // }
 
     switch type {
-      case .universal:
-        fall
-      case .variable:
+      case .universal, .existential,
+      .negation, .disjunction, .conjunction, .implication,
+      .equation, .inequation:
+      symbols[string] = type.rawValue
+      strings[type.rawValue] = (string,type)
 
-        default:
-          return type.
+      return type.rawValue
+
+      default:
+        let value = (symbols.count << 8) // * 256
+        + type.rawValue // encode type in value
+
+        symbols[string] = value
+        strings[value] = (string,type)
+
+        return value
+
+
     }
-
-    let count = strings.count
-    strings.append(string)
-    symbols[string] = count
-    return count
   }
 
   subscript(value:Int) -> String? {
     guard 0 <= value && value < strings.count else {
       return nil
     }
-    return strings[value]
+    return strings[value]?.0
   }
 }
 
-var intSymbolTable : IntSymbolTable = {
-  var table = IntSymbolTable()
-  return table
-}()
+private var globalIntSymbolTable = IntSymbolTable()
 
 extension Int : Symbolable {
   static var empty : Int { return 0 }
 
   var string : String {
-
-    return "x/a"
+    return globalIntSymbolTable[self] ?? "n/a"
 
   }
-  var type : Tptp.Symbol.Kind {
-    return .undefined
-  }
 
+  /// the type is encoded into the value
+  /// as the remainder after division by 256
+  var type : Tptp.SymbolType {
+    return Tptp.SymbolType(rawValue:self % (1 << 8)) ?? .undefined
+  }
 }
-
 extension Int {
   init(of node:TreeNodeRef) {
     guard let _ = node.symbol else {

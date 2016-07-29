@@ -21,7 +21,7 @@ extension Yices {
 
 
 //    static func clause<N:Node, S:SymbolTable where N.Symbol == S.Symbol>(clause:N, symbolTable:S) {
-//        let type = symbolTable[clause.symbol]?.type ?? Symbol.Kind.predicate
+//        let type = symbolTable[clause.symbol]?.type ?? SymbolType.predicate
 //        symbolTable[clause.symbol] = nil
 //
 //    }
