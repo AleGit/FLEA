@@ -9,3 +9,17 @@ where Iterator.Element == SubSequence.Iterator.Element {
         return (head, Array(dropFirst()))
     }
 }
+
+extension String {
+    func isUppercased(at: Index) -> Bool {
+        let range = at..<self.index(after: at)
+        return self.rangeOfCharacter(from: .uppercaseLetters, options: [], range: range) != nil
+    }
+}
+
+extension Character {
+    var isUppercase: Bool {
+      let str = String(self)
+      return str.isUppercased(at: str.startIndex)
+    }
+}

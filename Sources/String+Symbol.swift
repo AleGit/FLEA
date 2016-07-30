@@ -23,8 +23,11 @@ extension String : Symbolable {
         return .inequation
 
       default:
+        if self.isUppercased(at:self.startIndex) {
+          return .variable
+        }
 
-        return .undefined
+        return .function
     }
   }
 }
