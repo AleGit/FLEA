@@ -1,6 +1,6 @@
 /*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
-/// 't * σ' returns the substitution of term t with σ. (specialized for Dictionary)
+/// 't * σ' returns the application of substitution σ on term t.
 func *<N:Node>(t:N, σ:[N:N]) -> N {
   Syslog.debug { "DictionarySubstitution" }
     assert(σ.isSubstitution)

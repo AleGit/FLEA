@@ -1,13 +1,9 @@
 import CTptpParsing
 
-// MARK: - protocol -
-
-
-
 // MARK: - Tptp.Symbol
 
 extension Tptp {
-  struct Symbol : Hashable, CustomDebugStringConvertible {
+  struct Symbol : Symbolable {
     let string : String
     let type : SymbolType
 
@@ -157,34 +153,29 @@ extension Tptp.SymbolType {
   }
 }
 
-// extension Tptp.Symbol : Symbolable {
-//   static var empty : Tptp.Symbol {
-//     return Tptp.Symbol("",.undefined)
-//   }
-// }
-
-extension Tptp.Symbol : Symbolable {
+extension Tptp.Symbol : Hashable {
   /// Hashable
   var hashValue : Int {
     return self.string.hashValue
   }
 }
 
-extension Tptp.Symbol {
+/// Tptp.Symbol : Hashable : Equatable
+func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
+  return lhs.string == rhs.string && lhs.type == rhs.type
+}
+
+extension Tptp.Symbol : CustomStringConvertible {
   /// CustomStringConvertible
   var description:String {
     return self.string
   }
+}
 
-  /// CustomDebugStringConvertible
+extension Tptp.Symbol : CustomDebugStringConvertible {
   var debugDescription:String {
     return "\(self.string)-\(self.type)"
   }
-}
-
-/// Tptp.Symbol : Hashable : Equatable
-func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
-  return lhs.string == rhs.string && lhs.type == rhs.type
 }
 
 protocol SymbolTable {

@@ -1,7 +1,6 @@
 /*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
-
-///
+/// A substitution is a assignment from variables to terms.
 protocol Substitution : DictionaryLiteralConvertible, Sequence, CustomStringConvertible
 {
   associatedtype K : Hashable
@@ -19,7 +18,7 @@ extension Dictionary : Substitution {
   }
 }
 
-/// create a new term with applied substitution
+/// 't * σ' returns the application of substitution σ on term t.
 func *<N:Node, S:Substitution where N == S.K, N == S.V,
 S.Iterator == DictionaryIterator<N,N>>(t:N, σ:S) -> N {
     // assert(σ.isSubstitution)

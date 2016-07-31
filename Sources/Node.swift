@@ -5,7 +5,7 @@
 /// of a value, together with a list of references to nodes (the "children"),
 /// with the constraints that no reference is duplicated, and none points to the root.
 /// <a href="https://en.wikipedia.org/wiki/Tree_(data_structure)">wikipedia</a>
-protocol Node : Hashable, CustomStringConvertible {
+protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
   associatedtype Symbol : Hashable
 
   /// The Value of the node.
@@ -71,21 +71,6 @@ extension Node {
       return s
     }
     let tuple = nodes.joined(separator:",")
-    return "\(s)(\(tuple))"
-  }
-}
-
-extension Node where Symbol == Int {
-  var debugDescription : String {
-    let s = self.symbol < 256 ?
-    "\(self.symbol.string)-\(self.symbol.type)" :
-    "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
-    guard let nodes = self.nodes?.map({$0.debugDescription})
-    where nodes.count > 0
-    else {
-      return s
-    }
-    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
     return "\(s)(\(tuple))"
   }
 }

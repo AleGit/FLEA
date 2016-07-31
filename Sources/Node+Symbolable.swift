@@ -1,4 +1,4 @@
-/// types that can be intialized with strings
+/// Symbolable types can be instantiated with strings.
 protocol Symbolable {
 
   var string : String { get }

@@ -65,7 +65,7 @@ extension Node where Symbol:Symbolable {
 
 extension Node where Symbol == Tptp.Symbol {
   var debugDescription : String {
-    let s = "\(self.symbol)"
+    let s = "\(self.symbol.debugDescription)"
 
     guard let nodes = self.nodes?.map({$0.debugDescription})
     where nodes.count > 0
@@ -73,6 +73,22 @@ extension Node where Symbol == Tptp.Symbol {
       return s
     }
     let tuple = nodes.joined(separator:",")
+    return "\(s)(\(tuple))"
+  }
+}
+
+
+extension Node where Symbol == Int {
+  var debugDescription : String {
+    let s = self.symbol < 256 ?
+    "\(self.symbol.string)-\(self.symbol.type)" :
+    "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
+    guard let nodes = self.nodes?.map({$0.debugDescription})
+    where nodes.count > 0
+    else {
+      return s
+    }
+    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
     return "\(s)(\(tuple))"
   }
 }
