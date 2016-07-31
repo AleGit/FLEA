@@ -11,7 +11,8 @@ public class StringPathTests : XCTestCase {
     ("testStringIndices", testIndices),
     ("testStringIndices", testLengths),
     ("testStringRanges", testRanges),
-    ("testStringPaths", testPaths)
+    ("testStringPaths", testPaths),
+    ("testTrimmingWhitespace", testTrimmingWhitespace)
     ]
   }
 
@@ -188,6 +189,17 @@ public class StringPathTests : XCTestCase {
     #endif
 
 
+  }
+
+  func testTrimmingWhitespace() {
+    XCTAssertEqual("A Bc", "A Bc".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", " A Bc".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", " A Bc ".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", "A Bc ".trimmingWhitespace,nok)
+
+    XCTAssertEqual("A Bc", "      A Bc".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", "   A Bc   ".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", "A Bc      ".trimmingWhitespace,nok)
   }
 
 }
