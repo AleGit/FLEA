@@ -1,7 +1,7 @@
-#if os(Linux)
-import Glibc
-#else
+#if os(OSX)
 import Darwin
+#elseif os(Linux)
+import Glibc
 #endif
 
 /// Substitute for CFAbsoluteTime which does not seem to be available on Linux.
