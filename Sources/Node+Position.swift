@@ -1,4 +1,4 @@
-import Foundation
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
 /**
 A position is a finite sequence of non-negative integers.

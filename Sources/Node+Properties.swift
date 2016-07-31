@@ -1,3 +1,5 @@
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
+
 extension Node {
   var isVariable: Bool {
     return self.nodes == nil

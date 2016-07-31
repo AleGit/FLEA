@@ -1,3 +1,5 @@
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
+
 protocol Sharing : class {
   associatedtype M : PartialSetAlgebra
   static var pool : M { get set }

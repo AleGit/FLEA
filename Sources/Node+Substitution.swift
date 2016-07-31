@@ -1,3 +1,6 @@
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
+
+
 ///
 protocol Substitution : DictionaryLiteralConvertible, Sequence, CustomStringConvertible
 {

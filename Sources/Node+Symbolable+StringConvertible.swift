@@ -1,6 +1,4 @@
-/*** This file cannot move to an own nodes module because Node.Symbol:Symbolable. ***/
-
-// MARK: - CustomStringConvertible
+// MARK: - Node:CustomStringConvertible where Node.Symbol:Symbolable
 
 extension Node where Symbol : Symbolable {
 
@@ -49,7 +47,7 @@ extension Node where Symbol : Symbolable {
   }
 }
 
-// MARK: - CustomDebugStringConvertible
+// MARK: - Node.CustomDebugStringConvertible where Node.Symbol:Symbolable
 
 extension Node where Symbol:Symbolable {
   var debugDescription : String {

@@ -18,7 +18,7 @@ extension Symbolable {
   }
 }
 
-/// MARK: convenience initializers to build terms with strings.
+// MARK: convenience initializers to build terms with strings.
 
 extension Node where Symbol:Symbolable {
   init(v:String) {
