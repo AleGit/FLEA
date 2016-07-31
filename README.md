@@ -15,15 +15,17 @@
 $ yices -V
 Yices 2.4.2
 ```
-- Install [Swift 3](https://swift.org/download/) and check:
+- Install [Swift 3 Preview](https://swift.org/download/) and check:
 ```
-$ swift -version
-Apple Swift version 3.0 ...
-$ xcode-select -pxcode-select -p
+$ swift -version                  
+Apple Swift version 3.0 ...               # Mac
+Swift version 3.0 (swift-3.0-PREVIEW-3)   # Linux
+$ xcode-select -pxcode-select -p          # Mac only
 /Applications/Xcode-beta.app/Contents/Developer
 ```
+
 - Download and unpack package [TPTP-v6.4.0.tgz](http://www.cs.miami.edu/~tptp/) (or newer).
-In your home directory create a symbolic to the unpacked `TPTP-v6.4.0` directory and check.
+In your home directory create a symbolic to the unpacked `TPTP-v6.4.0` directory and check:
 ```
 ls ~/TPTP
 Axioms		Documents	Generators	Problems	README		Scripts		TPTP2X
