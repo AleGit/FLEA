@@ -1,5 +1,5 @@
 # FLEA *library* & *tests*
-**F** irst order **L** ogic with **E** quality theorem **A** ttester
+**F**irst order **L**ogic with **E**quality theorem **A**ttesting
 
 - *library still in development*
 - *see [FleaBite](https://AleGit/FleaBite) for an executable and some demos.*
@@ -20,6 +20,7 @@ Yices 2.4.2
 $ swift -version                  
 Apple Swift version 3.0 ...               # Mac
 Swift version 3.0 (swift-3.0-PREVIEW-3)   # Linux
+
 $ xcode-select -pxcode-select -p          # Mac only
 /Applications/Xcode-beta.app/Contents/Developer
 ```
