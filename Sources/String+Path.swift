@@ -161,7 +161,7 @@ extension FilePath {
     }
     var buf = [CChar](repeating:CChar(0), count:bufsize+16)
     guard fread(&buf, 1, bufsize, f) == bufsize else { return nil }
-    return String(UTF8String:buf)
+    return String(utf8String:buf)
 
     #endif
 
