@@ -2,6 +2,7 @@ import XCTest
 @testable import FLEATestSuite
 
 XCTMain([
+  testCase(AuxiliaryTests.allTests),
   testCase(DictionarySubstitutionTests.allTests),
   testCase(DictionaryUnificationTests.allTests),
 
