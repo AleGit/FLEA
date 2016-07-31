@@ -1,10 +1,10 @@
 /// 'lhs =?= rhs' constructs most common unifier mgu(lhs,rhs)
 /// iff terms lhs and rhs are unifiable.
 /// Otherwise it returns *nil*. (specialized for Dictionary)
-func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
+func =?=<N:Node where N.Symbol:Symbolable>(lhs:N, rhs:N) -> [N:N]? {
   // delete
   if lhs == rhs {
-    return [T:T]() // trivially unifiable, empty unifier
+    return [N:N]() // trivially unifiable, empty unifier
   }
 
   // variable elimination
@@ -32,7 +32,7 @@ func =?=<T:Node>(lhs:T, rhs:T) -> [T:T]? {
 
   // signatures match
 
-  var mgu = [T:T]()
+  var mgu = [N:N]()
 
   while lnodes.count > 0 {
     guard let unifier = lnodes[0] =?= rnodes[0] else { return nil }

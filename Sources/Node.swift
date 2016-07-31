@@ -5,7 +5,7 @@
 /// with the constraints that no reference is duplicated, and none points to the root.
 /// <a href="https://en.wikipedia.org/wiki/Tree_(data_structure)">wikipedia</a>
 protocol Node : Hashable, CustomStringConvertible {
-  associatedtype Symbol : Symbolable
+  associatedtype Symbol : Hashable
 
   /// The Value of the node.
   var symbol : Symbol { get set }
@@ -57,7 +57,7 @@ extension Node {
 
 /// MARK: convenience initializers to build terms with strings.
 
-extension Node {
+extension Node where Symbol:Symbolable {
   init(v:String) {
     self.init(variable:Symbol(v,.variable))
   }

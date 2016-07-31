@@ -11,7 +11,7 @@ public class UnificationTests : XCTestCase {
   }
 
   func check<S:Substitution,N:FLEA.Node where S.K==N, S.V==N, S:Equatable,
-  S.Iterator == DictionaryIterator<N,N>>(
+  S.Iterator == DictionaryIterator<N,N>, N.Symbol:Symbolable>(
     _ lhs:N,
     _ rhs:N,
     _ expected:S? = nil,

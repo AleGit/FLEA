@@ -3,8 +3,23 @@
 
 // MARK: - CustomStringConvertible
 
-extension Node where Symbol : Symbolable {
+extension Node {
+  /// implementations of Node will call this
   var description : String { return defaultDescription }
+
+  /// possible usage: lazy var description = defaultDescritpion
+  var defaultDescription : String {
+    let s = "\(self.symbol)"
+    guard let nodes = self.nodes?.map( { $0.defaultDescription })
+    else {
+      return s
+    }
+    let tuple = nodes.joined(separator:",")
+    return "\(s)(\(tuple))"
+  }
+}
+
+extension Node where Symbol : Symbolable {
 
   var defaultDescription : String {
     let s = self.symbol.string
@@ -53,7 +68,7 @@ extension Node where Symbol : Symbolable {
 
 // MARK: - CustomDebugStringConvertible
 
-extension Node {
+extension Node where Symbol:Symbolable {
   var debugDescription : String {
     let s = "\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)"
 
@@ -65,25 +80,35 @@ extension Node {
     let tuple = nodes.joined(separator:",")
     return "\(s)(\(tuple))"
   }
-
-  // var descritpion : String {
-  //   return debugDescription
-  // }
 }
 
-extension Node where Symbol : CustomDebugStringConvertible {
+extension Node where Symbol == Tptp.Symbol {
   var debugDescription : String {
-    let s = self.symbol.debugDescription
+    let s = "\(self.symbol)"
 
     guard let nodes = self.nodes?.map({$0.debugDescription})
     where nodes.count > 0
     else {
       return s
     }
-    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+    let tuple = nodes.joined(separator:",")
     return "\(s)(\(tuple))"
   }
 }
+
+// extension Node where Symbol : CustomDebugStringConvertible {
+//   var debugDescription : String {
+//     let s = self.symbol.debugDescription
+//
+//     guard let nodes = self.nodes?.map({$0.debugDescription})
+//     where nodes.count > 0
+//     else {
+//       return s
+//     }
+//     let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+//     return "\(s)(\(tuple))"
+//   }
+// }
 
 // extension Node where Symbol == String {
 //   var defaultDescription : String {

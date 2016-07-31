@@ -100,7 +100,7 @@ static func sharing() {
 
 
 
-private func demoShow<N:Node where N:AnyObject>(nodes:[N]) {
+private func demoShow<N:Node where N:AnyObject, N.Symbol:Symbolable>(nodes:[N]) {
   print("nodes:\(nodes).count=\(nodes.count)")
 
   for s in Set(nodes) {

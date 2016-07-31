@@ -45,8 +45,8 @@ public class KinNodeTests : XCTestCase {
 
     XCTAssertEqual("X-variable",X.debugDescription,nok)
     XCTAssertEqual("a-function",a.debugDescription,nok)
-    XCTAssertEqual("f-function(\"X-variable\")",fX.debugDescription,nok)
-    XCTAssertEqual("f-function(\"a-function\")",fa.debugDescription,nok)
+    XCTAssertEqual("f-function(X-variable)",fX.debugDescription,nok)
+    XCTAssertEqual("f-function(a-function)",fa.debugDescription,nok)
 
     // check if folks are set correctly
 

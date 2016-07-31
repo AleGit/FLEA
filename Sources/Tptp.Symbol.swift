@@ -63,9 +63,9 @@ extension Tptp {
     case negation     // ~ s
     case disjunction  // s | t ...
     case conjunction  // s & t ...
+
     case implication  // s => t
     case reverseimpl  // s <= t
-
     case bicondition // s <=> t
     case xor  // <~>
     case nand // ~&

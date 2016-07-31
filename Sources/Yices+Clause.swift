@@ -28,7 +28,7 @@ extension Yices {
 
     /// Return a yices clause and yices literals from a node clause.
     /// The children of `yicesClause` are often different from `yicesLiterals`.
-    static func clause<N:Node>(_ clause:N) -> Tuple /* (
+    static func clause<N:Node where N.Symbol:Symbolable>(_ clause:N) -> Tuple /* (
         yicesClause: term_t,
         yicesLiterals:[type_t],
         alignedYicesLiterals:[type_t]) */ {
@@ -72,7 +72,7 @@ extension Yices {
     /// * `p ≡ [ p, p ]`
     /// * `p ≡ [ ⊥ ~= ⊥, p ]`
     /// * `[p,q,q,q,q] ≡ [ p, q, ⊥ ~= ⊥, p,q ]`
-    static func clause<N:Node>(_ literals:[N]) -> Tuple /* (
+    static func clause<N:Node where N.Symbol:Symbolable>(_ literals:[N]) -> Tuple /* (
         yicesClause: type_t,
         yicesLiterals:[type_t],
         alignedYicesLiterals:[type_t]) */ {
@@ -99,7 +99,7 @@ extension Yices {
     /// - an equation
     /// - an inequation
     /// - a predicatate term or a proposition constant
-    static func literal<N:Node>(_ literal:N) -> term_t {
+    static func literal<N:Node where N.Symbol:Symbolable>(_ literal:N) -> term_t {
         // assert(literal.isLiteral,"'\(#function)(\(literal))' Argument must be a literal, but it is not.")
 
         guard let nodes = literal.nodes
@@ -147,7 +147,7 @@ extension Yices {
     }
 
     /// Build uninterpreted function term from term.
-    static func term<N:Node>(_ term:N) -> term_t {
+    static func term<N:Node where N.Symbol:Symbolable>(_ term:N) -> term_t {
         // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
         guard let nodes = term.nodes else {
@@ -162,7 +162,7 @@ extension Yices {
     }
 
     /// Build (constant) predicate or function.
-    static func application<N:Node>(_ symbol:String, nodes:[N], term_tau:type_t) -> term_t {
+    static func application<N:Node where N.Symbol:Symbolable>(_ symbol:String, nodes:[N], term_tau:type_t) -> term_t {
 
         guard nodes.count > 0 else {
             return constant(symbol, term_tau: term_tau)
