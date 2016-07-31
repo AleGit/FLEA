@@ -2,27 +2,7 @@ import CTptpParsing
 
 // MARK: - protocol -
 
-protocol Symbolable : Hashable {
 
-  var string : String { get }
-  var type : Tptp.SymbolType { get }
-
-  init(_ string: String, _ type: Tptp.SymbolType)
-}
-
-extension Symbolable {
-  /// Initialze a symbol with symbol:String (and type)
-  /// with a node in the abstract syntax tree.
-  init(of node:TreeNodeRef) {
-    self = Self(node.symbol ?? "", Tptp.SymbolType(of:node))
-  }
-}
-
-extension Symbolable {
-  static var empty : Self {
-    return Self("",.undefined)
-  }
-}
 
 // MARK: - Tptp.Symbol
 

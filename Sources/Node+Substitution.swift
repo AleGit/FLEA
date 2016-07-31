@@ -31,7 +31,7 @@ S.Iterator == DictionaryIterator<N,N>>(t:N, σ:S) -> N {
 
 /// concationation of substitutions (specialized for Substitution)
 func *<N:Node, S:Substitution where S.K==N,S.V==N,
-S.Iterator==DictionaryIterator<N,N>, N.Symbol:Symbolable>(lhs:S,rhs:S) -> S? {
+S.Iterator==DictionaryIterator<N,N>>(lhs:S,rhs:S) -> S? {
   var subs = S()
   for (key,value) in lhs {
     subs[key] = value * rhs

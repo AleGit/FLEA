@@ -1,5 +1,7 @@
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
+
 /// 't * σ' returns the substitution of term t with σ. (specialized for Dictionary)
-func *<N:Node where N.Symbol:Symbolable>(t:N, σ:[N:N]) -> N {
+func *<N:Node>(t:N, σ:[N:N]) -> N {
   Syslog.debug { "DictionarySubstitution" }
     assert(σ.isSubstitution)
 
@@ -12,7 +14,7 @@ func *<N:Node where N.Symbol:Symbolable>(t:N, σ:[N:N]) -> N {
 }
 
 /// concationation of substitutions (specialized for Dictionary)
-func *<N:Node where N.Symbol:Symbolable>(lhs:[N:N], rhs:[N:N]) -> [N:N]? {
+func *<N:Node>(lhs:[N:N], rhs:[N:N]) -> [N:N]? {
   var subs = [N:N]()
 
   for (key,value) in lhs {
@@ -37,27 +39,11 @@ func *<N:Node where N.Symbol:Symbolable>(lhs:[N:N], rhs:[N:N]) -> [N:N]? {
 }
 
 /// 't * s' returns the substitution of all variables in t with term s.
-func *<N:Node where N.Symbol:Symbolable>(t:N, s:N) -> N {
+func *<N:Node>(t:N, s:N) -> N {
     guard let nodes = t.nodes else { return s } // a variable
 
     return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
 }
-
-/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N.Symbol:Symbolable>(t:N) -> N {
-    return t * N(c:"⊥")
-}
-
-/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-// postfix func ⊥<N:Node where N.Symbol == Tptp.Symbol>(t:N) -> N {
-//     return t * N(constant:Tptp.Symbol("⊥",.function))
-// }
-
-// func *=<T:Node>(lhs:inout [T:T], rhs:[T:T]) {
-//     for (key,value) in lhs {
-//         lhs[key] = value * rhs
-//     }
-// }
 
 extension Dictionary where Key:Node, Value:Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?

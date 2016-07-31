@@ -1,23 +1,6 @@
-// default implementations for
-// 'CustomStringConvertible' and 'CustomDebugStringConvertible'
+/*** This file cannot move to an own nodes module because Node.Symbol:Symbolable. ***/
 
 // MARK: - CustomStringConvertible
-
-extension Node {
-  /// implementations of Node will call this
-  var description : String { return defaultDescription }
-
-  /// possible usage: lazy var description = defaultDescritpion
-  var defaultDescription : String {
-    let s = "\(self.symbol)"
-    guard let nodes = self.nodes?.map( { $0.defaultDescription })
-    else {
-      return s
-    }
-    let tuple = nodes.joined(separator:",")
-    return "\(s)(\(tuple))"
-  }
-}
 
 extension Node where Symbol : Symbolable {
 
@@ -92,47 +75,6 @@ extension Node where Symbol == Tptp.Symbol {
       return s
     }
     let tuple = nodes.joined(separator:",")
-    return "\(s)(\(tuple))"
-  }
-}
-
-// extension Node where Symbol : CustomDebugStringConvertible {
-//   var debugDescription : String {
-//     let s = self.symbol.debugDescription
-//
-//     guard let nodes = self.nodes?.map({$0.debugDescription})
-//     where nodes.count > 0
-//     else {
-//       return s
-//     }
-//     let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
-//     return "\(s)(\(tuple))"
-//   }
-// }
-
-// extension Node where Symbol == String {
-//   var defaultDescription : String {
-//     guard let nodes = self.nodes?.map({"\($0)"})
-//     where nodes.count > 0
-//     else {
-//       return self.symbol
-//     }
-//     let tuple = nodes.map{ "\($0)" }.joined(separator:",")
-//     return "\(self.symbol)(\(tuple))"
-//   }
-// }
-
-extension Node where Symbol == Int {
-  var debugDescription : String {
-    let s = self.symbol < 256 ?
-    "\(self.symbol.string)-\(self.symbol.type)" :
-    "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
-    guard let nodes = self.nodes?.map({$0.debugDescription})
-    where nodes.count > 0
-    else {
-      return s
-    }
-    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
     return "\(s)(\(tuple))"
   }
 }

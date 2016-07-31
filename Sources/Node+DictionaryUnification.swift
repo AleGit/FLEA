@@ -1,7 +1,9 @@
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
+
 /// 'lhs =?= rhs' constructs most common unifier mgu(lhs,rhs)
 /// iff terms lhs and rhs are unifiable.
 /// Otherwise it returns *nil*. (specialized for Dictionary)
-func =?=<N:Node where N.Symbol:Symbolable>(lhs:N, rhs:N) -> [N:N]? {
+func =?=<N:Node>(lhs:N, rhs:N) -> [N:N]? {
   // delete
   if lhs == rhs {
     return [N:N]() // trivially unifiable, empty unifier

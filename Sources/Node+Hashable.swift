@@ -1,5 +1,4 @@
-
-
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
 extension Node {
   /// Simple calculation for a consistent hash value,

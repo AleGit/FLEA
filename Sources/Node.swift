@@ -1,3 +1,4 @@
+/*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
 /// A tree data structure can be defined recursively as a collection of nodes
 /// (starting at a root node), where each node is a data structure consisting
@@ -15,14 +16,15 @@ protocol Node : Hashable, CustomStringConvertible {
   /// empty initializer to enable sharing magic
   init()
 
-  /// enables sharing magic
+  /// enables sharing of nodes at multiple positions
+  /// in the same or a different tree.
   static func share(node:Self) -> Self
 }
 
 extension Node {
   /// By default nodes are not shared between trees,
   /// e.g. three instances of variable `X` in `p(X,f(X,X))`
-  /// This is suitable for value types.
+  /// None-sharing is suitable for value types.
   static func share(node:Self) -> Self {
     return node
   }
@@ -55,30 +57,35 @@ extension Node {
   }
 }
 
-/// MARK: convenience initializers to build terms with strings.
+// MARK: CustomStringConvertible
 
-extension Node where Symbol:Symbolable {
-  init(v:String) {
-    self.init(variable:Symbol(v,.variable))
-  }
+extension Node {
+  /// implementations of Node will call this
+  var description : String { return defaultDescription }
 
-  init(c:String) {
-    self.init(constant:Symbol(c,.function))
-  }
-
-  init(f:String, _ nodes:[Self]?) {
-    guard let nodes = nodes else {
-      self.init(v:f)
-      return
+  /// possible usage: lazy var description = defaultDescritpion
+  var defaultDescription : String {
+    let s = "\(self.symbol)"
+    guard let nodes = self.nodes?.map( { $0.defaultDescription })
+    else {
+      return s
     }
-    self.init(symbol:Symbol(f,.function), nodes:nodes)
+    let tuple = nodes.joined(separator:",")
+    return "\(s)(\(tuple))"
   }
+}
 
-  init(p:String, _ nodes:[Self]?) {
-    guard let nodes = nodes else {
-      self.init(v:p)
-      return
+extension Node where Symbol == Int {
+  var debugDescription : String {
+    let s = self.symbol < 256 ?
+    "\(self.symbol.string)-\(self.symbol.type)" :
+    "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
+    guard let nodes = self.nodes?.map({$0.debugDescription})
+    where nodes.count > 0
+    else {
+      return s
     }
-    self.init(symbol:Symbol(p,.predicate), nodes:nodes)
+    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+    return "\(s)(\(tuple))"
   }
 }
