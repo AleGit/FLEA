@@ -241,17 +241,20 @@ extension FilePath {
 
 extension FilePath {
   static var configPath : FilePath? {
-    var path : FilePath?
+    if let path = Process.option(name:"--config")?.settings.first, path.isAccessible {
+      return path
+    }
+
+    var p : FilePath? = nil
     switch Process.name {
       case "n/a":
-        path = "Config/xctest.default"
+        p = "Config/xctest.default"
       default:
-        path = "Config/default.default"
+        p = "Config/default.default"
     }
-    guard let p = path, p.isAccessible else {
-      return nil
-    }
-    return p
+    if let path = p, path.isAccessible { return path }
+
+    return nil
   }
 }
 
