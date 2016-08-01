@@ -6,7 +6,7 @@ extension Node {
   }
 
   var isConstant: Bool {
-    guard let nodes = self.nodes where nodes.count == 0 else {
+    guard let nodes = self.nodes, nodes.count == 0 else {
       return false
     }
     return true
@@ -16,7 +16,7 @@ extension Node {
 extension Node {
   var defaultSubnodes: Set<Self> {
     let singleton = Set(arrayLiteral:self)
-    guard let nodes = self.nodes where nodes.count > 0 else {
+    guard let nodes = self.nodes, nodes.count > 0 else {
       return singleton
     }
 
@@ -24,7 +24,9 @@ extension Node {
   }
 
   var defaultVariables: Set<Self> {
-    guard let nodes = self.nodes else { return Set(arrayLiteral:self) }
+    guard let nodes = self.nodes else {
+      return Set(arrayLiteral:self)
+    }
     return Set(nodes.flatMap { $0.variables })
   }
 }

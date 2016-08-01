@@ -7,7 +7,7 @@ func *<N:Node>(t:N, σ:[N:N]) -> N {
 
     if let tσ = σ[t] { return tσ }      // t is (variable) in σ.keys
 
-    guard let nodes = t.nodes where nodes.count > 0
+    guard let nodes = t.nodes, nodes.count > 0
     else { return t } // t is a variable not in σ or has not children
 
     return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })

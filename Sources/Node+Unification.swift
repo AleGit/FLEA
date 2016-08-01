@@ -30,8 +30,7 @@ S.Iterator==DictionaryIterator<N,N>>(lhs:N,rhs:N) -> S? {
 
   // decompositon
 
-  guard var lnodes = lhs.nodes, var rnodes = rhs.nodes
-  where lnodes.count == rnodes.count
+  guard var lnodes = lhs.nodes, var rnodes = rhs.nodes, lnodes.count == rnodes.count
   else { return nil }
 
   // signatures match

@@ -10,7 +10,7 @@ extension Tptp {
 
     init?(path:FilePath) {
       Syslog.info { path }
-      guard let size = path.fileSize where size > 0 else {
+      guard let size = path.fileSize, size > 0 else {
         return nil;
       }
       let code = prlcParseFile(path, &store, &root)

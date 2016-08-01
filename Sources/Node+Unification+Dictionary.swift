@@ -28,8 +28,7 @@ func =?=<N:Node>(lhs:N, rhs:N) -> [N:N]? {
 
   // decompositon
 
-  guard var lnodes = lhs.nodes, var rnodes = rhs.nodes
-  where lnodes.count == rnodes.count
+  guard var lnodes = lhs.nodes, var rnodes = rhs.nodes, lnodes.count == rnodes.count
   else { return nil }
 
   // signatures match

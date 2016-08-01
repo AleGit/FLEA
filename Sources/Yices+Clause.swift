@@ -39,7 +39,7 @@ extension Yices {
 
             switch type {
             case .disjunction:
-                guard let literals = clause.nodes where literals.count > 0 else {
+                guard let literals = clause.nodes, literals.count > 0 else {
                     return (Yices.bot, Set<term_t>(), [term_t]())
                 }
 

@@ -28,8 +28,7 @@ extension Demo {
     lazy var description : String = self.debugDescription
 
     var debugDescription : String {
-      guard let nodes = self.nodes?.map({$0.description})
-      where nodes.count > 0
+      guard let nodes = self.nodes?.map({$0.description}), nodes.count > 0
       else {
         return "\(self.symbol)'\(self.c)"
       }

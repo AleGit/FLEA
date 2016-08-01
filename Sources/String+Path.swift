@@ -49,8 +49,8 @@ extension FilePath {
 
     print(FilePath.tptpRoot?.appending(component:path))
 
-    if let absolutePath = (FilePath.tptpRoot)?.appending(component:path)
-    where absolutePath.isAccessible {
+    if let absolutePath = (FilePath.tptpRoot)?.appending(component:path),
+    absolutePath.isAccessible {
       return absolutePath
     }
 
@@ -79,8 +79,8 @@ extension FilePath {
     let relativePath = root.appending("Axioms").appending(axiom.lastPathComponent)
     if relativePath.isAccessible { return relativePath }
 
-    if let absolutePath = FilePath.tptpRoot?.appending(component:axiom.lastPathComponent)
-    where absolutePath.isAccessible { return absolutePath }
+    if let absolutePath = FilePath.tptpRoot?.appending(component:axiom.lastPathComponent),
+    absolutePath.isAccessible { return absolutePath }
 
     return axiom.ax
   }
@@ -99,7 +99,7 @@ extension FilePath {
     if path.isAccessible { return path }
 
     if let absolutePath = (FilePath.tptpRoot)?.appending(component:path)
-    where absolutePath.isAccessible {
+   , absolutePath.isAccessible {
       return absolutePath
     }
 
@@ -218,19 +218,19 @@ extension FilePath {
 
     // try to read tptp root from environment
     if let path = Process.Environment.getValue(for:"TPTP_ROOT")
-    where path.isAccessibleDirectory {
+   , path.isAccessibleDirectory {
       return path
     }
 
     // home directory has a low priority
     if let path = FilePath.home?.appending("/TPTP")
-    where path.isAccessibleDirectory {
+   , path.isAccessibleDirectory {
       return path
     }
 
     // ~/Downloads has a very low priority
     if let path = FilePath.home?.appending("/Downloads/TPTP")
-    where path.isAccessibleDirectory {
+   , path.isAccessibleDirectory {
       return path
     }
 
@@ -248,7 +248,7 @@ extension FilePath {
       default:
         path = "Config/default.default"
     }
-    guard let p = path where p.isAccessible else {
+    guard let p = path, p.isAccessible else {
       return nil
     }
     return p
@@ -278,10 +278,10 @@ extension String {
       #elseif os(Linux)
       Syslog.debug {  Syslog.Tags.system() + " " + Syslog.Tags.workaround() }
       var cs = self.characters
-      while let f = cs.first where f == " " || f == "\t" {
+      while let f = cs.first, f == " " || f == "\t" {
         cs.removeFirst()
       }
-      while let l = cs.last where l == " " || l == "\t" {
+      while let l = cs.last, l == " " || l == "\t" {
         cs.removeLast()
       }
       return String(cs)

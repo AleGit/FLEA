@@ -4,8 +4,7 @@ extension Node where Symbol : Symbolable {
 
   var defaultDescription : String {
     let s = self.symbol.string
-    guard let nodes = self.nodes?.map({$0.description})
-    where nodes.count > 0 else {
+    guard let nodes = self.nodes?.map({$0.description}), nodes.count > 0 else {
       return s
     }
     switch self.symbol.type {
@@ -53,8 +52,7 @@ extension Node where Symbol:Symbolable {
   var debugDescription : String {
     let s = "\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)"
 
-    guard let nodes = self.nodes?.map({$0.debugDescription})
-    where nodes.count > 0
+    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
     else {
       return s
     }
@@ -67,8 +65,7 @@ extension Node where Symbol == Tptp.Symbol {
   var debugDescription : String {
     let s = "\(self.symbol.debugDescription)"
 
-    guard let nodes = self.nodes?.map({$0.debugDescription})
-    where nodes.count > 0
+    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
     else {
       return s
     }
@@ -83,8 +80,7 @@ extension Node where Symbol == Int {
     let s = self.symbol < 256 ?
     "\(self.symbol.string)-\(self.symbol.type)" :
     "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
-    guard let nodes = self.nodes?.map({$0.debugDescription})
-    where nodes.count > 0
+    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
     else {
       return s
     }

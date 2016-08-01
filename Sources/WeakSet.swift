@@ -48,7 +48,7 @@ extension WeakSet : WeakPartialSetAlgebra {
     }
 
     for entry in validEntries {
-      if let element = entry.element where element == newElement {
+      if let element = entry.element, element == newElement {
         // newElement is allready in the collection,
         // hence return element from collection
         return (false,element)
@@ -68,7 +68,7 @@ extension WeakSet : WeakPartialSetAlgebra {
       return false
     }
     for entry in entries {
-      if let element = entry.element where element == member {
+      if let element = entry.element, element == member {
         return true
       }
     }
@@ -120,8 +120,8 @@ extension WeakSet : IteratorProtocol {
   mutating func next() -> T? {
     guard let first = contents.first else { return nil }
 
-    guard var entries = contents[first.0]?.filter({$0.element != nil})
-    where entries.count > 0 else {
+    guard var entries = contents[first.0]?.filter({$0.element != nil}),
+    entries.count > 0 else {
       // no valid entries at all
       contents[first.0] = nil
       return self.next()
@@ -192,8 +192,8 @@ extension WeakSet {
       return nil
     }
 
-    guard let entries = contents[value]?.filter({$0.element != nil})
-      where entries.count > 0 else {
+    guard let entries = contents[value]?.filter({$0.element != nil}),
+    entries.count > 0 else {
         // invalid entries only
         contents[value] = nil
         return nil
@@ -216,6 +216,8 @@ extension WeakSet {
   /// collision count <= count - contents.count when no member is nillified.
   /// collision count = count - contents.count when no member is nillified.
   var collisionCount : Int {
-    return contents.filter({ $0.1.count > 1}).map({ $0.1 }).reduce(0) { $0 + $1.count - 1}
+    return contents.filter({ $0.1.count > 1}).map({ $0.1 }).reduce(0) {
+      $0 + $1.count - 1
+    }
   }
 }
