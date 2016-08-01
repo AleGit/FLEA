@@ -116,7 +116,8 @@ extension Trie {
   }
 }
 
-/// provide tries with sets of leaps and values with isEqual
+
+
 func ==<T:Trie where T.Value:Hashable, T.Leap:Hashable,
 T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
   guard lhs.values == rhs.values else { return false }

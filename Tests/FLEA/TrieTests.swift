@@ -10,10 +10,10 @@ public class TrieTests : XCTestCase {
     ]
   }
 
-  let pathA = [1,4,5,6,7,8]
-  let valueA = "A"
-  let pathB = [1,4,5,6,1]
-  let valueB = "B"
+  lazy var pathA = [1,4,5,6,7,8]
+  lazy var valueA = "A"
+  lazy var pathB = [1,4,5,6,1]
+  lazy var valueB = "B"
 
   func testTrieStruct() {
     typealias T = FLEA.TrieStruct
@@ -28,6 +28,12 @@ public class TrieTests : XCTestCase {
     mytrie.insert(valueB, at:pathB)
     mytrie2.insert(valueB,at:pathB)
     XCTAssertEqual(mytrie,mytrie2,nok)
+
+
+    // let values : Set = [valueA, valueB]
+    // XCTAssertEqual(values,mytrie.values)
+
+
 
     // delete values from wrong path
     XCTAssertNil(mytrie.delete(valueA, at:pathB),nok)
