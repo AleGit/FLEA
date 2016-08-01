@@ -3,6 +3,7 @@ import Foundation
 protocol Trie {
     associatedtype Leap
     associatedtype Value
+    associatedtype LeapS : Sequence
     associatedtype ValueS : Sequence
     associatedtype TrieS : Sequence
 
@@ -36,6 +37,8 @@ protocol Trie {
 
     /// get values at one trie node
     var values : ValueS? { get }
+
+    var leaps : LeapS? { get }
 
     /// get (or set) subnode with step
     subscript(step:Leap) -> Self? { get set }
@@ -113,6 +116,28 @@ extension Trie {
   }
 }
 
+/// provide tries with sets of leaps and values with isEqual
+func ==<T:Trie where T.Value:Hashable, T.Leap:Hashable,
+T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
+  guard lhs.values == rhs.values else { return false }
+  guard lhs.leaps == rhs.leaps else { return false }
+
+  guard let leaps = lhs.leaps else {
+    assert(rhs.leaps == nil)
+
+    // no leaps at all
+    return true
+  }
+
+  for leap in leaps {
+    guard let l = lhs[leap], let r = rhs[leap], l==r else {
+      return false
+    }
+  }
+
+  return true
+}
+
 // MARK: - concrete trie types
 
 // MARK: a value type trie
@@ -126,7 +151,7 @@ struct TrieStruct<K: Hashable, V: Hashable> {
   init() {    }
 }
 
-extension TrieStruct : Trie {
+extension TrieStruct : Trie, Equatable {
 
   mutating func insert(_ value: Value) {
       valueStore.insert(value)
@@ -145,20 +170,13 @@ extension TrieStruct : Trie {
       return self.valueStore
   }
 
+  var leaps : Set<Key>? {
+    return Set(self.trieStore.keys)
+  }
+
   var tries : [TrieStruct]? {
       let ts = trieStore.values
       return Array(ts)
-  }
-}
-
-extension TrieStruct : Equatable { }
-
-func ==<K,V>(lhs:TrieStruct<K,V>, rhs:TrieStruct<K,V>) -> Bool {
-  if lhs.valueStore == rhs.valueStore && lhs.trieStore == rhs.trieStore {
-      return true
-  }
-  else {
-      return false
   }
 }
 
@@ -173,7 +191,7 @@ final class TrieClass<K: Hashable, V: Hashable> {
   init() {    }
 }
 
-extension TrieClass : Trie {
+extension TrieClass : Trie, Equatable {
 
   func insert(_ value: Value) {
       valueStore.insert(value)
@@ -192,20 +210,13 @@ extension TrieClass : Trie {
       return self.valueStore
   }
 
+  var leaps : Set<Key>? {
+    return Set(self.trieStore.keys)
+  }
+
   var tries : [TrieClass]? {
       let ts = trieStore.values
       return Array(ts)
-  }
-}
-
-extension TrieClass : Equatable { }
-
-func ==<K,V>(lhs:TrieClass<K,V>, rhs:TrieClass<K,V>) -> Bool {
-  if lhs.valueStore == rhs.valueStore && lhs.trieStore == rhs.trieStore {
-      return true
-  }
-  else {
-      return false
   }
 }
 
