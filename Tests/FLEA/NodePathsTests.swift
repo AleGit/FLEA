@@ -46,7 +46,7 @@ public class NodePathsTests : XCTestCase {
 
     let f$ = fX.symbol
     let g$ = gfXfa.symbol
-    let x$ = Int("*",.variable)
+    let _$ = Int("*",.variable)
     let a$ = a.symbol
 
     let count = Node.pool.count
@@ -55,15 +55,15 @@ public class NodePathsTests : XCTestCase {
 #if os(OSX)
     XCTAssertEqual(
       [
-        [g$,0,g$,0,f$,0,x$],
+        [g$,0,g$,0,f$,0,_$],
         [g$,0,g$,1,f$,0,a$],
-        [g$,1,x$]
+        [g$,1,_$]
         ],
       ggfXfaX.leafPaths
     )
-#endif    
+#endif
     XCTAssertEqual(
-      [g$,g$,f$,x$,f$,a$,x$],
+      [g$,g$,f$,_$,f$,a$,_$],
       ggfXfaX.prefixPath
     )
   }

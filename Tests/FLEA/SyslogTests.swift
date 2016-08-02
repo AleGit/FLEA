@@ -82,8 +82,7 @@ public class SyslogTests : XCTestCase {
     let entries = lines.filter {
       !($0.hasPrefix("#") || $0.trimmingWhitespace.isEmpty)
      }
-     // print(lines)
-     // print(entries)
+     XCTAssertTrue(entries.count > 0)
 
 
 
