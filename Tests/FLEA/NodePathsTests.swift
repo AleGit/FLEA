@@ -52,19 +52,27 @@ public class NodePathsTests : XCTestCase {
     let count = Node.pool.count
     XCTAssertEqual(count,6, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
+    let expected = [
+      [g$,0,g$,0,f$,0,_$],
+      [g$,0,g$,1,f$,0,a$],
+      [g$,1,_$]
+      ]
+    let actual = ggfXfaX.leafPaths
 #if os(OSX)
     XCTAssertEqual(
-      [
-        [g$,0,g$,0,f$,0,_$],
-        [g$,0,g$,1,f$,0,a$],
-        [g$,1,_$]
-        ],
-      ggfXfaX.leafPaths
+      expected,actual, nok
     )
+#elseif os(Linux)
+  // [[Int]] == [[Int]] does not work on Linux Swift 3P3.
+      XCTAssertEqual(
+        Array(expected.flatten()),
+        Array(actual.flatten()), nok
+      )
+
 #endif
     XCTAssertEqual(
       [g$,g$,f$,_$,f$,a$,_$],
-      ggfXfaX.prefixPath
+      ggfXfaX.preordering, nok
     )
   }
 

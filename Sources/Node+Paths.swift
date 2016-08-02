@@ -1,4 +1,5 @@
 extension Node where Symbol : Symbolable {
+  /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[SymHop<Symbol>]] {
@@ -23,6 +24,7 @@ extension Node where Symbol : Symbolable {
 }
 
 extension Node where Symbol == Int {
+  /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[Int]] {
@@ -44,15 +46,19 @@ extension Node where Symbol == Int {
 }
 
 extension Node where Symbol : Symbolable {
-  var prefixPath : [Symbol] {
+  /// The list of symbols in the node tree in depth-first traversal.
+  var preordering : [Symbol] {
     guard let nodes = self.nodes else {
+      // a variable leaf
       return [Symbol("*",.variable)]
     }
     guard nodes.count > 0 else {
+      // a constant (function) leaf
       return [self.symbol]
     }
 
-    return nodes.reduce([self.symbol]) { $0 + $1.prefixPath }
+    // an intermediate node
+    return nodes.reduce([self.symbol]) { $0 + $1.preordering }
 
   }
 }
