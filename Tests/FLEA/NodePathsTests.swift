@@ -52,6 +52,7 @@ public class NodePathsTests : XCTestCase {
     let count = Node.pool.count
     XCTAssertEqual(count,6, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
+#if os(OSX)
     XCTAssertEqual(
       [
         [g$,0,g$,0,f$,0,x$],
@@ -60,7 +61,7 @@ public class NodePathsTests : XCTestCase {
         ],
       ggfXfaX.leafPaths
     )
-
+#endif    
     XCTAssertEqual(
       [g$,g$,f$,x$,f$,a$,x$],
       ggfXfaX.prefixPath
