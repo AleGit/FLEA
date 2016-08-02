@@ -44,29 +44,28 @@ public class NodePathsTests : XCTestCase {
     let gfXfa = Node(f:"g", [fX,fa])
     let ggfXfaX = Node(f:"g", [gfXfa,X])
 
-    let _f = fX.symbol
-    let _g = gfXfa.symbol
-    let _ü = Int("*",.variable)
-    let _a = a.symbol
+    let f$ = fX.symbol
+    let g$ = gfXfa.symbol
+    let x$ = Int("*",.variable)
+    let a$ = a.symbol
 
     let count = Node.pool.count
     XCTAssertEqual(count,6, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
     XCTAssertEqual(
       [
-        [_g,0,_g,0,_f,0,_ü],
-        [_g,0,_g,1,_f,0,_a],
-        [_g,1,_ü]
+        [g$,0,g$,0,f$,0,x$],
+        [g$,0,g$,1,f$,0,a$],
+        [g$,1,x$]
         ],
       ggfXfaX.leafPaths
     )
 
     XCTAssertEqual(
-      [_g,_g,_f,_ü,_f,_a,_ü],
+      [g$,g$,f$,x$,f$,a$,x$],
       ggfXfaX.prefixPath
     )
-
-
-
   }
+
+
 }
