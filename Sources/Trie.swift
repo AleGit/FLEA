@@ -3,11 +3,10 @@ import Foundation
 protocol Trie {
     associatedtype Leap
     associatedtype Value
-    associatedtype LeapS : Sequence
-    associatedtype ValueS : Sequence
-    associatedtype TrieS : Sequence
+    associatedtype LeapS : Sequence // a sequence of leaps is a path, i.e. key
+    associatedtype ValueS : Sequence // a sequence of stored values
+    associatedtype TrieS : Sequence // a sequence of (sub)tries
 
-    // var payload : Set<Value> { get }
 
     /// creates empty trie type
     init()
@@ -43,20 +42,25 @@ protocol Trie {
     /// get (or set) subnode with step
     subscript(step:Leap) -> Self? { get set }
 
-    /// get all immediate subnodes
+    /// get all immediate subtries
     var tries : TrieS? { get }
+
+    /// get all values of a trie and all it's subtries
+    /// var payload : ValueS? { get }
 }
 
 // MARK: default implementations for init, insert, delete, retrieve
 
 extension Trie {
 
+  /// Create an new trie with one value at path.
   init<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(with value:Value, at path:C) {
-    self.init()
+    self.init() // initialize trie
     self.insert(value, at:path)
   }
 
+  /// Inserts value at path. Possible missing path suffix will be created.
   mutating func insert<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(_ value:Value, at path:C) {
     guard let (head,tail) = path.decompose else {
@@ -64,11 +68,16 @@ extension Trie {
       return
     }
 
-    var trie = self[head] ?? Self()
-    trie.insert(value, at:tail)
-    self[head] = trie
+    if self[head] == nil {
+      self[head] = Self(with:value,at:tail)
+    }
+    else {
+      self[head]!.insert(value, at:tail)
+    }
   }
 
+  /// Delete value at path. Returns deleted value or nil
+  /// if path does not exist or value was not stored at path.
   mutating func delete<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(_ value:Value, at path:C) -> Value? {
     guard let (head,tail) = path.decompose else {
@@ -80,6 +89,7 @@ extension Trie {
     return v
   }
 
+  /// Returns values at path or nil if path does not exist.
   func retrieve<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(from path:C) -> ValueS? {
     guard let (head,tail) = path.decompose else {
@@ -91,6 +101,7 @@ extension Trie {
 }
 
 extension Trie {
+  /// Returns subtrie at path or nil if path does not exist.
   subscript(path:[Leap]) -> Self? {
     guard let (head,tail) = path.decompose else { return self }
 
@@ -101,17 +112,16 @@ extension Trie {
 
   var isEmpty : Bool {
     guard var iv = self.values?.makeIterator(), iv.next() == nil else {
-      // There are values, hence the trie is not empty
+      // There are values, hence the trie is not empty.
       return false
     }
     guard var it = self.tries?.makeIterator(), it.next() == nil else {
-      // There are subtries, hence the trie is not empty, but
-      // this only holds, when there are no emtpy subtries.
+      // There are subtries, hence the trie is not empty.
+      // _This only holds, if there are no emtpy subtries._
       return false
     }
 
-    // There are neither values nor subtries.
-
+    // There are neither values nor subtries, hence the trie is empty.
     return true
   }
 }

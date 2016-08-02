@@ -29,11 +29,8 @@ public class TrieTests : XCTestCase {
     mytrie2.insert(valueB,at:pathB)
     XCTAssertEqual(mytrie,mytrie2,nok)
 
-
     // let values : Set = [valueA, valueB]
     // XCTAssertEqual(values,mytrie.values)
-
-
 
     // delete values from wrong path
     XCTAssertNil(mytrie.delete(valueA, at:pathB),nok)
@@ -42,11 +39,17 @@ public class TrieTests : XCTestCase {
     // delete value a from path a
     XCTAssertEqual(valueA, mytrie.delete(valueA, at:pathA),nok)
     XCTAssertFalse(mytrie.isEmpty,nok)
-    //
 
     // delete value b from path b
     XCTAssertEqual(valueB, mytrie.delete(valueB,at:pathB),nok)
     XCTAssertTrue(mytrie.isEmpty,nok)
+
+    XCTAssertEqual(mytrie2.retrieve(from:pathA)!, Set([valueA]))
+    XCTAssertEqual(mytrie2.retrieve(from:pathB)!, Set([valueB]))
+    XCTAssertEqual(mytrie2.retrieve(from:[Int]())!, Set<String>())
+
+    XCTAssertEqual(mytrie2.retrieve(from:[1])!, Set<String>())
+    XCTAssertNil(mytrie2.retrieve(from:[2]))
   }
 
   func testTrieClass() {
