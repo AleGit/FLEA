@@ -7,7 +7,6 @@ protocol Trie {
     associatedtype ValueS : Sequence // a sequence of stored values
     associatedtype TrieS : Sequence // a sequence of (sub)tries
 
-
     /// creates empty trie type
     init()
 
@@ -53,14 +52,14 @@ protocol Trie {
 
 extension Trie {
 
-  /// Create an new trie with one value at path.
+  /// Create a new trie with one value at path.
   init<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(with value:Value, at path:C) {
     self.init() // initialize trie
     self.insert(value, at:path)
   }
 
-  /// Inserts value at path. Possible missing path suffix will be created.
+  /// Inserts value at path. Possibly missing subtrie is created.
   mutating func insert<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(_ value:Value, at path:C) {
     guard let (head,tail) = path.decompose else {
@@ -78,6 +77,7 @@ extension Trie {
 
   /// Delete value at path. Returns deleted value or nil
   /// if path does not exist or value was not stored at path.
+  /// Empty subtries are removed.
   mutating func delete<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(_ value:Value, at path:C) -> Value? {
     guard let (head,tail) = path.decompose else {
@@ -110,6 +110,7 @@ extension Trie {
     return trie[tail]
   }
 
+  /// _Complexity_: O(1)
   var isEmpty : Bool {
     guard var iv = self.values?.makeIterator(), iv.next() == nil else {
       // There are values, hence the trie is not empty.

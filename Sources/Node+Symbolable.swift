@@ -16,6 +16,9 @@ extension Symbolable {
   static var empty : Self {
     return Self("",.undefined)
   }
+  static var asterisk : Self {
+    return Self("*",.variable)
+  }
 }
 
 // MARK: convenience initializers to build terms with strings.

@@ -7,7 +7,7 @@ and `p+q` denotes the concatenation of positions `p` and `q`.
 We define binary relations <= , <, and || on positions as follows.
 We say that position `p` is above position `q
 if there exists a (necessarily unique) position `r` such that `p+r = q`.
-In that case wedefine `q\p` as the position r.
+In that case we define `q\p` as the position r.
 If `p` is above q we also say that `q` is below p or p is a *prefix* of `q`, and we write `p` <= `q`.
 We write `p < q` if `p <= q` and `p != q`. If `p < q` we say that `p` is a proper prefix of `q`.
 Positions `p`, q are parallel, denoted by `p || q`, if neither `p <= q` nor `q <= p`.

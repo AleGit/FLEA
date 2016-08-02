@@ -32,12 +32,11 @@ extension Node {
 }
 
 extension Node {
+  var subnodes: Set<Self> {
+    return defaultSubnodes
+  }
 
   var variables: Set<Self> {
     return defaultVariables
-  }
-
-  var subnodes: Set<Self> {
-    return defaultSubnodes
   }
 }
