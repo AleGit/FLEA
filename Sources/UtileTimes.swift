@@ -7,6 +7,7 @@ import Glibc
 /// Substitute for CFAbsoluteTime which does not seem to be available on Linux.
 typealias AbsoluteTime = Double
 
+/// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
 func AbsoluteTimeGetCurrent() -> AbsoluteTime {
   var atime = timeval()             // initialize C struct
   let _ = gettimeofday(&atime,nil)  // will return 0
@@ -20,7 +21,6 @@ func ticksPerSecond() -> Double {
   return Double(sysconf(Int32(_SC_CLK_TCK)))
 }
 
-/// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
 func UtileTimesGetCurrent() -> UtileTimes {
   var ptime = tms()
   let _ = times(&ptime)
@@ -43,13 +43,6 @@ func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
 /// Measure the absolute runtime of a code block.
 /// Usage: `let (result,runtime) = measure { *code to measure* }`
 func measure<R>(f:()->R) -> (R, UtileTimes) {
-  let start = UtileTimesGetCurrent()
-  let result = f()
-  let end = UtileTimesGetCurrent()
-  return (result, end - start)
-}
-
-func mymeasure<R>(f:()->R) -> (R, UtileTimes) {
   let start = UtileTimesGetCurrent()
   let result = f()
   let end = UtileTimesGetCurrent()

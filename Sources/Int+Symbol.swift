@@ -10,32 +10,22 @@ struct IntSymbolTable : SymbolTable {
       return symbol
     }
 
-    // if (.universal.rawValue <= type.rawValue)
-    // && (type.rawValue <= .inequation.rawValue) {
-    //   return type.rawValue
-    // }
+    var value : Int = type.rawValue
 
     switch type {
       case .universal, .existential,
       .negation, .disjunction, .conjunction, .implication,
       .equation, .inequation:
-      symbols[string] = type.rawValue
-      strings[type.rawValue] = (string,type)
-
-      return type.rawValue
+      break
 
       default:
-
-        let value = (1+symbols.count) * 256 // * 256
-        + type.rawValue // encode type in value
-
-        symbols[string] = value
-        strings[value] = (string,type)
-
-        return value
-
-
+        value += (1+symbols.count) << 8 // *256
     }
+
+    symbols[string] = value
+    strings[value] = (string,type)
+
+    return value
   }
 
   subscript(value:Int) -> String? {
