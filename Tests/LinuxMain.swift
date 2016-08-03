@@ -13,10 +13,12 @@ XCTMain([
   testCase(ProcessTests.allTests),
   testCase(SharingNodeTests.allTests),
   testCase(SmartNodeTests.allTests),
+  testCase(StringLiteralTests.allTests),
   testCase(StringPathTests.allTests),
   testCase(SubstitutionTests.allTests),
   testCase(SyslogTests.allTests),
   testCase(TptpFileTests.allTests),
+  testCase(TrieTests.allTests),
   testCase(UnificationTests.allTests),
   testCase(WeakSetTests.allTests)
   ])
