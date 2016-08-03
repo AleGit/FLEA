@@ -22,7 +22,7 @@ struct CTptpParsingApiSamples {
     print("prlcParsingRoot :", prlcParsingRoot.dynamicType)
     print(" ")
 
-    print("prlcParseFile :", prlcParseFile.dynamicType)
+    print("prlcParsePath :", prlcParsePath.dynamicType)
     print("prlcDestroyStore :", prlcDestroyStore.dynamicType)
     print(" ")
     print("prlcStoreSymbol :", prlcStoreSymbol.dynamicType)

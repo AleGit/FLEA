@@ -93,9 +93,9 @@ extension Trie {
       return self.remove(member)
     }
     guard var trie = self[head] else { return nil }
-    let v = trie.remove(member, at:tail)
-    self[head] = trie // trie.isEmpty ? nil : trie
-    return v
+    let removedMember = trie.remove(member, at:tail)
+    self[head] = trie // setter MUST NOT store an empty trie!
+    return removedMember // could be different from member
   }
 
   /// Returns values at path or nil if path does not exist.
@@ -147,8 +147,8 @@ extension TrieStore {
   var isEmpty : Bool {
     return valueStore.isEmpty && trieStore.isEmpty
     // valueStore.isEmtpy is obviously necessary
-    // then valueStore.isEmtpy is obviously sufficiant, but would be incorrect
-    // if one subtrie exists and all existing subtries are empty. 
+    // then valueStore.isEmtpy is obviously sufficiant,
+    // but not necessary when empty subtries are possible.
   }
 
 }
@@ -163,10 +163,10 @@ extension TrieStore {
       return valueStore.remove(member)
   }
 
-
   subscript(key:Leap) -> Self? {
       get { return trieStore[key] }
-      /// MUST NOT store an empty trie
+
+      /// setter MUST NOT store an empty trie
       set {
         trieStore[key] = (newValue?.isEmpty ?? true) ? nil : newValue
       }

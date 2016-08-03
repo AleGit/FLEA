@@ -47,6 +47,8 @@ extension Node where Symbol:Symbolable {
     }
     self.init(symbol:Symbol(p,.predicate), nodes:nodes)
   }
+
+
 }
 
 // MARK:

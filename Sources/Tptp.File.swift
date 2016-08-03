@@ -13,7 +13,7 @@ extension Tptp {
       guard let size = path.fileSize, size > 0 else {
         return nil;
       }
-      let code = prlcParseFile(path, &store, &root)
+      let code = prlcParsePath(path, &store, &root)
       guard code == 0 && self.store != nil && self.root != nil else {
         return nil
       }

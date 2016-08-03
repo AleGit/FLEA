@@ -5,7 +5,9 @@
 /// of a value, together with a list of references to nodes (the "children"),
 /// with the constraints that no reference is duplicated, and none points to the root.
 /// <a href="https://en.wikipedia.org/wiki/Tree_(data_structure)">wikipedia</a>
-protocol Node : Hashable, CustomStringConvertible, CustomDebugStringConvertible {
+protocol Node : Hashable,
+  CustomStringConvertible, CustomDebugStringConvertible {
+
   associatedtype Symbol : Hashable
 
   /// The Value of the node.
@@ -73,4 +75,41 @@ extension Node {
     let tuple = nodes.joined(separator:",")
     return "\(s)(\(tuple))"
   }
+}
+
+// MARK: StringLiteralConvertible : ExtendedGraphemeClusterLiteralConvertible : UnicodeScalarLiteralConvertible
+
+extension Node {
+
+    // init(unicodeScalarLiteral value: StringLiteralType) {
+    //     self.init(stringLiteral: value)
+    // }
+    //
+    // init(extendedGraphemeClusterLiteral value: StringLiteralType) {
+    //     self.init(stringLiteral: value)
+    // }
+    /*
+    // implemenations of the protocol must provide this initializer
+    init(stringLiteral value: StringLiteralType) {
+    self.init(constant:"failed")
+    }
+    */
+}
+
+// MARK: Conversion between `Node<S:Symbol>` implemenations with matching symbol types.
+
+extension Node {
+    init<N:Node where N.Symbol == Symbol>(_ s:N) {    // similar to Int(3.5)
+
+        // no conversion between same types
+        if let t = s as? Self {
+            self = t
+        }
+        else if let nodes = s.nodes {
+            self = Self(symbol: s.symbol, nodes: nodes.map { Self($0) } )
+        }
+        else {
+            self = Self(variable:s.symbol)
+        }
+    }
 }
