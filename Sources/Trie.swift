@@ -1,5 +1,6 @@
 import Foundation
 
+
 protocol Trie {
     associatedtype Leap
     associatedtype Value
@@ -43,9 +44,6 @@ protocol Trie {
 
     /// get all immediate subtries
     var tries : TrieS? { get }
-
-    /// get all values of a trie and all it's subtries
-    /// var payload : ValueS? { get }
 }
 
 // MARK: default implementations for init, insert, remove, retrieve
@@ -154,7 +152,7 @@ T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
 
 // MARK: a trie with hashable leaps and values
 
-protocol TrieStore {
+protocol TrieStore : Trie, Sequence {
   associatedtype Key : Hashable
   associatedtype Value : Hashable
 
@@ -162,7 +160,7 @@ protocol TrieStore {
   var valueStore : Set<Value> { set get }
 }
 
-extension TrieStore  {
+extension TrieStore {
 
   mutating func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value) {
       return valueStore.insert(newMember)
@@ -189,6 +187,10 @@ extension TrieStore  {
       let ts = trieStore.values
       return Array(ts)
   }
+
+  func makeIterator() -> DictionaryIterator<Key,Self> {
+    return trieStore.makeIterator()
+  }
 }
 
 // MARK: - concrete trie types
@@ -200,6 +202,7 @@ struct TrieStruct<K: Hashable, V: Hashable> {
   typealias Value = V
   var trieStore = [Key: TrieStruct<Key, Value>]()
   var valueStore = Set<Value>()
+  var asterisk : Key? = nil
 }
 
 extension TrieStruct : Trie, TrieStore, Equatable {
@@ -213,6 +216,7 @@ final class TrieClass<K: Hashable, V: Hashable> {
   typealias Value = V
   var trieStore = [Key: TrieClass<Key, Value>]()
   var valueStore = Set<Value>()
+  var asterisk : Key? = nil
 }
 
 extension TrieClass : Trie, TrieStore, Equatable {

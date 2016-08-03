@@ -48,3 +48,14 @@ extension Node where Symbol:Symbolable {
     self.init(symbol:Symbol(p,.predicate), nodes:nodes)
   }
 }
+
+// MARK:
+
+extension Node where Symbol:Symbolable {
+  /// convert node types
+  init<N:Node where N.Symbol:Symbolable>(_ other:N) {
+    let s = Symbol(other.symbol.string,other.symbol.type)
+    let nodes = other.nodes?.map { Self($0) }
+    self.init(symbol:s, nodes:nodes)
+  }
+}
