@@ -16,7 +16,7 @@ protocol Trie {
 
     /// inserts one value at Leap path
     mutating func insert<C:Collection where C.Iterator.Element == Leap,
-        C.SubSequence.Iterator.Element == Leap>(_ value:Value, at: C)
+        C.SubSequence.Iterator.Element == Leap>(_ newMember:Value, at: C) -> (inserted:Bool, memberAfterInsert:Value)
 
     /// deletes and returns one value at Leap path,
     /// if path or value do not exist trie stays unchanged and nil is returned
@@ -56,22 +56,24 @@ extension Trie {
   init<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(with value:Value, at path:C) {
     self.init() // initialize trie
-    self.insert(value, at:path)
+    let _ = self.insert(value, at:path)
   }
 
   /// Inserts value at path. Possibly missing subtrie is created.
+  @discardableResult
   mutating func insert<C:Collection where C.Iterator.Element == Leap,
-  C.SubSequence.Iterator.Element == Leap>(_ value:Value, at path:C) {
+  C.SubSequence.Iterator.Element == Leap>(_ newMember:Value, at path:C)
+   -> (inserted:Bool, memberAfterInsert:Value) {
     guard let (head,tail) = path.decompose else {
-      self.insert(value)
-      return
+      return self.insert(newMember)
     }
 
     if self[head] == nil {
-      self[head] = Self(with:value,at:tail)
+      self[head] = Self(with:newMember,at:tail)
+      return (true,newMember)
     }
     else {
-      self[head]!.insert(value, at:tail)
+      return self[head]!.insert(newMember, at:tail)
     }
   }
 
