@@ -32,16 +32,16 @@ public class TrieTests : XCTestCase {
     // let values : Set = [valueA, valueB]
     // XCTAssertEqual(values,mytrie.values)
 
-    // delete values from wrong path
-    XCTAssertNil(mytrie.delete(valueA, at:pathB),nok)
-    XCTAssertNil(mytrie.delete(valueB, at:pathA),nok)
+    // remove values from wrong path
+    XCTAssertNil(mytrie.remove(valueA, at:pathB),nok)
+    XCTAssertNil(mytrie.remove(valueB, at:pathA),nok)
 
-    // delete value a from path a
-    XCTAssertEqual(valueA, mytrie.delete(valueA, at:pathA),nok)
+    // remove value a from path a
+    XCTAssertEqual(valueA, mytrie.remove(valueA, at:pathA),nok)
     XCTAssertFalse(mytrie.isEmpty,nok)
 
-    // delete value b from path b
-    XCTAssertEqual(valueB, mytrie.delete(valueB,at:pathB),nok)
+    // remove value b from path b
+    XCTAssertEqual(valueB, mytrie.remove(valueB,at:pathB),nok)
     XCTAssertTrue(mytrie.isEmpty,nok)
 
     XCTAssertEqual(mytrie2.retrieve(from:pathA)!, Set([valueA]))
@@ -66,17 +66,17 @@ public class TrieTests : XCTestCase {
     mytrie2.insert(valueB,at:pathB)
     XCTAssertEqual(mytrie,mytrie2,nok)
 
-    // delete values from wrong path
-    XCTAssertNil(mytrie.delete(valueA, at:pathB),nok)
-    XCTAssertNil(mytrie.delete(valueB, at:pathA),nok)
+    // remove values from wrong path
+    XCTAssertNil(mytrie.remove(valueA, at:pathB),nok)
+    XCTAssertNil(mytrie.remove(valueB, at:pathA),nok)
 
-    // delete value a from path a
-    XCTAssertEqual(valueA, mytrie.delete(valueA, at:pathA),nok)
+    // remove value a from path a
+    XCTAssertEqual(valueA, mytrie.remove(valueA, at:pathA),nok)
     XCTAssertFalse(mytrie.isEmpty,nok)
     //
 
-    // delete value b from path b
-    XCTAssertEqual(valueB, mytrie.delete(valueB,at:pathB),nok)
+    // remove value b from path b
+    XCTAssertEqual(valueB, mytrie.remove(valueB,at:pathB),nok)
     XCTAssertTrue(mytrie.isEmpty,nok)
   }
 }

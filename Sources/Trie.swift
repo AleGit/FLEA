@@ -18,9 +18,9 @@ protocol Trie {
     mutating func insert<C:Collection where C.Iterator.Element == Leap,
         C.SubSequence.Iterator.Element == Leap>(_ newMember:Value, at: C) -> (inserted:Bool, memberAfterInsert:Value)
 
-    /// deletes and returns one value at Leap path,
+    /// removes and returns one value at Leap path,
     /// if path or value do not exist trie stays unchanged and nil is returned
-    mutating func delete<C:Collection where C.Iterator.Element == Leap,
+    mutating func remove<C:Collection where C.Iterator.Element == Leap,
         C.SubSequence.Iterator.Element == Leap>(_ value:Value, at: C) -> Value?
 
     /// returns all values at path
@@ -30,8 +30,8 @@ protocol Trie {
     /// stores one value at trie node
     mutating func insert(_ newMember:Value) -> (inserted:Bool, memberAfterInsert:Value)
 
-    /// deletes and returns one value from trie node
-    mutating func delete(_ value:Value) -> Value?
+    /// removes and returns one value from trie node
+    mutating func remove(_ value:Value) -> Value?
 
     /// get values at one trie node
     var values : ValueS? { get }
@@ -48,7 +48,7 @@ protocol Trie {
     /// var payload : ValueS? { get }
 }
 
-// MARK: default implementations for init, insert, delete, retrieve
+// MARK: default implementations for init, insert, remove, retrieve
 
 extension Trie {
 
@@ -77,16 +77,16 @@ extension Trie {
     }
   }
 
-  /// Delete value at path. Returns deleted value or nil
+  /// remove value at path. Returns removed value or nil
   /// if path does not exist or value was not stored at path.
   /// Empty subtries are removed.
-  mutating func delete<C:Collection where C.Iterator.Element == Leap,
+  mutating func remove<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(_ value:Value, at path:C) -> Value? {
     guard let (head,tail) = path.decompose else {
-      return self.delete(value)
+      return self.remove(value)
     }
     guard var trie = self[head] else { return nil }
-    let v = trie.delete(value, at:tail)
+    let v = trie.remove(value, at:tail)
     self[head] = trie.isEmpty ? nil : trie
     return v
   }
@@ -171,7 +171,7 @@ extension TrieStruct : Trie, Equatable {
       return valueStore.insert(newMember)
   }
 
-  mutating func delete(_ value: Value) -> Value? {
+  mutating func remove(_ value: Value) -> Value? {
       return valueStore.remove(value)
   }
 
@@ -211,7 +211,7 @@ extension TrieClass : Trie, Equatable {
       return valueStore.insert(newMember)
   }
 
-  func delete(_ value: Value) -> Value? {
+  func remove(_ value: Value) -> Value? {
       return valueStore.remove(value)
   }
 
