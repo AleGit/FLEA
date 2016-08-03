@@ -4,7 +4,7 @@ import Foundation
 protocol Trie {
     associatedtype Leap
     associatedtype Value
-    associatedtype LeapS : Sequence // a sequence of leaps is a path, i.e. key
+    associatedtype LeapS : Sequence// a sequence of leaps is a path, i.e. key
     associatedtype ValueS : Sequence // a sequence of stored values
     associatedtype TrieS : Sequence // a sequence of (sub)tries
 
@@ -34,16 +34,25 @@ protocol Trie {
     /// removes and returns one value from trie node
     mutating func remove(_ member:Value) -> Value?
 
-    /// get (or set) subnode with step
+    /// Get (or set) subnode with step.
+    /// For efficiency the Setter MUST NOT store an empty trie,
+    /// i.e. trie where no value is stored at any node.
     subscript(step:Leap) -> Self? { get set }
 
     /// get values at one trie node
     var values : ValueS { get }
 
+    /// collect values at all immediate subtries
+    // var subvalues : ValueS { get }
+
     var leaps : LeapS { get }
 
     /// get all immediate subtries
     var tries : TrieS { get }
+
+    /// A trie is empty iff no value is stored at any node.
+    /// _complexity_: O(1) when no empty subtries are kept.
+    var isEmpty : Bool { get }
 }
 
 // MARK: default implementations for init, insert, remove, retrieve
@@ -85,7 +94,7 @@ extension Trie {
     }
     guard var trie = self[head] else { return nil }
     let v = trie.remove(member, at:tail)
-    self[head] = trie.isEmpty ? nil : trie
+    self[head] = trie // trie.isEmpty ? nil : trie
     return v
   }
 
@@ -109,27 +118,7 @@ extension Trie {
 
     return trie[tail]
   }
-
-  /// _Complexity_: O(1)
-  var isEmpty : Bool {
-    var iv = self.values.makeIterator()
-    guard iv.next() == nil else {
-      // There are values, hence the trie is not empty.
-      return false
-    }
-    var it = self.tries.makeIterator()
-    guard it.next() == nil else {
-      // There are subtries, hence the trie is not empty.
-      // _This only holds, if there are no emtpy subtries._
-      return false
-    }
-
-    // There are neither values nor subtries, hence the trie is empty.
-    return true
-  }
 }
-
-
 
 func ==<T:Trie where T.Value:Hashable, T.Leap:Hashable,
 T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
@@ -143,12 +132,25 @@ T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
 
 
 
-protocol TrieStore : Trie, Equatable /*, Sequence */ {
+protocol TrieStore : Trie, Equatable {
   associatedtype Leap : Hashable
   associatedtype Value : Hashable
 
   var trieStore : [Leap: Self]  { set get }
   var valueStore : Set<Value> { set get }
+}
+
+extension TrieStore {
+  /// It is assumed that no empty subtries are stored, i.e.
+  /// the trie has to be carefully maintained when values are removed.
+  /// _Complexity_: O(1)
+  var isEmpty : Bool {
+    return valueStore.isEmpty && trieStore.isEmpty
+    // valueStore.isEmtpy is obviously necessary
+    // then valueStore.isEmtpy is obviously sufficiant, but would be incorrect
+    // if one subtrie exists and all existing subtries are empty. 
+  }
+
 }
 
 extension TrieStore {
@@ -161,23 +163,21 @@ extension TrieStore {
       return valueStore.remove(member)
   }
 
+
   subscript(key:Leap) -> Self? {
       get { return trieStore[key] }
-      set { trieStore[key] = newValue }
+      /// MUST NOT store an empty trie
+      set {
+        trieStore[key] = (newValue?.isEmpty ?? true) ? nil : newValue
+      }
   }
 
   var values : Set<Value> {
       return self.valueStore
   }
 
-  var subvalues : Set<Value> {
-
-    var values = Set<Value>()
-    for trie in trieStore.values {
-      values.formUnion(trie.values)
-    }
-    return values
-
+  var subvalues : [Value] {
+    return trieStore.values.flatMap { $0.values }
   }
 
   var leaps : Set<Leap> {
@@ -188,12 +188,6 @@ extension TrieStore {
       let ts = trieStore.values
       return Array(ts)
   }
-
-  // func makeIterator() -> DictionaryIterator<Leap,Self> {
-  //   return trieStore.makeIterator()
-  // }
-
-
 }
 
 // MARK: concrete value trie type
