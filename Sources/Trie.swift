@@ -28,7 +28,7 @@ protocol Trie {
         C.SubSequence.Iterator.Element == Leap>(from:C) -> ValueS?
 
     /// stores one value at trie node
-    mutating func insert(_ value:Value)
+    mutating func insert(_ newMember:Value) -> (inserted:Bool, memberAfterInsert:Value)
 
     /// deletes and returns one value from trie node
     mutating func delete(_ value:Value) -> Value?
@@ -165,8 +165,8 @@ struct TrieStruct<K: Hashable, V: Hashable> {
 
 extension TrieStruct : Trie, Equatable {
 
-  mutating func insert(_ value: Value) {
-      valueStore.insert(value)
+  mutating func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value) {
+      return valueStore.insert(newMember)
   }
 
   mutating func delete(_ value: Value) -> Value? {
@@ -205,8 +205,8 @@ final class TrieClass<K: Hashable, V: Hashable> {
 
 extension TrieClass : Trie, Equatable {
 
-  func insert(_ value: Value) {
-      valueStore.insert(value)
+  func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value) {
+      return valueStore.insert(newMember)
   }
 
   func delete(_ value: Value) -> Value? {
