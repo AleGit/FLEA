@@ -7,7 +7,7 @@ struct Tptp {
 
   /// equal nodes are not always the same object
   /// depending on the method to build composite nodes
-  final class SimpleNode : FLEA.Node {
+  final class SimpleNode : FLEA.Node, StringLiteralConvertible {
     var symbol = S.empty
     var nodes : [Tptp.SimpleNode]? = nil
 

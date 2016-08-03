@@ -19,6 +19,34 @@ extension Tptp {
       }
     }
 
+    init?(string:String, type: Tptp.SymbolType) {
+      Syslog.info { string }
+
+
+      let code : Int32
+
+      switch type {
+        case .variable:
+        code = prlcParseString(string, &store, &root, PRLC_VARIABLE)
+        case .function:
+        code = prlcParseString(string, &store, &root, PRLC_FUNCTION)
+        case .predicate:
+        code = prlcParseString(string, &store, &root, PRLC_PREDICATE)
+        case .cnf:
+        code = prlcParseString(string, &store, &root, PRLC_CNF)
+        case .fof:
+        code = prlcParseString(string, &store, &root, PRLC_FOF)
+        default:
+          code = -1
+      }
+
+      guard code == 0 && self.store != nil && self.root != nil else {
+        return nil
+      }
+
+    }
+
+
     deinit {
       Syslog.info { self.path }
       if let store = store {

@@ -62,12 +62,12 @@ public class TptpFileTests : XCTestCase {
   }
 
   func testPUZ() {
-    check("PUZ001-1", 12, 0.005)
-    check("Problems/PUZ001+1", 14, 0.007)
+    check("PUZ001-1", 12, 0.1)
+    check("Problems/PUZ001+1", 14, 0.1)
   }
 
   func testHWV() {
-    check("HWV/HWV001-1", 42, 0.01)
+    check("HWV/HWV001-1", 42, 0.1)
     // check("HWV134-1", 2332428, 400.0) // debug build is slow
     // check("HWV134+1", 128975, 200.003)
   }

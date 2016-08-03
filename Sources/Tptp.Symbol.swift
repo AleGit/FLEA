@@ -58,6 +58,7 @@ extension Tptp {
 }
 
 extension Tptp.SymbolType {
+  
   init(of node:TreeNodeRef) {
 
     guard let symbol = node.symbol else {
