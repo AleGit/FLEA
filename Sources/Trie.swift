@@ -152,11 +152,13 @@ T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
 
 // MARK: a trie with hashable leaps and values
 
-protocol TrieStore : Trie, Sequence {
-  associatedtype Key : Hashable
+
+
+protocol TrieStore : Trie, Sequence, Equatable {
+  associatedtype Leap : Hashable
   associatedtype Value : Hashable
 
-  var trieStore : [Key: Self]  { set get }
+  var trieStore : [Leap: Self]  { set get }
   var valueStore : Set<Value> { set get }
 }
 
@@ -170,7 +172,7 @@ extension TrieStore {
       return valueStore.remove(member)
   }
 
-  subscript(key:Key) -> Self? {
+  subscript(key:Leap) -> Self? {
       get { return trieStore[key] }
       set { trieStore[key] = newValue }
   }
@@ -179,7 +181,7 @@ extension TrieStore {
       return self.valueStore
   }
 
-  var leaps : Set<Key>? {
+  var leaps : Set<Leap>? {
     return Set(self.trieStore.keys)
   }
 
@@ -188,16 +190,14 @@ extension TrieStore {
       return Array(ts)
   }
 
-  func makeIterator() -> DictionaryIterator<Key,Self> {
+  func makeIterator() -> DictionaryIterator<Leap,Self> {
     return trieStore.makeIterator()
   }
 }
 
-// MARK: - concrete trie types
+// MARK: concrete value trie type
 
-// MARK: a value type trie
-
-struct TrieStruct<K: Hashable, V: Hashable> {
+struct TrieStruct<K: Hashable, V: Hashable> : TrieStore {
   typealias Key = K
   typealias Value = V
   var trieStore = [Key: TrieStruct<Key, Value>]()
@@ -205,22 +205,14 @@ struct TrieStruct<K: Hashable, V: Hashable> {
   var asterisk : Key? = nil
 }
 
-extension TrieStruct : Trie, TrieStore, Equatable {
-  // use default implementations
-}
+// MARK: concrete reference trie type
 
-// MARK: a reference type trie
-
-final class TrieClass<K: Hashable, V: Hashable> {
+final class TrieClass<K: Hashable, V: Hashable> : TrieStore {
   typealias Key = K
   typealias Value = V
   var trieStore = [Key: TrieClass<Key, Value>]()
   var valueStore = Set<Value>()
   var asterisk : Key? = nil
-}
-
-extension TrieClass : Trie, TrieStore, Equatable {
-  // use default implementations
 }
 
 // extension Trie where Value==Int {
