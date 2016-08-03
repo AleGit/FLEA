@@ -31,7 +31,7 @@ protocol Trie {
     mutating func insert(_ newMember:Value) -> (inserted:Bool, memberAfterInsert:Value)
 
     /// removes and returns one value from trie node
-    mutating func remove(_ value:Value) -> Value?
+    mutating func remove(_ member:Value) -> Value?
 
     /// get values at one trie node
     var values : ValueS? { get }
@@ -81,12 +81,12 @@ extension Trie {
   /// if path does not exist or value was not stored at path.
   /// Empty subtries are removed.
   mutating func remove<C:Collection where C.Iterator.Element == Leap,
-  C.SubSequence.Iterator.Element == Leap>(_ value:Value, at path:C) -> Value? {
+  C.SubSequence.Iterator.Element == Leap>(_ member:Value, at path:C) -> Value? {
     guard let (head,tail) = path.decompose else {
-      return self.remove(value)
+      return self.remove(member)
     }
     guard var trie = self[head] else { return nil }
-    let v = trie.remove(value, at:tail)
+    let v = trie.remove(member, at:tail)
     self[head] = trie.isEmpty ? nil : trie
     return v
   }
@@ -152,6 +152,45 @@ T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
   return true
 }
 
+// MARK: a trie with hashable leaps and values
+
+protocol TrieStore {
+  associatedtype Key : Hashable
+  associatedtype Value : Hashable
+
+  var trieStore : [Key: Self]  { set get }
+  var valueStore : Set<Value> { set get }
+}
+
+extension TrieStore  {
+
+  mutating func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value) {
+      return valueStore.insert(newMember)
+  }
+
+  mutating func remove(_ member: Value) -> Value? {
+      return valueStore.remove(member)
+  }
+
+  subscript(key:Key) -> Self? {
+      get { return trieStore[key] }
+      set { trieStore[key] = newValue }
+  }
+
+  var values : Set<Value>? {
+      return self.valueStore
+  }
+
+  var leaps : Set<Key>? {
+    return Set(self.trieStore.keys)
+  }
+
+  var tries : [Self]? {
+      let ts = trieStore.values
+      return Array(ts)
+  }
+}
+
 // MARK: - concrete trie types
 
 // MARK: a value type trie
@@ -159,39 +198,12 @@ T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
 struct TrieStruct<K: Hashable, V: Hashable> {
   typealias Key = K
   typealias Value = V
-  private var trieStore = [Key: TrieStruct<Key, Value>]()
-  private var valueStore = Set<Value>()
-
-  init() {    }
+  var trieStore = [Key: TrieStruct<Key, Value>]()
+  var valueStore = Set<Value>()
 }
 
-extension TrieStruct : Trie, Equatable {
-
-  mutating func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value) {
-      return valueStore.insert(newMember)
-  }
-
-  mutating func remove(_ value: Value) -> Value? {
-      return valueStore.remove(value)
-  }
-
-  subscript(key:Key) -> TrieStruct? {
-      get { return trieStore[key] }
-      set { trieStore[key] = newValue }
-  }
-
-  var values : Set<Value>? {
-      return self.valueStore
-  }
-
-  var leaps : Set<Key>? {
-    return Set(self.trieStore.keys)
-  }
-
-  var tries : [TrieStruct]? {
-      let ts = trieStore.values
-      return Array(ts)
-  }
+extension TrieStruct : Trie, TrieStore, Equatable {
+  // use default implementations
 }
 
 // MARK: a reference type trie
@@ -199,39 +211,12 @@ extension TrieStruct : Trie, Equatable {
 final class TrieClass<K: Hashable, V: Hashable> {
   typealias Key = K
   typealias Value = V
-  private var trieStore = [Key: TrieClass<Key, Value>]()
-  private var valueStore = Set<Value>()
-
-  init() {    }
+  var trieStore = [Key: TrieClass<Key, Value>]()
+  var valueStore = Set<Value>()
 }
 
-extension TrieClass : Trie, Equatable {
-
-  func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value) {
-      return valueStore.insert(newMember)
-  }
-
-  func remove(_ value: Value) -> Value? {
-      return valueStore.remove(value)
-  }
-
-  subscript(key:Key) -> TrieClass? {
-      get { return trieStore[key] }
-      set { trieStore[key] = newValue }
-  }
-
-  var values : Set<Value>? {
-      return self.valueStore
-  }
-
-  var leaps : Set<Key>? {
-    return Set(self.trieStore.keys)
-  }
-
-  var tries : [TrieClass]? {
-      let ts = trieStore.values
-      return Array(ts)
-  }
+extension TrieClass : Trie, TrieStore, Equatable {
+  // use default implementations
 }
 
 // extension Trie where Value==Int {
