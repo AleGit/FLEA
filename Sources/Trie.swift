@@ -202,7 +202,6 @@ struct TrieStruct<K: Hashable, V: Hashable> : TrieStore {
   typealias Value = V
   var trieStore = [Key: TrieStruct<Key, Value>]()
   var valueStore = Set<Value>()
-  var asterisk : Key? = nil
 }
 
 // MARK: concrete reference trie type
@@ -212,7 +211,6 @@ final class TrieClass<K: Hashable, V: Hashable> : TrieStore {
   typealias Value = V
   var trieStore = [Key: TrieClass<Key, Value>]()
   var valueStore = Set<Value>()
-  var asterisk : Key? = nil
 }
 
 // extension Trie where Value==Int {

@@ -35,14 +35,3 @@ func ==<S:Hashable>(lhs:SymHop<S>, rhs:SymHop<S>) -> Bool {
         return false
     }
 }
-
-extension SymHop where S : Symbolable {
-  var isAsterisk : Bool {
-    switch(self) {
-      case let .symbol(symbol):
-        return symbol == S.asterisk
-      case .hop:
-        return false
-    }
-  }
-}
