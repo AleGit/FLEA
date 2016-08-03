@@ -34,16 +34,16 @@ protocol Trie {
     /// removes and returns one value from trie node
     mutating func remove(_ member:Value) -> Value?
 
-    /// get values at one trie node
-    var values : ValueS? { get }
-
-    var leaps : LeapS? { get }
-
     /// get (or set) subnode with step
     subscript(step:Leap) -> Self? { get set }
 
+    /// get values at one trie node
+    var values : ValueS { get }
+
+    var leaps : LeapS { get }
+
     /// get all immediate subtries
-    var tries : TrieS? { get }
+    var tries : TrieS { get }
 }
 
 // MARK: default implementations for init, insert, remove, retrieve
@@ -112,11 +112,13 @@ extension Trie {
 
   /// _Complexity_: O(1)
   var isEmpty : Bool {
-    guard var iv = self.values?.makeIterator(), iv.next() == nil else {
+    var iv = self.values.makeIterator()
+    guard iv.next() == nil else {
       // There are values, hence the trie is not empty.
       return false
     }
-    guard var it = self.tries?.makeIterator(), it.next() == nil else {
+    var it = self.tries.makeIterator()
+    guard it.next() == nil else {
       // There are subtries, hence the trie is not empty.
       // _This only holds, if there are no emtpy subtries._
       return false
@@ -134,19 +136,6 @@ T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
   guard lhs.values == rhs.values else { return false }
   guard lhs.leaps == rhs.leaps else { return false }
 
-  guard let leaps = lhs.leaps else {
-    assert(rhs.leaps == nil)
-
-    // no leaps at all
-    return true
-  }
-
-  for leap in leaps {
-    guard let l = lhs[leap], let r = rhs[leap], l==r else {
-      return false
-    }
-  }
-
   return true
 }
 
@@ -154,7 +143,7 @@ T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap>>(lhs:T,rhs:T) -> Bool {
 
 
 
-protocol TrieStore : Trie, Sequence, Equatable {
+protocol TrieStore : Trie, Equatable /*, Sequence */ {
   associatedtype Leap : Hashable
   associatedtype Value : Hashable
 
@@ -177,22 +166,34 @@ extension TrieStore {
       set { trieStore[key] = newValue }
   }
 
-  var values : Set<Value>? {
+  var values : Set<Value> {
       return self.valueStore
   }
 
-  var leaps : Set<Leap>? {
+  var subvalues : Set<Value> {
+
+    var values = Set<Value>()
+    for trie in trieStore.values {
+      values.formUnion(trie.values)
+    }
+    return values
+
+  }
+
+  var leaps : Set<Leap> {
     return Set(self.trieStore.keys)
   }
 
-  var tries : [Self]? {
+  var tries : [Self] {
       let ts = trieStore.values
       return Array(ts)
   }
 
-  func makeIterator() -> DictionaryIterator<Leap,Self> {
-    return trieStore.makeIterator()
-  }
+  // func makeIterator() -> DictionaryIterator<Leap,Self> {
+  //   return trieStore.makeIterator()
+  // }
+
+
 }
 
 // MARK: concrete value trie type
