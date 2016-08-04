@@ -11,31 +11,49 @@ class CYicesApiTests : XCTestCase {
 
   func testTypes() {
 
-    XCTAssertEqual("(()) -> ()","\(yices_init.dynamicType)")
-    XCTAssertEqual("(()) -> ()","\(yices_exit.dynamicType)")
-    XCTAssertEqual("(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ImplicitlyUnwrappedOptional<OpaquePointer>",
-    "\(yices_new_context.dynamicType)")
-    XCTAssertEqual("(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ()","\(yices_free_context.dynamicType)")
+    XCTAssertEqual(
+      "(()) -> ()",
+      "\(yices_init.dynamicType)")
 
-    XCTAssertEqual("(()) -> Int32","\(yices_bool_type.dynamicType)")
-    XCTAssertEqual("(Int32) -> Int32","\(yices_new_uninterpreted_term.dynamicType)")
-    XCTAssertEqual("((Int32, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> Int32","\(yices_set_term_name.dynamicType)")
-    XCTAssertEqual("((UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>, Int32)) -> Int32","\(yices_function_type.dynamicType)")
-    XCTAssertEqual("((Int32, UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>)) -> Int32","\(yices_application.dynamicType)")
+    XCTAssertEqual(
+      "(()) -> ()",
+      "\(yices_exit.dynamicType)")
+
+    XCTAssertEqual(
+      "(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ImplicitlyUnwrappedOptional<OpaquePointer>",
+      "\(yices_new_context.dynamicType)")
+    XCTAssertEqual(
+      "(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ()",
+      "\(yices_free_context.dynamicType)")
+
+    XCTAssertEqual(
+      "(()) -> Int32",
+      "\(yices_bool_type.dynamicType)")
+    XCTAssertEqual(
+      "(Int32) -> Int32",
+      "\(yices_new_uninterpreted_term.dynamicType)")
+    XCTAssertEqual(
+      "((Int32, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> Int32",
+      "\(yices_set_term_name.dynamicType)")
+    XCTAssertEqual(
+      "((UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>, Int32)) -> Int32",
+      "\(yices_function_type.dynamicType)")
+    XCTAssertEqual(
+      "((Int32, UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>)) -> Int32",
+      "\(yices_application.dynamicType)")
   }
 
 
 
   private func status(context:OpaquePointer, term: term_t, expected : smt_status = STATUS_SAT, line:Int = #line) {
 
-    defer { print("-----------------------------------------------") } // print separator line after all output
-
     guard let string = String(term: term) else { return }
-    print("assert", string)
 
     yices_assert_formula(context, term)
 
     let st = yices_check_context(context, nil)
+
+    print("\(line): assert(\(string)) -> \(st.rawValue) expected=\(expected.rawValue)")
 
     XCTAssertEqual(expected, st,"\(nok) \(line) assert(\(string))")
 
@@ -71,14 +89,12 @@ class CYicesApiTests : XCTestCase {
         break;
       }
     }
-//
-/// Constructs thre clauses:
+
+/// Constructs three clauses:
 /// - a tautology
 /// - a positive literal clause `p(f(a,b),a,b)`
 /// - a negative literal clause
-
-
-/// an checks satisfiability.
+/// and checks satisfiability.
 func testBasics() {
   yices_init()
   defer { yices_exit() }
