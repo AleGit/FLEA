@@ -35,8 +35,8 @@ struct Q {
   static var ffaaZ = Node(f:"f",[faa,Z])
 }
 
-struct Misc {
-  static func parse<N:Node where N.Symbol:Symbolable>(problem:String) -> [N] {
+extension Q {
+  static func parse<N:FLEA.Node where N.Symbol:Symbolable>(problem:String) -> [N] {
     print("N:Node == \(String(reflecting:N.self))")
 
     guard let path = problem.p else {

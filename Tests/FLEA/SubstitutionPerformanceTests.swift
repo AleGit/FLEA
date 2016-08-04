@@ -2,11 +2,11 @@ import XCTest
 
 @testable import FLEA
 
-public class MiscPerformanceTests : XCTestCase {
-  static var allTests : [(String, (MiscPerformanceTests) -> () throws -> Void)] {
+public class SubstitutionPerformanceTests : XCTestCase {
+  static var allTests : [(String, (SubstitutionPerformanceTests) -> () throws -> Void)] {
     return [
     ("testDictionarySubstitution", testDictionarySubstitution),
-    ("testSubstitution", testSubstitution)
+    ("testInstantiatorSubstitution", testInstantiatorSubstitution)
     ]
   }
 
@@ -24,7 +24,7 @@ public class MiscPerformanceTests : XCTestCase {
     super.tearDown()
 }
 
-  func testSubstitution() {
+  func testInstantiatorSubstitution() {
     measure {
       let X_a : Instantiator = [Q.X : Q.a]
       let Y_b : Instantiator = [Q.Y: Q.b]

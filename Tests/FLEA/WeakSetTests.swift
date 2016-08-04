@@ -6,11 +6,11 @@ public class WeakSetTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (WeakSetTests) -> () throws -> Void)]  {
     return [
-      ("testWeakStringCollection", testWeakStringCollection)
+      ("testWeakStringSet", testWeakStringSet)
     ]
   }
 
-  func testWeakStringCollection() {
+  func testWeakStringSet() {
     // create a set with weak references
     var collection = WeakSet<Stringly>()
 
@@ -79,28 +79,32 @@ public class WeakSetTests : XCTestCase {
   }
 }
 
-private final class Stringly : Hashable, CustomStringConvertible {
-  let string : String
-  var hashValue : Int { return string.hashValue }
+// MARK: - private data structure for weak set tests only
 
-  init(_ string:String) {
-    self.string = string
-  }
+extension WeakSetTests {
+  private final class Stringly : Hashable, CustomStringConvertible {
+    let string : String
+    var hashValue : Int { return string.hashValue }
 
-  deinit {
-    print("\(#function) \(self.string)")
-  }
+    init(_ string:String) {
+      self.string = string
+    }
 
-  var description : String {
-    return string
+    deinit {
+      print("\(#function) \(self.string)")
+    }
+
+    var description : String {
+      return string
+    }
   }
 }
 
-private func ==(lhs:Stringly, rhs:Stringly) -> Bool {
+private func ==(lhs:WeakSetTests.Stringly, rhs:WeakSetTests.Stringly) -> Bool {
   return lhs.string == rhs.string
 }
 
-extension Stringly: StringLiteralConvertible {
+extension WeakSetTests.Stringly: StringLiteralConvertible {
     typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
     typealias UnicodeScalarLiteralType = StringLiteralType
 

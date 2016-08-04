@@ -5,11 +5,11 @@ import XCTest
 public class DictionarySubstitutionTests : XCTestCase {
   static var allTests : [(String, (DictionarySubstitutionTests) -> () throws -> Void)] {
     return [
-      ("testSubstitutionBasics", testSubstitutionBasics)
+      ("testBasics", testBasics)
     ]
   }
 
-  func testSubstitutionBasics() {
+  func testBasics() {
     let X_a = [Q.X : Q.a]
     let Y_b = [Q.Y: Q.b]
     let Z_c = [Q.Z : Q.c]

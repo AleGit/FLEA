@@ -5,7 +5,8 @@ import XCTest
 public class DescriptionTests : XCTestCase {
   static var allTests : [(String, (DescriptionTests) -> () throws -> Void)] {
     return [
-      ("testDescription", testDescription)
+      ("testDescription", testDescription),
+      ("testDebugDescription", testDebugDescription)
     ]
   }
 
