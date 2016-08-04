@@ -83,5 +83,12 @@ public class StringLiteralTests : XCTestCase {
     XCTAssertEqual(fofe.symbol.type,.equation,"\(nok) fofe :: \(fofe)")
   }
 
+  func testUndefined() {
+    let ab : Node = "@cnf a&b" // =>
+    XCTAssertEqual(ab.symbol.type,.function,"\(nok) ab :: \(ab)")
+    XCTAssertEqual("@cnf a&b ❌ .parse error",ab.description)
+
+  }
+
 
 }

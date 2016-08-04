@@ -23,13 +23,13 @@ extension Node where Symbol:Symbolable {
   /// *Annotations and Heuristics*
   ///
   /// String literals can be annotated:
-  /// - "@fof p(f(X))" -> first order formula, a predicate.
-  /// - "@cnf p(f(X))" -> clause with one predicate.
+  /// - "@fof p(f(X))" -> first order formula, a predicate literal.
+  /// - "@cnf p(f(X))" -> clause with one predicate literal.
   /// - "p(f(X))" -> term, p is a function symbol
 
-  /// Annotations may introduce parse errors for well formed formulas:
+  /// Annotations may introduce syntax errors for well formed formulas:
   /// - "@cnf a&b" -> undefined
-  /// - "@term a|b" -> undefined
+  /// - "a&b" -> first order formula, a conjunction of two propositions.
   ///
   /// In many cases there is no need for annotations.
   ///
@@ -47,7 +47,7 @@ extension Node where Symbol:Symbolable {
     }
 
     guard let file = Tptp.File(string:string, type:type) else {
-      self = Self(c:"\(value) ❌ no file")
+      self = Self(c:"\(value) ❌ .parse error")
       return
     }
 
