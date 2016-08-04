@@ -2,8 +2,16 @@ import XCTest
 
 @testable import FLEA
 
+private final class StringLiteralNode : FLEA.Node, StringLiteralConvertible {
+  var symbol = Tptp.Symbol.empty // avoid side effects with symbol tables
+  var nodes : [StringLiteralNode]? = nil
 
-private typealias Node = FLEA.Tptp.SimpleNode
+  lazy var hashValue : Int = self.defaultHashValue
+  lazy var description : String = self.defaultDescription
+}
+
+
+private typealias Node = StringLiteralNode
 
 
 
@@ -13,11 +21,26 @@ public class StringLiteralTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (StringLiteralTests) -> () throws -> Void)]  {
     return [
-      ("testStringLiterals", testStringLiterals)
+      ("testStringLiterals", testStringLiterals),
+        ("testStringLiteralAnnotations", testStringLiteralAnnotations)
     ]
   }
 
-  /// accumulate four distict nodes
+  func testStringLiteralAnnotations() {
+    let pfX : Node = "p(f(X))"
+    XCTAssertEqual(pfX.symbol.type,.function,"\(nok) pfX :: \(pfX)")
+    XCTAssertEqual("p(f(X))", pfX.description,nok)
+
+    let fof : Node = "@fof p(f(X))"
+    XCTAssertEqual(fof.symbol.type,.predicate,"\(nok) fof :: \(fof)")
+    XCTAssertEqual("p(f(X))", fof.description,nok)
+
+    let cnf : Node = "@cnf p(f(X))" // =>
+    XCTAssertEqual(cnf.symbol.type,.disjunction,"\(nok) cnf :: \(cnf)")
+    XCTAssertEqual(cnf.nodes!.first!.symbol.type,.predicate,"\(nok) cnf :: \(cnf)")
+    XCTAssertEqual("(p(f(X)))", cnf.description,nok)
+  }
+
   func testStringLiterals() {
     let a : Node = "a"
     XCTAssertEqual(a.symbol.type,.function,"\(nok) a :: \(a)")
@@ -27,15 +50,6 @@ public class StringLiteralTests : XCTestCase {
 
     let fX : Node = "f(X)"
     XCTAssertEqual(fX.symbol.type,.function,"\(nok) fX :: \(fX)")
-
-    let termfX : Node = "@term f(X)"
-    XCTAssertEqual(termfX.symbol.type,.function,"\(nok) termfX :: \(termfX)")
-
-    let pfX : Node = "@predicate p(f(X))"
-    XCTAssertEqual(pfX.symbol.type,.predicate,"\(nok) pfX :: \(pfX)")
-    //
-    let cnf : Node = "@cnf p(f(X))" // =>
-    XCTAssertEqual(cnf.symbol.type,.disjunction,"\(nok) cnf :: \(cnf)")
 
     let equal : Node = "a=X"
     XCTAssertEqual(equal.symbol.type,.equation,"\(nok) equal :: \(equal)")
@@ -63,6 +77,7 @@ public class StringLiteralTests : XCTestCase {
 
     let fofn : Node = "@fof ~p(f(X))"
     XCTAssertEqual(fofn.symbol.type,.negation,"\(nok) fofn :: \(fofn)")
+    XCTAssertEqual(fofn.nodes!.first!.symbol.type,.predicate,"\(nok) fofn :: \(fofn)")
 
     let fofe : Node = "@fof p=X"
     XCTAssertEqual(fofe.symbol.type,.equation,"\(nok) fofe :: \(fofe)")

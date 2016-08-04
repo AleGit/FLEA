@@ -77,25 +77,6 @@ extension Node {
   }
 }
 
-// MARK: StringLiteralConvertible : ExtendedGraphemeClusterLiteralConvertible : UnicodeScalarLiteralConvertible
-
-extension Node {
-
-    // init(unicodeScalarLiteral value: StringLiteralType) {
-    //     self.init(stringLiteral: value)
-    // }
-    //
-    // init(extendedGraphemeClusterLiteral value: StringLiteralType) {
-    //     self.init(stringLiteral: value)
-    // }
-    /*
-    // implemenations of the protocol must provide this initializer
-    init(stringLiteral value: StringLiteralType) {
-    self.init(constant:"failed")
-    }
-    */
-}
-
 // MARK: Conversion between `Node<S:Symbol>` implemenations with matching symbol types.
 
 extension Node {

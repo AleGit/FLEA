@@ -45,20 +45,16 @@ extension String {
 }
 
 extension String {
-  var termLiteralType : (String,Tptp.SymbolType) {
+  var tptpLiteralType : (String,Tptp.SymbolType) {
     if self.isEmpty {
       return (self,.undefined)
     }
 
     if self.hasPrefix("@") {
       for (prefix,type) in [
-        "@variable " : Tptp.SymbolType.variable,
-        "@constant " : Tptp.SymbolType.function,
-        "@function " : Tptp.SymbolType.function,
-        "@term " : Tptp.SymbolType.function,
-        "@predicate " : Tptp.SymbolType.predicate,
         "@cnf " : Tptp.SymbolType.cnf,
         "@fof " : Tptp.SymbolType.fof,
+
         "@include " : Tptp.SymbolType.include,
         "@file " : Tptp.SymbolType.file
         ] {
@@ -67,18 +63,17 @@ extension String {
             return (s,type)
           }
         }
+        Syslog.warning { "Undefined annotation in \(self)" }
       }
-      else {
-        if self.contains("&") || self.contains("=>") {
-          return (self,.fof)
-        }
-        if self.contains("|") {
-          return (self,.cnf)
-        }
-        if self.contains("=") || self.contains("!=") || self.contains("~") {
-          return (self,.predicate)
-        }
+
+      for connective in [
+        "?", "!", "~", "-->",
+        "&",  "|",  "=>", "<=>", "=",
+        "~&", "~|", "<=", "<~>", "~="
+      ] {
+        if self.contains(connective) { return (self,.fof) }
       }
+
       return (self, .function)
   }
 }

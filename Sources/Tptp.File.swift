@@ -19,24 +19,36 @@ extension Tptp {
       }
     }
 
+
     init?(string:String, type: Tptp.SymbolType) {
       Syslog.info { string }
-
 
       let code : Int32
 
       switch type {
-        case .variable:
-        code = prlcParseString(string, &store, &root, PRLC_VARIABLE)
-        case .function:
-        code = prlcParseString(string, &store, &root, PRLC_FUNCTION)
-        case .predicate:
-        code = prlcParseString(string, &store, &root, PRLC_PREDICATE)
+        /// variables and (constant)  are terms.
+        case .function, .variable:
+          code = prlcParseString(string, &store, &root, PRLC_FUNCTION)
+
+        /// conjunctive normal form
         case .cnf:
-        code = prlcParseString(string, &store, &root, PRLC_CNF)
-        case .fof:
-        code = prlcParseString(string, &store, &root, PRLC_FOF)
-        default:
+          code = prlcParseString(string, &store, &root, PRLC_CNF)
+
+        /// arbitrary first order formulas
+        case .fof, .universal, .existential, .negation, .disjunction, .conjunction,
+          .implication, .reverseimpl, .bicondition, .xor, .nand, .nor,
+          .equation, .inequation, .predicate:
+          code = prlcParseString(string, &store, &root, PRLC_FOF)
+
+        /// include statements
+        case .include:
+          code = prlcParseString(string, &store, &root, PRLC_INCLUDE)
+
+        /// the content of a file
+        case .file:
+          code = prlcParseString(string, &store, &root, PRLC_FILE)
+
+        default: // .name, .role, .annotation
           code = -1
       }
 
