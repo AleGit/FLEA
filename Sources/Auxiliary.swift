@@ -22,6 +22,18 @@ extension String {
     }
 }
 
+extension String  {
+    //    func contains(string:StringSymbol) -> Bool {
+    //        return self.rangeOfString(string) != nil
+    //    }
+    func containsOne<S:Sequence where S.Iterator.Element == String>(_ strings:S) -> Bool {
+        return strings.reduce(false) { $0 || self.contains($1) }
+    }
+    func containsAll<S:Sequence where S.Iterator.Element == String>(_ strings:S) -> Bool {
+        return strings.reduce(true) { $0 && self.contains($1) }
+    }
+}
+
 extension Character {
     var isUppercase: Bool {
       let str = String(self)

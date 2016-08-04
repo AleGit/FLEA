@@ -66,12 +66,12 @@ extension String {
         Syslog.warning { "Undefined annotation in \(self)" }
       }
 
-      for connective in [
+      if self.containsOne([
         "?", "!", "~", "-->",
         "&",  "|",  "=>", "<=>", "=",
         "~&", "~|", "<=", "<~>", "~="
-      ] {
-        if self.contains(connective) { return (self,.fof) }
+      ]) {
+        return (self,.fof)
       }
 
       return (self, .function)

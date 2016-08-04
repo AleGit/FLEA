@@ -3,6 +3,8 @@ import XCTest
 
 XCTMain([
   testCase(AuxiliaryTests.allTests),
+  testCase(CTptpParsingApiTests.allTests),
+  testCase(CYicesApiTests.allTests),
   testCase(DescriptionTests.allTests),
   testCase(DictionarySubstitutionTests.allTests),
   testCase(DictionaryUnificationTests.allTests),

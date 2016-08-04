@@ -103,23 +103,20 @@ extension Range where Element: Comparable {
 extension Dictionary {
     // get all keys where the values match a predicate
     func keys(_ predicate : (Element)->Bool) -> [Key] {
-        return self.filter { predicate($0) }.map { $0.0 }
+        return self.filter { predicate($0) }.map { $0.0
+      // for connective in [
+      //   "?", "!", "~", "-->",
+      //   "&",  "|",  "=>", "<=>", "=",
+      //   "~&", "~|", "<=", "<~>", "~="
+      // ] {
+      //   if self.contains(connective) { return (self,.fof) }
+      // } }
     }
 }
 
 
 // MARK: -
-extension String  {
-    //    func contains(string:StringSymbol) -> Bool {
-    //        return self.rangeOfString(string) != nil
-    //    }
-    func containsOne<S:Sequence where S.Iterator.Element == StringSymbol>(_ strings:S) -> Bool {
-        return strings.reduce(false) { $0 || self.contains($1) }
-    }
-    func containsAll<S:Sequence where S.Iterator.Element == StringSymbol>(_ strings:S) -> Bool {
-        return strings.reduce(true) { $0 && self.contains($1) }
-    }
-}
+
 
 // MARK: -
 

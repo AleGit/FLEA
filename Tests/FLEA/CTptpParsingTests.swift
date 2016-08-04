@@ -1,8 +1,16 @@
-import CTptpParsing
+import XCTest
+@testable import CTptpParsing
 
-struct CTptpParsingApiSamples {
+public class CTptpParsingApiTests : XCTestCase {
+  static var allTests : [(String, (CTptpParsingApiTests) -> () throws -> Void)] {
+    return [
+      ("testStore", testStore),
+      ("testTypes", testTypes)
+    ]
+  }
 
-  static func demoStore() {
+
+  func testStore() {
     prlcParsingStore = prlcCreateStore(1_000_000)
     guard let store = prlcParsingStore else {
       print("Error: creation of store failed.")
@@ -15,7 +23,8 @@ struct CTptpParsingApiSamples {
     print("p_nodes",store.pointee.p_nodes.size)
     print("t_nodes",store.pointee.t_nodes.size)
   }
-  static func printTypes() {
+
+  func testTypes() {
     print("=========================================================")
     print("types:")
     print("prlcParsingStore :", prlcParsingStore.dynamicType)
