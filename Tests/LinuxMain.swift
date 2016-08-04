@@ -9,7 +9,7 @@ XCTMain([
 
   testCase(KinNodeTests.allTests),
   testCase(NodePathsTests.allTests),
-  testCase(ParseTptpTests.allTests),
+  // testCase(ParseTptpTests.allTests),
   testCase(PositionTests.allTests),
 
   testCase(ProcessTests.allTests),
