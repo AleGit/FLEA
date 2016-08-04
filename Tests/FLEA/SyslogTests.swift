@@ -24,6 +24,9 @@ public class SyslogTests : XCTestCase {
 
   /// [syslog](https://en.wikipedia.org/wiki/Syslog) wrapper demo.
   /// Messages should appear near the output of the test,
+
+
+
   func testSyslog() {
 
     #if os(OSX)

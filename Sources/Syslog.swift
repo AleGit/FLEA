@@ -171,7 +171,7 @@ extension Syslog {
   private static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
     guard Syslog.activePriorities.contains(priority) else { return false }
 
-    return false
+    return true
 
     // TODO: register and unregister files, functions, lines for logging
 

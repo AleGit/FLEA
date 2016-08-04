@@ -14,7 +14,7 @@ public class SubstitutionPerformanceTests : XCTestCase {
     super.setUp()
     // Put setup code here. This method is called before the invocation of each test method in the class.
     Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
-    let _ = Syslog.setLogMask(upTo:.debug)
+    let _ = Syslog.setLogMask(upTo:.error)
 }
 
   public override func tearDown() {
