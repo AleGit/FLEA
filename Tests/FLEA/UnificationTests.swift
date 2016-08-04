@@ -28,16 +28,12 @@ public class UnificationTests : XCTestCase {
 
     switch (actual, expected) {
       case (.none, .none):
-        print("nil,nil")
-        break
+          break
       case (.none, _):
-        print("nil,\(expected!)")
         XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => nil ≠ \(expected!) \(message)")
       case (_, .none):
-        print("\(actual!),nil")
         XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ nil \(message)")
       default:
-        print("\(actual!),\(expected!)")
         XCTAssertEqual(actual! , expected!, "\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ \(expected!) \(message)")
         // XCTAssertEqual(actual!.description , expected!.description, "\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ \(expected!) \(message)")
     }
