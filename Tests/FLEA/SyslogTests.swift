@@ -24,7 +24,19 @@ public class SyslogTests : XCTestCase {
 
   /// [syslog](https://en.wikipedia.org/wiki/Syslog) wrapper demo.
   /// Messages should appear near the output of the test,
+  public override func setUp() {
+    super.setUp()
+    // Put setup code here. This method is called before the invocation of each test method in the class.
+    // Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
+    let _ = Syslog.setLogMask(upTo:.debug)
+  }
 
+  public override func tearDown() {
+
+    // Syslog.closeLog()
+    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    super.tearDown()
+  }
 
 
   func testSyslog() {
