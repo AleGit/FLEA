@@ -1,3 +1,7 @@
+/* Default implementation of StringLiteralConvertible nodes with symbolable symbol.
+
+  */
+
 // StringLiteralConvertible : ExtendedGraphemeClusterLiteralConvertible  : UnicodeScalarLiteralConvertible
 
 extension Node where Symbol:Symbolable {
@@ -11,7 +15,6 @@ extension Node where Symbol:Symbolable {
   init(extendedGraphemeClusterLiteral value: StringLiteralType) {
       self.init(stringLiteral: value)
   }
-
 
   /// _StringLiteralConvertible_
   /// The flexible conversion of strings lets us easily create
@@ -58,9 +61,16 @@ extension Node where Symbol:Symbolable {
       return
     }
 
-    guard let nodes = ast.nodes?.first?.nodes, nodes.count > 0 else {
+    defer {
       self = ast
-      return
+    }
+
+    if type == .file || type == .include {
+      return // deferred self = ast will be executed
+    }
+
+    guard let nodes = ast.nodes?.first?.nodes, nodes.count > 0 else {
+      return // deferred self = ast will be executed
     }
 
     ast = nodes[1] // fof_formula or cnf_formula
@@ -68,7 +78,5 @@ extension Node where Symbol:Symbolable {
     if let term = ast.nodes?.first, (type == .function || type == .variable) {
       ast = term
     }
-
-    self = ast
   }
 }

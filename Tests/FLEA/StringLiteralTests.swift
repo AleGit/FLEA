@@ -21,12 +21,13 @@ public class StringLiteralTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (StringLiteralTests) -> () throws -> Void)]  {
     return [
-      ("testStringLiterals", testStringLiterals),
-        ("testStringLiteralAnnotations", testStringLiteralAnnotations)
+      ("testAnnotations", testAnnotations),
+      ("testHeuristics", testHeuristics),
+      ("testUndefined", testUndefined)
     ]
   }
 
-  func testStringLiteralAnnotations() {
+  func testAnnotations() {
     let pfX : Node = "p(f(X))"
     XCTAssertEqual(pfX.symbol.type,.function,"\(nok) pfX :: \(pfX)")
     XCTAssertEqual("p(f(X))", pfX.description,nok)
@@ -39,9 +40,22 @@ public class StringLiteralTests : XCTestCase {
     XCTAssertEqual(cnf.symbol.type,.disjunction,"\(nok) cnf :: \(cnf)")
     XCTAssertEqual(cnf.nodes!.first!.symbol.type,.predicate,"\(nok) cnf :: \(cnf)")
     XCTAssertEqual("(p(f(X)))", cnf.description,nok)
+
+    let fofp : Node = "@fof p(f(X))"
+    XCTAssertEqual(fofp.symbol.type,.predicate,"\(nok) fofp :: \(fofp)")
+
+    let fofn : Node = "@fof ~p(f(X))"
+    XCTAssertEqual(fofn.symbol.type,.negation,"\(nok) fofn :: \(fofn)")
+    XCTAssertEqual(fofn.nodes!.first!.symbol.type,.predicate,"\(nok) fofn :: \(fofn)")
+
+    let fofe : Node = "@fof p=X"
+    XCTAssertEqual(fofe.symbol.type,.equation,"\(nok) fofe :: \(fofe)")
+
+    let clause : Node = "@cnf ~p(f(X))"
+    XCTAssertEqual(clause.symbol.type,.disjunction,"\(nok) clause :: \(clause)")
   }
 
-  func testStringLiterals() {
+  func testHeuristics() {
     let a : Node = "a"
     XCTAssertEqual(a.symbol.type,.function,"\(nok) a :: \(a)")
 
@@ -60,9 +74,6 @@ public class StringLiteralTests : XCTestCase {
     let not : Node = "~p(f(X))"
     XCTAssertEqual(not.symbol.type,.negation,"\(nok) not :: \(not)")
 
-    let clause : Node = "@cnf ~p(f(X))"
-    XCTAssertEqual(clause.symbol.type,.disjunction,"\(nok) clause :: \(clause)")
-
     let dis : Node = "p|q"
     XCTAssertEqual(dis.symbol.type,.disjunction,"\(nok) dis :: \(dis)")
 
@@ -72,15 +83,6 @@ public class StringLiteralTests : XCTestCase {
     let impl : Node = "p=>q"
     XCTAssertEqual(impl.symbol.type,.implication,"\(nok) impl :: \(impl)")
 
-    let fofp : Node = "@fof p(f(X))"
-    XCTAssertEqual(fofp.symbol.type,.predicate,"\(nok) fofp :: \(fofp)")
-
-    let fofn : Node = "@fof ~p(f(X))"
-    XCTAssertEqual(fofn.symbol.type,.negation,"\(nok) fofn :: \(fofn)")
-    XCTAssertEqual(fofn.nodes!.first!.symbol.type,.predicate,"\(nok) fofn :: \(fofn)")
-
-    let fofe : Node = "@fof p=X"
-    XCTAssertEqual(fofe.symbol.type,.equation,"\(nok) fofe :: \(fofe)")
   }
 
   func testUndefined() {
