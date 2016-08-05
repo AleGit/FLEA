@@ -1,5 +1,7 @@
 import XCTest
 
+import Foundation
+
 @testable import FLEA
 
 public class URLTests : XCTestCase {
@@ -21,7 +23,13 @@ public class URLTests : XCTestCase {
     // print("var hasDirectoryPath: Bool ",url.hasDirectoryPath)
     print("var hashValue: Int             ",url.hashValue)
     print("var host: String?              ",url.host ?? "n/a")
+
+    #if os(OSX)
     print("var isFileReferenceURL: Bool   ",url.isFileReferenceURL)
+    #else
+    print("var isFileReferenceURL: Bool   ","is not available", #file,#function,#line)
+    #endif
+
     print("var isFileURL: Bool            ",url.isFileURL)
     print("var lastPathComponent: String? ",url.lastPathComponent ?? "n/a")
     print("var parameterString: String?   ",url.parameterString ?? "n/a")
@@ -37,12 +45,23 @@ public class URLTests : XCTestCase {
     print("var scheme: String?            ",url.scheme ?? "n/a")
     print("var user: String?              ",url.user ?? "n/a")
 
+    #if os(OSX)
     print("func checkPromisedItemIsReachable()  ",(try? url.checkPromisedItemIsReachable()) ?? false)
     print("func checkResourceIsReachable()      ",(try? url.checkResourceIsReachable()) ?? false)
+    #else
+    print("func checkPromisedItemIsReachable()  ","is not available", #file,#function,#line)
+    print("func checkResourceIsReachable()      ","is not available", #file,#function,#line)
+    #endif
+
     print("func deletingLastPathComponent()     ",try? url.deletingLastPathComponent())
     print("func deletingPathExtension()         ",try? url.deletingPathExtension())
     print("func resolvingSymlinksInPath()       ",try? url.resolvingSymlinksInPath())
+    #if os(OSX)
     print("func standardized()                  ",try? url.standardized())
+    #else
+    print("func standardized()                  ","fatal error: standardized is not yet implemented: file Foundation/NSURL.swift, line 524")
+    #endif
+
     print("func standardizingPath()             ",try? url.standardizingPath())
     // print(" ",url.host)
     // print(" ",url.host)
