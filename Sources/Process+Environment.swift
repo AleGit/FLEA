@@ -6,11 +6,11 @@ import Glibc
 
 import Foundation
 
-extension Process {
-  typealias Option = (name:String,settings:[String])
+public extension Process {
+  public typealias Option = (name:String,settings:[String])
 
   /// Process.arguments.first ?? "n/a"
-  static var name : String {
+  public static var name : String {
     guard Process.argc > 0 else {
       // `guard Process.arguments.count > 0 else ...`
       // fails when argc == 0, e.g. while unit testing
@@ -21,7 +21,7 @@ extension Process {
   }
 
   /// Process.arguments.dropFirst()
-  static var parameters : [String] {
+  public static var parameters : [String] {
     guard Process.argc > 0 else {
       // `guard Process.arguments.count > 0 else ...`
       // fails when argc == 0, e.g. while unit testing
@@ -60,7 +60,7 @@ extension Process {
     (name:$0, settings:Process.get(option:$0)!)
   }
 
-  static func option(name:String) -> Option? {
+  public static func option(name:String) -> Option? {
     // return Process.options.first {$0.name == name}
     guard let settings = Process.get(option:name) else {
       return nil
