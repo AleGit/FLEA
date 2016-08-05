@@ -47,6 +47,12 @@ extension Tptp {
     case nand // ~&
     case nor // ~|
 
+    // case gentzen // -->
+    // case star // *
+    // case plus // +
+
+    // $true
+    // $false
 
     case equation   // s = t
     case inequation // s != t
@@ -58,7 +64,7 @@ extension Tptp {
 }
 
 extension Tptp.SymbolType {
-  
+
   init(of node:TreeNodeRef) {
 
     guard let symbol = node.symbol else {

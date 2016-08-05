@@ -17,10 +17,20 @@ extension String : Symbolable {
         return .conjunction
       case "=>":
         return .implication
+      case "<=":
+        return .reverseimpl
       case "=":
         return .equation
       case "!=":
         return .inequation
+      case "<~>":
+        return .xor
+      case "~|":
+        return .nor
+      case "~&":
+        return .nand
+      // case "-->":
+      //   return .gentzen
 
       default:
         if self.isUppercased(at:self.startIndex) {
