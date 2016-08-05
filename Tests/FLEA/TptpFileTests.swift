@@ -1,4 +1,5 @@
 import XCTest
+import Foundation
 
 @testable import FLEA
 
@@ -28,7 +29,7 @@ public class TptpFileTests : XCTestCase {
         return
       }
 
-      guard let file = Tptp.File(path:path) else {
+      guard let file = Tptp.File(url:URL(fileURLWithPath:path)) else {
         XCTFail("\(nok):\(line) \(path) could not be parsed.")
         return
       }

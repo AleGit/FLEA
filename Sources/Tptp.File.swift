@@ -1,5 +1,7 @@
 import CTptpParsing
 
+import Foundation
+
 extension Tptp {
   final class File {
 
@@ -8,13 +10,26 @@ extension Tptp {
     /// <TPTP_file> ::= <TPTP_input>*
     private(set) var root : TreeNodeRef?
 
-    init?(path:FilePath) {
+    private init?(path:FilePath) {
       Syslog.info { path }
       guard let size = path.fileSize, size > 0 else {
         return nil;
       }
       let code = prlcParsePath(path, &store, &root)
       guard code == 0 && self.store != nil && self.root != nil else {
+        return nil
+      }
+    }
+
+    convenience init?(url:URL) {
+      Syslog.info { "Tptp.File(url:\(url))" }
+
+      print(url.absoluteString, url.path)
+
+      if url.isFileURL, let path = url.path {
+        self.init(path:path)
+      }
+      else {
         return nil
       }
     }

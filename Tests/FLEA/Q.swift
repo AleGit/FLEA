@@ -1,4 +1,4 @@
-
+import Foundation
 
 @testable import FLEA
 
@@ -45,7 +45,7 @@ extension Q {
     }
 
     let (parseResult, parseTime) = utileMeasure {
-      FLEA.Tptp.File(path:path)
+      FLEA.Tptp.File(url:URL(fileURLWithPath:path))
     }
     guard let tptpFile = parseResult else {
         print("\(path) could not be parsed.")

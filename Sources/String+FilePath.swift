@@ -4,7 +4,7 @@ import Foundation
 typealias FilePath = String
 
 extension FilePath {
-  var pathComponents : [FilePath] {
+  private var pathComponents : [FilePath] {
     return self.components(separatedBy:"/")
   }
 
@@ -13,7 +13,7 @@ extension FilePath {
     return self.pathComponents.last ?? self
   }
 
-  func appending(component:String) -> String {
+  private func appending(component:String) -> String {
     let cs = self.pathComponents + component.pathComponents
     return cs.joined(separator:"/")
   }
