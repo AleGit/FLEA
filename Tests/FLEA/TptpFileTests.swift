@@ -22,7 +22,7 @@ public class TptpFileTests : XCTestCase {
     _ function : String = #function,
     _ line : Int = #line
   ) {
-    let (_, runtime) = FLEA.measure {
+    let (_, runtime) = utileMeasure {
       guard let path = name.p else {
         XCTFail("\(nok):\(line) \(name).p not found.")
         return

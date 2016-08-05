@@ -5,23 +5,23 @@ import Glibc
 #endif
 
 /// Substitute for CFAbsoluteTime which does not seem to be available on Linux.
-typealias AbsoluteTime = Double
+public typealias AbsoluteTime = Double
 
 /// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
-func AbsoluteTimeGetCurrent() -> AbsoluteTime {
+private func AbsoluteTimeGetCurrent() -> AbsoluteTime {
   var atime = timeval()             // initialize C struct
   let _ = gettimeofday(&atime,nil)  // will return 0
   return AbsoluteTime(atime.tv_sec) // s + µs
   + AbsoluteTime(atime.tv_usec)/AbsoluteTime(1_000_000.0)
 }
 
-typealias UtileTimes = (user:Double,system:Double,absolute:AbsoluteTime)
+public typealias UtileTimes = (user:Double,system:Double,absolute:AbsoluteTime)
 
-func ticksPerSecond() -> Double {
+private func ticksPerSecond() -> Double {
   return Double(sysconf(Int32(_SC_CLK_TCK)))
 }
 
-func UtileTimesGetCurrent() -> UtileTimes {
+private func UtileTimesGetCurrent() -> UtileTimes {
   var ptime = tms()
   let _ = times(&ptime)
 
@@ -32,7 +32,7 @@ func UtileTimesGetCurrent() -> UtileTimes {
   )
 }
 
-func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
+private func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
   return (
     user:lhs.user-rhs.user,
     system:lhs.system-rhs.system,
@@ -42,7 +42,7 @@ func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
 
 /// Measure the absolute runtime of a code block.
 /// Usage: `let (result,runtime) = measure { *code to measure* }`
-func measure<R>(f:()->R) -> (R, UtileTimes) {
+public func utileMeasure<R>(f:()->R) -> (R, UtileTimes) {
   let start = UtileTimesGetCurrent()
   let result = f()
   let end = UtileTimesGetCurrent()

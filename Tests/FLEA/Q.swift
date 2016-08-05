@@ -44,7 +44,7 @@ extension Q {
       return [N]()
     }
 
-    let (parseResult, parseTime) = FLEA.measure {
+    let (parseResult, parseTime) = utileMeasure {
       FLEA.Tptp.File(path:path)
     }
     guard let tptpFile = parseResult else {
@@ -53,13 +53,13 @@ extension Q {
     }
     print("parse time: \(parseTime) '\(path)'")
 
-    let (countResult, countTime) = FLEA.measure {
+    let (countResult, countTime) = utileMeasure {
       tptpFile.inputs.reduce(0) { (a,_) in a + 1 }
     }
 
     print("count=\(countResult), time=\(countTime) '\(path)'")
 
-    let (result,time) = FLEA.measure {
+    let (result,time) = utileMeasure {
       // tptpFile.inputs.map { N(tree:$0) }
       tptpFile.ast() as N?
     }
