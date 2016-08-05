@@ -27,5 +27,6 @@ XCTMain([
   testCase(TptpFileTests.allTests),
   testCase(TrieTests.allTests),
   testCase(UnificationTests.allTests),
+  testCase(URLTests.allTests),
   testCase(WeakSetTests.allTests)
   ])
