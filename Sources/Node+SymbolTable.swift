@@ -1,19 +1,3 @@
-protocol SymbolTable {
-  associatedtype Symbol : Hashable
-
-  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
-  subscript(symbol:Symbol) -> String? { get }
-}
-
-protocol HasSymbolTable {
-  associatedtype Symbols : SymbolTable
-  static var symbols : Symbols { get set }
-  // associatedtype Symbol : Hashable
-  //
-  // static func insert(string:String, type:Tptp.SymbolType) -> Symbol
-  // static func extract(symbol:Symbol) -> (String,Tptp.SymbolType)
-}
-
 extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
   init(v:String) {
     let s = Self.symbols.insert(v, .variable)
