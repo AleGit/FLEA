@@ -7,6 +7,7 @@ protocol Symbolable {
   init(_ string: String, _ type: Tptp.SymbolType)
 }
 
+///
 protocol SymbolTable {
   associatedtype Symbol : Hashable
 
@@ -24,7 +25,15 @@ protocol GenericInteger : Integer {
   init(_ value:Int)
 }
 
+extension UInt64 : GenericInteger {}
 extension UInt32 : GenericInteger {}
+// extension UInt16 : GenericInteger {}
+// extension UInt8 : GenericInteger {}
+extension UInt : GenericInteger {}
+extension Int64 : GenericInteger {}
+extension Int32 : GenericInteger {}
+// extension Int16 : GenericInteger {}
+// extension Int8 : GenericInteger {}
 extension Int : GenericInteger {}
 
 typealias StringType = (String, Tptp.SymbolType)
