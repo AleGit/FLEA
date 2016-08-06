@@ -1,24 +1,8 @@
-/// Symbolable types can be instantiated with strings.
-protocol Symbolable {
 
-  var string : String { get }
-  var type : Tptp.SymbolType { get }
-
-  init(_ string: String, _ type: Tptp.SymbolType)
-}
 
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
 postfix func ⊥<N:Node where N.Symbol:Symbolable>(t:N) -> N {
     return t * N(c:"⊥")
-}
-
-extension Symbolable {
-  static var empty : Self {
-    return Self("",.undefined)
-  }
-  static var asterisk : Self {
-    return Self("*",.variable)
-  }
 }
 
 // MARK: convenience initializers to build terms with strings.

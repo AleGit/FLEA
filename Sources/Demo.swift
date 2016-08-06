@@ -95,7 +95,7 @@ extension Demo {
 
 extension Demo {
   final class Node : FLEA.Node {
-    var symbol = Tptp.Symbol.empty
+    var symbol = Tptp.Symbol("",.undefined)
     var nodes : [Demo.Node]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -107,7 +107,7 @@ extension Demo {
 
     static var pool = Set<Demo.SharingNode>()
 
-    var symbol = Tptp.Symbol.empty
+    var symbol = Tptp.Symbol("",.undefined)
     var nodes : [Demo.SharingNode]? = nil
     var c : Int = {
       let a = SharingNode.counter
@@ -185,7 +185,7 @@ extension Demo {
     print("Create 'p(f(X,Y),Z)'")
     let q  = pfxyz()
     print("'p(f(X,Y),Z)':",q)
-    
+
 
     print("all nodes", N.pool)
 

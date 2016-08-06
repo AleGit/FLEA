@@ -9,7 +9,7 @@ private final class SharingNode : FLEA.SharingNode {
 
   static var pool = Set<SharingNode>()
 
-  var symbol = S.empty
+  var symbol = S("",.undefined)
   var nodes : [SharingNode]? = nil
 
   lazy var hashValue : Int = self.defaultHashValue

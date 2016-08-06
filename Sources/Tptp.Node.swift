@@ -8,7 +8,7 @@ struct Tptp {
   /// equal nodes are not always the same object
   /// depending on the method to build composite nodes
   final class SimpleNode : FLEA.Node, StringLiteralConvertible {
-    var symbol = S.empty
+    var symbol = S("",.undefined)
     var nodes : [Tptp.SimpleNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -21,7 +21,7 @@ struct Tptp {
   final class SharingNode : FLEA.SharingNode {
     static var pool = Set<Tptp.SharingNode>()
 
-    var symbol = S.empty
+    var symbol = S("",.undefined)
     var nodes : [Tptp.SharingNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -33,7 +33,7 @@ struct Tptp {
   final class SmartNode : FLEA.SharingNode {
     static var pool = WeakSet<Tptp.SmartNode>()
 
-    var symbol = S.empty
+    var symbol = S("",.undefined)
     var nodes : [Tptp.SmartNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -45,7 +45,7 @@ struct Tptp {
   /// `folks` holds weak references to node's predecessors
   final class KinNode : FLEA.KinNode {
     static var pool = WeakSet<Tptp.KinNode>()
-    var symbol = S.empty
+    var symbol = S("",.undefined)
     var nodes : [Tptp.KinNode]? = nil
     var folks =  WeakSet<Tptp.KinNode>()
 
@@ -57,7 +57,7 @@ struct Tptp {
     static var pool = WeakSet<KinIntNode>()
     static var symbols = IntegerSymbolTable<Int>()
 
-    var symbol = Int.max
+    var symbol = symbols.insert("",.undefined)
     var nodes : [KinIntNode]? = nil
     var folks = WeakSet<KinIntNode>()
 

@@ -94,12 +94,3 @@ extension Node {
         }
     }
 }
-
-
-
-extension Node  {
-  var debugDescription : String {
-    return defaultDescription
-  }
-
-}

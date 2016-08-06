@@ -9,7 +9,7 @@ private final class SmartNode : FLEA.SharingNode {
 
   static var pool = WeakSet<SmartNode>()
 
-  var symbol = S.empty
+  var symbol = S("",.undefined)
   var nodes : [SmartNode]? = nil
 
   lazy var hashValue : Int = self.defaultHashValue

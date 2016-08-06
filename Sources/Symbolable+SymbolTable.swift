@@ -1,3 +1,12 @@
+/// Symbolable (node) types can be instantiated with strings.
+protocol Symbolable {
+
+  var string : String { get }
+  var type : Tptp.SymbolType { get }
+
+  init(_ string: String, _ type: Tptp.SymbolType)
+}
+
 protocol SymbolTable {
   associatedtype Symbol : Hashable
 

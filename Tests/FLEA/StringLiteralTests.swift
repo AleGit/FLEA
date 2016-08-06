@@ -3,7 +3,7 @@ import XCTest
 @testable import FLEA
 
 private final class StringLiteralNode : FLEA.Node, StringLiteralConvertible {
-  var symbol = Tptp.Symbol.empty // avoid side effects with symbol tables
+  var symbol = Tptp.Symbol("",.undefined) // avoid side effects with symbol tables
   var nodes : [StringLiteralNode]? = nil
 
   lazy var hashValue : Int = self.defaultHashValue
