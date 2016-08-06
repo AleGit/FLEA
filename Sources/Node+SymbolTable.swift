@@ -1,3 +1,10 @@
+/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+postfix func ⊥<N:Node where N:SymbolTableUser,N.Symbol==N.Symbols.Symbol>(t:N) -> N {
+  return t * N(c:"⊥")
+}
+
+// MARK: convenience initializers to build terms with strings.
+
 extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   init(v:String) {
     let s = Self.symbols.insert(v, .variable)
@@ -10,20 +17,20 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   }
 
   init(f:String, _ nodes:[Self]?) {
-    let s = Self.symbols.insert(f, .function)
     guard let nodes = nodes else {
       self.init(v:f)
       return
     }
+    let s = Self.symbols.insert(f, .function)
     self.init(symbol:s, nodes:nodes)
   }
 
   init(p:String, _ nodes:[Self]?) {
-    let s = Self.symbols.insert(p, .predicate)
     guard let nodes = nodes else {
       self.init(v:p)
       return
     }
+    let s = Self.symbols.insert(p, .predicate)
     self.init(symbol:s, nodes:nodes)
   }
 }

@@ -1,5 +1,3 @@
-
-
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
 postfix func ⊥<N:Node where N.Symbol:Symbolable>(t:N) -> N {
     return t * N(c:"⊥")
@@ -9,11 +7,13 @@ postfix func ⊥<N:Node where N.Symbol:Symbolable>(t:N) -> N {
 
 extension Node where Symbol:Symbolable {
   init(v:String) {
-    self.init(variable:Symbol(v,.variable))
+    let s = Symbol(v,.variable)
+    self.init(variable:s)
   }
 
   init(c:String) {
-    self.init(constant:Symbol(c,.function))
+    let s = Symbol(c,.function)
+    self.init(constant:s)
   }
 
   init(f:String, _ nodes:[Self]?) {
@@ -21,7 +21,8 @@ extension Node where Symbol:Symbolable {
       self.init(v:f)
       return
     }
-    self.init(symbol:Symbol(f,.function), nodes:nodes)
+    let s = Symbol(f,.function)
+    self.init(symbol:s, nodes:nodes)
   }
 
   init(p:String, _ nodes:[Self]?) {
@@ -29,7 +30,8 @@ extension Node where Symbol:Symbolable {
       self.init(v:p)
       return
     }
-    self.init(symbol:Symbol(p,.predicate), nodes:nodes)
+    let s = Symbol(p,.predicate)
+    self.init(symbol:s, nodes:nodes)
   }
 }
 
