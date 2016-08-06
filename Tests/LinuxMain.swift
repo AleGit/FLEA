@@ -6,6 +6,7 @@ XCTMain([
   testCase(CTptpParsingApiTests.allTests),
   testCase(CYicesApiTests.allTests),
   testCase(DescriptionTests.allTests),
+  testCase(DemoTests.allTests),
   testCase(DictionarySubstitutionTests.allTests),
   testCase(DictionaryUnificationTests.allTests),
 
