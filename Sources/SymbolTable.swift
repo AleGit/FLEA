@@ -6,7 +6,7 @@ protocol SymbolTable {
   subscript(symbol:Symbol) -> String? { get }
 }
 
-protocol HasSymbolTable {
+protocol SymbolTableUser {
   associatedtype Symbols : SymbolTable
   static var symbols : Symbols { get set }
 }
@@ -21,8 +21,8 @@ extension Int : GenericInteger {}
 typealias StringType = (String, Tptp.SymbolType)
 
 struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
-  var symbols = [String : I]()
-  var strings = [I : StringType] ()
+  private var symbols = [String : I]()
+  private var strings = [I : StringType] ()
 
   func extract(_ symbol:I) -> StringType?  {
     return strings[symbol]

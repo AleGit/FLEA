@@ -74,7 +74,7 @@ extension Node where Symbol == Tptp.Symbol {
   }
 }
 
-extension Node where Self:HasSymbolTable, Self.Symbol == Int, Self.Symbols.Symbol == Int {
+extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symbol == Int {
 var debugDescription : String {
 
   let number = self.symbol / 256
@@ -92,7 +92,7 @@ var debugDescription : String {
 }
 }
 
-extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
+extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
     return "x"
     // let s = self.symbol < 256 ?

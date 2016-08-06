@@ -1,4 +1,4 @@
-extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
+extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   init(v:String) {
     let s = Self.symbols.insert(v, .variable)
     self.init(variable:s)
@@ -28,7 +28,7 @@ extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
   }
 }
 
-extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
+extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
 
   /// possible usage: lazy var description = defaultDescritpion
   var defaultDescription : String {

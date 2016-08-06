@@ -17,7 +17,7 @@ extension Node where Symbol : Symbolable {
   }
 }
 
-extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
+extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   init(tree:TreeNodeRef) {
 
     let symbol = Self.symbols.insert(tree.symbol ?? "", Tptp.SymbolType(of:tree))
