@@ -23,13 +23,13 @@ extension Node where Symbol : Symbolable {
   }
 }
 
-extension Node where Symbol == Int {
+extension Node where Symbol == Int, Self:HasSymbolTable, Self.Symbols.Symbol == Int {
   /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[Int]] {
     guard let nodes = self.nodes else {
-      return [[Symbol("*",.variable)]]
+      return [[Self.symbols.insert("*",.variable)]]
     }
     guard nodes.count > 0 else {
       return [[self.symbol]]
@@ -43,7 +43,24 @@ extension Node where Symbol == Int {
     }
     return ps
   }
+
+  var preordering : [Int] {
+    guard let nodes = self.nodes else {
+      // a variable leaf
+      return [Self.symbols.insert("*",.variable)]
+    }
+    guard nodes.count > 0 else {
+      // a constant (function) leaf
+      return [self.symbol]
+    }
+
+    // an intermediate node
+    return nodes.reduce([self.symbol]) { $0 + $1.preordering }
+
+  }
 }
+
+
 
 extension Node where Symbol : Symbolable {
   /// The list of symbols in the node tree in depth-first traversal.
@@ -62,3 +79,18 @@ extension Node where Symbol : Symbolable {
 
   }
 }
+
+// extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
+//   var preordering : [Symbol] {
+//     guard let nodes = self.nodes else {
+//       return [Self.symbols.insert("*",.variable)]
+//     }
+//
+//     let a = [self.symbol]
+//     guard nodes.count > 0 else {
+//       return a
+//     }
+//
+//     return nodes.reduce(a) { $0 + $1.prordering }
+//   }
+// }

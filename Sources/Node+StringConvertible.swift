@@ -74,17 +74,35 @@ extension Node where Symbol == Tptp.Symbol {
   }
 }
 
+extension Node where Self:HasSymbolTable, Self.Symbol == Int, Self.Symbols.Symbol == Int {
+var debugDescription : String {
 
-extension Node where Symbol == Int {
+  let number = self.symbol / 256
+  let type = Tptp.SymbolType(rawValue: self.symbol % 256 ) ?? .undefined
+  let string = Self.symbols[self.symbol] ?? "n/a"
+
+  let s = self.symbol < 256 ?
+  "\(string)-\(type)" : "\(number)-\(string)-\(type)"
+  guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
+  else {
+    return s
+  }
+  let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+  return "\(s)(\(tuple))"
+}
+}
+
+extension Node where Self:HasSymbolTable, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
-    let s = self.symbol < 256 ?
-    "\(self.symbol.string)-\(self.symbol.type)" :
-    "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
-    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
-    else {
-      return s
-    }
-    let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
-    return "\(s)(\(tuple))"
+    return "x"
+    // let s = self.symbol < 256 ?
+    // "\(self.symbol.string)-\(self.symbol.type)" :
+    // "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
+    // guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
+    // else {
+    //   return s
+    // }
+    // let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
+    // return "\(s)(\(tuple))"
   }
 }

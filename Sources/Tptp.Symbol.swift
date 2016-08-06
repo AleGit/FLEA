@@ -185,9 +185,46 @@ extension Tptp.Symbol : CustomDebugStringConvertible {
   }
 }
 
-protocol SymbolTable {
-  associatedtype Symbol : Symbolable
+protocol GenInt : Integer {
+  init(_ value:Int)
+}
 
-  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
-  subscript(symbol:Symbol) -> String? { get }
+extension UInt32 : GenInt {}
+extension Int : GenInt {}
+
+typealias StringType = (String, Tptp.SymbolType)
+
+struct IntegerSymbolTable<I:GenInt> : SymbolTable {
+  var symbols = [String : I]()
+  var strings = [I : StringType] ()
+
+  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
+    if let symbol = symbols[string] {
+      // symbol is allready in the table
+      return symbol
+    }
+
+    var value = type.rawValue
+
+    switch type {
+      case .universal, .existential,
+      .negation, .disjunction, .conjunction, .implication,
+      .equation, .inequation:
+      break
+
+      default:
+        value += (1+symbols.count) << 8 // *256
+    }
+
+    let ivalue : I = I(value)
+
+    symbols[string] = ivalue
+    strings[ivalue] = (string,type)
+
+    return ivalue
+  }
+
+  subscript(value:I) -> String? {
+    return strings[value]?.0
+  }
 }

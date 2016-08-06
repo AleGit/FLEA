@@ -2,7 +2,7 @@
 
 struct Tptp {
 
-  typealias S = Int   // choose a symbol type
+  typealias S = Tptp.Symbol   // choose a symbol type
   typealias Node = KinNode    // choose an implementation
 
   /// equal nodes are not always the same object
@@ -51,5 +51,22 @@ struct Tptp {
 
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription
+  }
+
+  final class KinIntNode : FLEA.KinNode, FLEA.HasSymbolTable {
+    static var pool = WeakSet<KinIntNode>()
+    static var symbols = IntegerSymbolTable<Int>()
+
+    var symbol = Int.max
+    var nodes : [KinIntNode]? = nil
+    var folks = WeakSet<KinIntNode>()
+
+
+
+    lazy var hashValue : Int = self.defaultHashValue
+    lazy var description : String = self.defaultDescription
+
+
+
   }
 }

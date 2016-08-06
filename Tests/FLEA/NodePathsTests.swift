@@ -4,12 +4,13 @@ import XCTest
 
 /// local minimal implementation of protocol
 /// to avoid side effects (pool) from ohter test classes
-private final class IntNode : FLEA.KinNode {
+private final class IntNode : FLEA.KinNode, FLEA.HasSymbolTable {
   typealias S = Int // choose the symbol
 
   static var pool = WeakSet<IntNode>()
+  static var symbols = IntegerSymbolTable<S>()
 
-  var symbol = S.empty
+  var symbol = S.max
   var nodes : [IntNode]? = nil
 
   var folks = WeakSet<IntNode>()
@@ -46,7 +47,7 @@ public class NodePathsTests : XCTestCase {
 
     let f$ = fX.symbol
     let g$ = gfXfa.symbol
-    let _$ = Int("*",.variable)
+    let _$ = Node.symbols.insert("*",.variable)
     let a$ = a.symbol
 
     let count = Node.pool.count

@@ -4,9 +4,11 @@ import XCTest
 
 public class DescriptionTests : XCTestCase {
 
-  private final class KinNode : FLEA.KinNode {
+  private final class KinNode : FLEA.KinNode, FLEA.HasSymbolTable {
     static var pool = WeakSet<KinNode>()
-    var symbol = Int.empty
+    static var symbols = FLEA.IntegerSymbolTable<Int>()
+
+    var symbol = Int.max
     var nodes : [KinNode]? = nil
     var folks =  WeakSet<KinNode>()
 
@@ -44,12 +46,11 @@ public class DescriptionTests : XCTestCase {
     let fXa = KinNode(f:"f",[X,a])
     // let equals = Tptp.KinNode.Symbol("=",.equation)
 
-    XCTAssertEqual("2-a-function", a.debugDescription,nok)
-    XCTAssertEqual("3-X-variable", X.debugDescription,nok)
+    XCTAssertEqual("1-a-function", a.debugDescription,nok)
+    XCTAssertEqual("2-X-variable", X.debugDescription,nok)
 
-    XCTAssertEqual("4-f-function(\"3-X-variable\",\"2-a-function\")", fXa.debugDescription,nok)
+    XCTAssertEqual("3-f-function(\"2-X-variable\",\"1-a-function\")", fXa.debugDescription,nok)
 
-    print(globalIntSymbolTable)
     //
     // XCTAssertEqual("f(X,Y)", Q.fXY.debugDescription,nok)
     // XCTAssertEqual("g(X,Y,Z)", Q.gXYZ.debugDescription,nok)
