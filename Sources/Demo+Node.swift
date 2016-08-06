@@ -58,7 +58,7 @@ extension Demo {
 //   }
 // }
 extension Demo {
-static func sharing() {
+static func sharing() -> Int {
   typealias N = Demo.SharingNode
   typealias S = Tptp.Symbol
 
@@ -93,6 +93,8 @@ static func sharing() {
 
 
   print("all nodes", N.pool)
+
+  return N.pool.count
 
 }
 }

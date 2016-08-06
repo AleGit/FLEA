@@ -2,7 +2,7 @@
 
 extension Demo {
   struct Unification {
-    static func demo() {
+    static func demo() -> Int {
 
       // let nodes : [Tptp.Node] = demoCreateNodes()
 
@@ -32,6 +32,7 @@ extension Demo {
 
         }
       }
+      return nodes.count
     }
   }
 }

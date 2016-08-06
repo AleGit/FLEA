@@ -2,6 +2,8 @@
 public struct Demo {
   static let line = Array(repeating:"=", count:80).joined(separator:"")
 
+  static var show : Bool = true
+
   static let demos = [
   "p1c" : (Demo.Problem.puz001cnf,"Parse PUZ001-1 (cnf)"),
   "p1f" : (Demo.Problem.puz001fof,"Parse PUZ001+1 (fof)"),
@@ -11,10 +13,8 @@ public struct Demo {
   "smart" : (Demo.Problem.smartNode,"Parse HWV134-1 with smart node (expensive)"),
   "kin" : (Demo.Problem.kinNode,"Parse HWV134-1 with kin node (expensive)"),
   "broken" : (Demo.Problem.broken,"Parse invalid file"),
-  "share" : (Demo.sharing, "Node sharing"),
+  "sharing" : (Demo.sharing, "Node sharing"),
   "mgu" : (Demo.Unification.demo,"Unfication")
-  // "noshare" : Demo.Node.demo,
-  // "sharing" : Demo.SharingNode.demo
   ]
 
   public static func demo() -> Int? {
