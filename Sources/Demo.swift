@@ -11,9 +11,9 @@ public struct Demo {
   "simple" : (Demo.Problem.simpleNode,"Parse HWV134-1 with simple node(expensive)"),
   "sharing" : (Demo.Problem.sharingNode,"Parse HWV134-1 with sharing node (expensive)"),
   "smart" : (Demo.Problem.smartNode,"Parse HWV134-1 with smart node (expensive)"),
-  "kin" : (Demo.Problem.kinNode,"Parse HWV134-1 with kin node (expensive)"),
+  "Kin" : (Demo.Problem.kinNode,"Parse HWV134-1 with kin node (expensive)"),
   "broken" : (Demo.Problem.broken,"Parse invalid file"),
-  "sharing" : (Demo.sharing, "Node sharing"),
+  "pool" : (Demo.sharing, "Node sharing"),
   "mgu" : (Demo.Unification.demo,"Unfication")
   ]
 
