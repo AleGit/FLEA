@@ -2,6 +2,7 @@ protocol SymbolTable {
   associatedtype Symbol : Hashable
 
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
+  func extract(_ symbol:Symbol) -> (String,Tptp.SymbolType)?
   subscript(symbol:Symbol) -> String? { get }
 }
 
@@ -22,6 +23,10 @@ typealias StringType = (String, Tptp.SymbolType)
 struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
   var symbols = [String : I]()
   var strings = [I : StringType] ()
+
+  func extract(_ symbol:I) -> StringType?  {
+    return strings[symbol]
+  }
 
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
