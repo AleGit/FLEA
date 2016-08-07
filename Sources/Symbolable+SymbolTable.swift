@@ -57,8 +57,10 @@ struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
     switch type {
       case .universal, .existential,
       .negation, .disjunction, .conjunction, .implication,
+      .xor, .reverseimpl, .nor, .nand, .bicondition,
       .equation, .inequation:
-      break
+      // use raw integer value as symbol value
+      value += 0
 
       default:
         value += (1+symbols.count) << 8 // *256

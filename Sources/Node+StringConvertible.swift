@@ -106,15 +106,15 @@ var debugDescription : String {
 
 extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
-    return "x"
-    // let s = self.symbol < 256 ?
-    // "\(self.symbol.string)-\(self.symbol.type)" :
-    // "\(self.symbol / 256)-\(self.symbol.string)-\(self.symbol.type)"
-    // guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
-    // else {
-    //   return s
-    // }
-    // let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
-    // return "\(s)(\(tuple))"
+    let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .undefined)
+
+    let s = "\(string)-\(type)"
+
+    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
+    else {
+      return s
+    }
+    let tuple = nodes.joined(separator:",")
+    return "\(s)(\(tuple))"
   }
 }
