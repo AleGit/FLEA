@@ -59,24 +59,6 @@ extension Node {
   }
 }
 
-// MARK: CustomStringConvertible
-
-extension Node {
-  /// implementations of Node will call this
-  var description : String { return defaultDescription }
-
-  /// possible usage: lazy var description = defaultDescritpion
-  var defaultDescription : String {
-    let s = "\(self.symbol)"
-    guard let nodes = self.nodes?.map( { $0.defaultDescription })
-    else {
-      return s
-    }
-    let tuple = nodes.joined(separator:",")
-    return "\(s)(\(tuple))"
-  }
-}
-
 // MARK: Conversion between `Node<S:Symbol>` implemenations with matching symbol types.
 
 extension Node {

@@ -49,7 +49,7 @@ public class DescriptionTests : XCTestCase {
     XCTAssertEqual("1-a-function", a.debugDescription,nok)
     XCTAssertEqual("2-X-variable", X.debugDescription,nok)
 
-    XCTAssertEqual("3-f-function(\"2-X-variable\",\"1-a-function\")", fXa.debugDescription,nok)
+    XCTAssertEqual("3-f-function(2-X-variable,1-a-function)", fXa.debugDescription,nok)
 
     //
     // XCTAssertEqual("f(X,Y)", Q.fXY.debugDescription,nok)

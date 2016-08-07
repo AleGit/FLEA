@@ -1,13 +1,12 @@
 /// Symbolable (node) types can be instantiated with strings.
 protocol Symbolable {
-
   var string : String { get }
   var type : Tptp.SymbolType { get }
 
   init(_ string: String, _ type: Tptp.SymbolType)
 }
 
-///
+/// Symbol tables store mappings from (string,type) pairs to symbols, and vice versa.
 protocol SymbolTable {
   associatedtype Symbol : Hashable
 
@@ -16,11 +15,13 @@ protocol SymbolTable {
   subscript(symbol:Symbol) -> String? { get }
 }
 
+/// A symbol table users type holds a static symbol table.
 protocol SymbolTableUser {
   associatedtype Symbols : SymbolTable
   static var symbols : Symbols { get set }
 }
 
+/// A helper protocol to use Iteger as generic constraint.
 protocol GenericInteger : Integer {
   init(_ value:Int)
 }
@@ -36,8 +37,10 @@ extension Int32 : GenericInteger {}
 // extension Int8 : GenericInteger {}
 extension Int : GenericInteger {}
 
+/// A (string,type) pair to be mapped to a symbol
 typealias StringType = (String, Tptp.SymbolType)
 
+/// A symbol tabple that maps (string,type) to an integer symbol.
 struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
   private var symbols = [String : I]()
   private var strings = [I : StringType] ()

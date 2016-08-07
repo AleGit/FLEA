@@ -1,20 +1,36 @@
 // MARK: - Node:CustomStringConvertible
 
+extension Node {
+  /// implementations of Node will call this
+  var description : String { return defaultDescription }
+
+  /// possible usage: lazy var description = defaultDescritpion
+  var defaultDescription : String {
+    let s = "\(self.symbol)"
+    // without reliable symbol type information, everything is a prefix function.
+    // empty parenthesis will be ommitted (variables, constants, predicates)
+    return self.buildDescription(string:s, type:.function)
+  }
+}
+
 extension Node where Symbol : Symbolable {
   var defaultDescription : String {
+    /// Symbolable provides reliable symbol type information
     return buildDescription(string:self.symbol.string,type:self.symbol.type)
   }
 }
 
 extension Node where Self:SymbolTableUser, Self.Symbol == Self.Symbols.Symbol {
   var defaultDescription : String {
-    let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .undefined)
+    let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .function)
+    /// Reliable type information with fallback to functional prefix notation.
     return buildDescription(string:string,type:type)
   }
 }
 
 extension Node {
 
+  /// Build a description with symbol string and type.
   func buildDescription(string:String,type:Tptp.SymbolType) -> String {
     guard let nodes = self.nodes?.map({$0.description}), nodes.count > 0 else {
       return string
@@ -58,63 +74,51 @@ extension Node {
   }
 }
 
-// MARK: - Node.CustomDebugStringConvertible where Node.Symbol:Symbolable
+// MARK: - Node.CustomDebugStringConvertible
+
+extension Node {
+  /// Build
+  func buildDebugDescription(string:String) -> String {
+    guard let nodes = self.nodes?.map( { $0.debugDescription }), nodes.count > 0
+    else { return string }
+    let tuple = nodes.joined(separator:",")
+    return "\(string)(\(tuple))"
+  }
+}
+
+extension Node {
+  var debugDescription: String {
+    return buildDebugDescription(string:"\(self.symbol)")
+  }
+}
 
 extension Node where Symbol:Symbolable {
   var debugDescription : String {
-    let s = "\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)"
-
-    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
-    else {
-      return s
-    }
-    let tuple = nodes.joined(separator:",")
-    return "\(s)(\(tuple))"
+    return buildDebugDescription(string:"\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)")
   }
 }
 
 extension Node where Symbol == Tptp.Symbol {
   var debugDescription : String {
-    let s = "\(self.symbol.debugDescription)"
-
-    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
-    else {
-      return s
-    }
-    let tuple = nodes.joined(separator:",")
-    return "\(s)(\(tuple))"
+    return buildDebugDescription(string:"\(self.symbol.debugDescription)")
   }
 }
 
 extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symbol == Int {
-var debugDescription : String {
+  var debugDescription : String {
 
-  let number = self.symbol / 256
-  let type = Tptp.SymbolType(rawValue: self.symbol % 256 ) ?? .undefined
-  let string = Self.symbols[self.symbol] ?? "n/a"
+    let number = self.symbol / 256
+    let type = Tptp.SymbolType(rawValue: self.symbol % 256 ) ?? .undefined // prefix
+    let string = Self.symbols[self.symbol] ?? "\(self.symbol)"
 
-  let s = self.symbol < 256 ?
-  "\(string)-\(type)" : "\(number)-\(string)-\(type)"
-  guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
-  else {
-    return s
+    return buildDebugDescription(string:number == 0 ? "\(string)-\(type)" : "\(number)-\(string)-\(type)")
   }
-  let tuple = nodes.map{ "\($0.debugDescription)" }.joined(separator:",")
-  return "\(s)(\(tuple))"
-}
 }
 
 extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
     let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .undefined)
 
-    let s = "\(string)-\(type)"
-
-    guard let nodes = self.nodes?.map({$0.debugDescription}), nodes.count > 0
-    else {
-      return s
-    }
-    let tuple = nodes.joined(separator:",")
-    return "\(s)(\(tuple))"
+    return buildDebugDescription(string:"\(string)-\(type)")
   }
 }
