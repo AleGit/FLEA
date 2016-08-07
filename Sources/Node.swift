@@ -63,7 +63,7 @@ extension Node {
 
 extension Node {
   /// implementations of Node will call this
-  var description : String { return defaultDescription }
+  // var description : String { return defaultDescription }
 
   /// possible usage: lazy var description = defaultDescritpion
   var defaultDescription : String {

@@ -1,47 +1,59 @@
-// MARK: - Node:CustomStringConvertible where Node.Symbol:Symbolable
+// MARK: - Node:CustomStringConvertible
 
 extension Node where Symbol : Symbolable {
-
   var defaultDescription : String {
-    let s = self.symbol.string
+    return buildDescription(string:self.symbol.string,type:self.symbol.type)
+  }
+}
+
+extension Node where Self:SymbolTableUser, Self.Symbol == Self.Symbols.Symbol {
+  var defaultDescription : String {
+    let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .undefined)
+    return buildDescription(string:string,type:type)
+  }
+}
+
+extension Node {
+
+  func buildDescription(string:String,type:Tptp.SymbolType) -> String {
     guard let nodes = self.nodes?.map({$0.description}), nodes.count > 0 else {
-      return s
+      return string
     }
-    switch self.symbol.type {
+    switch type {
       case .universal, .existential:
         assert(nodes.count > 0)
         let vars = nodes[0..<(nodes.count-1)].joined(separator:",")
-        return "\(s)[\(vars)]\(nodes.last!)"
+        return "\(string)[\(vars)]\(nodes.last!)"
 
       case .negation:
         assert(nodes.count == 1)
-        return "\(s)(\(nodes.first!))"
+        return "\(string)(\(nodes.first!))"
 
       case .disjunction, .conjunction:
         assert(nodes.count > 0)
-        let tuple = nodes.joined(separator:s)
+        let tuple = nodes.joined(separator:string)
         return "(\(tuple))"
 
       case .implication, .reverseimpl,
       .bicondition, .xor, .nand, .nor:
         assert(nodes.count == 2)
-        return "(\(nodes.first!)\(s)\(nodes.last!))"
+        return "(\(nodes.first!)\(string)\(nodes.last!))"
 
       case .equation, .inequation:
         assert(nodes.count == 2)
-        return nodes.joined(separator:s)
+        return nodes.joined(separator:string)
 
       case .file, .fof, .cnf, .include, .name, .role, .annotation,
       .predicate, .function:
         assert (nodes.count > 0)
         let tuple = nodes.joined(separator:",")
-        return "\(s)(\(tuple))"
+        return "\(string)(\(tuple))"
       case .variable:
-        assert(false,">>\(s)-\(self.symbol.type)")
-        return s
+        assert(false,">>\(string)-\(type)")
+        return string
       case .undefined:
-        assert(false,"\(s)-\(self.symbol.type)")
-        return ">>\(s)-\(self.symbol.type)"
+        assert(false,"\(string)-\(type)")
+        return ">>\(string)-\(type)"
     }
   }
 }
