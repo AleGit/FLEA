@@ -8,7 +8,7 @@ extension Node {
   var defaultDescription : String {
     let s = "\(self.symbol)"
     // without reliable symbol type information, everything is a prefix function.
-    // empty parenthesis will be ommitted (variables, constants, predicates)
+    // empty parenthesis will be ommitted, e.g. for variables, constants, predicates.
     return self.buildDescription(string:s, type:.function)
   }
 }
@@ -23,7 +23,8 @@ extension Node where Symbol : Symbolable {
 extension Node where Self:SymbolTableUser, Self.Symbol == Self.Symbols.Symbol {
   var defaultDescription : String {
     let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .function)
-    /// Reliable type information with fallback to functional prefix notation.
+    /// Symbol tables provide usual reliable type information,
+    /// fallback to functional prefix notation.
     return buildDescription(string:string,type:type)
   }
 }
@@ -77,7 +78,7 @@ extension Node {
 // MARK: - Node.CustomDebugStringConvertible
 
 extension Node {
-  /// Build
+  /// Build a more verbose description in prefix notation.
   func buildDebugDescription(string:String) -> String {
     guard let nodes = self.nodes?.map( { $0.debugDescription }), nodes.count > 0
     else { return string }
@@ -88,12 +89,14 @@ extension Node {
 
 extension Node {
   var debugDescription: String {
+    // without reliable string and type information we just use string interpolation
     return buildDebugDescription(string:"\(self.symbol)")
   }
 }
 
 extension Node where Symbol:Symbolable {
   var debugDescription : String {
+    // with reliable string and type information we use it
     return buildDebugDescription(string:"\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)")
   }
 }
@@ -108,7 +111,7 @@ extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symb
   var debugDescription : String {
 
     let number = self.symbol / 256
-    let type = Tptp.SymbolType(rawValue: self.symbol % 256 ) ?? .undefined // prefix
+    let type = Tptp.SymbolType(rawValue: self.symbol % 256 ) ?? .undefined
     let string = Self.symbols[self.symbol] ?? "\(self.symbol)"
 
     return buildDebugDescription(string:number == 0 ? "\(string)-\(type)" : "\(number)-\(string)-\(type)")
