@@ -24,14 +24,21 @@ extension Tptp {
     convenience init?(url:URL) {
       Syslog.info { "Tptp.File(url:\(url))" }
 
-      print(url.absoluteString, url.path)
-
+      #if os(OSX) // Swift 3 Preview 4 diverges
       if url.isFileURL {
         self.init(path:url.path)
       }
       else {
         return nil
       }
+      #elseif os(Linux)
+      if url.isFileURL, let path = url.path {
+        self.init(path:path)
+      }
+      else {
+        return nil
+      }
+      #endif
     }
 
 

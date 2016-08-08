@@ -48,14 +48,18 @@ public class URLTests : XCTestCase {
     #if os(OSX)
     print("func checkPromisedItemIsReachable()  ",(try? url.checkPromisedItemIsReachable()) ?? false)
     print("func checkResourceIsReachable()      ",(try? url.checkResourceIsReachable()) ?? false)
+
+        print("func deletingLastPathComponent()     ",url.deletingLastPathComponent())
+        print("func deletingPathExtension()         ",url.deletingPathExtension())
+        print("func resolvingSymlinksInPath()       ",url.resolvingSymlinksInPath())
     #else
     print("func checkPromisedItemIsReachable()  ","is not available", #file,#function,#line)
     print("func checkResourceIsReachable()      ","is not available", #file,#function,#line)
+        print("func deletingLastPathComponent()     ",try? url.deletingLastPathComponent()) // Swift 3 Preview 4
+        print("func deletingPathExtension()         ",try? url.deletingPathExtension())
+        print("func resolvingSymlinksInPath()       ",try? url.resolvingSymlinksInPath())
     #endif
 
-    print("func deletingLastPathComponent()     ",url.deletingLastPathComponent())
-    print("func deletingPathExtension()         ",url.deletingPathExtension())
-    print("func resolvingSymlinksInPath()       ",url.resolvingSymlinksInPath())
     #if os(OSX)
     // print("func standardized()                  ",try? url.standardized())
     #else
