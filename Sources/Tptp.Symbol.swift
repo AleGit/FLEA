@@ -14,6 +14,15 @@ extension Tptp {
   }
 }
 
+protocol Typed {
+  init(v:String)
+  init(c:String)
+  init(f:String, _ nodes:[Self]?)
+  init(p:String, _ nodes:[Self]?)
+
+  var symbolStringType : (String,Tptp.SymbolType) { get }
+}
+
 extension Tptp {
   enum SymbolType : Equatable {
     case undefined

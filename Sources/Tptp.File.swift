@@ -10,7 +10,7 @@ extension Tptp {
     /// <TPTP_file> ::= <TPTP_input>*
     private(set) var root : TreeNodeRef?
 
-    private init?(path:FilePath) {
+    init?(path:FilePath) {
       Syslog.info { path }
       guard let size = path.fileSize, size > 0 else {
         return nil;
@@ -151,7 +151,7 @@ extension Tptp.File {
 
   /// The sequence of parsed <cnf_annotated> nodes.
   /// cnfs.count <= inputs.count
-  private var cnfs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+  var cnfs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
   }
 

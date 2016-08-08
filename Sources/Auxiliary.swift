@@ -10,6 +10,21 @@ where Iterator.Element == SubSequence.Iterator.Element {
     }
 }
 
+extension Sequence {
+
+    func all(_ predicate: (Iterator.Element) -> Bool) -> Bool {
+        return self.reduce(true) { $0 && predicate($1) }
+    }
+
+    func one(_ predicate: (Iterator.Element) -> Bool) -> Bool {
+        return self.reduce(false) { $0 || predicate($1) }
+    }
+
+    func count(_ predicate: (Iterator.Element) -> Bool = { _ in true }) -> Int {
+        return self.reduce(0) { $0 + (predicate($1) ? 1 : 0) }
+    }
+}
+
 extension String {
     func isUppercased(at: Index) -> Bool {
       #if os(OSX)

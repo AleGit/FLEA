@@ -25,9 +25,6 @@ private final class KinNode : FLEA.KinNode, SymbolTableUser, StringLiteralConver
   static func insert(string:String, type:Tptp.SymbolType) -> UInt32 {
     return 0
   }
-  static func extract(symbol:UInt32)->(String,Tptp.SymbolType) {
-    return ("",.undefined)
-  }
 }
 
 private typealias Node = KinNode  // use local implementation

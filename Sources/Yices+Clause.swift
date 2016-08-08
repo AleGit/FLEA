@@ -10,31 +10,15 @@ import CYices
 
 import Foundation
 
-protocol TypedNode : Node {
-  init(v:String)
-  init(c:String)
-  init(f:String, _ nodes:[Self]?)
-  init(p:String, _ nodes:[Self]?)
-
-  var symbolStringType : (String,Tptp.SymbolType) { get }
-}
-
 extension Yices {
-  typealias ClauseTuple = (
-    yicesClause: term_t,
-    yicesLiterals: Set<term_t>,
-    alignedYicesLiterals: [term_t]
+  typealias Tuple = (
+    clause: term_t,
+    literals: [term_t]?
   )
-
-  //    static func clause<N:Node, S:SymbolTable where N.Symbol == S.Symbol>(clause:N, symbolTable:S) {
-  //        let type = symbolTable[clause.symbol]?.type ?? SymbolType.predicate
-  //        symbolTable[clause.symbol] = nil
-  //
-  //    }
 
   /// Return a yices clause and yices literals from a node clause.
   /// The children of `yicesClause` are often different from `yicesLiterals`.
-  static func clause<N:TypedNode>(_ clause:N) -> ClauseTuple {
+  static func clause<N:Node where N:Typed>(_ clause:N) -> Tuple {
     /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
     // assert(clause.isClause,"'\(#function)(\(clause))' Argument must be a clause, but it is not.")
 
@@ -43,7 +27,7 @@ extension Yices {
     switch type {
       case .disjunction:
         guard let literals = clause.nodes, literals.count > 0 else {
-          return (Yices.bot, Set<term_t>(), [term_t]())
+          return (Yices.bot, nil)
         }
 
         return Yices.clause(literals)
@@ -52,13 +36,13 @@ extension Yices {
       case .predicate, .negation, .equation, .inequation:
         Syslog.warning { "'\(clause)' was not a clause, but a literal." }
         let yicesLiteral = literal(clause)
-          return (yicesLiteral,[yicesLiteral],[yicesLiteral])
+          return (yicesLiteral,[yicesLiteral])
 
           // not a clause at all
       default:
             Syslog.error { "'\(clause)' is of type \(type)" }
             assert(false, "\(#function)(\(clause)) Argument is of type \(type)")
-            return (Yices.bot, Set<term_t>(), [term_t]())
+            return (Yices.bot, nil)
     }
 
 
@@ -74,20 +58,19 @@ extension Yices {
         /// * `p ≡ [ p, p ]`
         /// * `p ≡ [ ⊥ ~= ⊥, p ]`
         /// * `[p,q,q,q,q] ≡ [ p, q, ⊥ ~= ⊥, p,q ]`
-  static func clause<N:TypedNode>(_ literals:[N]) -> ClauseTuple {
+  static func clause<N:Node where N:Typed>(_ literals:[N]) -> Tuple {
           /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
 
-          let alignedYicesLiterals = literals.map { self.literal($0) }
-          var yicesLiterals = alignedYicesLiterals
+          let literals = literals.map { self.literal($0) }
+          var copy = literals
 
           // `yices_or` might change the order and content of the array
 
-          let yicesClause = yices_or( UInt32(yicesLiterals.count), &yicesLiterals)
+          let yicesClause = yices_or( UInt32(copy.count), &copy)
 
           return (
             yicesClause,
-            Set(yicesLiterals),
-            alignedYicesLiterals
+            literals
           )
         }
 
@@ -96,7 +79,7 @@ extension Yices {
         /// - an equation
         /// - an inequation
         /// - a predicatate term or a proposition constant
-  static func literal<N:TypedNode>(_ literal:N) -> term_t {
+  static func literal<N:Node where N:Typed>(_ literal:N) -> term_t {
     // assert(literal.isLiteral,"'\(#function)(\(literal))' Argument must be a literal, but it is not.")
 
     guard let nodes = literal.nodes
@@ -144,7 +127,7 @@ extension Yices {
   }
 
                   /// Build uninterpreted function term from term.
-  static func term<N:TypedNode>(_ term:N) -> term_t {
+  static func term<N:Node where N:Typed>(_ term:N) -> term_t {
   // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
     let (termSymbolString,_) = term.symbolStringType
@@ -161,7 +144,7 @@ extension Yices {
   }
 
   /// Build (constant) predicate or function.
-  static func application<N:TypedNode>(_ symbolString:String, nodes:[N], term_tau:type_t) -> term_t {
+  static func application<N:Node where N:Typed>(_ symbolString:String, nodes:[N], term_tau:type_t) -> term_t {
 
     guard nodes.count > 0 else {
       return constant(symbolString, term_tau: term_tau)

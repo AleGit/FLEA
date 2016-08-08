@@ -29,3 +29,40 @@ extension Yices {
         return string
     }
 }
+
+extension Yices {
+	static func setup() {
+		yices_init()
+	}
+	static func teardown() {
+		yices_exit()
+	}
+}
+
+extension Yices {
+
+	final class Context {
+		private var context : OpaquePointer
+
+		init() {
+			context = yices_new_context(nil)
+		}
+
+		deinit {
+			yices_free_context(context)
+		}
+
+		func assert<N:Node where N:Typed>(clause:N) -> Yices.Tuple {
+			let triple = Yices.clause(clause)
+
+
+			yices_assert_formula(context,triple.0)
+			return triple
+		}
+
+		var isSatisfiable : Bool {
+			return yices_check_context(context,nil) == STATUS_SAT
+		}
+
+	}
+}
