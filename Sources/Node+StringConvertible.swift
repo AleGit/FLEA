@@ -22,7 +22,7 @@ extension Node where Symbol : Symbolable {
 
 extension Node where Self:SymbolTableUser, Self.Symbol == Self.Symbols.Symbol {
   var defaultDescription : String {
-    let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .function)
+    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .function)
     /// Symbol tables provide usual reliable type information,
     /// fallback to functional prefix notation.
     return buildDescription(string:string,type:type)
@@ -107,20 +107,19 @@ extension Node where Symbol == Tptp.Symbol {
   }
 }
 
-// extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symbol == Int {
-//   var debugDescription : String {
-//
-//     let number = self.symbol / 256
-//     let type = Tptp.SymbolType(rawValue: self.symbol % 256 ) ?? .undefined
-//     let string = Self.symbols[self.symbol] ?? "\(self.symbol)"
-//
-//     return buildDebugDescription(string:number == 0 ? "\(string)-\(type)" : "\(number)-\(string)-\(type)")
-//   }
-// }
+extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symbol == Int {
+  var debugDescription : String {
+
+    let number = self.symbol / 256
+    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
+
+    return buildDebugDescription(string:number == 0 ? "\(string)-\(type)" : "\(number)-\(string)-\(type)")
+  }
+}
 
 extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
-    let (string,type) = Self.symbols.extract(self.symbol) ?? ("\(self.symbol)", .undefined)
+    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
 
     return buildDebugDescription(string:"\(string)-\(type)")
   }

@@ -39,6 +39,6 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
 
 extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   var symbolStringType : (String,Tptp.SymbolType) {
-    return Self.symbols.extract(self.symbol) ?? ("\(self.symbol)",.undefined)
+    return Self.symbols[self.symbol] ?? ("\(self.symbol)",.undefined)
   }
 }

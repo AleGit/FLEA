@@ -11,8 +11,7 @@ protocol SymbolTable {
   associatedtype Symbol : Hashable
 
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
-  func extract(_ symbol:Symbol) -> (String,Tptp.SymbolType)?
-  subscript(symbol:Symbol) -> String? { get }
+  subscript(symbol:Symbol) -> StringType? { get }
 }
 
 /// A symbol table users type holds a static symbol table.
@@ -45,10 +44,6 @@ struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
   private var symbols = [String : I]()
   private var strings = [I : StringType] ()
 
-  func extract(_ symbol:I) -> StringType?  {
-    return strings[symbol]
-  }
-
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
       // symbol is allready in the table
@@ -77,7 +72,7 @@ struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
     return ivalue
   }
 
-  subscript(value:I) -> String? {
-    return strings[value]?.0
+  subscript(value:I) -> StringType? {
+    return strings[value]
   }
 }
