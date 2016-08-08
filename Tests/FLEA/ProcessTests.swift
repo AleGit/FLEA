@@ -9,14 +9,15 @@ public class ProcessTests : XCTestCase {
     // ("testMacOS", testMacOS),
     ("testOS", testOS),
     ("testFilePath", testTptpRoot),
-    ("testConfigPath", testConfigPath)
+    ("testConfigPath", testConfigPath),
+    ("testIfSwift",testIfSwift)
     ]
   }
 
   /// This test is not put into allTests
   /// - it will execute on OSX
   /// - it will not run on Linux
-  func testMacOSO() {
+  func testMacOSonly() {
     #if os(OSX)
     print("\(ok)  \(#function) executed on macOS.")
     #elseif os(Linux)
