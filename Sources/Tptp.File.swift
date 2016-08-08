@@ -26,8 +26,8 @@ extension Tptp {
 
       print(url.absoluteString, url.path)
 
-      if url.isFileURL, let path = url.path {
-        self.init(path:path)
+      if url.isFileURL {
+        self.init(path:url.path)
       }
       else {
         return nil

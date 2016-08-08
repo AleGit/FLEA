@@ -25,14 +25,14 @@ public class URLTests : XCTestCase {
     print("var host: String?              ",url.host ?? "n/a")
 
     #if os(OSX)
-    print("var isFileReferenceURL: Bool   ",url.isFileReferenceURL)
+    // print("var isFileReferenceURL: Bool   ",url.isFileReferenceURL)
     #else
     print("var isFileReferenceURL: Bool   ","is not available", #file,#function,#line)
     #endif
 
     print("var isFileURL: Bool            ",url.isFileURL)
     print("var lastPathComponent: String? ",url.lastPathComponent ?? "n/a")
-    print("var parameterString: String?   ",url.parameterString ?? "n/a")
+    // print("var parameterString: String?   ",url.parameterString ?? "n/a")
     print("var password: String?          ",url.password ?? "n/a")
     print("var path: String?              ",url.path ?? "n/a")
     print("var pathComponents: [String]?  ",url.pathComponents ?? [String]())
@@ -41,7 +41,7 @@ public class URLTests : XCTestCase {
     print("var query: String?             ",url.query ?? "n/a")
     print("var relativePath: String?      ",url.relativePath ?? "n/a")
     print("var relativeString: String     ",url.relativeString)
-    print("var resourceSpecifier: String? ",url.resourceSpecifier ?? "n/a")
+    // print("var resourceSpecifier: String? ",url.resourceSpecifier ?? "n/a")
     print("var scheme: String?            ",url.scheme ?? "n/a")
     print("var user: String?              ",url.user ?? "n/a")
 
@@ -53,16 +53,16 @@ public class URLTests : XCTestCase {
     print("func checkResourceIsReachable()      ","is not available", #file,#function,#line)
     #endif
 
-    print("func deletingLastPathComponent()     ",try? url.deletingLastPathComponent())
-    print("func deletingPathExtension()         ",try? url.deletingPathExtension())
-    print("func resolvingSymlinksInPath()       ",try? url.resolvingSymlinksInPath())
+    print("func deletingLastPathComponent()     ",url.deletingLastPathComponent())
+    print("func deletingPathExtension()         ",url.deletingPathExtension())
+    print("func resolvingSymlinksInPath()       ",url.resolvingSymlinksInPath())
     #if os(OSX)
-    print("func standardized()                  ",try? url.standardized())
+    // print("func standardized()                  ",try? url.standardized())
     #else
     print("func standardized()                  ","fatal error: standardized is not yet implemented: file Foundation/NSURL.swift, line 524")
     #endif
 
-    print("func standardizingPath()             ",try? url.standardizingPath())
+    // print("func standardizingPath()             ",try? url.standardizingPath())
     // print(" ",url.host)
     // print(" ",url.host)
     // print(" ",url.host)
