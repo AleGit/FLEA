@@ -16,7 +16,7 @@ extension Tptp {
 
 extension Tptp {
   enum SymbolType : Int {
-    case undefined = 0
+    case undefined = 0 // 0
 
     /// <TPTP_file>
     case file

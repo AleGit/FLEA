@@ -3,7 +3,7 @@ postfix func ⊥<N:Node where N:SymbolTableUser,N.Symbol==N.Symbols.Symbol>(t:N)
   return t * N(c:"⊥")
 }
 
-// MARK: convenience initializers to build terms with strings.
+// MARK: type node convenience initializers to build terms with strings.
 
 extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   init(v:String) {
@@ -32,5 +32,13 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
     }
     let s = Self.symbols.insert(p, .predicate)
     self.init(symbol:s, nodes:nodes)
+  }
+}
+
+// MARK: type node calculated symbol string type property
+
+extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
+  var symbolStringType : (String,Tptp.SymbolType) {
+    return Self.symbols.extract(self.symbol) ?? ("\(self.symbol)",.undefined)
   }
 }

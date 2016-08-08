@@ -15,6 +15,9 @@ protocol Node : Hashable,
   /// References to nodes (the "children")
   var nodes : [Self]? { get set }
 
+  // var symbolString : String { get }
+  // var symbolType : Tptp.SymbolType { get }
+
   /// empty initializer to enable sharing magic
   init()
 

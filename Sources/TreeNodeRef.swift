@@ -76,4 +76,15 @@ extension UnsafeMutablePointer where Pointee : TreeNodeProtocol {
     return self.children { $0 }
   }
 
+  var childCount : Int {
+    var member = self.child
+    var count = 0
+    while member != nil {
+      count += 1
+      member = member?.sibling
+    }
+    return count
+
+  }
+
 }
