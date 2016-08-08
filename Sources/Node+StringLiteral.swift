@@ -42,7 +42,7 @@ extension Node where Symbol:Symbolable {
     // let fof = "fof(name,role,predicate(\(value))."
     self.init()
 
-    let (string,type) = value.tptpLiteralType
+    let (string,type) = value.tptpStringLiteralType
 
     guard !string.isEmpty else {
       self = Self(c:"")
@@ -75,7 +75,7 @@ extension Node where Symbol:Symbolable {
 
     ast = nodes[1] // fof_formula or cnf_formula
 
-    if let term = ast.nodes?.first, type == .variable {
+    if let term = ast.nodes?.first, type == .variable || type == .function(-1) {
       ast = term
     }
   }
@@ -119,7 +119,7 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol{
     // let fof = "fof(name,role,predicate(\(value))."
     self.init()
 
-    let (string,type) = value.tptpLiteralType
+    let (string,type) = value.tptpStringLiteralType
 
     guard !string.isEmpty else {
       self = Self(c:"")
@@ -152,7 +152,7 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol{
 
     ast = nodes[1] // fof_formula or cnf_formula
 
-    if let term = ast.nodes?.first, type == .variable {
+    if let term = ast.nodes?.first, type == .variable || type == .function(-1) {
       ast = term
     }
   }

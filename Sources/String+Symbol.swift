@@ -55,7 +55,8 @@ extension String {
 }
 
 extension String {
-  var tptpLiteralType : (String,Tptp.SymbolType) {
+  /// String literals to be converted to nodes can be annotated:
+  var tptpStringLiteralType : (String,Tptp.SymbolType) {
     if self.isEmpty {
       return (self,.undefined)
     }
@@ -84,6 +85,6 @@ extension String {
         return (self,.fof)
       }
 
-      return (self, .variable) // parse string as term
+      return (self, .function(-1)) // .function(_) or .variable
   }
 }
