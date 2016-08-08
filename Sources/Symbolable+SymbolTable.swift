@@ -47,6 +47,7 @@ struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
       // symbol is allready in the table
+
       return symbol
     }
 

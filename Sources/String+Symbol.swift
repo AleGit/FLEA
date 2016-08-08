@@ -37,7 +37,7 @@ extension String : Symbolable {
           return .variable
         }
 
-        return .function
+        return .undefined // WORKAROUND
     }
   }
 }
@@ -84,6 +84,6 @@ extension String {
         return (self,.fof)
       }
 
-      return (self, .function)
+      return (self, .variable) // parse string as term
   }
 }

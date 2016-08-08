@@ -33,19 +33,19 @@ extension Tptp {
     case role
     case annotation
 
-    case universal    // ! X Y s
-    case existential  // ? X Y s
+    case universal    // ! X Y ... s with implicit arity == 1..<∞
+    case existential  // ? X Y ... s with implicit arity == 1..<∞
 
-    case negation     // ~ s
-    case disjunction  // s | t ...
-    case conjunction  // s & t ...
+    case negation     // ~ s with implicit arity == 1
+    case disjunction  // s | t ... with implicit arity == 0..<∞
+    case conjunction  // s & t ... with implicit arity == 0..<∞
 
-    case implication  // s => t
-    case reverseimpl  // s <= t
-    case bicondition // s <=> t
-    case xor  // <~>
-    case nand // ~&
-    case nor // ~|
+    case implication  // s => t with implicit arity == 2
+    case reverseimpl  // s <= t with implicit arity == 2
+    case bicondition // s <=> t with implicit arity == 2
+    case xor  // <~> with implicit arity == 2
+    case nand // ~& with implicit arity == 2
+    case nor // ~| with implicit arity == 2
 
     // case gentzen // -->
     // case star // *
@@ -54,12 +54,47 @@ extension Tptp {
     // $true
     // $false
 
-    case equation   // s = t
-    case inequation // s != t
+    case equation   // s = t with implicit arity == 2
+    case inequation // s != t with implicit arity == 2
 
-    case predicate  // predicates and propositions
-    case function   // functions and constants
+    case predicate(Int)  // predicates and propositions with symolb fixed arity
+
+    case function(Int)   // functions and constants with symbol fixed arity
     case variable   // variables
+  }
+}
+
+func ==(lhs:Tptp.SymbolType, rhs:Tptp.SymbolType) -> Bool {
+  switch (lhs,rhs) {
+    case (.file,.file),
+      (.fof,.fof),
+      (.cnf,.cnf),
+      (.include,.include),
+      (.name,.name),
+      (.role,.role),
+      (.annotation,.annotation),
+      (.universal,.universal),
+      (.existential,.existential),
+      (.negation,.negation),
+      (.disjunction,.disjunction),
+      (.conjunction,.conjunction),
+      (.implication,.implication),
+      (.reverseimpl,.reverseimpl),
+      (.bicondition,.bicondition),
+      (.xor,.xor),
+      (.nand,.nand),
+      (.nor,.nor),
+      (.equation,.equation),
+      (.inequation,.inequation),
+      (.variable,.variable):
+      return true
+    case (.predicate(let larity),.predicate(let rarity)):
+      return larity == rarity
+    case (.function(let larity),.function(let rarity)):
+      return larity == rarity
+    default:
+      return false
+
   }
 }
 
@@ -131,10 +166,10 @@ extension Tptp.SymbolType {
         self = .undefined
 
       case (_, PRLC_PREDICATE):
-        self = .predicate
+        self = .predicate(node.childCount)
 
       case (_, PRLC_FUNCTION):
-        self = .function
+        self = .function(node.childCount)
 
       case (_, PRLC_VARIABLE):
         self = .variable

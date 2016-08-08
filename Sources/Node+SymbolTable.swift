@@ -12,7 +12,7 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   }
 
   init(c:String) {
-    let s = Self.symbols.insert(c, .function)
+    let s = Self.symbols.insert(c, .function(0))
     self.init(constant:s)
   }
 
@@ -21,7 +21,7 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
       self.init(v:f)
       return
     }
-    let s = Self.symbols.insert(f, .function)
+    let s = Self.symbols.insert(f, .function(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }
 
@@ -30,7 +30,7 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
       self.init(v:p)
       return
     }
-    let s = Self.symbols.insert(p, .predicate)
+    let s = Self.symbols.insert(p, .predicate(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }
 }

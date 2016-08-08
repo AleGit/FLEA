@@ -9,7 +9,7 @@ extension Node {
     let s = "\(self.symbol)"
     // without reliable symbol type information, everything is a prefix function.
     // empty parenthesis will be ommitted, e.g. for variables, constants, predicates.
-    return self.buildDescription(string:s, type:.function)
+    return self.buildDescription(string:s, type:.function(self.nodes?.count ?? -1))
   }
 }
 
@@ -22,7 +22,7 @@ extension Node where Symbol : Symbolable {
 
 extension Node where Self:SymbolTableUser, Self.Symbol == Self.Symbols.Symbol {
   var defaultDescription : String {
-    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .function)
+    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .function(self.nodes?.count ?? -1))
     /// Symbol tables provide usual reliable type information,
     /// fallback to functional prefix notation.
     return buildDescription(string:string,type:type)
@@ -60,17 +60,10 @@ extension Node {
         assert(nodes.count == 2)
         return nodes.joined(separator:string)
 
-      case .file, .fof, .cnf, .include, .name, .role, .annotation,
-      .predicate, .function:
+      default: // prefix notation
         assert (nodes.count > 0)
         let tuple = nodes.joined(separator:",")
         return "\(string)(\(tuple))"
-      case .variable:
-        assert(false,">>\(string)-\(type)")
-        return string
-      case .undefined:
-        assert(false,"\(string)-\(type)")
-        return ">>\(string)-\(type)"
     }
   }
 }

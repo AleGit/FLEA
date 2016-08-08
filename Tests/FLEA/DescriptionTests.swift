@@ -46,10 +46,10 @@ public class DescriptionTests : XCTestCase {
     let fXa = KinNode(f:"f",[X,a])
     // let equals = Tptp.KinNode.Symbol("=",.equation)
 
-    XCTAssertEqual("1-a-function", a.debugDescription,nok)
+    XCTAssertEqual("1-a-function(0)", a.debugDescription,nok)
     XCTAssertEqual("2-X-variable", X.debugDescription,nok)
 
-    XCTAssertEqual("3-f-function(2-X-variable,1-a-function)", fXa.debugDescription,nok)
+    XCTAssertEqual("3-f-function(2)(2-X-variable,1-a-function(0))", fXa.debugDescription,nok)
 
     //
     // XCTAssertEqual("f(X,Y)", Q.fXY.debugDescription,nok)

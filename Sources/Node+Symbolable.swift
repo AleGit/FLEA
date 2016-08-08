@@ -12,7 +12,7 @@ extension Node where Symbol:Symbolable {
   }
 
   init(c:String) {
-    let s = Symbol(c,.function)
+    let s = Symbol(c,.function(0))
     self.init(constant:s)
   }
 
@@ -21,7 +21,7 @@ extension Node where Symbol:Symbolable {
       self.init(v:f)
       return
     }
-    let s = Symbol(f,.function)
+    let s = Symbol(f,.function(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }
 
@@ -30,7 +30,7 @@ extension Node where Symbol:Symbolable {
       self.init(v:p)
       return
     }
-    let s = Symbol(p,.predicate)
+    let s = Symbol(p,.predicate(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }
 }

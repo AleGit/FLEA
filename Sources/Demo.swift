@@ -161,13 +161,13 @@ extension Demo {
     func fxy() -> N {
       let X = N(variable:S("X",.variable))
       let Y = N(variable:S("Y",.variable))
-      return N(symbol:S("f",.function), nodes: [ X, Y ])
+      return N(symbol:S("f",.function(2)), nodes: [ X, Y ])
     }
 
     func pfxyz() -> N {
       let Z = N(variable:S("Z",.variable))
       let fXY = fxy()
-      return N(symbol:S("p",.predicate), nodes: [fXY, Z])
+      return N(symbol:S("p",.predicate(2)), nodes: [fXY, Z])
 
     }
 

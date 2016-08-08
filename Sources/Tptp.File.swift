@@ -41,8 +41,8 @@ extension Tptp {
       let code : Int32
 
       switch type {
-        /// variables and (constant)  are terms.
-        case .function, .variable:
+        /// variables and (constant) are terms.
+        case .function(_), .variable:
           code = prlcParseString(string, &store, &root, PRLC_FUNCTION)
 
         /// conjunctive normal form
@@ -52,7 +52,7 @@ extension Tptp {
         /// arbitrary first order formulas
         case .fof, .universal, .existential, .negation, .disjunction, .conjunction,
           .implication, .reverseimpl, .bicondition, .xor, .nand, .nor,
-          .equation, .inequation, .predicate:
+          .equation, .inequation, .predicate(_):
           code = prlcParseString(string, &store, &root, PRLC_FOF)
 
         /// include statements

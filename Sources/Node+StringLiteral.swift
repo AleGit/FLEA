@@ -75,7 +75,7 @@ extension Node where Symbol:Symbolable {
 
     ast = nodes[1] // fof_formula or cnf_formula
 
-    if let term = ast.nodes?.first, (type == .function || type == .variable) {
+    if let term = ast.nodes?.first, type == .variable {
       ast = term
     }
   }
@@ -152,7 +152,7 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol{
 
     ast = nodes[1] // fof_formula or cnf_formula
 
-    if let term = ast.nodes?.first, (type == .function || type == .variable) {
+    if let term = ast.nodes?.first, type == .variable {
       ast = term
     }
   }
