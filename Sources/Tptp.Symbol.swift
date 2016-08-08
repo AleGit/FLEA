@@ -15,7 +15,7 @@ extension Tptp {
 }
 
 extension Tptp {
-  enum SymbolType {
+  enum SymbolType : Equatable {
     case undefined
 
     /// <TPTP_file>

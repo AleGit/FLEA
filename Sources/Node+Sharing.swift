@@ -14,7 +14,7 @@ protocol Kin : class {
 /// a collection of all created nodes is held.
 /// Unique instances of nodes are shared between (sub)trees.
 /// Sharing is suitable for immutable reference types.
-protocol SharingNode : Sharing, Node { }
+protocol SharingNode : Sharing, TypedNode { }
 
 extension Node where Self:Sharing, Self.M.Element == Self {
   /// By default smart nodes are shared between trees,
@@ -35,7 +35,7 @@ extension SharingNode where M.Element == Self {
 
 /// kin nodes are sharing, additionally
 /// they hold weak references to all their folks
-protocol KinNode : Kin, Sharing, Node { }
+protocol KinNode : Kin, Sharing, TypedNode { }
 
 extension Node where Self:Kin, Self:Sharing, Self.M.Element==Self, Self.P.Element==Self {
   static func share(node:Self) -> Self {
