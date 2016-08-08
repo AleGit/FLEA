@@ -153,7 +153,7 @@ extension WeakSet : Sequence {
   }
 }
 
-extension WeakSet :  ArrayLiteralConvertible {
+extension WeakSet :  ExpressibleByArrayLiteral {
   init(arrayLiteral: T...) {
     self.init()
     for element in arrayLiteral {

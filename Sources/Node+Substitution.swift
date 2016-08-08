@@ -1,7 +1,7 @@
 /*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
 /// A substitution is a assignment from variables to terms.
-protocol Substitution : DictionaryLiteralConvertible, Sequence, CustomStringConvertible
+protocol Substitution : ExpressibleByDictionaryLiteral, Sequence, CustomStringConvertible
 {
   associatedtype K : Hashable
   associatedtype V

@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-private final class StringLiteralNode : FLEA.Node, StringLiteralConvertible {
+private final class StringLiteralNode : FLEA.Node, ExpressibleByStringLiteral {
   var symbol = Tptp.Symbol("",.undefined) // avoid side effects with symbol tables
   var nodes : [StringLiteralNode]? = nil
 

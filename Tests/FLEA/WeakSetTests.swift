@@ -104,7 +104,7 @@ private func ==(lhs:WeakSetTests.Stringly, rhs:WeakSetTests.Stringly) -> Bool {
   return lhs.string == rhs.string
 }
 
-extension WeakSetTests.Stringly: StringLiteralConvertible {
+extension WeakSetTests.Stringly: ExpressibleByStringLiteral {
     typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
     typealias UnicodeScalarLiteralType = StringLiteralType
 

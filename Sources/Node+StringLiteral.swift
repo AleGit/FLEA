@@ -1,8 +1,8 @@
-/* Default implementation of StringLiteralConvertible nodes with symbolable symbol.
+/* Default implementation of ExpressibleByStringLiteral nodes with symbolable symbol.
 
   */
 
-// StringLiteralConvertible : ExtendedGraphemeClusterLiteralConvertible  : UnicodeScalarLiteralConvertible
+// ExpressibleByStringLiteral : ExtendedGraphemeClusterLiteralConvertible  : UnicodeScalarLiteralConvertible
 
 extension Node where Symbol:Symbolable {
 
@@ -16,7 +16,7 @@ extension Node where Symbol:Symbolable {
       self.init(stringLiteral: value)
   }
 
-  /// _StringLiteralConvertible_
+  /// _ExpressibleByStringLiteral_
   /// The flexible conversion of strings lets us easily create
   /// variable, constants, terms, liteals, clauses and formulas,
   /// but this not always unambiguous:
@@ -93,7 +93,7 @@ extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol{
       self.init(stringLiteral: value)
   }
 
-  /// _StringLiteralConvertible_
+  /// _ExpressibleByStringLiteral_
   /// The flexible conversion of strings lets us easily create
   /// variable, constants, terms, liteals, clauses and formulas,
   /// but this not always unambiguous:

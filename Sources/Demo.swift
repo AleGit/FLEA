@@ -82,7 +82,7 @@ extension Demo {
             print("\(f) =?= \(g) is not unifiable.")
             continue
           }
-          print("\(f) =?= \(g) = \(mgu.description)")
+          print("\(f) =?= \(g) = \(mgu)")
 
         }
       }

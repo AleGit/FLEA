@@ -30,14 +30,14 @@ struct Syslog {
     // LOG_DEBUG      debug-level message
     private var priority : Int32 {
       switch self {
-        case emergency: return LOG_EMERG
-        case alert: return LOG_ALERT
-        case critical: return LOG_CRIT
-        case error: return LOG_ERR
-        case warning: return LOG_WARNING
-        case notice: return LOG_NOTICE
-        case info: return LOG_INFO
-        case debug: return LOG_DEBUG
+        case .emergency: return LOG_EMERG
+        case .alert: return LOG_ALERT
+        case .critical: return LOG_CRIT
+        case .error: return LOG_ERR
+        case .warning: return LOG_WARNING
+        case .notice: return LOG_NOTICE
+        case .info: return LOG_INFO
+        case .debug: return LOG_DEBUG
       }
     }
 
@@ -73,12 +73,12 @@ struct Syslog {
     // LOG_PID        Include PID with each message.
     private var option: Int32 {
       switch self {
-        case console: return LOG_CONS
-        case immediately: return LOG_NDELAY
-        case nowait:return LOG_NOWAIT
-        case delayed:return LOG_ODELAY
-        case perror:return LOG_PERROR
-        case pid:return LOG_PID
+        case .console: return LOG_CONS
+        case .immediately: return LOG_NDELAY
+        case .nowait:return LOG_NOWAIT
+        case .delayed:return LOG_ODELAY
+        case .perror:return LOG_PERROR
+        case .pid:return LOG_PID
       }
     }
   }
