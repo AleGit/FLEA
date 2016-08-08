@@ -50,21 +50,7 @@ struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
       return symbol
     }
 
-    var value = type.rawValue
-
-    switch type {
-      case .universal, .existential,
-      .negation, .disjunction, .conjunction, .implication,
-      .xor, .reverseimpl, .nor, .nand, .bicondition,
-      .equation, .inequation:
-      // use raw integer value as symbol value
-      value += 0
-
-      default:
-        value += (1+symbols.count) << 8 // *256
-    }
-
-    let ivalue : I = I(value)
+    let ivalue : I = I(1+symbols.count)
 
     symbols[string] = ivalue
     strings[ivalue] = (string,type)

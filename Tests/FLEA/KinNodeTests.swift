@@ -51,10 +51,10 @@ public class KinNodeTests : XCTestCase {
     let fX = "f(X)" as Node
     let fa = "f(a)" as Node
 
-    XCTAssertEqual("X-variable",X.debugDescription,nok)
-    XCTAssertEqual("a-function",a.debugDescription,nok)
-    XCTAssertEqual("f-function(X-variable)",fX.debugDescription,nok)
-    XCTAssertEqual("f-function(a-function)",fa.debugDescription,nok)
+    XCTAssertEqual("5-X-variable",X.debugDescription,nok)
+    XCTAssertEqual("6-a-function",a.debugDescription,nok)
+    XCTAssertEqual("7-f-function(5-X-variable)",fX.debugDescription,nok)
+    XCTAssertEqual("7-f-function(6-a-function)",fa.debugDescription,nok)
 
     // check if folks are set correctly
 

@@ -107,20 +107,20 @@ extension Node where Symbol == Tptp.Symbol {
   }
 }
 
-extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symbol == Int {
-  var debugDescription : String {
-
-    let number = self.symbol / 256
-    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
-
-    return buildDebugDescription(string:number == 0 ? "\(string)-\(type)" : "\(number)-\(string)-\(type)")
-  }
-}
+// extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symbol == Int {
+//   var debugDescription : String {
+//
+//     let number = self.symbol / 256
+//     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
+//
+//     return buildDebugDescription(string:number == 0 ? "\(string)-\(type)" : "\(number)-\(string)-\(type)")
+//   }
+// }
 
 extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
 
-    return buildDebugDescription(string:"\(string)-\(type)")
+    return buildDebugDescription(string:"\(self.symbol)-\(string)-\(type)")
   }
 }
