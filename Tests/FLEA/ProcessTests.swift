@@ -54,15 +54,15 @@ public class ProcessTests : XCTestCase {
 
   /// A /path/to/TPTP should be avaiable on every platform
   func testTptpRoot() {
-    guard let tptpRoot = FilePath.tptpRoot else {
+    guard let tptpDirectoryURL = URL.tptpDirectoryURL else {
       XCTFail("TPTP root path is not available.")
       return
     }
 
-    XCTAssertTrue(tptpRoot.hasSuffix("TPTP"),
-    "TPTP root path '\(tptpRoot) does not end with 'TPTP'")
+    XCTAssertEqual("TPTP", tptpDirectoryURL.lastPathComponent,
+    "TPTP root path '\(tptpDirectoryURL) does not end with 'TPTP'")
 
-    print("\(ok) \(#function) \(tptpRoot)")
+    print("\(ok) \(#function) \(tptpDirectoryURL.path)")
   }
 
   func testConfigPath() {

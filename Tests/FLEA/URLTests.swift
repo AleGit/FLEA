@@ -7,7 +7,9 @@ import Foundation
 public class URLTests : XCTestCase {
   static var allTests : [(String, (URLTests) -> () throws -> Void)] {
     return [
-    ("testFiles",testFiles)
+    ("testFiles",testFiles),
+
+    ("testProblem",testProblem)
     ]
   }
 
@@ -93,5 +95,19 @@ public class URLTests : XCTestCase {
 
     }
 
+
+
+
+
+  }
+  func testProblem() {
+    let problem = "PUZ001-1"
+    let path = problem.p
+    guard let url = URL(fileURLwithProblem:problem) else {
+      XCTFail("\(nok) URL for problem '\(problem)' could not be created.")
+      return
+    }
+
+    XCTAssertEqual(path,url.path)
   }
 }

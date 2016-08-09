@@ -173,20 +173,6 @@ public class StringPathTests : XCTestCase {
     if ppath != nok { print("\(ok) '\(problem)'.p -> '\(ppath)'") }
     if ppath != nok { print("\(ok) '\(axiom)'.ax -> '\(apath)'") }
 
-    #if os(OSX)
-
-    var outputName = "Helo"
-    var array = [String]()
-
-
-    print(FilePath.tptpRoot?.completePath(
-      into:&outputName,
-      caseSensitive:false,
-      matchesInto:&array
-    ))
-    print(outputName)
-    print(array)
-    #endif
 
 
   }

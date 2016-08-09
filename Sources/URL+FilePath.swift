@@ -1,6 +1,29 @@
 
 import Foundation
 
+extension URL {
+  static var tptpDirectoryURL : URL? {
+    guard let path = String.tptpDirectoryPath else {
+      return nil
+    }
+    return URL(fileURLWithPath:path)
+  }
+
+  init?(fileURLwithProblem problem:String) {
+    var url = URL(fileURLWithPath: problem)
+
+    if url.pathExtension.isEmpty {
+      url.appendPathExtension("p")
+    }
+    else if url.pathExtension != "p" {
+      Syslog.warning {
+        "Problem name/file with extension \(url.pathExtension)"
+      }
+    }
+    self = url
+  }
+}
+
 typealias FilePath = String
 
 extension FilePath {
@@ -47,9 +70,9 @@ extension FilePath {
     print(path)
     if path.isAccessible { return path }
 
-    print(FilePath.tptpRoot?.appending(component:path))
+    print(FilePath.tptpDirectoryPath?.appending(component:path))
 
-    if let absolutePath = (FilePath.tptpRoot)?.appending(component:path),
+    if let absolutePath = (FilePath.tptpDirectoryPath)?.appending(component:path),
     absolutePath.isAccessible {
       return absolutePath
     }
@@ -79,7 +102,7 @@ extension FilePath {
     let relativePath = root.appending("Axioms").appending(axiom.lastPathComponent)
     if relativePath.isAccessible { return relativePath }
 
-    if let absolutePath = FilePath.tptpRoot?.appending(component:axiom.lastPathComponent),
+    if let absolutePath = FilePath.tptpDirectoryPath?.appending(component:axiom.lastPathComponent),
     absolutePath.isAccessible { return absolutePath }
 
     return axiom.ax
@@ -98,7 +121,7 @@ extension FilePath {
     path = "Axioms".appending(component:path)
     if path.isAccessible { return path }
 
-    if let absolutePath = (FilePath.tptpRoot)?.appending(component:path)
+    if let absolutePath = (FilePath.tptpDirectoryPath)?.appending(component:path)
    , absolutePath.isAccessible {
       return absolutePath
     }
@@ -108,10 +131,6 @@ extension FilePath {
 }
 
 extension FilePath {
-
-  private static var home : FilePath? {
-    return Process.Environment.getValue(for:"HOME")
-  }
 
   var fileSize : Int? {
     var status = stat()
@@ -202,7 +221,7 @@ extension FilePath {
     }
 
 extension FilePath {
-  static var tptpRoot : FilePath? {
+  private static var tptpDirectoryPath : FilePath? {
 
     // process option --tptp_root has the highest priority
     if let option = Process.option(name:"--tptp_root") {
@@ -223,13 +242,13 @@ extension FilePath {
     }
 
     // home directory has a low priority
-    if let path = FilePath.home?.appending("/TPTP")
+    if let path = Process.home?.appending("/TPTP")
    , path.isAccessibleDirectory {
       return path
     }
 
     // ~/Downloads has a very low priority
-    if let path = FilePath.home?.appending("/Downloads/TPTP")
+    if let path = Process.home?.appending("/Downloads/TPTP")
    , path.isAccessibleDirectory {
       return path
     }
