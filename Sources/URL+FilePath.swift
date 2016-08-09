@@ -24,63 +24,117 @@ extension URL {
 }
 
 extension URL {
-  private mutating func append(_ ex:String, delete:Bool = true) {
-    guard let pe = optional(self.pathExtension),
-    pe != ex else { return }
-
-    if delete {
-      #if os(OSX)
-      self.deletePathExtension()
-      #elseif os(Linux)
-      try? self.deletePathExtension()
-      #endif
-    }
-
+  private mutating func deleteExtension() {
     #if os(OSX)
-    self.appendPathExtension(ex)
+    self.deletePathExtension()
     #elseif os(Linux)
-    try? self.appendPathExtension(ex)
+    try? self.deletePathExtension()
     #endif
   }
+  private func deletingExtension() -> URL {
+    var url = self
+    url.deletePathExtension()
+    return url
+  }
+
+  private mutating func deleteLastComponent() {
+    #if os(OSX)
+    self.deleteLastPathComponent()
+    #elseif os(Linux)
+    try? self.deleteLastPathComponent()
+    #endif
+  }
+
+  private func deletingLastComponent() -> URL {
+    var url = self
+    url.deleteLastComponent()
+    return url
+  }
+
+  private mutating func deleteLastComponents(downTo c:String) {
+    var deleted = false
+    while !deleted && self.lastPathComponent != "/" {
+      if self.lastPathComponent == c {
+        deleted = true
+      }
+      self.deleteLastComponent()
+    }
+  }
+
+  private func deletingLastComponents(downTo c:String) -> URL {
+    var url = self
+    url.deleteLastComponent()
+    return url
+  }
+
+  private mutating func append(extension pex:String, delete:Bool = true) {
+    guard let pe = optional(self.pathExtension),
+    pe != pex else { return }
+
+    if delete { self.deleteExtension() }
+
+    #if os(OSX)
+    self.appendPathExtension(pex)
+    #elseif os(Linux)
+    try? self.appendPathExtension(pex)
+    #endif
+  }
+
+  private func appending(extension pex:String, delete:Bool = true) -> URL {
+    var url = self
+    url.append(extension:pex, delete:delete)
+    return url
+  }
+
+  private mutating func append(component c:String) {
+    #if os(OSX)
+    self.appendPathComponent(c)
+    #elseif os(Linux)
+    try? self.appendPathComponent(c)
+    #endif
+  }
+
+  private func appending(component c:String) -> URL{
+    var url = self
+    url.append(component:c)
+    return url
+  }
+}
+
+extension URL {
 
   private init?(fileURLwithTptp
     name:String,
     ex:String,
     roots:URL?...,
     f:((String)->String)? = nil) {
+
       self = URL(fileURLWithPath:name)
       if self.isAccessible {
         print("A:", name, ex, "->", self.path)
-        return } // (relative or absolute) and accessible
+        return
+      } // (relative or absolute) and accessible
 
-        // append missing path extension, e.g. 'p' or 'ax'
-        self.append(ex)
-        if self.isAccessible {
-          print("B:", name, "->", self.path)
-          return
-        } // (relative or absolute) and accessible
+      // append missing path extension, e.g. 'p' or 'ax'
+      self.append(extension:ex)
+      if self.isAccessible {
+        print("B:", name, "->", self.path)
+        return
+      } // (relative or absolute) and accessible
 
-        if name.hasPrefix("/") { return nil } // absolute, but not accessible
 
-        guard let name = optional(self.lastPathComponent) else { return nil }
-        var array = [name, self.relativeString]
-        if let g = f { array.append(g(name)) }
+      if name.hasPrefix("/") { return nil } // absolute, but not accessible
 
-        for baseURL in roots {
-          guard let base = baseURL else { continue }
+      guard let name = optional(self.lastPathComponent) else { return nil }
+      var array = [name, self.relativeString]
+      if let g = f { array.append(g(name)) }
+
+      for baseURL in roots {
+        guard let base = baseURL else { continue }
           for c in array {
-
-            #if os(OSX)
-            self = base.appendingPathComponent(c)
-            #elseif os (Linux)
-            guard let temp = try? tptpDirectoryURL.appendingPathComponent(c)
-            else { continue }
-              self = temp
-              #endif
+            self = base.appending(component:c)
               if self.isAccessible {
-
                 print("C:", name, "->", base.path, "/", c)
-
                 return
               }
             }
@@ -100,7 +154,7 @@ extension URL {
             fileURLwithTptp: problem,
             ex:"p",
             roots:URL.tptpDirectoryURL,
-            URL.homeDirectoryURL?.appendingPathComponent("TPTP"),
+            URL.homeDirectoryURL?.appending(component:"TPTP"),
             f: {
               let abc = $0[$0.startIndex..<($0.index($0.startIndex, offsetBy:3))]
               return "Problems/\(abc)/\($0)"
@@ -110,35 +164,15 @@ extension URL {
           self = url
         }
 
-        func deletingBacwards(downTo s:String) -> URL{
-          var i = 1
-          var url = self
-          var deleted = false
-          while !deleted && i < 5 && url.lastPathComponent != "/" {
-            print(url.path)
-              #if os(OSX)
-              url.deleteLastPathComponent()
-              #elseif os(Linux)
-              try? url.deleteLastPathComponent()
-              #endif
-              if url.lastPathComponent == s {
-              deleted = true
-            }
-            i += 1
-          }
-          print(#function,url.path)
-          return url
-        }
-
         init?(fileURLwithAxiom axiom:String, problemURL:URL? = nil) {
 
           guard let url = URL(
             fileURLwithTptp: axiom,
             ex:"ax",
             roots:
-            problemURL?.deletingBacwards(downTo:"Problems"),
+            problemURL?.deletingLastComponents(downTo:"Problems"),
             URL.tptpDirectoryURL,
-            URL.homeDirectoryURL?.appendingPathComponent("TPTP"),
+            URL.homeDirectoryURL?.appending(component:"TPTP"),
             f: { "Axioms/\($0)" }
           ) else { return nil }
 
