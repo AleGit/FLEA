@@ -67,7 +67,7 @@ public class URLTests : XCTestCase {
       print("var pathExtension: String      ", url.pathExtension)
       print("var port: Int?                 ", url.port)
       print("var query: String?             ", url.query ?? "nil")
-      print("var relativePath: String       ", url.relativePath)
+      print("var relativePath: String?      ", url.relativePath ?? "nil")
       print("var relativeString: String     ", url.relativeString)
       print("var scheme: String?            ", url.scheme ?? "nil")
       print("var user: String?              ", url.user ?? "nil")
@@ -95,26 +95,24 @@ public class URLTests : XCTestCase {
       XCTFail("\(nok) home directory not available!")
       return
     }
-    print(ok,homeDirectoryURL.path)
+
     guard let tptpDirectoryURL = URL.tptpDirectoryURL else {
       XCTFail("\(nok) tptp directory not available!")
       return
     }
-    print(ok,tptpDirectoryURL.path)
 
-    for (problem,accessible) in [
-      ("PUZ001-1", true),
-      ("Problems/PUZ001-1", true)
-      ]
-      {
+    XCTAssertFalse(homeDirectoryURL == tptpDirectoryURL,nok)
 
-    let path = problem.p
-    let url = URL(fileURLwithProblem:problem)
-    XCTAssertTrue(accessible || url == nil, "\(nok) ± \(problem) -> \(url)")
-      if accessible {
-        print(ok,path)
-        XCTAssertEqual(path, url?.relativePath, "\(nok) \(problem)")
-      }
-  }
+    XCTAssertNotNil(URL(fileURLwithProblem:"PUZ001-1"),nok)
+
+    // test local path
+    let problem = "Problems/PUZ001-1"
+    guard let url = URL(fileURLwithProblem:problem) else {
+      XCTFail("\(nok) \(problem) was not resolvable.")
+      return
+    }
+    XCTAssertEqual(problem+".p", url.relativeString)
+
+
   }
 }

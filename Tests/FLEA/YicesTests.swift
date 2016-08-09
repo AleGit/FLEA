@@ -14,17 +14,17 @@ public class YicesTests : XCTestCase {
 
   func testPUZ001c1() {
     let problem = "PUZ001-1"
-    guard let path = problem.p else {
+    guard let url = URL(fileURLwithProblem:problem) else {
       XCTFail("\(nok) '\(problem)' was not found.")
       return
     }
 
-    guard let file = Tptp.File(path:path) else {
-      XCTFail("\(nok) '\(path)' could not be parsed.")
+    guard let file = Tptp.File(url:url) else {
+      XCTFail("\(nok) '\(url.relativePath)' could not be parsed.")
       return
     }
 
-    XCTAssertEqual(path,file.path,nok)
+    XCTAssertEqual(url.relativePath,file.path,nok)
 
     /// cnf(name)->input->input->
     ///  |

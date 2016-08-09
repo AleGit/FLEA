@@ -10,7 +10,7 @@ extension Tptp {
     /// <TPTP_file> ::= <TPTP_input>*
     private(set) var root : TreeNodeRef?
 
-    init?(path:FilePath) {
+    private init?(path:FilePath) {
       Syslog.info { path }
       guard let size = path.fileSize, size > 0 else {
         return nil;
