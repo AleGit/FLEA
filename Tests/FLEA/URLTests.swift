@@ -14,16 +14,6 @@ public class URLTests : XCTestCase {
   }
 
   func testFiles() {
-    guard let home = Process.home else {
-      XCTFail("\(nok) home not available)")
-      return
-
-    }
-    let homeURL = URL(fileURLWithPath:home)
-
-    XCTAssertEqual(home,homeURL.path)
-
-
     for url in [
     URL(fileURLWithPath:"Problems/PUZ001-1.p"),
     URL(fileURLWithPath:"~/TPTP/Problems/PUZ001+1.p")
@@ -101,13 +91,30 @@ public class URLTests : XCTestCase {
 
   }
   func testProblem() {
-    let problem = "PUZ001-1"
-    let path = problem.p
-    guard let url = URL(fileURLwithProblem:problem) else {
-      XCTFail("\(nok) URL for problem '\(problem)' could not be created.")
+    guard let homeDirectoryURL = URL.homeDirectoryURL else {
+      XCTFail("\(nok) home directory not available!")
       return
     }
+    print(ok,homeDirectoryURL.path)
+    guard let tptpDirectoryURL = URL.tptpDirectoryURL else {
+      XCTFail("\(nok) tptp directory not available!")
+      return
+    }
+    print(ok,tptpDirectoryURL.path)
 
-    XCTAssertEqual(path,url.path)
+    for (problem,accessible) in [
+      ("PUZ001-1", true),
+      ("Problems/PUZ001-1", true)
+      ]
+      {
+
+    let path = problem.p
+    let url = URL(fileURLwithProblem:problem)
+    XCTAssertTrue(accessible || url == nil, "\(nok) ± \(problem) -> \(url)")
+      if accessible {
+        print(ok,path)
+        XCTAssertEqual(path, url?.relativePath, "\(nok) \(problem)")
+      }
+  }
   }
 }

@@ -24,27 +24,27 @@ public class TptpFileTests : XCTestCase {
     _ line : Int = #line
   ) {
     let (_, runtime) = utileMeasure {
-      guard let path = name.p else {
+      guard let url = URL(fileURLwithProblem:name) else {
         XCTFail("\(nok):\(line) \(name).p not found.")
         return
       }
 
-      guard let file = Tptp.File(url:URL(fileURLWithPath:path)) else {
-        XCTFail("\(nok):\(line) \(path) could not be parsed.")
+      guard let file = Tptp.File(url:url) else {
+        XCTFail("\(nok):\(line) \(url.relativePath) could not be parsed.")
         return
       }
 
       let ast : Q.Node? = file.ast()
 
       guard let nodes = ast?.nodes else {
-        XCTFail("\(nok):\(line) \(path) is just a single node")
+        XCTFail("\(nok):\(line) \(url.relativePath) is just a single node")
         return
       }
 
       XCTAssertEqual(nodes.count, expected, "\(nok):\(line)")
 
       if nodes.count == expected {
-        print("\(ok):\(line) \(name).p -> \(path)")
+        print("\(ok):\(line) URL(fileURLwithProblem:\(name) -> \(url.relativePath)")
       }
     }
 

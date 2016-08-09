@@ -6,9 +6,25 @@ extension URL {
     guard let path = String.tptpDirectoryPath else {
       return nil
     }
-    return URL(fileURLWithPath:path)
+    return URL(fileURLWithPath: path)
   }
 
+  static var homeDirectoryURL : URL? {
+    guard let path = String.homeDirectoryPath else {
+      return nil
+    }
+    return URL(fileURLWithPath: path)
+  }
+}
+
+extension URL {
+
+  /// a problem string is either
+  /// - the name of a problem file, e.g. 'PUZ001-1'
+  /// - the relative path to a file, e.g. 'Problems/PUZ001-1'
+  /// - the absolute path to a file, e.g. '/path/to/dir/PUZ001-1'
+  /// with or without extension 'p'.
+  /// If the resulting problem file path is not accessible, nil is returned.
   init?(fileURLwithProblem problem:String) {
     var url = URL(fileURLWithPath: problem)
 
@@ -17,10 +33,48 @@ extension URL {
     }
     else if url.pathExtension != "p" {
       Syslog.warning {
-        "Problem name/file with extension \(url.pathExtension)"
+        "Problem '\(problem)' with extension \(url.pathExtension)"
       }
     }
+
+    if url.isAccessible {
+      // absolute or relative path is accessible
+      self = url
+      return
+    }
+
+    guard url.lastPathComponent == url.relativePath else {
+      Syslog.error {
+        "Local or absolute problem path '\(url.relativePath)' is not accessible"
+      }
+      return nil
+    }
+
+    guard let tptpDirectoryURL = URL.tptpDirectoryURL else {
+      return nil
+    }
+
+    /* construct canonical path for problem */
+
+    guard url.lastPathComponent == url.relativePath else {
+      // only a problem name is allowed
+      return nil
+    }
+
+    let name = url.lastPathComponent
+    let abc = name[name.startIndex..<(name.index(name.startIndex, offsetBy:3))]
+    url = tptpDirectoryURL.appendingPathComponent("Problems/\(abc)/\(name)")
+
+    guard url.isAccessible else {
+      return nil
+    }
     self = url
+  }
+}
+
+extension URL {
+  var isAccessible : Bool {
+    return self.path.isAccessible
   }
 }
 
@@ -43,6 +97,7 @@ extension FilePath {
 
   /// find accessible path to problem file by problem name
   /// "PUZ001-1".p => "./PUZ001.p" ?? "tptp_root/Problems/PUZ/PUZ001-1.p"
+  @available(*, deprecated:1.0)
   var p : FilePath? {
     // accept every accessible file (with arbitray suffixes),
     // e.g. 'noproblem.txt' or ''/absolute/path/to/problem.txt'
@@ -221,6 +276,10 @@ extension FilePath {
     }
 
 extension FilePath {
+  private static var homeDirectoryPath : String? {
+    return Process.Environment.getValue(for:"HOME")
+  }
+
   private static var tptpDirectoryPath : FilePath? {
 
     // process option --tptp_root has the highest priority
@@ -242,13 +301,13 @@ extension FilePath {
     }
 
     // home directory has a low priority
-    if let path = Process.home?.appending("/TPTP")
+    if let path = FilePath.homeDirectoryPath?.appending("/TPTP")
    , path.isAccessibleDirectory {
       return path
     }
 
     // ~/Downloads has a very low priority
-    if let path = Process.home?.appending("/Downloads/TPTP")
+    if let path = FilePath.homeDirectoryPath?.appending("/Downloads/TPTP")
    , path.isAccessibleDirectory {
       return path
     }

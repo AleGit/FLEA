@@ -39,25 +39,25 @@ extension Q {
   static func parse<N:FLEA.Node where N.Symbol:Symbolable>(problem:String) -> [N] {
     print("N:Node == \(String(reflecting:N.self))")
 
-    guard let path = problem.p else {
+    guard let url = URL(fileURLwithProblem:problem) else {
       print("Path for '\(problem)' could not be found.")
       return [N]()
     }
 
     let (parseResult, parseTime) = utileMeasure {
-      FLEA.Tptp.File(url:URL(fileURLWithPath:path))
+      FLEA.Tptp.File(url:url)
     }
     guard let tptpFile = parseResult else {
-        print("\(path) could not be parsed.")
+        print("\(url.relativePath) could not be parsed.")
         return [N]()
     }
-    print("parse time: \(parseTime) '\(path)'")
+    print("parse time: \(parseTime) '\(url.relativePath)'")
 
     let (countResult, countTime) = utileMeasure {
       tptpFile.inputs.reduce(0) { (a,_) in a + 1 }
     }
 
-    print("count=\(countResult), time=\(countTime) '\(path)'")
+    print("count=\(countResult), time=\(countTime) '\(url.relativePath)'")
 
     let (result,time) = utileMeasure {
       // tptpFile.inputs.map { N(tree:$0) }
@@ -65,11 +65,11 @@ extension Q {
     }
 
     guard let inputs = result?.nodes else {
-      print("\(path) did not convert to \(N.self)")
+      print("\(url.relativePath) did not convert to \(N.self)")
       return [N]()
     }
 
-    print("init=\(result!.nodes!.count), time=\(time) '\(path)'")
+    print("init=\(result!.nodes!.count), time=\(time) '\(url.relativePath)'")
 
     print(problem, "count :", inputs.count)
 

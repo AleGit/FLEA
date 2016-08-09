@@ -20,10 +20,6 @@ public extension Process {
     return Process.arguments[0]
   }
 
-  public static var home : String? {
-    return Process.Environment.getValue(for:"HOME")
-  }
-
   /// Process.arguments.dropFirst()
   public static var parameters : [String] {
     guard Process.argc > 0 else {

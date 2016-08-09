@@ -153,26 +153,28 @@ public class StringPathTests : XCTestCase {
     // tptpPathTo(file: Axioms/PUZ002-0.ax ) ->
     // /Users/Shared/TPTP/Axioms/PUZ002-0.ax
 
-    let problem = "PUZ024-1"
-    let axiom = "PUZ002-0"
-
-    let ppath = problem.p ?? nok
-    XCTAssertTrue(ppath.hasSuffix("/TPTP/Problems/PUZ/PUZ024-1.p"),nok)
-
-    let apath = axiom.ax ?? nok
-    XCTAssertTrue(apath.hasSuffix("/TPTP/Axioms/PUZ002-0.ax"),nok)
-
-    XCTAssertEqual(ppath.pathTo(axiom:axiom) ?? nok ?? nok, apath, nok)
-    XCTAssertEqual("Problems".pathTo(axiom:axiom) ?? nok, apath, nok)
-
-    #if os(OSX)
-    let cpre = ppath.commonPrefix(with:apath)
-    XCTAssertTrue(cpre.hasSuffix("/TPTP/"),nok)
-    #endif
-
-    if ppath != nok { print("\(ok) '\(problem)'.p -> '\(ppath)'") }
-    if ppath != nok { print("\(ok) '\(axiom)'.ax -> '\(apath)'") }
-
+    // let problem = "PUZ024-1"
+    // let axiom = "PUZ002-0"
+    //
+    // guard let problemUrl = URL(fileURLwithProblem:problem) else {
+    //   XCTFail("\(nok) no url for \(problem)")
+    // }
+    // XCTAssertTrue(problemUrl.path.hasSuffix("/TPTP/Problems/PUZ/PUZ024-1.p"),nok)
+    //
+    // let apath = axiom.ax ?? nok
+    // XCTAssertTrue(apath.hasSuffix("/TPTP/Axioms/PUZ002-0.ax"),nok)
+    //
+    // XCTAssertEqual(problemUrl.pathTo(axiom:axiom) ?? nok ?? nok, apath, nok)
+    // XCTAssertEqual("Problems".pathTo(axiom:axiom) ?? nok, apath, nok)
+    //
+    // #if os(OSX)
+    // let cpre = ppath.commonPrefix(with:apath)
+    // XCTAssertTrue(cpre.hasSuffix("/TPTP/"),nok)
+    // #endif
+    //
+    // if ppath != nok { print("\(ok) '\(problem)'.p -> '\(ppath)'") }
+    // if ppath != nok { print("\(ok) '\(axiom)'.ax -> '\(apath)'") }
+    //
 
 
   }

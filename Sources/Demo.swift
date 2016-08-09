@@ -342,25 +342,25 @@ extension Demo {
 func demoParse<N:Node where N.Symbol:Symbolable>(problem:String, show:Bool = Demo.show) -> [N] {
   if show{print("N:Node == \(String(reflecting:N.self))")}
 
-  guard let path = problem.p else {
-    if show{print("Path for '\(problem)' could not be found.")}
+  guard let url = URL(fileURLwithProblem:problem) else {
+    if show{print("FileURL for '\(problem)' could not be found.")}
     return [N]()
   }
 
   let (parseResult, parseTime) = utileMeasure {
-    Tptp.File(url:URL(fileURLWithPath:path))
+    Tptp.File(url:url)
   }
   guard let tptpFile = parseResult else {
-    if show {print("\(path) could not be parsed.")}
+    if show {print("\(url.relativePath) could not be parsed.")}
     return [N]()
   }
-  if show {print("parse time: \(parseTime) '\(path)'")}
+  if show {print("parse time: \(parseTime) '\(url.relativePath)'")}
 
   let (countResult, countTime) = utileMeasure {
     tptpFile.inputs.reduce(0) { (a,_) in a + 1 }
   }
 
-  if show {print("count=\(countResult), time=\(countTime) '\(path)'")}
+  if show {print("count=\(countResult), time=\(countTime) '\(url.relativePath)'")}
 
   let (result,time) = utileMeasure {
     // tptpFile.inputs.map { N(tree:$0) }
@@ -368,11 +368,11 @@ func demoParse<N:Node where N.Symbol:Symbolable>(problem:String, show:Bool = Dem
   }
 
   guard let inputs = result?.nodes else {
-    if show {print("\(path) did not convert to \(N.self)")}
+    if show {print("\(url.relativePath) did not convert to \(N.self)")}
     return [N]()
   }
 
-  if show {print("init=\(result!.nodes!.count), time=\(time) '\(path)'")}
+  if show {print("init=\(result!.nodes!.count), time=\(time) '\(url.relativePath)'")}
 
   return inputs
 }
