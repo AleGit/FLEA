@@ -7,13 +7,11 @@ import Foundation
 public class URLTests : XCTestCase {
   static var allTests : [(String, (URLTests) -> () throws -> Void)] {
     return [
-    ("testFiles",testFiles),
-
     ("testProblem",testProblem)
     ]
   }
 
-  func testFiles() {
+  func _testFiles() {
     for url in [
     URL(fileURLWithPath:"Problems/PUZ001-1.p"),
     URL(fileURLWithPath:"~/TPTP/Problems/PUZ001+1.p")
@@ -84,11 +82,6 @@ public class URLTests : XCTestCase {
       #endif
 
     }
-
-
-
-
-
   }
   func testProblem() {
     guard let homeDirectoryURL = URL.homeDirectoryURL else {
@@ -127,6 +120,15 @@ public class URLTests : XCTestCase {
     if let url = URL(fileURLwithProblem:"PUZ999-1") {
       XCTFail("\(url.path) must not exists")
     }
+
+    let axiomURL = URL(fileURLwithAxiom:"PUZ001-0")
+    print(axiomURL)
+
+    let noURL = URL(fileURLwithAxiom:"Axioms/PUZ001-0")
+    print(noURL)
+
+    let wrongHint = URL(fileURLwithAxiom:"Axioms/PUZ001-0", problemURL: homeDirectoryURL)
+    print(wrongHint)
 
 
   }
