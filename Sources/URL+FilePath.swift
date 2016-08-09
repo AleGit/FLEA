@@ -28,10 +28,20 @@ extension URL {
   init?(fileURLwithProblem problem:String) {
     var url = URL(fileURLWithPath: problem)
 
-    if url.pathExtension.isEmpty {
+    // macOS: url.pathExtension:String
+    // Linux: url.pathExtension:String?
+    var optional : String? = url.pathExtension // WORKAROUND
+
+    guard let pe = optional else { return nil }
+
+    if pe.isEmpty {
+      #if os(OSX)
       url.appendPathExtension("p")
+      #elseif os(Linux)
+      try? url.appendPathExtension("p")
+      #endif
     }
-    else if url.pathExtension != "p" {
+    else if pe != "p" {
       Syslog.warning {
         "Problem '\(problem)' with extension \(url.pathExtension)"
       }
@@ -61,9 +71,19 @@ extension URL {
       return nil
     }
 
-    let name = url.lastPathComponent
+    optional = url.lastPathComponent
+    guard let name = optional else {
+      return nil
+    }
+
     let abc = name[name.startIndex..<(name.index(name.startIndex, offsetBy:3))]
+    #if os(OSX)
     url = tptpDirectoryURL.appendingPathComponent("Problems/\(abc)/\(name)")
+    #elseif os (Linux)
+    guard let temp = try? tptpDirectoryURL.appendingPathComponent("Problems/\(abc)/\(name)")
+    else { return nil }
+      url = temp
+    #endif
 
     guard url.isAccessible else {
       return nil
@@ -74,7 +94,8 @@ extension URL {
 
 extension URL {
   var isAccessible : Bool {
-    return self.path.isAccessible
+    let optional : String? = self.path
+    return optional?.isAccessible ?? false
   }
 }
 

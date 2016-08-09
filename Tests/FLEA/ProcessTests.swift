@@ -1,5 +1,6 @@
 import XCTest
 
+import Foundation
 @testable import FLEA
 
 public class ProcessTests : XCTestCase {
