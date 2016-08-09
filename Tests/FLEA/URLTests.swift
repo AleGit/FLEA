@@ -103,15 +103,30 @@ public class URLTests : XCTestCase {
 
     XCTAssertFalse(homeDirectoryURL == tptpDirectoryURL,nok)
 
-    XCTAssertNotNil(URL(fileURLwithProblem:"PUZ001-1"),nok)
+    // test canonical path
+
+
+    if let url = URL(fileURLwithProblem:"PUZ001-1") {
+      XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
+      XCTAssertTrue(url.path.hasPrefix(tptpDirectoryURL.path))
+    }
+    else {
+      XCTFail(nok)
+    }
 
     // test local path
     let problem = "Problems/PUZ001-1"
-    guard let url = URL(fileURLwithProblem:problem) else {
+    if let url = URL(fileURLwithProblem:problem) {
+      XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
+      XCTAssertFalse(url.path.hasPrefix(tptpDirectoryURL.path))
+    } else {
       XCTFail("\(nok) \(problem) was not resolvable.")
       return
     }
-    XCTAssertEqual(problem+".p", url.relativeString)
+
+    if let url = URL(fileURLwithProblem:"PUZ999-1") {
+      XCTFail("\(url.path) must not exists")
+    }
 
 
   }

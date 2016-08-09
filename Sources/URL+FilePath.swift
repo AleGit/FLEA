@@ -1,6 +1,12 @@
 
 import Foundation
 
+/// Some funcition habe an optional return type on linux,
+///  while an non optional on macOS.
+func optional<T>(_ value:T?) -> T? {
+  return value
+}
+
 extension URL {
   static var tptpDirectoryURL : URL? {
     guard let path = String.tptpDirectoryPath else {
@@ -18,6 +24,70 @@ extension URL {
 }
 
 extension URL {
+  private mutating func append(_ ex:String, delete:Bool = true) {
+    guard let pe = optional(self.pathExtension),
+    pe != ex else { return }
+
+    if delete {
+      #if os(OSX)
+      self.deletePathExtension()
+      #elseif os(Linux)
+      try? self.deletePathExtension()
+      #endif
+    }
+
+    #if os(OSX)
+    self.appendPathExtension(ex)
+    #elseif os(Linux)
+    try? self.appendPathExtension(ex)
+    #endif
+  }
+
+  private init?(fileURLwithTptp
+    name:String,
+    ex:String,
+    roots:URL?...,
+    f:((String)->String)? = nil) {
+    self = URL(fileURLWithPath:name)
+    if self.isAccessible {
+      print("A:", name, "->", self.path)
+      return } // (relative or absolute) and accessible
+
+    // append missing path extension, e.g. 'p' or 'ax'
+    self.append(ex)
+    if self.isAccessible {
+      print("B:", name, "->", self.path)
+      return
+    } // (relative or absolute) and accessible
+
+    if name.hasPrefix("/") { return nil } // absolute, but not accessible
+
+    guard let name = optional(self.lastPathComponent) else { return nil }
+    var array = [name, self.relativeString]
+    if let g = f { array.append(g(name)) }
+
+    for baseURL in roots {
+      guard let base = baseURL else { continue }
+      for c in array {
+
+        #if os(OSX)
+        self = base.appendingPathComponent(c)
+        #elseif os (Linux)
+        guard let temp = try? tptpDirectoryURL.appendingPathComponent(c)
+        else { continue }
+          self = temp
+        #endif
+        if self.isAccessible {
+
+            print("C:", name, "->", base.path, "/", c)
+
+          return
+        }
+      }
+    }
+    return nil
+  }
+
 
   /// a problem string is either
   /// - the name of a problem file, e.g. 'PUZ001-1'
@@ -26,68 +96,16 @@ extension URL {
   /// with or without extension 'p'.
   /// If the resulting problem file path is not accessible, nil is returned.
   init?(fileURLwithProblem problem:String) {
-    var url = URL(fileURLWithPath: problem)
-
-    // macOS: url.pathExtension:String
-    // Linux: url.pathExtension:String?
-    var optional : String? = url.pathExtension // WORKAROUND
-
-    guard let pe = optional else { return nil }
-
-    if pe.isEmpty {
-      #if os(OSX)
-      url.appendPathExtension("p")
-      #elseif os(Linux)
-      try? url.appendPathExtension("p")
-      #endif
-    }
-    else if pe != "p" {
-      Syslog.warning {
-        "Problem '\(problem)' with extension \(url.pathExtension)"
+    guard let url = URL(
+      fileURLwithTptp: problem,
+      ex:"p",
+      roots:URL.tptpDirectoryURL,
+      f: {
+        let abc = $0[$0.startIndex..<($0.index($0.startIndex, offsetBy:3))]
+        return "Problems/\(abc)/\($0)"
       }
-    }
+    ) else { return nil }
 
-    if url.isAccessible {
-      // absolute or relative path is accessible
-      self = url
-      return
-    }
-
-    guard url.lastPathComponent == url.relativePath else {
-      Syslog.error {
-        "Local or absolute problem path '\(url.relativePath)' is not accessible"
-      }
-      return nil
-    }
-
-    guard let tptpDirectoryURL = URL.tptpDirectoryURL else {
-      return nil
-    }
-
-    /* construct canonical path for problem */
-
-    guard url.lastPathComponent == url.relativePath else {
-      // only a problem name is allowed
-      return nil
-    }
-
-    optional = url.lastPathComponent
-    guard let name = optional else {
-      return nil
-    }
-
-    let abc = name[name.startIndex..<(name.index(name.startIndex, offsetBy:3))]
-    #if os(OSX)
-    url = tptpDirectoryURL.appendingPathComponent("Problems/\(abc)/\(name)")
-    #elseif os (Linux)
-    guard let temp = try? tptpDirectoryURL.appendingPathComponent("Problems/\(abc)/\(name)")
-    else { return nil }
-      url = temp
-    #endif
-
-    guard url.isAccessible else {
-      return nil
-    }
     self = url
   }
 }
