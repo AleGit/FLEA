@@ -131,6 +131,9 @@ public class URLTests : XCTestCase {
     let wrongHint = URL(fileURLwithAxiom:"Axioms/PUZ001-0", problemURL: homeDirectoryURL)
     print(wrongHint)
 
+    let absURL = URL(fileURLwithProblem:"/Users/Shared/TPTP/Problems/PUZ/PUZ001-1")
+    print(absURL)
+
 
   }
 }

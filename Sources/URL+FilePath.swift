@@ -3,9 +3,9 @@ import Foundation
 
 /// Some funcition habe an optional return type on linux,
 ///  while an non optional on macOS.
-// func optional<T>(_ value:T?) -> T? {
-//   return value
-// }
+func optional<T>(_ value:T?) -> T? {
+  return value
+}
 
 extension URL {
   static var tptpDirectoryURL : URL? {
@@ -23,6 +23,7 @@ extension URL {
   }
 }
 
+/// with Swift 3 Preview 4 the URL signatures diverged between macOS and linux
 extension URL {
   var pathOrEmpty : String {
     #if os(OSX)
@@ -124,37 +125,34 @@ extension URL {
 }
 
 extension URL {
-  private init?(fileURLwithTptp
-    name:String,
-    ex:String,
+  private init?(fileURLwithTptp name:String, ex:String,
     roots:URL?...,
     f:((String)->String)? = nil) {
+
     self = URL(fileURLWithPath:name)
-    if self.isAccessible {
-      print("A:", name, ex, "->", self.path)
-      return
-    } // (relative or absolute) and accessible
-
-    // append missing path extension, e.g. 'p' or 'ax'
     self.append(extension:ex)
-    if self.isAccessible {
-      print("B:", name, "->", self.path)
-      return
-    } // (relative or absolute) and accessible
 
-    if name.hasPrefix("/") { return nil } // absolute, but not accessible
+    var names = [name]
+    let rs = optional(self.relativePath) ?? name
+    if !names.contains(rs) { names.append(rs) }
 
-    let name = self.lastComponentOrEmpty
-    var array = [name, self.relativeString]
-    if let g = f { array.append(g(name)) }
+    let lastComponent = self.lastComponentOrEmpty
+    if !lastComponent.isEmpty {
+      if !names.contains(lastComponent) {
+        names.append(lastComponent)
+      }
+      if let g = f?(lastComponent), !names.contains(g) {
+        names.append(g)
+      }
+    }
 
-    for baseURL in roots {
-      guard let base = baseURL else { continue }
-      for c in array {
-        self = base.appending(component:c)
-        if self.isAccessible {
-            print("C:", name, "->", base.path, "/", c)
+    for base in roots.flatMap({ $0 }) {
+      for name in names {
+        for url in [URL(fileURLWithPath:name), base.appending(component:name)] {
+          if url.isAccessible {
+            self = url
             return
+          }
         }
       }
     }
@@ -164,17 +162,18 @@ extension URL {
 
 extension URL {
   /// a problem string is either
-  /// - the name of a problem file, e.g. 'PUZ001-1'
-  /// - the relative path to a file, e.g. 'Problems/PUZ001-1'
-  /// - the absolute path to a file, e.g. '/path/to/dir/PUZ001-1'
+  /// - the name of a problem file, e.g. 'PUZ001-1[.p]'
+  /// - the relative path to a file, e.g. 'relative/path/PUZ001-1[.p]'
+  /// - the absolute path to a file, e.g. '/path/to/dir/PUZ001-1[.p]'
   /// with or without extension 'p'.
-  /// If the resulting problem file path is not accessible, nil is returned.
+  /// If no resolved problem file path is accessible, nil is returned.
   init?(fileURLwithProblem problem:String) {
-    guard let url = URL(
-      fileURLwithTptp: problem,
-      ex:"p",
-      roots:URL.tptpDirectoryURL,
-      URL.homeDirectoryURL?.appending(component:"TPTP"),
+    guard let url = URL(fileURLwithTptp: problem, ex:"p",
+      roots: // start search in ...
+      // $TPTP_ROOT/
+      URL.tptpDirectoryURL, // $TPTP_ROOT/Problems/PUZ/PUZ001-1.ps
+      // $HOME/TPTP/
+      URL.homeDirectoryURL?.appending(component:"TPTP"), // fallback
       f: {
         let abc = $0[$0.startIndex..<($0.index($0.startIndex, offsetBy:3))]
         return "Problems/\(abc)/\($0)"
@@ -184,14 +183,26 @@ extension URL {
     self = url
   }
 
+  /// an axiom string is either
+  /// - the name of a axiom file, e.g. 'PUZ001-1[.ax]'
+  /// - the relative path to a file, e.g. 'relative/path/PUZ001-1[.ax]'
+  /// - the absolute path to a file, e.g. '/path/to/dir/PUZ001-1[.ax]'
+  /// with or without extension 'ax'.
+  /// If a problem URL is given, the axiom file is searches on a position in the
+  /// file tree parallel to the problem file.
+  /// If no resolved axiom file path is accessible, nil is returned.
   init?(fileURLwithAxiom axiom:String, problemURL:URL? = nil) {
+    
 
-    guard let url = URL(
-      fileURLwithTptp: axiom,
-      ex:"ax",
-      roots:
+    guard let url = URL(fileURLwithTptp: axiom, ex:"ax",
+      roots: // start search in ...
+      // $Y/problem.p -> $Y/
+      problemURL?.deletingLastComponent(),
+      // $Y/Problems[/ppath]/p.p -> $Y/
       problemURL?.deletingLastComponents(downTo:"Problems"),
+      // $TPTP_ROOT/
       URL.tptpDirectoryURL,
+      // $HOME/TPTP/
       URL.homeDirectoryURL?.appending(component:"TPTP"),
       f: { "Axioms/\($0)" }
     ) else { return nil }
@@ -352,7 +363,7 @@ extension FilePath {
     return try? String(contentsOfFile:self)
 
     #elseif os(Linux) /********************************************************/
-    
+
     Syslog.notice {
       "#Linux #workaround : init(contentsOfFile:usedEncoding:) is not yet implemented."
     }
