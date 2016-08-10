@@ -205,13 +205,13 @@ extension Syslog {
     if errcode != 0 {
       Syslog.sysLog(priority:priority,
         args: line, column) {
-          "#\(priority) \(file.lastPathComponent)[%d:%d] \(function) '%m' \(message())"
+          "#\(priority) \(file)[%d:%d] \(function) '%m' \(message())"
         }
     }
     else {
       Syslog.sysLog(priority:priority,
         args: line, column) {
-          "#\(priority) \(file.lastPathComponent)[%d:%d] \(function) \(message())"
+          "#\(priority) \(file)[%d:%d] \(function) \(message())"
         }
     }
   }

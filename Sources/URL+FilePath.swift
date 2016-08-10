@@ -9,14 +9,31 @@ func optional<T>(_ value:T?) -> T? {
 
 extension URL {
   static var tptpDirectoryURL : URL? {
-    guard let path = String.tptpDirectoryPath else {
-      return nil
+
+    if let path = Process.Environment.getValue(for:"TPTP_ROOT")
+    , path.isAccessibleDirectory {
+      return URL(fileURLWithPath: path)
     }
-    return URL(fileURLWithPath: path)
+
+    // home directory has a low priority
+    if let url = URL.homeDirectoryURL?.appending(component:"/TPTP")
+    , url.isAccessibleDirectory {
+      Syslog.warning { "tptp root directory fallback to \(url.relativeString)"}
+      return url
+    }
+
+    // ~/Downloads has a very low priority
+    if let url = URL.homeDirectoryURL?.appending(component:"/Downloads/TPTP")
+    , url.isAccessibleDirectory {
+      Syslog.warning { "tptp root directory fallback to \(url.relativeString)"}
+      return url
+    }
+
+    return nil
   }
 
   static var homeDirectoryURL : URL? {
-    guard let path = String.homeDirectoryPath else {
+    guard let path = Process.Environment.getValue(for:"HOME") else {
       return nil
     }
     return URL(fileURLWithPath: path)
@@ -193,8 +210,6 @@ extension URL {
   /// file tree parallel to the problem file.
   /// If no resolved axiom file path is accessible, nil is returned.
   init?(fileURLwithAxiom axiom:String, problemURL:URL? = nil) {
-
-
     guard let url = URL(fileURLwithTptp: axiom, ex:"ax",
       roots: // start search in ...
       // $Y/problem.p -> $Y/
@@ -215,117 +230,15 @@ extension URL {
 
 extension URL {
   var isAccessible : Bool {
-    let optional : String? = self.path
-    return optional?.isAccessible ?? false
+    return optional(self.path)?.isAccessible ?? false
+  }
+
+  var isAccessibleDirectory : Bool {
+    return optional(self.path)?.isAccessibleDirectory ?? false
   }
 }
 
 typealias FilePath = String
-
-extension FilePath {
-  private var pathComponents : [FilePath] {
-    return self.components(separatedBy:"/")
-  }
-
-  ///
-  var lastPathComponent : String {
-    return self.pathComponents.last ?? self
-  }
-
-  private func appending(component:String) -> String {
-    let cs = self.pathComponents + component.pathComponents
-    return cs.joined(separator:"/")
-  }
-
-  /// find accessible path to problem file by problem name
-  /// "PUZ001-1".p => "./PUZ001.p" ?? "tptp_root/Problems/PUZ/PUZ001-1.p"
-  @available(*, deprecated:1.0, message:"Use URL(fileURLwithProblem:) instead.")
-  var p : FilePath? {
-    // accept every accessible file (with arbitray suffixes),
-    // e.g. 'noproblem.txt' or ''/absolute/path/to/problem.txt'
-    if self.isAccessible { return self }
-
-    // append '.p' if necessary,
-    // e.g. 'PUZ001+1' => 'PUZ001+1.p' or
-    // 'Problems/PUZ001-1' => 'Problems/PUZ001-1.p'
-    var path = self.hasSuffix(".p") ? self : self.appending(".p")
-    // accept every accessible file with suffix '.p'
-    if path.isAccessible { return path }
-
-    path = path.lastPathComponent
-    if path.isAccessible { return path }
-
-    // insert three letter prefix (TPTP file structure convention),
-    // e.g. 'PUZ001-1.p' => 'PUZ/PUZ001-1.p'
-    // but 'PUZ/PUZ001-1.p' => 'PUZ/PUZ001-1.p'
-    let endIndex = path.index(path.startIndex, offsetBy:3)
-    let prefix = path[path.startIndex..<endIndex]
-    path = prefix.appending(component:path)
-    if path.isAccessible { return path }
-
-    path = "Problems".appending(component:path)
-    print(path)
-    if path.isAccessible { return path }
-
-    print(FilePath.tptpDirectoryPath?.appending(component:path))
-
-    if let absolutePath = (FilePath.tptpDirectoryPath)?.appending(component:path),
-    absolutePath.isAccessible {
-      return absolutePath
-    }
-
-    return nil
-  }
-
-  /// '/a/path/to/Problems/folders' -> /a/path/to/
-  /// '/from/Problems/to/Problems/folders' -> /from/Problems/to/
-  var problemsPrefix : String {
-    let separator = "Problems"
-    var cs = self.components(separatedBy:separator)
-
-    cs.removeLast()
-    return cs.joined(separator:separator)
-  }
-
-  /// Find path to axiom
-  func pathTo(axiom:String) -> FilePath? {
-    if axiom.isAccessible { return axiom }
-
-    let path = self.hasSuffix(".ax") ? self : self.appending(".ax")
-    if path.isAccessible { return path }
-
-    let root = self.problemsPrefix
-
-    let relativePath = root.appending("Axioms").appending(axiom.lastPathComponent)
-    if relativePath.isAccessible { return relativePath }
-
-    if let absolutePath = FilePath.tptpDirectoryPath?.appending(component:axiom.lastPathComponent),
-    absolutePath.isAccessible { return absolutePath }
-
-    return axiom.ax
-  }
-
-
-  var ax : FilePath? {
-    if self.isAccessible { return self }
-
-    var path = self.hasSuffix(".ax") ? self : self.appending(".ax")
-    if path.isAccessible { return path }
-
-    path = path.lastPathComponent
-    if path.isAccessible { return path }
-
-    path = "Axioms".appending(component:path)
-    if path.isAccessible { return path }
-
-    if let absolutePath = (FilePath.tptpDirectoryPath)?.appending(component:path)
-    , absolutePath.isAccessible {
-      return absolutePath
-    }
-
-    return nil
-  }
-}
 
 extension FilePath {
   var fileSize : Int? {
@@ -357,7 +270,9 @@ extension FilePath {
     closedir(d)
     return self.isAccessible
   }
+}
 
+extension FilePath {
   var content : String? {
     #if os(OSX) /**************************************************************/
 
@@ -382,71 +297,6 @@ extension FilePath {
     return String(validatingUTF8:buf)
 
     #endif  /******************************************************************/
-  }
-}
-
-extension FilePath {
-  private static var homeDirectoryPath : String? {
-    return Process.Environment.getValue(for:"HOME")
-  }
-
-  private static var tptpDirectoryPath : FilePath? {
-
-    // process option --tptp_root has the highest priority
-    if let option = Process.option(name:"--tptp_root") {
-      if let path = option.settings.first(where:{$0.isAccessibleDirectory}) {
-        return path
-      }
-      else {
-        Syslog.warning {
-          "Option \(option) includes no accessible directory!"
-        }
-      }
-    }
-
-    // try to read tptp root from environment
-    if let path = Process.Environment.getValue(for:"TPTP_ROOT")
-    , path.isAccessibleDirectory {
-      return path
-    }
-
-    // home directory has a low priority
-    if let path = FilePath.homeDirectoryPath?.appending("/TPTP")
-    , path.isAccessibleDirectory {
-      return path
-    }
-
-    // ~/Downloads has a very low priority
-    if let path = FilePath.homeDirectoryPath?.appending("/Downloads/TPTP")
-    , path.isAccessibleDirectory {
-      return path
-    }
-
-    // * no tptp root directory available
-    return nil
-  }
-}
-
-extension FilePath {
-  static var configPath : FilePath? {
-    if let path = Process.option(name:"--config")?.settings.first, path.isAccessible {
-      print(path,Process.name)
-      return path
-    }
-
-    var p : FilePath? = nil
-    switch Process.name {
-      case "n/a":
-        p = "Config/xctest.default"
-      case let n where n.hasSuffix("xctest"):
-          p = "Config/xctest.default"
-
-      default:
-            p = "Config/default.default"
-    }
-    if let path = p, path.isAccessible { return path }
-
-    return nil
   }
 }
 
