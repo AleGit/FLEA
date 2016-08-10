@@ -18,14 +18,14 @@ extension URL {
     // home directory has a low priority
     if let url = URL.homeDirectoryURL?.appending(component:"/TPTP")
     , url.isAccessibleDirectory {
-      Syslog.warning { "tptp root directory fallback to \(url.relativeString)"}
+      Syslog.warning { "fallback to \(url.relativeString)"}
       return url
     }
 
     // ~/Downloads has a very low priority
     if let url = URL.homeDirectoryURL?.appending(component:"/Downloads/TPTP")
     , url.isAccessibleDirectory {
-      Syslog.warning { "tptp root directory fallback to \(url.relativeString)"}
+      Syslog.warning { "fallback to \(url.relativeString)"}
       return url
     }
 
