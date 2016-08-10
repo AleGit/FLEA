@@ -133,8 +133,9 @@ extension URL {
     self.append(extension:ex)
 
     var names = [name]
-    let rs = optional(self.relativePath) ?? name
-    if !names.contains(rs) { names.append(rs) }
+    if let rs = optional(self.relativePath), !names.contains(rs) {
+      names.append(rs)
+    }
 
     let lastComponent = self.lastComponentOrEmpty
     if !lastComponent.isEmpty {
@@ -192,7 +193,7 @@ extension URL {
   /// file tree parallel to the problem file.
   /// If no resolved axiom file path is accessible, nil is returned.
   init?(fileURLwithAxiom axiom:String, problemURL:URL? = nil) {
-    
+
 
     guard let url = URL(fileURLwithTptp: axiom, ex:"ax",
       roots: // start search in ...

@@ -97,43 +97,55 @@ public class URLTests : XCTestCase {
 
     XCTAssertFalse(homeDirectoryURL == tptpDirectoryURL,nok)
 
-    // test canonical path
-
-
-    if let url = URL(fileURLwithProblem:"PUZ001-1") {
+    var name = "PUZ001-1"
+    if let url = URL(fileURLwithProblem:name) {
       XCTAssertTrue(url.pathOrEmpty.hasPrefix(homeDirectoryURL.pathOrEmpty))
       XCTAssertTrue(url.pathOrEmpty.hasPrefix(tptpDirectoryURL.pathOrEmpty))
     }
     else {
-      XCTFail(nok)
+      XCTFail("\(nok) Problem '\(name)' not found")
     }
 
     // test local path
-    let problem = "Problems/PUZ001-1"
-    if let url = URL(fileURLwithProblem:problem) {
+    name = "Problems/PUZ001-1"
+    if let url = URL(fileURLwithProblem:name) {
       XCTAssertTrue(url.pathOrEmpty.hasPrefix(homeDirectoryURL.pathOrEmpty))
       XCTAssertFalse(url.pathOrEmpty.hasPrefix(tptpDirectoryURL.pathOrEmpty))
     } else {
-      XCTFail("\(nok) \(problem) was not resolvable.")
+      XCTFail("\(nok) Problem '\(name)' not found")
       return
     }
 
-    if let url = URL(fileURLwithProblem:"PUZ999-1") {
-      XCTFail("\(url.path) must not exists")
+    name = "PUZ999-1"
+    if let url = URL(fileURLwithProblem:name) {
+      XCTFail("\(nok) Problem '\(name)' must not exist at \(url.relativeString)")
     }
 
-    let axiomURL = URL(fileURLwithAxiom:"PUZ001-0")
-    print(axiomURL)
+    name = "PUZ001-0"
+    if let axiomURL = URL(fileURLwithAxiom:name) {
+      XCTAssertTrue(axiomURL.pathOrEmpty.hasSuffix("Axioms/"+name+".ax"))
+    } else {
+      XCTFail("\(nok) Axiom '\(name)' not found")
+    }
 
-    let noURL = URL(fileURLwithAxiom:"Axioms/PUZ001-0")
-    print(noURL)
+    name = "Axioms/PUZ001-0"
+    if let noURL = URL(fileURLwithAxiom:name) {
+      XCTAssertTrue(noURL.pathOrEmpty.hasSuffix(name+".ax"))
+    } else {
+      XCTFail("\(nok) Axiom '\(name)' not found")
+    }
 
-    let wrongHint = URL(fileURLwithAxiom:"Axioms/PUZ001-0", problemURL: homeDirectoryURL)
-    print(wrongHint)
+    name = "Axioms/PUZ001-0"
+    if let wrongHint = URL(fileURLwithAxiom:name, problemURL: homeDirectoryURL) {
+      XCTAssertTrue(wrongHint.pathOrEmpty.hasSuffix(name+".ax"))
+    } else {
+      XCTFail("\(nok) Axiom '\(name)' not found")
+    }
 
-    let absURL = URL(fileURLwithProblem:"/Users/Shared/TPTP/Problems/PUZ/PUZ001-1")
-    print(absURL)
-
+    name = "/Users/Shared/TPTP/Problems/PUZ/PUZ001-1"
+    if let absURL = URL(fileURLwithProblem:name) {
+      XCTAssertEqual(name+".p", absURL.pathOrEmpty,"\(nok)")
+    }
 
   }
 }
