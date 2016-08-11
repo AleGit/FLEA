@@ -54,5 +54,13 @@ public class ProcessTests : XCTestCase {
 
   func testName() {
     XCTAssertTrue(Process.name.hasSuffix(".build/debug/FLEATests.xctest"),nok)
+
+    let arguments = ["--A", "B", "C", "--B", "C", "--A", "B", "--C", "--B"]
+
+    let a = arguments.split() { $0.hasPrefix("--") }
+    let b = arguments.split() { !$0.hasPrefix("--") }
+
+    print(a)
+    print(b)
   }
 }

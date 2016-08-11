@@ -31,40 +31,30 @@ public extension Process {
     return Array(Process.arguments.dropFirst())
   }
 
-  /// get option settings
-  /// --A a b c --B d -e --C d
-  /// get(option:"--A") -> ["a","b","c"]
-  /// get(option:"--B") -> ["d","-e"]
-  /// get(option:"--C") -> ["d"]
-  private static func get (option name: String) -> [String]? {
-
-    guard name.hasPrefix("--") else {
-      return nil // not an option
-    }
-
-    guard let startIndex = Process.parameters.index(of:name) else {
-      return nil // option not found in parameters
-    }
-
-    let s = Array(Process.parameters.suffix(from:startIndex+1))
-
-    guard let endIndex = s.index(where: { $0.hasPrefix("--")} ) else {
-      return s
-    }
-
-    return Array(s[0..<endIndex])
-
-  }
-
-  private static var options : [Option] = Process.parameters.filter { $0.hasPrefix("--") }.map {
-    (name:$0, settings:Process.get(option:$0)!)
-  }
+  static var options : [String : [String]]  = {
+    var dictionary = ["" : [String]()]
+    var name = ""
+    for parameter in Process.parameters {
+      if parameter.hasPrefix("--") {
+        name = parameter
+        if dictionary[name] == nil {
+          dictionary[name] = [String]()
+        }
+      }
+      else {
+        /// --A 1 2 4 --B 5 --C -A 7
+        // "" : []
+        // "--A" : 1,2,4,7
+        // "--B" : 5
+        // "--C" : []
+        dictionary[name]?.append(parameter)
+       }
+     }
+      return dictionary
+    }()
 
   public static func option(name:String) -> Option? {
-    // return Process.options.first {$0.name == name}
-    guard let settings = Process.get(option:name) else {
-      return nil
-    }
+    guard let settings = options[name] else { return nil }
     return (name, settings)
   }
 
