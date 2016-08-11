@@ -26,7 +26,8 @@ $ xcode-select -pxcode-select -p          # Mac only
 ```
 
 - Download and unpack package [TPTP-v6.4.0.tgz](http://www.cs.miami.edu/~tptp/) (or newer).
-In your home directory create a symbolic to the unpacked `TPTP-v6.4.0` directory and check:
+Create a symbolic link to the unpacked `TPTP-v6.4.0` directory 
+in your home directory, and check:
 ```
 ls ~/TPTP
 Axioms		Documents	Generators	Problems	README		Scripts		TPTP2X
