@@ -4,13 +4,8 @@ import Foundation
 
 extension Collection
 where Iterator.Element == SubSequence.Iterator.Element {
-  // @available(*,deprecated:1.0,obsoleted:1.0,message:"Use Sequence.decomposing instead.")
-  //   var decompose: (head: Iterator.Element, tail: [Iterator.Element])? {
-  //       guard let head = first else { return nil }
-  //       return (head, Array(dropFirst()))
-  //   }
 
-    var decomposing: (head: Iterator.Element, tail: SubSequence)? {
+    var decomposing: (head: Self.Iterator.Element, tail: Self.SubSequence)? {
         guard let head = first else { return nil }
         return (head, dropFirst())
       }

@@ -13,6 +13,7 @@ public class AuxiliaryTests : XCTestCase {
 
   func testDecomposing() {
     let array = [11,12,13]
+    print(array)
     guard let (h1,t1) = array.decomposing else {
       XCTFail(nok)
       return
@@ -24,6 +25,13 @@ public class AuxiliaryTests : XCTestCase {
     }
     print(h2,t2)
 
+    guard let (h3,t3) = t2.decomposing else {
+        XCTFail(nok)
+        return
+    }
+    print(h3,t3)
+
+    print(t3.decomposing)
   }
 
   func testUppercased() {
