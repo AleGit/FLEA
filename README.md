@@ -15,11 +15,11 @@
 $ yices -V
 Yices 2.4.2
 ```
-- Install [Swift 3 Preview](https://swift.org/download/) and check:
+- Install [Swift 3 Preview 4](https://swift.org/download/) and check:
 ```
 $ swift -version                  
 Apple Swift version 3.0 ...               # Mac
-Swift version 3.0 (swift-3.0-PREVIEW-3)   # Linux
+Swift version 3.0 (swift-3.0-PREVIEW-4)   # Linux
 
 $ xcode-select -pxcode-select -p          # Mac only
 /Applications/Xcode-beta.app/Contents/Developer
