@@ -53,14 +53,12 @@ public class ProcessTests : XCTestCase {
   }
 
   func testName() {
-    XCTAssertTrue(Process.name.hasSuffix(".build/debug/FLEATests.xctest"),nok)
+    let name = Process.name
+    #if os(OSX)
+    XCTAssertEqual("/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xctest", name,"\(nok) \(name)")
+    #elseif os(Linux)
+    XCTAssertTrue(name.hasSuffix(".build/debug/FLEATests.xctest"),"\(nok) \(name)")
+    #endif
 
-    let arguments = ["--A", "B", "C", "--B", "C", "--A", "B", "--C", "--B"]
-
-    let a = arguments.split() { $0.hasPrefix("--") }
-    let b = arguments.split() { !$0.hasPrefix("--") }
-
-    print(a)
-    print(b)
   }
 }
