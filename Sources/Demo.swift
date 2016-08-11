@@ -18,7 +18,7 @@ public struct Demo {
   ]
 
   public static func demo() -> Int? {
-    guard let names = Process.option(name:"--demo")?.1 else {
+    guard let names = Process.options["--demo"] else {
       return nil
     }
 
