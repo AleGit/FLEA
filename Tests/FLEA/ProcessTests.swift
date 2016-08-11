@@ -9,9 +9,8 @@ public class ProcessTests : XCTestCase {
     return [
     // ("testMacOS", testMacOS),
     ("testOS", testOS),
-    ("testFilePath", testTptpRoot),
-    ("testConfigPath", testConfigPath),
-    ("testIfSwift",testIfSwift)
+    ("testIfSwift",testIfSwift),
+    ("testName",testName)
     ]
   }
 
@@ -53,20 +52,7 @@ public class ProcessTests : XCTestCase {
     #endif
   }
 
-  /// A /path/to/TPTP should be avaiable on every platform
-  func testTptpRoot() {
-    guard let tptpDirectoryURL = URL.tptpDirectoryURL else {
-      XCTFail("TPTP root path is not available.")
-      return
-    }
-
-    XCTAssertEqual("TPTP", tptpDirectoryURL.lastPathComponent,
-    "TPTP root path '\(tptpDirectoryURL) does not end with 'TPTP'")
-
-    print("\(ok) \(#function) \(tptpDirectoryURL.path)")
-  }
-
-  func testConfigPath() {
-    // XCTAssertEqual("Config/xctest.default",FilePath.configPath)
+  func testName() {
+    XCTAssertTrue(Process.name.hasSuffix(".build/debug/FLEATests.xctest"),nok)
   }
 }
