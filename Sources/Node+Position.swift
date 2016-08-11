@@ -49,21 +49,21 @@ extension Node {
     /// With [] the term itself is returned.
     /// With [i] the the subterm with array index i is returned.
     subscript (position: Position) -> Self? {
-        guard let (head,tail) = position.decompose else { return self }       // position == []
+        guard let (head,tail) = position.decomposing else { return self }       // position == []
         guard let nodes = self.nodes else { return nil }                        // position != [], but variables has no subnodes at all
         guard 0 <= head && head < nodes.count else { return nil }               // node does not have a subnode at given position
         // node is not a constant or variable and has a subnode at given position
 
-        return nodes[head][tail]
+        return nodes[head][Array(tail)]
     }
 
     /// Construct a new term by replacing the subterm at position.
     subscript (term: Self, position:Position) -> Self? {
-        guard let (head,tail) = position.decompose else { return term }       // position == []
+        guard let (head,tail) = position.decomposing else { return term }       // position == []
         guard var nodes = self.nodes else { return nil }                        // position != [], but variables has no subnodes at all
         guard 0 <= head && head < nodes.count else { return nil }               // node does not have a subnode at given position
         // node is not a constant or variable and has a subnode at given position
-        guard let subnode = nodes[head][term, tail] else { return nil }
+        guard let subnode = nodes[head][term, Array(tail)] else { return nil }
         nodes[head] = subnode
 
         return Self(symbol:self.symbol, nodes: nodes)
@@ -73,13 +73,19 @@ extension Node {
 // MARK: - Array<Node> + Position
 
 extension Array where Element:Node {
+  // func node<C:Collection where C.Iterator.Element==Int, C.SubSequence.Iterator.Element == Int>(at position:C) -> Element? {
+  //     guard let (head,tail) = position.decomposing else { return nil }        // position == [], but an array is not of type Node
+  //     guard 0 <= head && head < self.count else { return nil }                // node does not have a subnode at given position
+  //
+  //     return self[head].node(at:tail)
+  // }
     /// Get term at position in array. (for convenience)
     /// array[[i]] := array[i]
     /// array[[i,j,...]] := array[i][j,...]
     subscript(position:Position)->Element? {
-        guard let (head,tail) = position.decompose else { return nil }        // position == [], but an array is not of type Node
+        guard let (head,tail) = position.decomposing else { return nil }        // position == [], but an array is not of type Node
         guard 0 <= head && head < self.count else { return nil }                // node does not have a subnode at given position
 
-        return self[head][tail]
+        return self[head][Position(tail)]
     }
 }

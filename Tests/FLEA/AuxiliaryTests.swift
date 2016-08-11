@@ -5,9 +5,25 @@ import XCTest
 public class AuxiliaryTests : XCTestCase {
   static var allTests : [(String, (AuxiliaryTests) -> () throws -> Void)] {
     return [
+      ("testDecomposing", testDecomposing),
       ("testUppercased", testUppercased),
       ("testIds",testIds)
     ]
+  }
+
+  func testDecomposing() {
+    let array = [11,12,13]
+    guard let (h1,t1) = array.decomposing else {
+      XCTFail(nok)
+      return
+    }
+    print(h1,t1)
+    guard let (h2,t2) = t1.decomposing else {
+        XCTFail(nok)
+        return
+    }
+    print(h2,t2)
+
   }
 
   func testUppercased() {

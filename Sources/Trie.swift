@@ -71,16 +71,16 @@ extension Trie {
   mutating func insert<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(_ newMember:Value, at path:C)
    -> (inserted:Bool, memberAfterInsert:Value) {
-    guard let (head,tail) = path.decompose else {
+    guard let (head,tail) = path.decomposing else {
       return self.insert(newMember)
     }
 
     if self[head] == nil {
-      self[head] = Self(with:newMember,at:tail)
+      self[head] = Self(with:newMember,at:Array(tail))
       return (true,newMember)
     }
     else {
-      return self[head]!.insert(newMember, at:tail)
+      return self[head]!.insert(newMember, at:Array(tail))
     }
   }
 
@@ -89,11 +89,11 @@ extension Trie {
   /// Empty subtries are removed.
   mutating func remove<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(_ member:Value, at path:C) -> Value? {
-    guard let (head,tail) = path.decompose else {
+    guard let (head,tail) = path.decomposing else {
       return self.remove(member)
     }
     guard var trie = self[head] else { return nil }
-    let removedMember = trie.remove(member, at:tail)
+    let removedMember = trie.remove(member, at:Array(tail))
     self[head] = trie // setter MUST NOT store an empty trie!
     return removedMember // could be different from member
   }
@@ -101,22 +101,22 @@ extension Trie {
   /// Returns values at path or nil if path does not exist.
   func retrieve<C:Collection where C.Iterator.Element == Leap,
   C.SubSequence.Iterator.Element == Leap>(from path:C) -> ValueS? {
-    guard let (head,tail) = path.decompose else {
+    guard let (head,tail) = path.decomposing else {
       return values
     }
     guard let trie = self[head] else { return nil }
-    return trie.retrieve(from:tail)
+    return trie.retrieve(from:Array(tail))
   }
 }
 
 extension Trie {
   /// Returns subtrie at path or nil if path does not exist.
   subscript(path:[Leap]) -> Self? {
-    guard let (head,tail) = path.decompose else { return self }
+    guard let (head,tail) = path.decomposing else { return self }
 
     guard let trie = self[head] else { return nil }
 
-    return trie[tail]
+    return trie[Array(tail)]
   }
 }
 
