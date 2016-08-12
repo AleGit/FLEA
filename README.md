@@ -18,8 +18,8 @@ Yices 2.4.2
 - Install [Swift 3 Preview 4](https://swift.org/download/) and check:
 ```
 $ swift -version                  
-Apple Swift version 3.0 ...               # Mac
-Swift version 3.0 (swift-3.0-PREVIEW-4)   # Linux
+Apple Swift version 3.0 (swiftlang-800.0.41.2 clang-800.0.36) # Mac
+Swift version 3.0 (swift-3.0-PREVIEW-4)                       # Linux
 
 $ xcode-select -pxcode-select -p          # Mac only
 /Applications/Xcode-beta.app/Contents/Developer
@@ -45,6 +45,7 @@ $ sudo make install                                 # install tptp parsing lib
 $ popd
 $ swift build                                       # Linux
 $ swift build -Xlinker -L/usr/local/lib             # Mac path to lib
+$ swift test -l                                     # list all tests
 $ swift test                                        # run all tests
 ```
 The first (failing) `swift build` is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
