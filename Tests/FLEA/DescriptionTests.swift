@@ -4,7 +4,7 @@ import XCTest
 
 public class DescriptionTests : XCTestCase {
 
-  private final class KinNode : FLEA.KinNode, FLEA.SymbolTableUser {
+  private final class KinNode : FLEA.KinNode, FLEA.StringTabulating {
     static var pool = WeakSet<KinNode>()
     static var symbols = FLEA.IntegerSymbolTable<Int>()
 

@@ -81,7 +81,7 @@ extension Node where Symbol:Symbolable {
   }
 }
 
-extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol{
+extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol{
 
   /// _UnicodeScalarLiteralConvertible_
   init(unicodeScalarLiteral value: StringLiteralType) {

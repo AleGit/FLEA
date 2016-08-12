@@ -15,7 +15,7 @@ protocol SymbolTable {
 }
 
 /// A symbol table users type holds a static symbol table.
-protocol SymbolTableUser {
+protocol StringTabulating {
   associatedtype Symbols : SymbolTable
   static var symbols : Symbols { get set }
 }

@@ -23,7 +23,7 @@ extension Node where Symbol : Symbolable {
   }
 }
 
-extension Node where Symbol == Int, Self:SymbolTableUser, Self.Symbols.Symbol == Int {
+extension Node where Symbol == Int, Self:StringTabulating, Self.Symbols.Symbol == Int {
   /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
@@ -80,7 +80,7 @@ extension Node where Symbol : Symbolable {
   }
 }
 
-// extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
+// extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol {
 //   var preordering : [Symbol] {
 //     guard let nodes = self.nodes else {
 //       return [Self.symbols.insert("*",.variable)]

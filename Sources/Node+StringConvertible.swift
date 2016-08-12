@@ -20,7 +20,7 @@ extension Node where Symbol : Symbolable {
   }
 }
 
-extension Node where Self:SymbolTableUser, Self.Symbol == Self.Symbols.Symbol {
+extension Node where Self:StringTabulating, Self.Symbol == Self.Symbols.Symbol {
   var defaultDescription : String {
     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .function(self.nodes?.count ?? -1))
     /// Symbol tables provide usual reliable type information,
@@ -100,7 +100,7 @@ extension Node where Symbol == Tptp.Symbol {
   }
 }
 
-// extension Node where Self:SymbolTableUser, Self.Symbol == Int, Self.Symbols.Symbol == Int {
+// extension Node where Self:StringTabulating, Self.Symbol == Int, Self.Symbols.Symbol == Int {
 //   var debugDescription : String {
 //
 //     let number = self.symbol / 256
@@ -110,7 +110,7 @@ extension Node where Symbol == Tptp.Symbol {
 //   }
 // }
 
-extension Node where Self:SymbolTableUser, Symbol == Self.Symbols.Symbol {
+extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
 

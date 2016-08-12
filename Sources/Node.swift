@@ -15,20 +15,16 @@ protocol Node : Hashable,
   /// References to nodes (the "children")
   var nodes : [Self]? { get set }
 
-  // var symbolString : String { get }
-  // var symbolType : Tptp.SymbolType { get }
-
-  /// empty initializer to enable sharing magic
+  /// every adopting type (even non-sharing) must provide the empty initializer
   init()
 
-  /// enables sharing of nodes at multiple positions
-  /// in the same or a different tree.
+  /// enables sharing of nodes at multiple positions within or between trees.
   static func share(node:Self) -> Self
 }
 
 extension Node {
-  /// By default nodes are not shared between trees,
-  /// e.g. three instances of variable `X` in `p(X,f(X,X))`
+  /// By default nodes are not shared within or between trees,
+  /// e.g. four instances of variable `X` in `p(X,f(X,X))` and `q(X)`
   /// None-sharing is suitable for value types.
   static func share(node:Self) -> Self {
     return node
@@ -37,8 +33,7 @@ extension Node {
 
 extension Node {
 
-  /// *Dedicated* initializer for all nodes and sharing nodes types.
-  /// This enables automatic sharing for all sharing node classes.
+  /// *Dedicated* initializer for all non-sharing and sharing nodes types.
   init(symbol:Symbol, nodes:[Self]?) {
     self.init()                   // self must be initialized ...
     self.symbol = symbol

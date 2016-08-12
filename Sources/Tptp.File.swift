@@ -98,7 +98,7 @@ extension Tptp.File {
     return t
   }
 
-  func ast<N:Node where N:SymbolTableUser,N.Symbol == N.Symbols.Symbol>() -> N? {
+  func ast<N:Node where N:StringTabulating,N.Symbol == N.Symbols.Symbol>() -> N? {
     guard let tree = self.root else { return nil }
     let t : N = N(tree:tree)
     return t
