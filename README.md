@@ -43,8 +43,7 @@ $ swift build                                       # fails after download
 $ pushd Packages/CTptpParsing-1.0.0                 # or 1.0.1 or ...
 $ sudo make install                                 # install tptp parsing lib
 $ popd
-$ swift build                                       # Linux
-$ swift build -Xlinker -L/usr/local/lib             # Mac path to lib
+$ swift build -Xlinker -L/usr/local/lib             # linker path to tptp parsing lib
 $ swift test -l                                     # list all tests
 $ swift test                                        # run all tests
 ```
