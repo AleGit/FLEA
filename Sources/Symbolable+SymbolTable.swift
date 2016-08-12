@@ -40,7 +40,7 @@ extension Int : GenericInteger {}
 /// A (string,type) pair to be mapped to a symbol
 typealias StringSymbolType = (String, Tptp.SymbolType)
 
-/// A symbol tabple that maps (string,type) to an integer symbol.
+/// A string symbol tabple that maps (string,type) to an integer symbol.
 struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
   private var symbols = [String : I]()
   private var strings = [I : StringSymbolType] ()
@@ -66,6 +66,8 @@ struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
   }
 }
 
+/// A string symbol table that maps (string,type) to the same string symbol:
+/// Only the symbol type needs to be stored.
 struct StringStringTable : StringSymbolTable {
   // private var types = [String : Tptp.SymbolType]()
   // error: type of expression is ambiguous without more context
