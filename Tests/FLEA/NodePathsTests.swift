@@ -8,7 +8,7 @@ private final class IntNode : FLEA.KinNode, FLEA.StringSymbolTabulating {
   typealias S = Int // choose the symbol
 
   static var pool = WeakSet<IntNode>()
-  static var symbols = IntegerSymbolTable<S>()
+  static var symbols = StringIntegerTable<S>()
 
   var symbol = S.max
   var nodes : [IntNode]? = nil

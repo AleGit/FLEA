@@ -55,7 +55,7 @@ struct Tptp {
 
   final class KinIntNode : FLEA.KinNode, FLEA.StringSymbolTabulating {
     static var pool = WeakSet<KinIntNode>()
-    static var symbols = IntegerSymbolTable<Int>()
+    static var symbols = StringIntegerTable<Int>()
 
     var symbol = symbols.insert("",.undefined)
     var nodes : [KinIntNode]? = nil

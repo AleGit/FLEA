@@ -6,7 +6,7 @@ public class DescriptionTests : XCTestCase {
 
   private final class KinNode : FLEA.KinNode, FLEA.StringSymbolTabulating {
     static var pool = WeakSet<KinNode>()
-    static var symbols = FLEA.IntegerSymbolTable<Int>()
+    static var symbols = FLEA.StringIntegerTable<Int>()
 
     var symbol = Int.max
     var nodes : [KinNode]? = nil

@@ -41,7 +41,7 @@ extension Int : GenericInteger {}
 typealias StringType = (String, Tptp.SymbolType)
 
 /// A symbol tabple that maps (string,type) to an integer symbol.
-struct IntegerSymbolTable<I:GenericInteger> : StringSymbolTable {
+struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
   private var symbols = [String : I]()
   private var strings = [I : StringType] ()
 

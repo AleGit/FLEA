@@ -8,7 +8,7 @@ private final class KinNode : FLEA.KinNode, StringSymbolTabulating, ExpressibleB
   typealias S = UInt32 // choose the symbol
 
   static var pool = WeakSet<KinNode>()
-  static var symbols = IntegerSymbolTable<S>()
+  static var symbols = StringIntegerTable<S>()
 
   var symbol = S.max
   var nodes : [KinNode]? = nil
