@@ -1,12 +1,13 @@
 /*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
 /// mark a type as sharing and enforce a global storage pool of unique instances
+/// in most a cases a weak references are sufficient and preferable
 protocol Sharing : class {
-  associatedtype M : PartialSetAlgebra
+  associatedtype M : PartialSetAlgebra // WeakPartialSetAlgebra : PartialSetAlgebra
   static var pool : M { get set }
 }
 
-/// mark a type as holding weak references to immediate ancestors 
+/// mark a type as holding weak references to immediate ancestors
 protocol Kin : class {
     associatedtype P : WeakPartialSetAlgebra
     var folks : P { get set }

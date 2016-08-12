@@ -1,11 +1,10 @@
-/// Unordered collection of weak references to hashable objects.
-/// Created by Adam Preble on 2/19/15.
-/// [WeakSet](https://gist.github.com/preble/13ab713ac044876c89b5)
-/// Modified by Alexander Maringele 2016.
+/// Unordered set like collection of entries with weak references to hashable objects.
+/// Created by Adam Preble [WeakSet](https://gist.github.com/preble/13ab713ac044876c89b5)
+/// Modified by Alexander Maringele.
 /// **Caution:** The collection may contain less entries than elements inserted.
-/// When there is no strong reference to an weak entry's element, then
-/// the entry does not count and will be removed eventually.
-/// So even when it's immutable count can change between two calls.
+/// When the entries reference is set to nil then the entry does not count anymore.
+/// - Some invalid entries will be removed when mutating functions are performed.
+/// - The number of valid entries can decrease even for an immutable weak set.
 struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
     private var contents = [Int: [WeakEntry<T>]](minimumCapacity:1)
     init(){}
@@ -21,23 +20,26 @@ private struct WeakEntry<T where T: AnyObject, T: Hashable, T:CustomStringConver
 }
 
 /// A protocol for collections with a subset of set algebra methods.
+/// A type adopting this protocol MAY NOT hold strong references to its elements.
 protocol PartialSetAlgebra {
   associatedtype Element
   mutating func insert(_ newMember: Element) -> (inserted: Bool, memberAfterInsert: Element)
   func contains(_ member: Element) -> Bool
 }
 
-/// Trivially a set supports a subset of set algebra methods.
-extension Set : PartialSetAlgebra {}
+/// Trivially a set can adopt the protocol.
+extension Set : PartialSetAlgebra {} // Set : SetAlgebra : PartialSetAlgebra
 
-/// A marker protocol wor collection with weak references to objects.
+/// A marker protocol for collections with weak references to objects.
+/// A type adopting this protocol MUST NOT hold strong references to its elements.
+/// A set can not adopt the protocol.
 protocol WeakPartialSetAlgebra : PartialSetAlgebra {}
 
 /// A weak set is a collection of weak references
 /// and supports a subset of set algebra methods.
 extension WeakSet : WeakPartialSetAlgebra {
 
-  /// Add an element (and get it's substitution).
+  /// Insert an element (and get it's substitution).
   mutating func insert(_ newElement: T) -> (inserted: Bool, memberAfterInsert: T) {
     let value = newElement.hashValue
 
@@ -47,10 +49,12 @@ extension WeakSet : WeakPartialSetAlgebra {
       return (true,newElement)
     }
 
+    assert(validEntries.count < 2,"\(#function) \(validEntries.count)")
+
     for entry in validEntries {
       if let element = entry.element, element == newElement {
-        // newElement is allready in the collection,
-        // hence return element from collection
+        // an element equal to newElement is allready in the collection,
+        // hence the equivalent element from the collection is returned
         return (false,element)
       }
     }
@@ -79,7 +83,7 @@ extension WeakSet : WeakPartialSetAlgebra {
 ///
 extension WeakSet {
   /// Number of entries *with* a referenced object.
-  /// This number can decrease even when the weak set is immutable.
+  /// This number may decrease even when the weak set is immutable.
   /// An atomic insert increases this number by one.
   /// *Complexity*: O(n)
   var count : Int {
@@ -87,16 +91,16 @@ extension WeakSet {
   }
 
   /// Number of entries *without* a referenced object.
-  /// This number can increase even when the weak set is immutable.
+  /// This number may increase even when the weak set is immutable.
   /// An atomic insert can change this number by n ∊ [-nilCount,0].
   /// *Complexity*: O(n)
   var nilCount : Int {
     return contents.flatMap({$0.1}).filter { $0.element == nil}.count
   }
 
-  /// Number of entries *with or without* a refernced object.
-  /// This number can not change when the weak set is immutable
-  /// and 'count + nilCount = totalCount' holds.
+  /// Number of entries *with or without* a referenced object.
+  /// When the weak set is immutable this number will not change.
+  /// 'count + nilCount = totalCount' will always hold.
   /// An atomic insert can change this number by n ∊ [-nilCount,1].
   /// *Complexity*: O(n)
   var totalCount : Int {
@@ -104,10 +108,10 @@ extension WeakSet {
   }
 
   /// Number of list of entries.
-  /// This number can not change when the weak set is immutable
-  /// and 'keyCount <= totalCount' holds.
+  /// When the weak set is immutable then this number will not change.
+  /// 'keyCount <= totalCount' will always hold.
   /// An atomic insert can change this number by n ∊ [-nilCount,1]
-  /// O(1)
+  /// *Complexity*: O(1)
   var keyCount : Int {
     return contents.count
   }
