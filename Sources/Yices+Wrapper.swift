@@ -35,8 +35,8 @@ extension Yices {
     }
 
     /// Get or create uninterpreted global `symbol` of type `term_tau`.
-    static func typedSymbol(_ symbol:String, term_tau:type_t) -> term_t {
-        assert(!symbol.isEmpty, "a typed symbol must not be empty")
+    static func StringSymbolTypeableSymbol(_ symbol:String, term_tau:type_t) -> term_t {
+        assert(!symbol.isEmpty, "a StringSymbolTypeable symbol must not be empty")
 
         var c = yices_get_term_by_name(symbol)
         if c == NULL_TERM {
@@ -51,7 +51,7 @@ extension Yices {
     }
 
     static func constant(_ symbol:String, term_tau:type_t) -> term_t {
-        return typedSymbol(symbol, term_tau: term_tau)
+        return StringSymbolTypeableSymbol(symbol, term_tau: term_tau)
     }
 
     static func domain(_ count:Int, tau: type_t) -> [type_t] {
@@ -62,7 +62,7 @@ extension Yices {
 
         let f_tau = yices_function_type(UInt32(domain.count), domain, range)
 
-        return typedSymbol(symbol, term_tau: f_tau)
+        return StringSymbolTypeableSymbol(symbol, term_tau: f_tau)
     }
 
     /// Create uninterpreted global (predicate) function `symbol` application

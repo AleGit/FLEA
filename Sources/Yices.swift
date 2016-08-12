@@ -52,7 +52,7 @@ extension Yices {
 			yices_free_context(context)
 		}
 
-		func assert<N:Node where N:Typed>(clause:N) -> Yices.Tuple {
+		func assert<N:Node where N:StringSymbolTypeable>(clause:N) -> Yices.Tuple {
 			let triple = Yices.clause(clause)
 
 

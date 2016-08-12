@@ -14,7 +14,8 @@ extension Tptp {
   }
 }
 
-protocol Typed {
+/// marker protocol for types which adopt Node  
+protocol StringSymbolTypeable {
   init(v:String)
   init(c:String)
   init(f:String, _ nodes:[Self]?)
