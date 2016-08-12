@@ -1,5 +1,5 @@
-/// Symbolable (node) types can be instantiated with strings.
-protocol Symbolable {
+/// StringSymbolable (node) types can be instantiated with strings.
+protocol StringSymbolable {
   var string : String { get }
   var type : Tptp.SymbolType { get }
 
@@ -7,7 +7,7 @@ protocol Symbolable {
 }
 
 /// Symbol tables store mappings from (string,type) pairs to symbols, and vice versa.
-protocol SymbolTable {
+protocol StringSymbolTable {
   associatedtype Symbol : Hashable
 
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
@@ -15,8 +15,8 @@ protocol SymbolTable {
 }
 
 /// A symbol table users type holds a static symbol table.
-protocol StringTabulating {
-  associatedtype Symbols : SymbolTable
+protocol StringSymbolTabulating {
+  associatedtype Symbols : StringSymbolTable
   static var symbols : Symbols { get set }
 }
 
@@ -30,6 +30,7 @@ extension UInt32 : GenericInteger {}
 // extension UInt16 : GenericInteger {}
 // extension UInt8 : GenericInteger {}
 extension UInt : GenericInteger {}
+
 extension Int64 : GenericInteger {}
 extension Int32 : GenericInteger {}
 // extension Int16 : GenericInteger {}
@@ -40,7 +41,7 @@ extension Int : GenericInteger {}
 typealias StringType = (String, Tptp.SymbolType)
 
 /// A symbol tabple that maps (string,type) to an integer symbol.
-struct IntegerSymbolTable<I:GenericInteger> : SymbolTable {
+struct IntegerSymbolTable<I:GenericInteger> : StringSymbolTable {
   private var symbols = [String : I]()
   private var strings = [I : StringType] ()
 

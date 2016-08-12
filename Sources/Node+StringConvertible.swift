@@ -13,14 +13,14 @@ extension Node {
   }
 }
 
-extension Node where Symbol : Symbolable {
+extension Node where Symbol : StringSymbolable {
   var defaultDescription : String {
-    /// Symbolable provides reliable symbol type information
+    /// StringSymbolable provides reliable symbol type information
     return buildDescription(string:self.symbol.string,type:self.symbol.type)
   }
 }
 
-extension Node where Self:StringTabulating, Self.Symbol == Self.Symbols.Symbol {
+extension Node where Self:StringSymbolTabulating, Self.Symbol == Self.Symbols.Symbol {
   var defaultDescription : String {
     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .function(self.nodes?.count ?? -1))
     /// Symbol tables provide usual reliable type information,
@@ -87,7 +87,7 @@ extension Node {
   }
 }
 
-extension Node where Symbol:Symbolable {
+extension Node where Symbol:StringSymbolable {
   var debugDescription : String {
     // with reliable string and type information we use it
     return buildDebugDescription(string:"\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)")
@@ -100,7 +100,7 @@ extension Node where Symbol == Tptp.Symbol {
   }
 }
 
-// extension Node where Self:StringTabulating, Self.Symbol == Int, Self.Symbols.Symbol == Int {
+// extension Node where Self:StringSymbolTabulating, Self.Symbol == Int, Self.Symbols.Symbol == Int {
 //   var debugDescription : String {
 //
 //     let number = self.symbol / 256
@@ -110,7 +110,7 @@ extension Node where Symbol == Tptp.Symbol {
 //   }
 // }
 
-extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol {
+extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
 

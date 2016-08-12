@@ -1,11 +1,11 @@
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N.Symbol:Symbolable>(t:N) -> N {
+postfix func ⊥<N:Node where N.Symbol:StringSymbolable>(t:N) -> N {
     return t * N(c:"⊥")
 }
 
 // MARK: type node convenience initializers to build terms with strings.
 
-extension Node where Symbol:Symbolable {
+extension Node where Symbol:StringSymbolable {
   init(v:String) {
     let s = Symbol(v,.variable)
     self.init(variable:s)
@@ -37,7 +37,7 @@ extension Node where Symbol:Symbolable {
 
 // MARK: type node calculated symbol string type property
 
-extension Node where Symbol:Symbolable {
+extension Node where Symbol:StringSymbolable {
   var symbolStringType : (String,Tptp.SymbolType) {
     return (self.symbol.string, self.symbol.type)
   }
@@ -46,9 +46,9 @@ extension Node where Symbol:Symbolable {
 
 // MARK:
 
-extension Node where Symbol:Symbolable {
+extension Node where Symbol:StringSymbolable {
   /// convert node types
-  init<N:Node where N.Symbol:Symbolable>(_ other:N) {
+  init<N:Node where N.Symbol:StringSymbolable>(_ other:N) {
     let s = Symbol(other.symbol.string,other.symbol.type)
     let nodes = other.nodes?.map { Self($0) }
     self.init(symbol:s, nodes:nodes)

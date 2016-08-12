@@ -3,7 +3,7 @@ import CTptpParsing
 // MARK: - Tptp.Symbol
 
 extension Tptp {
-  struct Symbol : Symbolable {
+  struct Symbol : StringSymbolable {
     let string : String
     let type : SymbolType
 

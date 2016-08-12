@@ -1,11 +1,11 @@
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N:StringTabulating,N.Symbol==N.Symbols.Symbol>(t:N) -> N {
+postfix func ⊥<N:Node where N:StringSymbolTabulating,N.Symbol==N.Symbols.Symbol>(t:N) -> N {
   return t * N(c:"⊥")
 }
 
 // MARK: type node convenience initializers to build terms with strings.
 
-extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol {
+extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
   init(v:String) {
     let s = Self.symbols.insert(v, .variable)
     self.init(variable:s)
@@ -37,7 +37,7 @@ extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol {
 
 // MARK: type node calculated symbol string type property
 
-extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol {
+extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
   var symbolStringType : (String,Tptp.SymbolType) {
     return Self.symbols[self.symbol] ?? ("\(self.symbol)",.undefined)
   }

@@ -196,7 +196,7 @@ extension Demo {
 
 
 
-private func demoShow<N:Node where N:AnyObject, N.Symbol:Symbolable>(nodes:[N]) {
+private func demoShow<N:Node where N:AnyObject, N.Symbol:StringSymbolable>(nodes:[N]) {
   print("nodes:\(nodes).count=\(nodes.count)")
 
   for s in Set(nodes) {
@@ -339,7 +339,7 @@ extension Demo {
   }
 }
 
-func demoParse<N:Node where N.Symbol:Symbolable>(problem:String, show:Bool = Demo.show) -> [N] {
+func demoParse<N:Node where N.Symbol:StringSymbolable>(problem:String, show:Bool = Demo.show) -> [N] {
   if show{print("N:Node == \(String(reflecting:N.self))")}
 
   guard let url = URL(fileURLwithProblem:problem) else {

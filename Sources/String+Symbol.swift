@@ -1,5 +1,5 @@
 /// Make strings symbolable
-extension String : Symbolable {
+extension String : StringSymbolable {
 
   var string : String { return self }
 

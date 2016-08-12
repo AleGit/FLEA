@@ -4,7 +4,7 @@ import XCTest
 
 /// local minimal implementation of protocol
 /// to avoid side effects (pool) from ohter test classes
-private final class IntNode : FLEA.KinNode, FLEA.StringTabulating {
+private final class IntNode : FLEA.KinNode, FLEA.StringSymbolTabulating {
   typealias S = Int // choose the symbol
 
   static var pool = WeakSet<IntNode>()

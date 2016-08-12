@@ -1,6 +1,6 @@
 import CTptpParsing
 
-extension Node where Symbol : Symbolable {
+extension Node where Symbol : StringSymbolable {
   /// Create a node (tree) from an abstract syntax (sub)tree.
   init(tree:TreeNodeRef) {
 
@@ -17,7 +17,7 @@ extension Node where Symbol : Symbolable {
   }
 }
 
-extension Node where Self:StringTabulating, Symbol == Self.Symbols.Symbol {
+extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
   init(tree:TreeNodeRef) {
 
     let symbol = Self.symbols.insert(tree.symbol ?? "", Tptp.SymbolType(of:tree))

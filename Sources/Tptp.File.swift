@@ -92,13 +92,13 @@ extension Tptp {
 
 extension Tptp.File {
 
-  func ast<N:Node where N.Symbol:Symbolable>() -> N? {
+  func ast<N:Node where N.Symbol:StringSymbolable>() -> N? {
     guard let tree = self.root else { return nil }
     let t : N = N(tree:tree)
     return t
   }
 
-  func ast<N:Node where N:StringTabulating,N.Symbol == N.Symbols.Symbol>() -> N? {
+  func ast<N:Node where N:StringSymbolTabulating,N.Symbol == N.Symbols.Symbol>() -> N? {
     guard let tree = self.root else { return nil }
     let t : N = N(tree:tree)
     return t
