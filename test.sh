@@ -1,7 +1,7 @@
 #!/bin/bash
 
-clear
-# swift build --clean
+# clear
+#swift build --clean
 swift build -Xlinker -L/usr/local/lib
 
 if [ "$1" = "--help" ]
