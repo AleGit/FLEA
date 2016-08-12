@@ -67,6 +67,10 @@ struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
 }
 
 struct StringStringTable : StringSymbolTable {
+  // private var types = [String : Tptp.SymbolType]()
+  // error: type of expression is ambiguous without more context
+  // private var types = [String : Tptp.SymbolType]()
+  //                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
   private var types = Dictionary<String,Tptp.SymbolType>()
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> String {
 
