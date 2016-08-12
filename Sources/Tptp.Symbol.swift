@@ -20,7 +20,7 @@ protocol Typed {
   init(f:String, _ nodes:[Self]?)
   init(p:String, _ nodes:[Self]?)
 
-  var symbolStringType : (String,Tptp.SymbolType) { get }
+  var stringSymbolType : StringSymbolType { get }
 }
 
 extension Tptp {

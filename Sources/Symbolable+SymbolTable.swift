@@ -11,7 +11,7 @@ protocol StringSymbolTable {
   associatedtype Symbol : Hashable
 
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
-  subscript(symbol:Symbol) -> StringType? { get }
+  subscript(symbol:Symbol) -> StringSymbolType? { get }
 }
 
 /// A symbol table users type holds a static symbol table.
@@ -38,12 +38,12 @@ extension Int32 : GenericInteger {}
 extension Int : GenericInteger {}
 
 /// A (string,type) pair to be mapped to a symbol
-typealias StringType = (String, Tptp.SymbolType)
+typealias StringSymbolType = (String, Tptp.SymbolType)
 
 /// A symbol tabple that maps (string,type) to an integer symbol.
 struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
   private var symbols = [String : I]()
-  private var strings = [I : StringType] ()
+  private var strings = [I : StringSymbolType] ()
 
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
@@ -60,7 +60,7 @@ struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
     return ivalue
   }
 
-  subscript(value:I) -> StringType? {
+  subscript(value:I) -> StringSymbolType? {
     return strings[value]
   }
 }
