@@ -48,6 +48,7 @@ struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
       // symbol is allready in the table
+      assert(strings[symbol]?.1 == type, "\(strings[symbol]?.1) != \(type)")
 
       return symbol
     }
@@ -62,5 +63,25 @@ struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
 
   subscript(value:I) -> StringSymbolType? {
     return strings[value]
+  }
+}
+
+struct StringStringTable : StringSymbolTable {
+  private var types = Dictionary<String,Tptp.SymbolType>()
+  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> String {
+
+    if let t = types[string] {
+      assert(t==type)
+    }
+    else {
+      types[string] = type
+    }
+
+    return string
+  }
+
+  subscript(value:String) -> StringSymbolType? {
+    guard let type = types[value] else { return nil }
+    return (value,type)
   }
 }

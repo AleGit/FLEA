@@ -95,7 +95,9 @@ func ==(lhs:Tptp.SymbolType, rhs:Tptp.SymbolType) -> Bool {
       (.nor,.nor),
       (.equation,.equation),
       (.inequation,.inequation),
-      (.variable,.variable):
+      (.variable,.variable),
+
+      (.undefined,.undefined):
       return true
     case (.predicate(let larity),.predicate(let rarity)):
       return larity == rarity
