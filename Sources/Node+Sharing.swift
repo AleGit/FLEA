@@ -1,10 +1,12 @@
 /*** This file could move to an own nodes module because Node.Symbol:Hashable only. ***/
 
+/// mark a type as sharing and enforce a global storage pool of unique instances
 protocol Sharing : class {
   associatedtype M : PartialSetAlgebra
   static var pool : M { get set }
 }
 
+/// mark a type as holding weak references to immediate ancestors 
 protocol Kin : class {
     associatedtype P : WeakPartialSetAlgebra
     var folks : P { get set }
@@ -12,7 +14,7 @@ protocol Kin : class {
 
 /// A sharing node is a specialized node where
 /// a collection of all created nodes is held.
-/// Unique instances of nodes are shared between (sub)trees.
+/// Unique instances of nodes are shared within and between trees.
 /// Sharing is suitable for immutable reference types.
 protocol SharingNode : Sharing, Typed, Node { }
 
