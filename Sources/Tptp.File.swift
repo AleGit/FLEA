@@ -24,21 +24,19 @@ extension Tptp {
     convenience init?(url:URL) {
       Syslog.info { "Tptp.File(url:\(url))" }
 
-      #if os(OSX) // Swift 3 Preview 4 diverges
-      if url.isFileURL {
-        self.init(path:url.path)
-      }
-      else {
-        return nil
-      }
-      #elseif os(Linux)
-      if url.isFileURL, let path = url.path {
+      // Swift 3 Preview 4:
+      // - Linux url.path : String?
+      // - macOS url.path : String
+      if url.isFileURL, let path = optional(url.path) {
+        Syslog.warning { "url.path is \(url.path.dynamicType)"}
         self.init(path:path)
       }
       else {
+        // TODO: Download file into
+        // - canonical place and parse the saved file
+        // - memory an parse string of type .file
         return nil
       }
-      #endif
     }
 
 
