@@ -49,24 +49,37 @@ extension Tptp {
 
       switch type {
         /// variables and (constant) are terms.
+        /// Σ -> fof(temp, axiom, predicate(Σ)).
+        /// http://www.cs.miami.edu/~tptp/TPTP/SyntaxBNF.html#plain_term
         case .function(_), .variable:
           code = prlcParseString(string, &store, &root, PRLC_FUNCTION)
 
         /// conjunctive normal form
+        /// Σ -> string -> cnf(temp, axiom, Σ).
+        /// http://www.cs.miami.edu/~tptp/TPTP/SyntaxBNF.html#cnf_annotated
         case .cnf:
           code = prlcParseString(string, &store, &root, PRLC_CNF)
 
         /// arbitrary first order formulas
+        /// Σ -> fof(temp, axiom, Σ).
+        /// http://www.cs.miami.edu/~tptp/TPTP/SyntaxBNF.html#fof_annotated
         case .fof, .universal, .existential, .negation, .disjunction, .conjunction,
           .implication, .reverseimpl, .bicondition, .xor, .nand, .nor,
           .equation, .inequation, .predicate(_):
+
           code = prlcParseString(string, &store, &root, PRLC_FOF)
 
-        /// include statements
+        /// include statements, e.g.
+        /// - "'Axioms/PUZ001-0.ax'"
+        /// - "'Axioms/PUZ002-0.ax,[a,b,c]'"
+        /// Σ -> include(Σ).
+        /// http://www.cs.miami.edu/~tptp/TPTP/SyntaxBNF.html#include
         case .include:
           code = prlcParseString(string, &store, &root, PRLC_INCLUDE)
 
         /// the content of a file
+        /// Σ -> Σ
+        /// http://www.cs.miami.edu/~tptp/TPTP/SyntaxBNF.html#TPTP_file
         case .file:
           code = prlcParseString(string, &store, &root, PRLC_FILE)
 
