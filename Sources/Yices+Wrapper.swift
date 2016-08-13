@@ -34,9 +34,9 @@ extension Yices {
         return tau
     }
 
-    /// Get or create uninterpreted global `symbol` of type `term_tau`.
-    static func StringSymbolTypeableSymbol(_ symbol:String, term_tau:type_t) -> term_t {
-        assert(!symbol.isEmpty, "a StringSymbolTypeable symbol must not be empty")
+    /// Get or create an uninterpreted global `symbol` of type `term_tau`.
+    static func typedSymbol(_ symbol:String, term_tau:type_t) -> term_t {
+        assert(!symbol.isEmpty, "a typed symbol must not be empty")
 
         var c = yices_get_term_by_name(symbol)
         if c == NULL_TERM {
@@ -45,24 +45,27 @@ extension Yices {
         }
         else {
             assert (term_tau == yices_type_of_term(c),
-                    "\(String(tau:term_tau),term_tau) != \(String(tau:yices_type_of_term(c)), yices_type_of_term(c)) \(String(term:c))for '\(symbol)'")
+            "\(String(tau:term_tau),term_tau) != \(String(tau:yices_type_of_term(c)), yices_type_of_term(c)) \(String(term:c))for '\(symbol)'")
         }
         return c
     }
 
+    /// Get or create a global constant `symbol` of type `term_tau`
     static func constant(_ symbol:String, term_tau:type_t) -> term_t {
-        return StringSymbolTypeableSymbol(symbol, term_tau: term_tau)
+        return typedSymbol(symbol, term_tau: term_tau)
     }
 
+    /// Create a homogenic domain tuple
     static func domain(_ count:Int, tau: type_t) -> [type_t] {
         return [type_t](repeating: tau, count: count)
     }
 
+    /// Get or create a function symbol of type domain -> range
     static func function(_ symbol:String, domain: [type_t], range:type_t) -> term_t {
 
         let f_tau = yices_function_type(UInt32(domain.count), domain, range)
 
-        return StringSymbolTypeableSymbol(symbol, term_tau: f_tau)
+        return typedSymbol(symbol, term_tau: f_tau)
     }
 
     /// Create uninterpreted global (predicate) function `symbol` application
