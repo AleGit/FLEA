@@ -241,7 +241,7 @@ extension Syslog {
     message : () -> String
   ) {
     guard Syslog.loggable(.error, file, function, line) else { return }
-    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    log (.error, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
   }
 
   static func warning(
@@ -253,7 +253,7 @@ extension Syslog {
     message : () -> String
   ) {
     guard Syslog.loggable(.warning, file, function, line) else { return }
-    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    log (.warning, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
   }
 
   static func notice(
@@ -265,7 +265,7 @@ extension Syslog {
     message : () -> String
   ) {
     guard Syslog.loggable(.notice, file, function, line) else { return }
-    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    log (.notice, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
   }
 
   static func info(

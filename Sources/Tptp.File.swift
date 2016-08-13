@@ -28,7 +28,7 @@ extension Tptp {
       // - Linux url.path : String?
       // - macOS url.path : String
       if url.isFileURL, let path = optional(url.path) {
-        Syslog.warning { "url.path is \(url.path.dynamicType)"}
+        Syslog.warning { "url.path : \(url.path.dynamicType)"}
         self.init(path:path)
       }
       else {
