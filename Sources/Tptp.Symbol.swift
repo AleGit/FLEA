@@ -14,7 +14,9 @@ extension Tptp {
   }
 }
 
-/// marker protocol for types which adopt Node  
+/// Marker protocol for types that adopt node and matches
+/// - extension Node where Symbol:StringSymbolable {
+/// - extension Node where Self:StringSymbolTabulating, Symbols.Symbol == Symbol
 protocol StringSymbolTypeable {
   init(v:String)
   init(c:String)

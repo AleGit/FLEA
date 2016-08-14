@@ -17,7 +17,7 @@ extension Yices {
   )
 
   /// Return a yices clause and yices literals from a node clause.
-  /// The children of `yicesClause` are often different from `yicesLiterals`.
+  /// The children of `yicesClause` may be different from `yicesLiterals`
   static func clause<N:Node where N:StringSymbolTypeable>(_ clause:N) -> Tuple {
     /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
     // assert(clause.isClause,"'\(#function)(\(clause))' Argument must be a clause, but it is not.")
