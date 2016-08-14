@@ -3,7 +3,7 @@
 extension Node {
   /// Simple calculation for a consistent hash value,
   /// (i.e. equal nodes have an eqqul hash value)
-  /// O(n)
+  /// *Complexity*: O(n)
   /// causes too many collisions
   var simpleHashValue : Int {
     guard let nodes = self.nodes else {
@@ -14,8 +14,8 @@ extension Node {
 
   /// Default calculation for a consistent hash value,
   /// (i.e. equal nodes have an eqqul hash value)
-  /// O(n)
-  /// less collisions than simpleHashValue
+  /// *Complexity*: O(n)
+  /// significant less collisions than simpleHashValue
   /// TODO: find reference for this idea
   /// e.g. http://stackoverflow.com/questions/1988665/hashing-a-tree-structure
   var defaultHashValue: Int {
@@ -27,6 +27,9 @@ extension Node {
       ($0 << 4) &+ $0 &+ $1.hashValue // less collisions than with $0 << 5
     }
   }
+  
+  // adopting types could cache the hash value 
+  /* lazy var hashValue = defaultHashValue */
 
   /// Default hashValue for all Nodes without own implementation.
   var hashValue : Int {
