@@ -7,7 +7,9 @@ public class YicesTests : XCTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (YicesTests) -> () throws -> Void)]  {
     return [
-      ("testPUZ001c1", testPUZ001c1)
+      ("testPUZ001c1", testPUZ001c1),
+      ("testTop", testTop),
+      ("testBottom", testBottom)
     ]
   }
 
@@ -46,11 +48,26 @@ public class YicesTests : XCTestCase {
     let _ = cnfs.map { context.assert(clause:$0) }
 
     XCTAssertTrue(context.isSatisfiable)
+  }
 
+  func testTop() {
 
+    let p = "p|~p" as FLEA.Tptp.SimpleNode
+    Yices.setup()
+    defer { Yices.teardown() }
+    let context = Yices.Context()
+    let _ = context.assert(clause:p)
+    XCTAssertTrue(context.isSatisfiable)
+  }
 
-
-
-
+  func testBottom() {
+    let np = "~p(X)" as FLEA.Tptp.SimpleNode
+    let p = "@cnf p(Y)" as FLEA.Tptp.SimpleNode
+    Yices.setup()
+    defer { Yices.teardown() }
+    let context = Yices.Context()
+    let _ = context.assert(clause:p)
+    let _ = context.assert(clause:np)
+    XCTAssertFalse(context.isSatisfiable)
   }
 }
