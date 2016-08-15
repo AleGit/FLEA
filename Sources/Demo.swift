@@ -267,7 +267,7 @@ extension Demo {
 
     static func simpleNode() -> Int {
       typealias NodeType = Tptp.SimpleNode
-      let problem = "Problems/HWV134-1"
+      let problem = "HWV134-1"
 
       let inputs : [NodeType] = demoParse(problem:problem)
       if show { print(problem, "count :", inputs.count) }
@@ -284,7 +284,7 @@ extension Demo {
     }
     static func sharingNode() -> Int {
       typealias NodeType = Tptp.SharingNode
-      let problem = "Problems/HWV134-1"
+      let problem = "HWV134-1"
 
       let inputs : [NodeType] = demoParse(problem:problem)
       if show { print(problem, "count :", inputs.count) }
