@@ -69,13 +69,21 @@ public class WeakSetTests : XCTestCase {
 
     var copy = temp
 
+    // copy stays the same as temp as long not mutating copy is executed.
+
+    XCTAssertEqual(copy.keyCount, 2)
+    XCTAssertEqual(copy.totalCount, 2)
+    XCTAssertEqual(copy.count, 0)
     XCTAssertEqual(copy.nilCount, 2)
+
     copy.clean()
 
-
-    XCTAssertEqual(temp.nilCount, 2)
+    XCTAssertEqual(copy.keyCount, 0)
+    XCTAssertEqual(copy.totalCount, 0)
+    XCTAssertEqual(copy.count, 0)
     XCTAssertEqual(copy.nilCount, 0)
 
+    XCTAssertEqual(temp.nilCount, 2)
   }
 }
 

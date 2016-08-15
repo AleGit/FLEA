@@ -1,8 +1,9 @@
 /// Unordered set like collection of entries with weak references to hashable objects.
 /// Created by Adam Preble [WeakSet](https://gist.github.com/preble/13ab713ac044876c89b5)
 /// Modified by Alexander Maringele.
-/// **Caution:** The collection may contain less entries than elements inserted.
-/// When the entries reference is set to nil then the entry does not count anymore.
+/// **Caution:** The collection may contain less entries than elements inserted:
+/// - An entry is valid if it's element reference is valid (insereted element still exists)
+/// - An entry is invalid if it's element reference is nil (inserted element does not exist anymore)
 /// - Some invalid entries will be removed when mutating functions are performed.
 /// - The number of valid entries can decrease even for an immutable weak set.
 struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
