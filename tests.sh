@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# calls swift build and swift test [-s .../...] to
 # run all tests, one test class or one test only.
 
 swift build -Xlinker -L/usr/local/lib
@@ -11,8 +12,8 @@ then
   echo '<1>' the test class name without the suffix 'Tests'
   echo '<2>' the test name without the perfix 'test'
   echo '0 => swift test'
-  echo '1 => swift test FLEATestSuite.<1>Tests'
-  echo '2 => swift test FLEATestSuite.<1>Tests/test<2>'
+  echo '1 => swift test -s FLEATestSuite.<1>Tests'
+  echo '2 => swift test -s FLEATestSuite.<1>Tests/test<2>'
   echo e.g. \$ ${0} Node Init
   echo '=> swift test -s FLEATestSuite.NodeTests/testInit'
 elif [ -n "$2" ]
