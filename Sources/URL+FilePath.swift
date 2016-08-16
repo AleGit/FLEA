@@ -41,7 +41,7 @@ extension URL {
 }
 
 /// with Swift 3 Preview 4/5 the URL signatures diverged between macOS and linux
-/// theses workaround will not build when signatures change
+/// these workaround will not build when signatures change
 extension URL {
   var pathOrEmpty : String {
     #if os(OSX)
