@@ -310,8 +310,9 @@ extension String {
       result.append(l)
     }
     return result
-
+     
     #elseif os (Linux) /*******************************************************/
+    // fatal error: enumerateSubstrings(in:options:using:) is not yet implemented: file Foundation/NSString.swift, line 810
 
     Syslog.notice { Syslog.Tags.system() + " " + Syslog.Tags.workaround() }
     return self.components(separatedBy:"\n")
@@ -320,22 +321,6 @@ extension String {
   }
 
   var trimmingWhitespace : String {
-    #if os(OSX) /**************************************************************/
-
     return self.trimmingCharacters(in: CharacterSet.whitespaces)
-
-    #elseif os(Linux) /********************************************************/
-
-    Syslog.debug {  Syslog.Tags.system() + " " + Syslog.Tags.workaround() }
-    var cs = self.characters
-    while let f = cs.first, f == " " || f == "\t" {
-      cs.removeFirst()
-    }
-    while let l = cs.last, l == " " || l == "\t" {
-      cs.removeLast()
-    }
-    return String(cs)
-
-    #endif /*******************************************************************/
   }
 }

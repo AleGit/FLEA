@@ -188,6 +188,7 @@ public class StringPathTests : XCTestCase {
     XCTAssertEqual("A Bc", "      A Bc".trimmingWhitespace,nok)
     XCTAssertEqual("A Bc", "   A Bc   ".trimmingWhitespace,nok)
     XCTAssertEqual("A Bc", "A Bc      ".trimmingWhitespace,nok)
+    print(ok,#function)
   }
 
 }
