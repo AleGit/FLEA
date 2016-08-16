@@ -61,12 +61,7 @@ struct Tptp {
     var nodes : [KinIntNode]? = nil
     var folks = WeakSet<KinIntNode>()
 
-
-
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription
-
-
-
   }
 }
