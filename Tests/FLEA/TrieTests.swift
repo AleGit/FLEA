@@ -6,7 +6,7 @@ public class TrieTests : XCTestCase {
   static var allTests : [(String, (TrieTests) -> () throws -> Void)] {
     return [
     ("testTrieStruct", testTrieStruct),
-   ("testTrieClass", testTrieClass)
+    ("testTrieClass", testTrieClass)
     ]
   }
 

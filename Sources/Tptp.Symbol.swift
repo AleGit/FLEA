@@ -23,7 +23,7 @@ protocol SymbolStringTyped {
   // init(f:String, _ nodes:[Self]?)
   // init(p:String, _ nodes:[Self]?)
 
-  var symbolStringType : StringSymbolType { get }
+  var symbolStringType : StringType { get }
 }
 
 extension Tptp {
