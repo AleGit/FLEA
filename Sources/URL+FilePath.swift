@@ -1,8 +1,8 @@
 
 import Foundation
 
-/// Some funcition habe an optional return type on linux,
-///  while an non optional on macOS.
+/// Some functions and properties have an optional return type on Linux,
+/// while an non optional on macOS.
 func optional<T>(_ value:T?) -> T? {
   return value
 }
@@ -40,7 +40,8 @@ extension URL {
   }
 }
 
-/// with Swift 3 Preview 4 the URL signatures diverged between macOS and linux
+/// with Swift 3 Preview 4/5 the URL signatures diverged between macOS and linux
+/// theses workaround will not build when signatures change
 extension URL {
   var pathOrEmpty : String {
     #if os(OSX)
