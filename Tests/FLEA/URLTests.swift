@@ -99,12 +99,10 @@ public class URLTests : XCTestCase {
   }
 
 
-
+/// Unfortuanatly URL signatures differ (did differ) between Swift 3 Previews on OSX and Linux.
+/// This test will highlight future changes. 
   func testTypes() {
-    for url in [
-    URL(fileURLWithPath:"Problems/PUZ001-1.p"),
-    URL(fileURLWithPath:"~/TPTP/Problems/PUZ001+1.p")
-    ] {
+    let url = URL(fileURLWithPath:"Problems/PUZ001-1.p")
 
       #if os(OSX)
       XCTAssertTrue(String?.self == url.absoluteString.dynamicType,nok)
@@ -161,25 +159,15 @@ public class URLTests : XCTestCase {
       XCTAssertTrue(String?.self == url.path.dynamicType,nok)
       XCTAssertTrue(String?.self == url.path.dynamicType,nok)
 
-
-      let throwingUrls = [
+      for (url,message) in [
         (try? url.standardized(),"standardized"),
         (try? url.deletingLastPathComponent(),"deletingLastPathComponent"),
         (try? url.deletingPathExtension(),"deletingPathExtension"),
         (try? url.resolvingSymlinksInPath(),"resolvingSymlinksInPath")
-      ]
-
-      for (url,message) in throwingUrls {
+      ] {
         XCTAssertTrue(URL?.self == url.dynamicType,"\(nok) url.\(message) -> \(url.dynamicType)")
       }
 
-      // print("var standardizedFileURL: URL   ", url.standardizedFileURL)
-      //
-      // print("func checkPromisedItemIsReachable()  ",(try? url.checkPromisedItemIsReachable()))
-      // print("func checkResourceIsReachable()      ",(try? url.checkResourceIsReachable()))
-
       #endif
-
-    }
   }
 }
