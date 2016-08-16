@@ -38,7 +38,7 @@ extension Node where Symbol:StringSymbolable {
 // MARK: type node calculated symbol string type property
 
 extension Node where Symbol:StringSymbolable {
-  var symbolStrigType : (String,Tptp.SymbolType) {
+  var symbolStringType : (String,Tptp.SymbolType) {
     return (self.symbol.string, self.symbol.type)
   }
 }

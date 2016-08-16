@@ -14,16 +14,16 @@ extension Tptp {
   }
 }
 
-/// Marker protocol for types that adopt node and matches
+/// Symbol string typed nodes have a proptery symbolStringType, e.g.
 /// - extension Node where Symbol:StringSymbolable {
 /// - extension Node where Self:StringSymbolTabulating, Symbols.Symbol == Symbol
 protocol SymbolStringTyped {
-  init(v:String)
-  init(c:String)
-  init(f:String, _ nodes:[Self]?)
-  init(p:String, _ nodes:[Self]?)
+  // init(v:String)
+  // init(c:String)
+  // init(f:String, _ nodes:[Self]?)
+  // init(p:String, _ nodes:[Self]?)
 
-  var symbolStrigType : StringSymbolType { get }
+  var symbolStringType : StringSymbolType { get }
 }
 
 extension Tptp {
