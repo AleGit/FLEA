@@ -4,8 +4,8 @@ import XCTest
 
 /// local minimal implementation of protocol
 /// to avoid side effects (pool) from other test classes
-private final class SharingNode : FLEA.SharingNode {
-  typealias S = String
+private final class SharingNode : FLEA.SharingNode, FLEA.TypedNode {
+  typealias S = FLEA.Tptp.Symbol
 
   static var pool = Set<SharingNode>()
 
@@ -36,12 +36,12 @@ public class SharingNodeTests : XCTestCase {
   /// accumulate additional four distict nodes
   func testEqualityX() {
 
-    let X = Node(variable:"X")
-    let a = Node(constant:"a")
-    let fX = Node(symbol:"f", nodes:[X])
-    let fa = Node(symbol:"f", nodes:[a])
+    let X = Node(v:"X")
+    let a = Node(c:"a")
+    let fX = Node(f:"f", [X])
+    let fa = Node(f:"f", [a])
 
-    let fX_a = fX * [Node(variable:"X"):Node(constant:"a")]
+    let fX_a = fX * [Node(v:"X"):Node(c:"a")]
 
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
@@ -59,12 +59,12 @@ public class SharingNodeTests : XCTestCase {
   /// accumulate additional four distict nodes
   func testEqualityY() {
 
-    let X = Node(variable:"Y")
-    let a = Node(constant:"a")
-    let fX = Node(symbol:"f", nodes:[X])
-    let fa = Node(symbol:"f", nodes:[a])
+    let X = Node(v:"Y")
+    let a = Node(c:"a")
+    let fX = Node(f:"f", [X])
+    let fa = Node(f:"f", [a])
 
-    let fX_a = fX * [Node(variable:"Y"):Node(constant:"a")]
+    let fX_a = fX * [Node(v:"Y"):Node(c:"a")]
 
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
