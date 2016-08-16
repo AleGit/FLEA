@@ -1,9 +1,9 @@
-/// Make strings symbolable
-extension String : StringSymbolable {
+/// String MUST NOT be StringSymbolable because it cannot store the SymbolType reliable.
 
-  var string : String { return self }
+extension String {
 
-  var type: Tptp.SymbolType {
+  /// Some strings have a canonical symbol type.
+  var symbolType: Tptp.SymbolType {
     switch self {
       case "!":
         return .universal
@@ -29,6 +29,8 @@ extension String : StringSymbolable {
         return .nor
       case "~&":
         return .nand
+      case "<=>":
+        return .bicondition
       // case "-->":
       //   return .gentzen
 
@@ -40,22 +42,9 @@ extension String : StringSymbolable {
         return .undefined // WORKAROUND
     }
   }
-}
 
-extension String {
-  init(of node:TreeNodeRef) {
-    let s = node.symbol ?? "n/a"
-    // TODO: insert symbol into symbol table
-    self.init(s,.undefined)
-  }
-
-  init(_ string:String, _ type: Tptp.SymbolType) {
-    self = string
-  }
-}
-
-extension String {
-  /// String literals to be converted to nodes can be annotated:
+  /// String literals to be converted to nodes can be annotated
+  /// with the type of its root node to avoid ambiguity.
   var tptpStringLiteralType : (String,Tptp.SymbolType) {
     if self.isEmpty {
       return (self,.undefined)

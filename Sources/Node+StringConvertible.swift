@@ -87,6 +87,13 @@ extension Node {
   }
 }
 
+extension Node where Symbol == String {
+  var debugDescription : String {
+    assert(false,"Do not use symole Sting as Node.Symbol")
+    return buildDebugDescription(string:self.symbol)
+  }
+}
+
 extension Node where Symbol:StringSymbolable {
   var debugDescription : String {
     // with reliable string and type information we use it
