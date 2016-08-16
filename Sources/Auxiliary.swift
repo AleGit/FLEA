@@ -8,7 +8,7 @@ extension Collection where Iterator.Element == SubSequence.Iterator.Element {
   /// - [] -> nil
   /// - [a,...] -> (a,[...])
   ///
-  /// _Complexity_: O(1) -- `first` and `dropFirst()` are O(1) for collection
+  /// _Complexity_: O(1) -- `first` and `dropFirst()` are O(1) for collections
   var decomposing: (head: Self.Iterator.Element, tail: Self.SubSequence)? {
     guard let head = first else { return nil }
     return (head, dropFirst()) //
