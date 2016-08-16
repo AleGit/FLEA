@@ -10,7 +10,7 @@ public class URLTests : XCTestCase {
     ("testTptpDirectory", testTptp),
     ("testConfigPath", testConfig),
     ("testProblem",testProblem),
-    // ("testFiles", testFiles),
+    ("testTypes", testTypes),
     ]
   }
 
@@ -100,33 +100,32 @@ public class URLTests : XCTestCase {
 
 
 
-  func testFiles() {
+  func testTypes() {
     for url in [
     URL(fileURLWithPath:"Problems/PUZ001-1.p"),
     URL(fileURLWithPath:"~/TPTP/Problems/PUZ001+1.p")
     ] {
-      print("")
+
       #if os(OSX)
-      print("url                            ", url)
-      print("var absoluteString: String     ", url.absoluteString)
-      print("var absoluteURL: URL           ", url.absoluteURL)
-      print("var baseURL: URL?              ", url.baseURL)
-      print("var fragment: String?          ", url.fragment )
+      XCTAssertTrue(String?.self == url.absoluteString.dynamicType,nok)
+      XCTAssertTrue(URL?.self == url.absoluteURL.dynamicType,nok)
+      XCTAssertTrue(URL?.self == url.baseURL.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.fragment.dynamicType,nok)
+      XCTAssertTrue(Int.self == url.hashValue.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.host.dynamicType,nok)
+      XCTAssertTrue(Bool.self == url.isFileURL.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.lastPathComponent.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.password.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.path.dynamicType,nok)
+      XCTAssertTrue([String]?.self == url.pathComponents.dynamicType,"\(nok) \(url.pathComponents.dynamicType)")
+      XCTAssertTrue(String?.self == url.pathExtension.dynamicType,nok)
+      XCTAssertTrue(Int?.self == url.port.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.query.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.relativePath.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.relativeString.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.scheme.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.user.dynamicType,nok)
       // print("var hasDirectoryPath: Bool     ",url.hasDirectoryPath) // OSX >=10.11
-      print("var hashValue: Int             ", url.hashValue)
-      print("var host: String?              ", url.host )
-      print("var isFileURL: Bool            ", url.isFileURL)
-      print("var lastPathComponent: String  ", url.lastPathComponent)
-      print("var password: String?          ", url.password )
-      print("var path: String               ", url.path)
-      print("var pathComponents: [String]   ", url.pathComponents)
-      print("var pathExtension: String      ", url.pathExtension)
-      print("var port: Int?                 ", url.port)
-      print("var query: String?             ", url.query )
-      print("var relativePath: String       ", url.relativePath)
-      print("var relativeString: String     ", url.relativeString)
-      print("var scheme: String?            ", url.scheme )
-      print("var user: String?              ", url.user )
       print("var standardized: URL          ", url.standardized)
       print("var standardizedFileURL: URL   ", url.standardizedFileURL)
       //
@@ -138,35 +137,46 @@ public class URLTests : XCTestCase {
       print("func resolvingSymlinksInPath()       ",url.resolvingSymlinksInPath().path)
 
       #elseif os(Linux)
-      print("url                            ", url)
-      print("var absoluteString: String?    ", url.absoluteString)
-      print("var absoluteURL: URL?          ", url.absoluteURL)
-      print("var baseURL: URL?              ", url.baseURL)
-      print("var fragment: String?          ", url.fragment)
-      // print("var hasDirectoryPath: Bool     ",url.hasDirectoryPath) // OSX >=10.11
-      print("var hashValue: Int             ", url.hashValue)
-      print("var host: String?              ", url.host)
-      print("var isFileURL: Bool            ", url.isFileURL)
-      print("var lastPathComponent: String  ", url.lastPathComponent)
-      print("var password: String?          ", url.password)
-      print("var path: String?              ", url.path)
-      print("var pathComponents: [String]   ", url.pathComponents)
-      print("var pathExtension: String      ", url.pathExtension)
-      print("var port: Int?                 ", url.port)
-      print("var query: String?             ", url.query )
-      print("var relativePath: String?      ", url.relativePath )
-      print("var relativeString: String     ", url.relativeString)
-      print("var scheme: String?            ", url.scheme )
-      print("var user: String?              ", url.user )
-      print("var standardized: URL          ", url.standardized)
-      print("var standardizedFileURL: URL   ", "n/a") // url.standardizedFileURL) // n\a
+      XCTAssertTrue(String?.self == url.absoluteString.dynamicType,nok)
+      XCTAssertTrue(URL?.self == url.absoluteURL.dynamicType,nok)
+      XCTAssertTrue(URL?.self == url.baseURL.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.fragment.dynamicType,nok)
+      XCTAssertTrue(Int.self == url.hashValue.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.host.dynamicType,nok)
+      XCTAssertTrue(Bool.self == url.isFileURL.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.lastPathComponent.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.password.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.path.dynamicType,nok)
+      XCTAssertTrue([String]?.self == url.pathComponents.dynamicType,"\(nok) \(url.pathComponents.dynamicType)")
+      XCTAssertTrue(String?.self == url.pathExtension.dynamicType,nok)
+      XCTAssertTrue(Int?.self == url.port.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.query.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.relativePath.dynamicType,nok)
+      XCTAssertTrue(String.self == url.relativeString.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.scheme.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.user.dynamicType,nok)
+      
+      XCTAssertTrue(String?.self == url.path.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.path.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.path.dynamicType,nok)
+      XCTAssertTrue(String?.self == url.path.dynamicType,nok)
+
+
+      let throwingUrls = [
+        (try? url.standardized(),"standardized"),
+        (try? url.deletingLastPathComponent(),"deletingLastPathComponent"),
+        (try? url.deletingPathExtension(),"deletingPathExtension"),
+        (try? url.resolvingSymlinksInPath(),"resolvingSymlinksInPath")
+      ]
+
+      for (url,message) in throwingUrls {
+        XCTAssertTrue(URL?.self == url.dynamicType,"\(nok) url.\(message) -> \(url.dynamicType)")
+      }
+
+      // print("var standardizedFileURL: URL   ", url.standardizedFileURL)
       //
-      print("func checkPromisedItemIsReachable()  ", "n/a") // (try? url.checkPromisedItemIsReachable())) // n\a
-      print("func checkResourceIsReachable()      ", "n/a") // (try? url.checkResourceIsReachable())) // n\a
-      //
-      print("func deletingLastPathComponent()     ",(try? url.deletingLastPathComponent())?.path )
-      print("func deletingPathExtension()         ",(try? url.deletingPathExtension())?.path )
-      print("func resolvingSymlinksInPath()       ",(try? url.resolvingSymlinksInPath())?.path )
+      // print("func checkPromisedItemIsReachable()  ",(try? url.checkPromisedItemIsReachable()))
+      // print("func checkResourceIsReachable()      ",(try? url.checkResourceIsReachable()))
 
       #endif
 
