@@ -1,5 +1,6 @@
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N.Symbol:StringSymbolable>(t:N) -> N {
+postfix func ⊥<N:Node>(t:N) -> N 
+where N.Symbol:StringSymbolable {
     return t * N(c:"⊥")
 }
 
@@ -48,9 +49,19 @@ extension Node where Symbol:StringSymbolable {
 
 extension Node where Symbol:StringSymbolable {
   /// convert node types
-  init<N:Node where N.Symbol:StringSymbolable>(_ other:N) {
+  init<N:Node>(_ other:N) 
+  where N.Symbol:StringSymbolable {
     let s = Symbol(other.symbol.string,other.symbol.type)
     let nodes = other.nodes?.map { Self($0) }
     self.init(symbol:s, nodes:nodes)
   }
 }
+
+/* 
+extension Node where Self:SymbolStringTyped {
+  init<N:Node>(_ other:N) 
+  where N:SymbolStringTyped {
+    // TODO
+  }
+}
+*/

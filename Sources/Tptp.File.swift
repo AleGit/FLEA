@@ -88,7 +88,6 @@ extension Tptp {
       guard code == 0 && self.store != nil && self.root != nil else {
         return nil
       }
-
     }
 
 
@@ -103,13 +102,15 @@ extension Tptp {
 
 extension Tptp.File {
 
-  func ast<N:Node where N.Symbol:StringSymbolable>() -> N? {
+  func ast<N:Node>() -> N? 
+  where N.Symbol:StringSymbolable {
     guard let tree = self.root else { return nil }
     let t : N = N(tree:tree)
     return t
   }
 
-  func ast<N:Node where N:StringSymbolTabulating,N.Symbol == N.Symbols.Symbol>() -> N? {
+  func ast<N:Node>() -> N? 
+  where N:StringSymbolTabulating,N.Symbol == N.Symbols.Symbol {
     guard let tree = self.root else { return nil }
     let t : N = N(tree:tree)
     return t

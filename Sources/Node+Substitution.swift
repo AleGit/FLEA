@@ -19,8 +19,9 @@ extension Dictionary : Substitution {
 }
 
 /// 't * σ' returns the application of substitution σ on term t.
-func *<N:Node, S:Substitution where N == S.K, N == S.V,
-S.Iterator == DictionaryIterator<N,N>>(t:N, σ:S) -> N {
+func *<N:Node, S:Substitution>(t:N, σ:S) -> N 
+where N == S.K, N == S.V, S.Iterator == DictionaryIterator<N,N> { 
+
     // assert(σ.isSubstitution)
     if let tσ = σ[t] { return tσ }      // t is (variable) in σ.keys
 
@@ -32,8 +33,9 @@ S.Iterator == DictionaryIterator<N,N>>(t:N, σ:S) -> N {
 
 
 /// concationation of substitutions (specialized for Substitution)
-func *<N:Node, S:Substitution where S.K==N,S.V==N,
-S.Iterator==DictionaryIterator<N,N>>(lhs:S,rhs:S) -> S? {
+func *<N:Node, S:Substitution>(lhs:S,rhs:S) -> S? 
+where S.K==N,S.V==N, S.Iterator==DictionaryIterator<N,N> {
+
   var subs = S()
   for (key,value) in lhs {
     subs[key] = value * rhs

@@ -1,5 +1,6 @@
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node where N:StringSymbolTabulating,N.Symbol==N.Symbols.Symbol>(t:N) -> N {
+postfix func ⊥<N:Node>(t:N) -> N 
+where N:StringSymbolTabulating,N.Symbol==N.Symbols.Symbol {
   return t * N(c:"⊥")
 }
 

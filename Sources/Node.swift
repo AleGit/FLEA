@@ -52,7 +52,8 @@ extension Node {
   }
 
   /// Convenience initializer for nodes with a sequence of children.
-  init<S:Sequence where S.Iterator.Element == Self>(symbol:Symbol, nodes:S?) {
+  init<S:Sequence>(symbol:Symbol, nodes:S?) 
+  where S.Iterator.Element == Self {
     self.init(symbol:symbol, nodes: nodes?.map ({ $0 }))
   }
 }
@@ -60,7 +61,8 @@ extension Node {
 // MARK: Conversion between `Node<S:Symbol>` implemenations with matching symbol types.
 
 extension Node {
-    init<N:Node where N.Symbol == Symbol>(_ s:N) {    // similar to Int(3.5)
+    init<N:Node>(_ s:N) 
+    where N.Symbol == Symbol {    // similar to Int(3.5)
 
         // no conversion between same types
         if let t = s as? Self {

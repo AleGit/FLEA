@@ -59,7 +59,8 @@ func ==<N:Node>(lhs:N, rhs:N) -> Bool {
 }
 
 /// Speed up equality check for objects.
-func ==<N:Node where N:AnyObject>(lhs:N, rhs:N) -> Bool {
+func ==<N:Node>(lhs:N, rhs:N) -> Bool 
+where N:AnyObject {
   if lhs === rhs { return true }
   else { return lhs.isEqual(to:rhs) }
 }
