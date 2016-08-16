@@ -9,7 +9,8 @@ public class YicesTests : XCTestCase {
     return [
       ("testPUZ001c1", testPUZ001c1),
       ("testTop", testTop),
-      ("testBottom", testBottom)
+      ("testBottom", testBottom),
+      ("testEmptyClause", testEmptyClause)
     ]
   }
 
@@ -68,6 +69,17 @@ public class YicesTests : XCTestCase {
     let context = Yices.Context()
     let _ = context.assert(clause:p)
     let _ = context.assert(clause:np)
+    XCTAssertFalse(context.isSatisfiable)
+  }
+
+  func testEmptyClause() {
+    var empty = "a|b" as FLEA.Tptp.SimpleNode
+    empty.nodes?.removeAll()
+    // var empty = FLEA.Tptp.SimpleNode("|", nodes:[FLEA.Tptp.SimpleNode]())
+    Yices.setup()
+    defer { Yices.teardown() }
+    let context = Yices.Context()
+    let _ = context.assert(clause:empty)
     XCTAssertFalse(context.isSatisfiable)
   }
 }
