@@ -7,7 +7,7 @@ struct Tptp {
 
   /// equal nodes are not always the same object
   /// depending on the method to build composite nodes
-  final class SimpleNode : FLEA.Node, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class SimpleNode : FLEA.Node, TypedNode, ExpressibleByStringLiteral {
     var symbol = S("",.undefined)
     var nodes : [Tptp.SimpleNode]? = nil
 

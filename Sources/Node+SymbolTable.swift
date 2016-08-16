@@ -38,7 +38,7 @@ extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol 
 
 // MARK: type node calculated symbol string type property
 
-/// provide default implementations for Node : SymbolStringTyped
+/// provide default implementations for Node : TypedNode
 extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
   var symbolStringType : (String,Tptp.SymbolType) {
     return Self.symbols[self.symbol] ?? ("\(self.symbol)",.undefined)
