@@ -7,7 +7,7 @@ protocol Sharing : class {
   static var pool : M { get set }
 }
 
-/// mark a type as holding weak references to immediate ancestors
+/// mark a type as holding weak references to immediate ancestors, i.e. folks
 protocol Kin : class {
     associatedtype P : WeakPartialSetAlgebra
     var folks : P { get set }
@@ -17,7 +17,7 @@ protocol Kin : class {
 /// a collection of all created nodes is held.
 /// Unique instances of nodes are shared within and between trees.
 /// Sharing is suitable for immutable reference types.
-protocol SharingNode : Sharing, TypedNode, Node { }
+protocol SharingNode : Sharing, Node { }
 
 extension Node where Self:Sharing, Self.M.Element == Self {
   /// By default smart nodes are shared between trees,
@@ -36,9 +36,9 @@ extension SharingNode where M.Element == Self {
   }
 }
 
-/// kin nodes are sharing, additionally
-/// they hold weak references to all their folks
-protocol KinNode : Kin, Sharing, TypedNode, Node { }
+/// A kin sharing node is a sharing node, additionally
+/// it holds weak references to all its folks.
+protocol KinNode : Kin, Sharing, Node { }
 
 extension Node where Self:Kin, Self:Sharing, Self.M.Element==Self, Self.P.Element==Self {
   static func share(node:Self) -> Self {
