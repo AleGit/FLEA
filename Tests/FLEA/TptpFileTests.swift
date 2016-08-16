@@ -74,6 +74,6 @@ public class TptpFileTests : XCTestCase {
   }
 
   func testHWV039f() {
-    check("HWV039+1", 744, 0.1) // local or canonical path
+    check("HWV039+1", 744, 0.11) // local or canonical path
   }
 }
