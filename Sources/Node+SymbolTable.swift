@@ -38,7 +38,7 @@ extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol 
 // MARK: type node calculated symbol string type property
 
 extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
-  var stringSymbolType : (String,Tptp.SymbolType) {
+  var symbolStrigType : (String,Tptp.SymbolType) {
     return Self.symbols[self.symbol] ?? ("\(self.symbol)",.undefined)
   }
 }
