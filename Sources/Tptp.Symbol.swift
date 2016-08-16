@@ -17,7 +17,7 @@ extension Tptp {
 /// Marker protocol for types that adopt node and matches
 /// - extension Node where Symbol:StringSymbolable {
 /// - extension Node where Self:StringSymbolTabulating, Symbols.Symbol == Symbol
-protocol StringSymbolTypeable {
+protocol SymbolStringTyped {
   init(v:String)
   init(c:String)
   init(f:String, _ nodes:[Self]?)
