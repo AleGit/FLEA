@@ -38,9 +38,14 @@ extension Node where Symbol:StringSymbolable {
 
 // MARK: type node calculated symbol string type property
 
+/// provide default implementations for Node : SymbolStringTyped
 extension Node where Symbol:StringSymbolable {
   var symbolStringType : (String,Tptp.SymbolType) {
     return (self.symbol.string, self.symbol.type)
+  }
+
+  static func symbolize(string:String, type:Tptp.SymbolType) -> Symbol {
+    return Symbol(string,type)
   }
 }
 
