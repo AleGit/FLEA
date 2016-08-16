@@ -17,20 +17,12 @@ extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol 
     self.init(constant:s)
   }
 
-  init(f:String, _ nodes:[Self]?) {
-    guard let nodes = nodes else {
-      self.init(v:f)
-      return
-    }
+  init(f:String, _ nodes:[Self]) {
     let s = Self.symbols.insert(f, .function(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }
 
-  init(p:String, _ nodes:[Self]?) {
-    guard let nodes = nodes else {
-      self.init(v:p)
-      return
-    }
+  init(p:String, _ nodes:[Self]) {
     let s = Self.symbols.insert(p, .predicate(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }

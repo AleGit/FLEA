@@ -20,8 +20,8 @@ extension Tptp {
 protocol TypedNode : Node {
   init(v:String)
   init(c:String)
-  init(f:String, _ nodes:[Self]?)
-  init(p:String, _ nodes:[Self]?)
+  init(f:String, _ nodes:[Self])
+  init(p:String, _ nodes:[Self])
 
   var symbolStringType : StringType { get }
   static func symbolize(string:String, type:Tptp.SymbolType) -> Symbol
