@@ -10,7 +10,7 @@ extension Node where Symbol:StringSymbolable {
 }
 
 /// provide default implementations for Node : SymbolStringTyped
-extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
+extension Node where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
   var symbolStringType : (String,Tptp.SymbolType) {
     return Self.symbols[self.symbol] ?? ("\(self.symbol)",.undefined)
   }

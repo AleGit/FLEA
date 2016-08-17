@@ -82,7 +82,7 @@ extension Node where Self:SymbolStringTyped {
   }
 }
 /* 
-extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol{
+extension Node where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol{
 
   /// _UnicodeScalarLiteralConvertible_
   init(unicodeScalarLiteral value: StringLiteralType) {

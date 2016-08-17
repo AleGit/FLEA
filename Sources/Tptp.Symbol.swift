@@ -14,23 +14,6 @@ extension Tptp {
   }
 }
 
-/// Symbol string typed nodes have a proptery symbolStringType, e.g.
-/// - extension Node where Symbol:StringSymbolable {
-/// - extension Node where Self:StringSymbolTabulating, Symbols.Symbol == Symbol
-protocol SymbolStringTyped {
-  /*
-  init(v:String)
-  init(c:String)
-  init(f:String, _ nodes:[Self])
-  init(p:String, _ nodes:[Self])
-  // init()
-  */
-  associatedtype Symbol : Hashable
-
-  var symbolStringType : StringType { get }
-  static func symbolize(string:String, type:Tptp.SymbolType) -> Symbol
-}
-
 /// 't⊥' returns the substitution of all variables in t with constant '⊥'.
 postfix func ⊥<N:Node>(t:N) -> N 
 where N:SymbolStringTyped {

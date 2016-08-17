@@ -1,4 +1,17 @@
-/// StringSymbolable (node) types can be instantiated with strings.
+/// Symbol string typed nodes can convert symbols to pairs of string and type, 
+/// and vice versa e.g.
+/// - extension Node where Symbol:StringSymbolable {
+/// - extension Node where Self:SymbolTabulating, Symbols.Symbol == Symbol
+/// This unifies code for nodes with string typed symbols or symbol tables.
+protocol SymbolStringTyped {
+  associatedtype Symbol : Hashable
+
+  var symbolStringType : StringType { get }
+  static func symbolize(string:String, type:Tptp.SymbolType) -> Symbol
+}
+
+
+/// A string typed symbol contains its string representation and its symbol type.
 protocol StringSymbolable {
   var string : String { get }
   var type : Tptp.SymbolType { get }
@@ -6,17 +19,18 @@ protocol StringSymbolable {
   init(_ string: String, _ type: Tptp.SymbolType)
 }
 
-/// Symbol tables store mappings from (string,type) pairs to symbols, and vice versa.
-protocol StringSymbolTable {
+/// A symbol table maps symbols to pairs of string and type, and vice versa.
+protocol SymbolTable {
+  associatedtype Key : Hashable
   associatedtype Symbol : Hashable
 
-  mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> Symbol
-  subscript(symbol:Symbol) -> StringType? { get }
+  mutating func insert(_ string: Key, _ type:Tptp.SymbolType) -> Symbol
+  subscript(symbol:Symbol) -> (Key,Tptp.SymbolType)? { get }
 }
 
-/// A symbol table users type holds a static symbol table.
-protocol StringSymbolTabulating {
-  associatedtype Symbols : StringSymbolTable
+/// A symbol table users type holds a symbol table.
+protocol SymbolTabulating {
+  associatedtype Symbols : SymbolTable
   static var symbols : Symbols { get set }
 }
 
@@ -41,7 +55,7 @@ extension Int : GenericInteger {}
 typealias StringType = (String, Tptp.SymbolType)
 
 /// A string symbol tabple that maps (string,type) to an integer symbol.
-struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
+struct StringIntegerTable<I:GenericInteger> : SymbolTable {
   private var symbols = [String : I]()
   private var strings = [I : StringType] ()
 
@@ -68,7 +82,7 @@ struct StringIntegerTable<I:GenericInteger> : StringSymbolTable {
 
 /// A string symbol table that maps (string,type) to the same string symbol:
 /// Only the symbol type needs to be stored.
-struct StringStringTable : StringSymbolTable {
+struct StringStringTable : SymbolTable {
   // private var types = [String : Tptp.SymbolType]()
   // error: type of expression is ambiguous without more context
   // private var types = [String : Tptp.SymbolType]()
