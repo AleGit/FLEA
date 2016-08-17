@@ -1,10 +1,10 @@
-extension Node where Symbol : StringSymbolable {
+extension Node where Self:SymbolStringTyped {
   /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[SymHop<Symbol>]] {
     guard let nodes = self.nodes else {
-      return [[.symbol(Symbol("*",.variable))]]
+      return [[.symbol(Self.symbolize(string:"*",type:.variable))]]
     }
     guard nodes.count > 0 else {
       return [[.symbol(self.symbol)]]
@@ -23,13 +23,13 @@ extension Node where Symbol : StringSymbolable {
   }
 }
 
-extension Node where Symbol == Int, Self:StringSymbolTabulating, Self.Symbols.Symbol == Int {
+extension Node where Symbol == Int, Self:SymbolStringTyped {
   /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[Int]] {
     guard let nodes = self.nodes else {
-      return [[Self.symbols.insert("*",.variable)]]
+      return [[Self.symbolize(string:"*",type:.variable)]]
     }
     guard nodes.count > 0 else {
       return [[self.symbol]]
@@ -47,7 +47,7 @@ extension Node where Symbol == Int, Self:StringSymbolTabulating, Self.Symbols.Sy
   var preordering : [Int] {
     guard let nodes = self.nodes else {
       // a variable leaf
-      return [Self.symbols.insert("*",.variable)]
+      return [Self.symbolize(string:"*",type:.variable)]
     }
     guard nodes.count > 0 else {
       // a constant (function) leaf
@@ -62,12 +62,12 @@ extension Node where Symbol == Int, Self:StringSymbolTabulating, Self.Symbols.Sy
 
 
 
-extension Node where Symbol : StringSymbolable {
+extension Node where Self:SymbolStringTyped {
   /// The list of symbols in the node tree in depth-first traversal.
   var preordering : [Symbol] {
     guard let nodes = self.nodes else {
       // a variable leaf
-      return [Symbol("*",.variable)]
+      return [Self.symbolize(string:"*",type:.variable)]
     }
     guard nodes.count > 0 else {
       // a constant (function) leaf
@@ -79,18 +79,3 @@ extension Node where Symbol : StringSymbolable {
 
   }
 }
-
-// extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
-//   var preordering : [Symbol] {
-//     guard let nodes = self.nodes else {
-//       return [Self.symbols.insert("*",.variable)]
-//     }
-//
-//     let a = [self.symbol]
-//     guard nodes.count > 0 else {
-//       return a
-//     }
-//
-//     return nodes.reduce(a) { $0 + $1.prordering }
-//   }
-// }
