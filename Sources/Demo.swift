@@ -58,16 +58,16 @@ extension Demo {
   struct Unification {
     static func demo() -> Int {
 
-      // let nodes : [Tptp.Node] = demoCreateNodes()
+      // let nodes : [Tptp.DefaultNode] = demoCreateNodes()
 
-      let X = Tptp.Node(v: "X")
-      let Y = Tptp.Node(v: "Y")
-      let Z = Tptp.Node(v: "Z")
+      let X = Tptp.DefaultNode(v: "X")
+      let Y = Tptp.DefaultNode(v: "Y")
+      let Z = Tptp.DefaultNode(v: "Z")
 
-      let a = Tptp.Node(c: "a")
-      let b = Tptp.Node(c: "a")
+      let a = Tptp.DefaultNode(c: "a")
+      let b = Tptp.DefaultNode(c: "a")
 
-      let fXY = Tptp.Node(f: "f", [X,Y])
+      let fXY = Tptp.DefaultNode(f: "f", [X,Y])
 
       let fYX = fXY * [X:Y, Y:X]
       let fYZ = fXY * [X:Y, Y:Z]
@@ -222,7 +222,7 @@ import Foundation // URL
 extension Demo {
   struct Problem {
     static func puz001cnf() -> Int {
-      typealias NodeType = Tptp.Node
+      typealias NodeType = Tptp.DefaultNode
       let problem = "PUZ001-1"
 
       let inputs : [NodeType] = demoParse(problem:problem)
@@ -237,7 +237,7 @@ extension Demo {
     }
 
     static func puz001fof() -> Int {
-      typealias NodeType = Tptp.Node
+      typealias NodeType = Tptp.DefaultNode
       let problem = "Problems/PUZ001+1"
 
       let inputs : [NodeType] = demoParse(problem:problem)
@@ -252,7 +252,7 @@ extension Demo {
     }
 
     static func broken() -> Int {
-      typealias NodeType = Tptp.Node
+      typealias NodeType = Tptp.DefaultNode
       let problem = "Package.swift"
 
       let inputs : [NodeType] = demoParse(problem:problem)
