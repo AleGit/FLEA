@@ -53,7 +53,7 @@ struct Tptp {
     lazy var description : String = self.defaultDescription
   }
 
-  final class KinIntNode : FLEA.Node, Sharing, Kin, SymbolTabulating, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class KinIntNode : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node, ExpressibleByStringLiteral {
     static var pool = WeakSet<KinIntNode>()
     static var symbols = StringIntegerTable<Int>()
 
