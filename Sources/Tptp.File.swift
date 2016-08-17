@@ -101,21 +101,9 @@ extension Tptp {
 }
 
 extension Tptp.File {
-/*
-  func ast<N:Node>() -> N? 
-  where N.Symbol:StringSymbolable {
-    guard let tree = self.root else { return nil }
-    let t : N = N(tree:tree)
-    return t
-  }
 
-  func ast<N:Node>() -> N? 
-  where N:SymbolTabulating,N.Symbol == N.Symbols.Symbol {
-    guard let tree = self.root else { return nil }
-    let t : N = N(tree:tree)
-    return t
-  }
-*/
+  /// Transform the C representation of the abstract syntax tree
+  /// into a native Swift representation.
   func ast<N:Node>() -> N?
   where N:SymbolStringTyped {
     guard let tree = self.root else { return nil }

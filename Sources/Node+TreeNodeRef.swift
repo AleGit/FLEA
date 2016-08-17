@@ -2,6 +2,7 @@ import CTptpParsing
 
 
 extension Node where Self:SymbolStringTyped {
+  /// symbol string types can be easily initilized with a tree node reference
   init(tree:TreeNodeRef) {
 
     let symbol = Self.symbolize(string:tree.symbol ?? "", type:Tptp.SymbolType(of:tree))
