@@ -36,7 +36,7 @@ struct Q {
 }
 
 extension Q {
-  static func parse<N:FLEA.Node where N.Symbol:StringSymbolable>(problem:String) -> [N] {
+  static func parse<N:FLEA.Node where N:SymbolStringTyped>(problem:String) -> [N] {
     print("N:Node == \(String(reflecting:N.self))")
 
     guard let url = URL(fileURLwithProblem:problem) else {

@@ -4,7 +4,8 @@
 
 // ExpressibleByStringLiteral : ExtendedGraphemeClusterLiteralConvertible  : UnicodeScalarLiteralConvertible
 
-extension Node where Symbol:StringSymbolable {
+// extension Node where Symbol:StringSymbolable {
+extension Node where Self:SymbolStringTyped {
 
   /// _UnicodeScalarLiteralConvertible_
   init(unicodeScalarLiteral value: StringLiteralType) {
@@ -80,7 +81,7 @@ extension Node where Symbol:StringSymbolable {
     }
   }
 }
-
+/* 
 extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol{
 
   /// _UnicodeScalarLiteralConvertible_
@@ -157,3 +158,4 @@ extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol{
     }
   }
 }
+*/

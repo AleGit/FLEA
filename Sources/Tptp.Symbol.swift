@@ -31,10 +31,33 @@ protocol SymbolStringTyped {
   static func symbolize(string:String, type:Tptp.SymbolType) -> Symbol
 }
 
+/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+postfix func ⊥<N:Node>(t:N) -> N 
+where N:SymbolStringTyped {
+    return t * N(c:"⊥")
+}
+
+
 extension Node where Self:SymbolStringTyped {
   init(v:String) {
     let s = Self.symbolize(string:v, type:.variable)
     self.init(variable:s)
+  }
+
+  init(c:String) {
+    let s = Self.symbolize(string:c, type:.function(0))
+    self.init(constant:s)
+  }
+
+  init(f:String, _ nodes:[Self]) {
+    let s = Self.symbolize(string:f, type:.function(nodes.count))
+    self.init(symbol:s, nodes:nodes)
+  }
+
+
+  init(p:String, _ nodes:[Self]) {
+    let s = Self.symbolize(string:p, type:.predicate(nodes.count))
+    self.init(symbol:s, nodes:nodes)
   }
 }
 
