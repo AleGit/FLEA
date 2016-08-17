@@ -15,7 +15,8 @@ public class StringLiteralTests : XCTestCase {
   }
 
 
-private final class N : SymbolStringTyped, Node, ExpressibleByStringLiteral {
+// local private adoption of protocol to avoid any side affects
+  private final class N : SymbolStringTyped, Node, ExpressibleByStringLiteral {
   typealias S = Tptp.Symbol
   
   var symbol = S("",.undefined) // avoid side effects with symbol tables

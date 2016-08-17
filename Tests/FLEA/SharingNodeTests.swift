@@ -13,17 +13,13 @@ public class SharingNodeTests : XCTestCase {
     ]
   }
 
-  /// local minimal implementation of protocol
-/// to avoid side effects (pool) from other test classes
-private final class N : SymbolStringTyped, Sharing, Node {
+// local private adoption of protocol to avoid any side affects
+  private final class N : SymbolStringTyped, Sharing, Node {
   typealias S = Tptp.Symbol
   static var pool = Set<N>()
 
   var symbol = S("",.undefined)
   var nodes : [N]? = nil
-
-  lazy var hashValue : Int = self.defaultHashValue
-  lazy var description : String = self.defaultDescription
 
   deinit {
     print("\(#function) \(self)")

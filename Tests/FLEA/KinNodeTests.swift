@@ -21,9 +21,6 @@ public class KinNodeTests : XCTestCase {
     
     var symbol = Int.max
     var nodes : [N]? = nil
-    
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.defaultDescription
   }
 
   /// accumulate four distict nodes

@@ -9,7 +9,7 @@ public class NodeTests : XCTestCase {
     ]
   }
 
-  // minimal adoption of protocol FLEA.Node
+  // local private adoption of protocol to avoid any side affects
   private struct N : Node {
     var symbol : String = ""
     var nodes : [N]? = nil

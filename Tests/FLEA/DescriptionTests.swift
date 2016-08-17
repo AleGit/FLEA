@@ -4,23 +4,23 @@ import XCTest
 
 public class DescriptionTests : XCTestCase {
 
-  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
-    static var pool = WeakSet<N>()
-    static var symbols = FLEA.StringIntegerTable<Int>()
-
-    var symbol = Int.max
-    var nodes : [N]? = nil
-    var folks =  WeakSet<N>()
-
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.defaultDescription
-  }
-
   static var allTests : [(String, (DescriptionTests) -> () throws -> Void)] {
     return [
       ("testDescription", testDescription),
       ("testDebugDescription", testDebugDescription)
     ]
+  }
+
+  // local private adoption of protocol to avoid any side affects
+  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
+    static var symbols = StringIntegerTable<Int>()
+    static var pool = WeakSet<N>()
+    var folks =  WeakSet<N>()
+
+    var symbol = Int.max
+    var nodes : [N]? = nil
+
+    lazy var description : String = self.defaultDescription
   }
 
   func testDescription() {

@@ -13,9 +13,8 @@ public class SmartNodeTests : XCTestCase {
     ]
   }
 
-  /// local minimal implementation of protocol
-/// to avoid side effects (pool) from ohter test classes
-private final class N : SymbolStringTyped, Sharing, Node  {
+// local private adoption of protocol to avoid any side affects
+  private final class N : SymbolStringTyped, Sharing, Node  {
   typealias S = Tptp.Symbol // choose the symbol
   static var pool = WeakSet<N>()
 

@@ -21,9 +21,6 @@ public class NodePathsTests : XCTestCase {
     var symbol = Int.max
     var nodes : [N]? = nil
     
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.defaultDescription
-    
     deinit {
       print("\(#function) \(self)")
     }

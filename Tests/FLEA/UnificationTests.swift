@@ -10,7 +10,7 @@ public class UnificationTests : XCTestCase {
     ]
   }
 
-  func check<S:Substitution,N:FLEA.Node where S.K==N, S.V==N, S:Equatable,
+  func check<S:Substitution,N:Node where S.K==N, S.V==N, S:Equatable,
   S.Iterator == DictionaryIterator<N,N>, N.Symbol:StringSymbolable>(
     _ lhs:N,
     _ rhs:N,
