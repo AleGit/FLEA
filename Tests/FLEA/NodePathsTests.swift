@@ -5,27 +5,28 @@ import XCTest
 /// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
 public class NodePathsTests : XCTestCase {
-  /// local minimal implementation of protocol
-  /// to avoid side effects (pool) from ohter test classes
-  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node  {
-    static var pool = WeakSet<N>()
-    static var symbols = StringIntegerTable<Int>()
-    
-    var symbol = Int.max
-    var nodes : [N]? = nil
-    
-    var folks = WeakSet<N>()
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.defaultDescription
-    deinit {
-      print("\(#function) \(self)")
-    }
-  }
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (NodePathsTests) -> () throws -> Void)]  {
     return [
       ("testNodePaths", testNodePaths)
     ]
+  }
+
+  // local private adoption of protocol to avoid any side affects
+  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node  {
+    static var symbols = StringIntegerTable<Int>()
+    static var pool = WeakSet<N>()
+    var folks = WeakSet<N>()
+
+    var symbol = Int.max
+    var nodes : [N]? = nil
+    
+    lazy var hashValue : Int = self.defaultHashValue
+    lazy var description : String = self.defaultDescription
+    
+    deinit {
+      print("\(#function) \(self)")
+    }
   }
 
   /// accumulate four distict nodes

@@ -14,13 +14,13 @@ public class KinNodeTests : XCTestCase {
   }
 
   // local private adoption of protocol to avoid any side affects
-  private final class N : Sharing, Kin, Node, SymbolStringTyped, SymbolTabulating, ExpressibleByStringLiteral {
-    static var pool = WeakSet<N>()
+  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node, ExpressibleByStringLiteral {
     static var symbols = StringIntegerTable<Int>()
+    static var pool = WeakSet<N>()
+    var folks = WeakSet<N>()
     
     var symbol = Int.max
     var nodes : [N]? = nil
-    var folks = WeakSet<N>()
     
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription

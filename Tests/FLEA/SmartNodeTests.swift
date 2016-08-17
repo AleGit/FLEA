@@ -17,7 +17,6 @@ public class SmartNodeTests : XCTestCase {
 /// to avoid side effects (pool) from ohter test classes
 private final class N : SymbolStringTyped, Sharing, Node  {
   typealias S = Tptp.Symbol // choose the symbol
-
   static var pool = WeakSet<N>()
 
   var symbol = S("",.undefined)

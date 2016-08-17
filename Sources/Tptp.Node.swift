@@ -45,21 +45,22 @@ struct Tptp {
   /// `folks` holds weak references to node's predecessors
   final class KinNode : SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.KinNode>()
+    var folks =  WeakSet<Tptp.KinNode>()
+
     var symbol = S("",.undefined)
     var nodes : [Tptp.KinNode]? = nil
-    var folks =  WeakSet<Tptp.KinNode>()
 
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription
   }
 
   final class KinIntNode : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node, ExpressibleByStringLiteral {
-    static var pool = WeakSet<KinIntNode>()
     static var symbols = StringIntegerTable<Int>()
-
+    static var pool = WeakSet<KinIntNode>()
+    var folks = WeakSet<KinIntNode>()
+    
     var symbol = symbols.insert("",.undefined)
     var nodes : [KinIntNode]? = nil
-    var folks = WeakSet<KinIntNode>()
 
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription

@@ -17,7 +17,6 @@ public class SharingNodeTests : XCTestCase {
 /// to avoid side effects (pool) from other test classes
 private final class N : SymbolStringTyped, Sharing, Node {
   typealias S = Tptp.Symbol
-
   static var pool = Set<N>()
 
   var symbol = S("",.undefined)
