@@ -14,13 +14,6 @@ extension Tptp {
   }
 }
 
-/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
-postfix func ⊥<N:Node>(t:N) -> N 
-where N:SymbolStringTyped {
-    return t * N(c:"⊥")
-}
-
-
 extension Node where Self:SymbolStringTyped {
   init(v:String) {
     let s = Self.symbolize(string:v, type:.variable)

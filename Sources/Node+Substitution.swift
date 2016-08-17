@@ -56,3 +56,9 @@ where S.K==N,S.V==N, S.Iterator==DictionaryIterator<N,N> {
   }
   return subs
 }
+
+/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+postfix func ⊥<N:Node>(t:N) -> N 
+where N:SymbolStringTyped {
+    return t * N(c:"⊥")
+}
