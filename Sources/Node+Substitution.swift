@@ -28,18 +28,21 @@ where K:Node, V:Node, Iterator == DictionaryIterator<K,V> {
 }
 
 /// 't * σ' returns the application of substitution σ on term t.
-/// *caution*: this implementation is more general as 
+/// - *caution*: this implementation is more general as 
 /// the usual definition of substitution, where only variables
 /// are substituted with terms. Here any arbitrary subterm can be 
-/// replaced with an other term.
+/// replaced with an other term, which can lead to ambiguity.
+/// - where keys are only variables it matches the definition of substitution
+/// - implicit sharing of nodes MAY happen!
 func *<N:Node, S:Substitution>(t:N, σ:S) -> N 
 where N == S.K, N == S.V, S.Iterator == DictionaryIterator<N,N> { 
 
-    if let tσ = σ[t] { return tσ } // t is (variable or term) in σ.keys
+    if let tσ = σ[t] { 
+      return tσ // implicit sharing for reference types
+    }
 
-    guard let nodes = t.nodes else {
-      // t is a variable, but in in σ
-      return N(variable:t.symbol) // no implicit sharing!
+    guard let nodes = t.nodes, nodes.count > 0 else {
+      return t // implicit sharing for reference types
     }
 
     return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })
@@ -72,6 +75,7 @@ where N == S.K, N==S.V, S.Iterator==DictionaryIterator<N,N> {
 }
 
 /// 't * s' returns the substitution of all variables in t with term s.
+/// - implicit sharing of nodes MAY happen
 func *<N:Node>(t:N, s:N) -> N {
     guard let nodes = t.nodes else { return s } // a variable
 
