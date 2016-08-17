@@ -15,26 +15,11 @@ extension Node {
 
 extension Node where Self : SymbolStringTyped {
   var defaultDescription : String {
-  let (string,type) = self.symbolStringType
-  return buildDescription(string:string, type:type)
-  }
-}
-/*
-extension Node where Symbol : StringSymbolable {
-  var defaultDescription : String {
-    /// StringSymbolable provides reliable symbol type information
-    return buildDescription(string:self.symbol.string,type:self.symbol.type)
+    let (string,type) = self.symbolStringType
+    return buildDescription(string:string, type:type)
   }
 }
 
-extension Node where Self:StringSymbolTabulating, Self.Symbol == Self.Symbols.Symbol {
-  var defaultDescription : String {
-    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .function(self.nodes?.count ?? -1))
-    /// Symbol tables provide usual reliable type information,
-    /// fallback to functional prefix notation.
-    return buildDescription(string:string,type:type)
-  }
-}*/
 extension Node {
 
   /// Build a description with symbol string and type.
@@ -100,28 +85,27 @@ extension Node where Symbol == String {
   }
 }
 
-extension Node where Symbol:StringSymbolable {
-  var debugDescription : String {
-    // with reliable string and type information we use it
-    return buildDebugDescription(string:"\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)")
-  }
-}
-
 extension Node where Symbol == Tptp.Symbol {
   var debugDescription : String {
     return buildDebugDescription(string:"\(self.symbol.debugDescription)")
   }
 }
 
-// extension Node where Self:StringSymbolTabulating, Self.Symbol == Int, Self.Symbols.Symbol == Int {
-//   var debugDescription : String {
-//
-//     let number = self.symbol / 256
-//     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
-//
-//     return buildDebugDescription(string:number == 0 ? "\(string)-\(type)" : "\(number)-\(string)-\(type)")
-//   }
-// }
+/* compile error !?, but shoul unify code below
+extension Node where Self:SymbolStringTyped {
+  var debugDescription: String {
+    return buildDebugDescription(string:"\(self.symbol)")
+    // return buildDebugDescription(string:"\(self.symbol)-\(self.symbolStringType)")
+  }
+}
+*/
+
+extension Node where Symbol:StringSymbolable {
+  var debugDescription : String {
+    // with reliable string and type information we use it
+    return buildDebugDescription(string:"\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)")
+  }
+}
 
 extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
   var debugDescription : String {
