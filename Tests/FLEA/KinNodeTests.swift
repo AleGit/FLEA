@@ -2,33 +2,6 @@ import XCTest
 
 @testable import FLEA
 
-/// local minimal implementation of protocol
-/// to avoid side effects (pool) from ohter test classes
-private final class KinNode : Sharing, Kin, FLEA.Node, SymbolStringTyped,SymbolTabulating, ExpressibleByStringLiteral {
-  typealias S = UInt32 // choose the symbol
-
-  static var pool = WeakSet<KinNode>()
-  static var symbols = StringIntegerTable<S>()
-
-  var symbol = S.max
-  var nodes : [KinNode]? = nil
-
-  var folks = WeakSet<KinNode>()
-
-  lazy var hashValue : Int = self.defaultHashValue
-  lazy var description : String = self.defaultDescription
-
-  // deinit {
-  //   print("\(#function) \(self)")
-  // }
-
-  static func insert(string:String, type:Tptp.SymbolType) -> UInt32 {
-    return 0
-  }
-}
-
-private typealias Node = KinNode  // use local implementation
-
 /// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
 public class KinNodeTests : XCTestCase {
@@ -40,13 +13,26 @@ public class KinNodeTests : XCTestCase {
     ]
   }
 
+  // local private adoption of protocol to avoid any side affects
+  private final class N : Sharing, Kin, Node, SymbolStringTyped, SymbolTabulating, ExpressibleByStringLiteral {
+    static var pool = WeakSet<N>()
+    static var symbols = StringIntegerTable<Int>()
+    
+    var symbol = Int.max
+    var nodes : [N]? = nil
+    var folks = WeakSet<N>()
+    
+    lazy var hashValue : Int = self.defaultHashValue
+    lazy var description : String = self.defaultDescription
+  }
+
   /// accumulate four distict nodes
   func testEqualityX() {
 
-    let X : Node = "X"
-    let a : Node = "a"
-    let fX = "f(X)" as Node
-    let fa = "f(a)" as Node
+    let X : N = "X"
+    let a : N = "a"
+    let fX = "f(X)" as N
+    let fa = "f(a)" as N
 
     XCTAssertEqual("5-X-variable",X.debugDescription,nok)
     XCTAssertEqual("6-a-function(0)",a.debugDescription,nok)
@@ -60,7 +46,7 @@ public class KinNodeTests : XCTestCase {
     XCTAssertTrue(a.folks.contains(fa),"\(nok)\n \(a.folks)")
     XCTAssertFalse(a.folks.contains(fX),"\(nok)\n \(a.folks)")
 
-    let fX_a = fX * [Node(v:"X"):Node(c:"a")]
+    let fX_a = fX * [N(v:"X"):N(c:"a")]
 
 
     // check if subtistuion sets folks correctly
@@ -72,7 +58,7 @@ public class KinNodeTests : XCTestCase {
     XCTAssertTrue(fX_a == fa,nok)
     XCTAssertTrue(fX_a === fa,nok)
 
-    let count = Node.pool.count
+    let count = N.pool.count
     XCTAssertEqual(count,4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
   }
@@ -80,18 +66,18 @@ public class KinNodeTests : XCTestCase {
   /// accumulate four distict nodes
   func testEqualityY() {
 
-    let X = Node(v:"Y")
-    let a = Node(c:"a")
-    let fX = Node(f:"f", [X])
-    let fa = Node(f:"f", [a])
+    let X = N(v:"Y")
+    let a = N(c:"a")
+    let fX = N(f:"f", [X])
+    let fa = N(f:"f", [a])
 
-    let fX_a = fX * [Node(v:"Y"):Node(c:"a")]
+    let fX_a = fX * [N(v:"Y"):N(c:"a")]
 
     XCTAssertEqual(fX_a,fa,nok)
     XCTAssertTrue(fX_a == fa,nok)
     XCTAssertTrue(fX_a === fa,nok)
 
-    let count = Node.pool.count
+    let count = N.pool.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
 

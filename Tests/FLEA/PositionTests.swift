@@ -9,7 +9,7 @@ public class PositionTests : XCTestCase {
     ]
   }
 
-  func check<N:FLEA.Node>(
+  func check<N:Node>(
     _ term:N,
     _ expected:[Position],
     _ message:String = "",

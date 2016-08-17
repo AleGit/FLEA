@@ -10,15 +10,15 @@ public class NodeTests : XCTestCase {
   }
 
   // minimal adoption of protocol FLEA.Node
-  private struct Node : FLEA.Node {
+  private struct N : Node {
     var symbol : String = ""
-    var nodes : [Node]? = nil
+    var nodes : [N]? = nil
   }
 
   func testInit() {
-    let a = Node(constant:"a")
-    let X = Node(variable:"X")
-    let faX = Node(symbol:"f",nodes:[a,X])
+    let a = N(constant:"a")
+    let X = N(variable:"X")
+    let faX = N(symbol:"f",nodes:[a,X])
     XCTAssertEqual("f(a,X)", faX.description)
   }
 }

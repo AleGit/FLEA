@@ -27,9 +27,8 @@ extension Node where Self:Sharing, Self.M.Element == Self {
   }
 }
 
-/// A kin sharing node is a sharing node, additionally
+/// A sharing kin node is a sharing node, additionally
 /// it holds weak references to all its folks.
-protocol KinNode : Kin, Sharing, Node { }
 
 extension Node where Self:Kin, Self:Sharing, Self.M.Element==Self, Self.P.Element==Self {
   static func share(node:Self) -> Self {

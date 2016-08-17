@@ -4,20 +4,17 @@ import XCTest
 
 public class DescriptionTests : XCTestCase {
 
-  private final class KinNode : FLEA.KinNode, SymbolStringTyped, FLEA.SymbolTabulating {
-    static var pool = WeakSet<KinNode>()
+  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
+    static var pool = WeakSet<N>()
     static var symbols = FLEA.StringIntegerTable<Int>()
 
     var symbol = Int.max
-    var nodes : [KinNode]? = nil
-    var folks =  WeakSet<KinNode>()
+    var nodes : [N]? = nil
+    var folks =  WeakSet<N>()
 
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.defaultDescription
   }
-
-
-
 
   static var allTests : [(String, (DescriptionTests) -> () throws -> Void)] {
     return [
@@ -27,9 +24,9 @@ public class DescriptionTests : XCTestCase {
   }
 
   func testDescription() {
-    let a = KinNode(c:"a")
-    let X = KinNode(v:"X")
-    let fXa = KinNode(f:"f",[X,a])
+    let a = N(c:"a")
+    let X = N(v:"X")
+    let fXa = N(f:"f",[X,a])
 
     XCTAssertEqual("a", a.description,nok)
     XCTAssertEqual("X", X.description,nok)
@@ -41,10 +38,10 @@ public class DescriptionTests : XCTestCase {
   }
 
   func testDebugDescription() {
-    let a = KinNode(c:"a")
-    let X = KinNode(v:"X")
-    let fXa = KinNode(f:"f",[X,a])
-    // let equals = Tptp.KinNode.Symbol("=",.equation)
+    let a = N(c:"a")
+    let X = N(v:"X")
+    let fXa = N(f:"f",[X,a])
+    // let equals = Tptp.N.Symbol("=",.equation)
 
     XCTAssertEqual("1-a-function(0)", a.debugDescription,nok)
     XCTAssertEqual("2-X-variable", X.debugDescription,nok)

@@ -10,7 +10,7 @@ public class DictionaryUnificationTests : XCTestCase {
     ]
   }
 
-  func check<N:FLEA.Node where N.Symbol:StringSymbolable>(
+  func check<N:Node where N.Symbol:StringSymbolable>(
     _ lhs:N,
     _ rhs:N,
     _ expected:[N:N]? = nil,
