@@ -1,46 +1,41 @@
 /// String MUST NOT be StringSymbolable because it cannot store the SymbolType reliable.
 
 extension String {
+  static var stringTypes = [
+    "!" : Tptp.SymbolType.universal,
+    // "∀" : Tptp.SymbolType.universal,
+    "?" : Tptp.SymbolType.existential,
+    // "∃" : Tptp.SymbolType.existential,
+    "~" : Tptp.SymbolType.negation,
+    // "￢" : Tptp.SymbolType.negation,
+    "|" : Tptp.SymbolType.disjunction,
+    // "∨" : Tptp.SymbolType.disjunction,
+    "&" : Tptp.SymbolType.conjunction,
+    // "∧" : Tptp.SymbolType.conjunction,
+    "=>" : Tptp.SymbolType.implication,
+    // "→" : Tptp.SymbolType.implication,
+    "<=" : Tptp.SymbolType.reverseimpl,
+    // "←" : Tptp.SymbolType.reverseimpl,
+    "=" : Tptp.SymbolType.equation,
+    "!=" : Tptp.SymbolType.inequation,
+    "<~>" : Tptp.SymbolType.xor,
+    //"!" : Tptp.SymbolType.xor,
+    "~|" : Tptp.SymbolType.nor,
+    // "!" : Tptp.SymbolType.nor,
+    "~&" : Tptp.SymbolType.nand,
+    // "!" : Tptp.SymbolType.nand,
+    "<=>" : Tptp.SymbolType.bicondition,
+    "↔" : Tptp.SymbolType.bicondition,
+  ]
 
-  /// Some strings have a canonical symbol type.
-  var symbolType: Tptp.SymbolType {
-    switch self {
-      case "!":
-        return .universal
-      case "?":
-        return .existential
-      case "~":
-        return .negation
-      case "|":
-        return .disjunction
-      case "&":
-        return .conjunction
-      case "=>":
-        return .implication
-      case "<=":
-        return .reverseimpl
-      case "=":
-        return .equation
-      case "!=":
-        return .inequation
-      case "<~>":
-        return .xor
-      case "~|":
-        return .nor
-      case "~&":
-        return .nand
-      case "<=>":
-        return .bicondition
-      // case "-->":
-      //   return .gentzen
-
-      default:
-        if self.isUppercased(at:self.startIndex) {
-          return .variable
-        }
-
-        return .undefined // WORKAROUND
+  var symbolType : Tptp.SymbolType {
+    if let type = String.stringTypes[self] {
+      return type
     }
+    if self.isUppercased(at:self.startIndex) {
+      return .variable
+    }
+    return .undefined
   }
 
   /// String literals to be converted to nodes can be annotated

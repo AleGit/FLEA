@@ -139,51 +139,59 @@ extension Tptp.SymbolType {
 
       case ("!", _):
         assert (type == PRLC_QUANTIFIER, "'\(string)' is not a quantifier \(type).")
-        assert (string.symbolType == Tptp.SymbolType.universal)
         self = .universal
+        // assert (string.symbolType == Tptp.SymbolType.universal)
+        
       case ("?", _):
         assert (type == PRLC_QUANTIFIER, "'\(string)' is not a quantifier \(type).")
-        assert (string.symbolType == Tptp.SymbolType.existential)
         self = .existential
-
+        // assert (string.symbolType == Tptp.SymbolType.existential)
+        
       case ("~", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.negation)
         self = .negation
+        // assert (string.symbolType == Tptp.SymbolType.negation)
+        
       case ("|", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.disjunction)
         self = .disjunction
+        // assert (string.symbolType == Tptp.SymbolType.disjunction)
+        
       case ("&", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.conjunction)
         self = .conjunction
+        // assert (string.symbolType == Tptp.SymbolType.conjunction)
+        
       case ("=>", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.implication)
         self = .implication
+        // assert (string.symbolType == Tptp.SymbolType.implication)
+        
       case ("<=", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.reverseimpl)
         self = .reverseimpl
+        // assert (string.symbolType == Tptp.SymbolType.reverseimpl)
+        
       case ("<=>", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.bicondition)
         self = .bicondition
-
+        // assert (string.symbolType == Tptp.SymbolType.bicondition)
+        
       case ("<~>", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.xor)
         self = .xor
+        // assert (string.symbolType == Tptp.SymbolType.xor)
+        
       case ("~&", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.nand)
         self = .nand
+        // assert (string.symbolType == Tptp.SymbolType.nand)
+        
       case ("~|", _):
         assert (type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
-        assert (string.symbolType == Tptp.SymbolType.nor)
         self = .nor
-
+        // assert (string.symbolType == Tptp.SymbolType.nor)
+        
       /* error */
       case (_, PRLC_CONNECTIVE):
         assert(false,"Unknown connective '\(string)'")
@@ -191,13 +199,14 @@ extension Tptp.SymbolType {
 
       case ("=", _):
         assert (type == PRLC_EQUATIONAL, "'\(string)' is not equational \(type).")
-        assert (string.symbolType == Tptp.SymbolType.equation)
         self = .equation
+        // assert (string.symbolType == Tptp.SymbolType.equation)
+        
       case ("!=", _):
         assert (type == PRLC_EQUATIONAL, "'\(string)' is not equational \(type).")
-        assert (string.symbolType == Tptp.SymbolType.inequation)
         self = .inequation
-
+        // assert (string.symbolType == Tptp.SymbolType.inequation)
+        
       /* error */
       case (_, PRLC_EQUATIONAL):
         assert(false, "Unknown equational '\(string)'")
@@ -205,14 +214,14 @@ extension Tptp.SymbolType {
 
       case (_, PRLC_PREDICATE):
         self = .predicate(node.childCount)
-        assert (string.symbolType == Tptp.SymbolType.undefined)
+        // assert (string.symbolType == Tptp.SymbolType.undefined)
 
       case (_, PRLC_FUNCTION):
         self = .function(node.childCount)
-        assert (string.symbolType == Tptp.SymbolType.undefined)
+        // assert (string.symbolType == Tptp.SymbolType.undefined)
 
       case (_, PRLC_VARIABLE):
-        assert (string.symbolType == Tptp.SymbolType.variable)
+        // assert (string.symbolType == Tptp.SymbolType.variable)
         self = .variable
 
       /* non-logical symbols */

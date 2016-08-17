@@ -12,6 +12,7 @@ public extension Process {
   /// Process.arguments.first ?? "n/a"
   public static var name : String {
     guard Process.argc > 0 else {
+      Syslog.error { "process has no name." }
       // `guard Process.arguments.count > 0 else ...`
       // fails when argc == 0, e.g. while unit testing
       // Process.arguments.count causes an unwrap error
