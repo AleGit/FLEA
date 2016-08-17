@@ -7,7 +7,7 @@ struct Tptp {
 
   /// equal nodes are not always the same object
   /// depending on the method to build composite nodes
-  final class SimpleNode : FLEA.Node, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class SimpleNode : SymbolStringTyped, Node, ExpressibleByStringLiteral {
     var symbol = S("",.undefined)
     var nodes : [Tptp.SimpleNode]? = nil
 
@@ -18,7 +18,7 @@ struct Tptp {
   /// equal nodes are the same objects
   /// pool holds string references to all created nodes,
   /// i.e. all nodes are permanent
-  final class SharingNode : FLEA.Node, Sharing, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class SharingNode : SymbolStringTyped, Sharing, Node, ExpressibleByStringLiteral {
     static var pool = Set<Tptp.SharingNode>()
 
     var symbol = S("",.undefined)
@@ -30,7 +30,7 @@ struct Tptp {
 
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes.
-  final class SmartNode : FLEA.Node, Sharing, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class SmartNode : SymbolStringTyped, Sharing, Node, ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.SmartNode>()
 
     var symbol = S("",.undefined)
@@ -43,7 +43,7 @@ struct Tptp {
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes,
   /// `folks` holds weak references to node's predecessors
-  final class KinNode : FLEA.Node, Sharing, Kin, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class KinNode : SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.KinNode>()
     var symbol = S("",.undefined)
     var nodes : [Tptp.KinNode]? = nil
