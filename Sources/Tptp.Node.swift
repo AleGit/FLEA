@@ -60,7 +60,7 @@ struct Tptp {
     static var pool = WeakSet<KinIntNode>()
     var folks = WeakSet<KinIntNode>()
     
-    var symbol = symbols.insert("",.undefined)
+    var symbol = Int.max
     var nodes : [KinIntNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue

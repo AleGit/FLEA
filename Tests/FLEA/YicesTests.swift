@@ -14,7 +14,7 @@ public class YicesTests : XCTestCase {
     ]
   }
 
-  typealias Node = FLEA.Tptp.KinIntNode
+  typealias N = FLEA.Tptp.KinIntNode
 
   func testPUZ001c1() {
     let problem = "PUZ001-1"
@@ -35,7 +35,7 @@ public class YicesTests : XCTestCase {
     /// role -> formula -> [annoations]
 
 
-    let cnfs = file.cnfs.map { Node(tree:$0.child!.sibling!) }
+    let cnfs = file.cnfs.map { N(tree:$0.child!.sibling!) }
     XCTAssertEqual(12,cnfs.count,nok)
 
     print(cnfs.first?.description)
