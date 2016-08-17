@@ -13,6 +13,13 @@ extension Node {
   }
 }
 
+extension Node where Self : SymbolStringTyped {
+  var defaultDescription : String {
+  let (string,type) = self.symbolStringType
+  return buildDescription(string:string, type:type)
+  }
+}
+/*
 extension Node where Symbol : StringSymbolable {
   var defaultDescription : String {
     /// StringSymbolable provides reliable symbol type information
@@ -27,8 +34,7 @@ extension Node where Self:StringSymbolTabulating, Self.Symbol == Self.Symbols.Sy
     /// fallback to functional prefix notation.
     return buildDescription(string:string,type:type)
   }
-}
-
+}*/
 extension Node {
 
   /// Build a description with symbol string and type.
