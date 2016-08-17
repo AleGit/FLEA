@@ -53,7 +53,7 @@ extension Yices {
 		}
 
 		func assert<N:Node>(clause:N) -> Yices.Tuple 
-		where N:TypedNode {
+		where N:StringTyped {
 			let triple = Yices.clause(clause)
 
 

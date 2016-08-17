@@ -73,9 +73,9 @@ public class YicesTests : XCTestCase {
   }
 
   func testEmptyClause() {
-    var empty = "a|b" as FLEA.Tptp.SimpleNode
-    empty.nodes?.removeAll()
-    // var empty = FLEA.Tptp.SimpleNode("|", nodes:[FLEA.Tptp.SimpleNode]())
+    let symbol = Tptp.SimpleNode.symbolize(string:"|", type:.disjunction)
+    let empty = Tptp.SimpleNode(symbol:symbol, nodes: Array<Tptp.SimpleNode>())
+    
     Yices.setup()
     defer { Yices.teardown() }
     let context = Yices.Context()

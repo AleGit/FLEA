@@ -30,7 +30,7 @@ extension Node where Symbol:StringSymbolable {
 
 // MARK: type node calculated symbol string type property
 
-/// provide default implementations for Node : TypedNode
+/// provide default implementations for Node : StringTyped
 extension Node where Symbol:StringSymbolable {
   var symbolStringType : (String,Tptp.SymbolType) {
     return (self.symbol.string, self.symbol.type)
@@ -55,9 +55,9 @@ extension Node where Symbol:StringSymbolable {
 }
 
 /* 
-extension Node where Self:TypedNode {
+extension Node where Self:StringTyped {
   init<N:Node>(_ other:N) 
-  where N:TypedNode {
+  where N:StringTyped {
     // TODO
   }
 }
