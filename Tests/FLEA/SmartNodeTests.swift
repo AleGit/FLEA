@@ -18,7 +18,7 @@ public class SmartNodeTests : XCTestCase {
   typealias S = Tptp.Symbol // choose the symbol
   static var pool = WeakSet<N>()
 
-  var symbol = S("",.undefined)
+  var symbol : S = N.symbolize(string:"*", type:.variable)
   var nodes : [N]? = nil
 
   lazy var hashValue : Int = self.defaultHashValue

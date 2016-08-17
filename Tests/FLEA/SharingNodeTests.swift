@@ -18,7 +18,7 @@ public class SharingNodeTests : XCTestCase {
   typealias S = Tptp.Symbol
   static var pool = Set<N>()
 
-  var symbol = S("",.undefined)
+  var symbol : S = N.symbolize(string:"*", type:.variable)
   var nodes : [N]? = nil
 
   deinit {

@@ -3,6 +3,7 @@
 struct Tptp {
 
   typealias S = Tptp.Symbol   // choose a symbol type
+  typealias I = Int
   typealias DefaultNode = KinNode    // choose an implementation
 
   /// equal nodes are not always the same object

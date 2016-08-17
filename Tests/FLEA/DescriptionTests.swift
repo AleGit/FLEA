@@ -13,11 +13,12 @@ public class DescriptionTests : XCTestCase {
 
   // local private adoption of protocol to avoid any side affects
   private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
-    static var symbols = StringIntegerTable<Int>()
+    typealias S = Int
+    static var symbols = StringIntegerTable<S>()
     static var pool = WeakSet<N>()
     var folks =  WeakSet<N>()
 
-    var symbol = Int.max
+    var symbol : S = N.symbolize(string:"*", type:.variable)
     var nodes : [N]? = nil
 
     lazy var description : String = self.defaultDescription
@@ -44,9 +45,9 @@ public class DescriptionTests : XCTestCase {
     // let equals = Tptp.N.Symbol("=",.equation)
 
     XCTAssertEqual("1-a-function(0)", a.debugDescription,nok)
-    XCTAssertEqual("2-X-variable", X.debugDescription,nok)
+    XCTAssertEqual("3-X-variable", X.debugDescription,nok)
 
-    XCTAssertEqual("3-f-function(2)(2-X-variable,1-a-function(0))", fXa.debugDescription,nok)
+    XCTAssertEqual("4-f-function(2)(3-X-variable,1-a-function(0))", fXa.debugDescription,nok)
 
     //
     // XCTAssertEqual("f(X,Y)", Q.fXY.debugDescription,nok)

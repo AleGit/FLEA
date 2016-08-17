@@ -19,7 +19,7 @@ public class StringLiteralTests : XCTestCase {
   private final class N : SymbolStringTyped, Node, ExpressibleByStringLiteral {
   typealias S = Tptp.Symbol
   
-  var symbol = S("",.undefined) // avoid side effects with symbol tables
+  var symbol : S = N.symbolize(string:"*", type:.variable)
   var nodes : [N]? = nil
 
   lazy var hashValue : Int = self.defaultHashValue

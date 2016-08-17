@@ -15,11 +15,12 @@ public class KinNodeTests : XCTestCase {
 
   // local private adoption of protocol to avoid any side affects
   private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node, ExpressibleByStringLiteral {
-    static var symbols = StringIntegerTable<Int>()
+    typealias S = Int
+    static var symbols = StringIntegerTable<S>()
     static var pool = WeakSet<N>()
     var folks = WeakSet<N>()
     
-    var symbol = Int.max
+    var symbol : S = N.symbolize(string:"*", type:.variable)
     var nodes : [N]? = nil
   }
 
@@ -31,10 +32,10 @@ public class KinNodeTests : XCTestCase {
     let fX = "f(X)" as N
     let fa = "f(a)" as N
 
-    XCTAssertEqual("5-X-variable",X.debugDescription,nok)
-    XCTAssertEqual("6-a-function(0)",a.debugDescription,nok)
-    XCTAssertEqual("7-f-function(1)(5-X-variable)",fX.debugDescription,nok)
-    XCTAssertEqual("7-f-function(1)(6-a-function(0))",fa.debugDescription,nok)
+    XCTAssertEqual("6-X-variable",X.debugDescription,nok)
+    XCTAssertEqual("7-a-function(0)",a.debugDescription,nok)
+    XCTAssertEqual("8-f-function(1)(6-X-variable)",fX.debugDescription,nok)
+    XCTAssertEqual("8-f-function(1)(7-a-function(0))",fa.debugDescription,nok)
 
     // check if folks are set correctly
 
@@ -76,9 +77,5 @@ public class KinNodeTests : XCTestCase {
 
     let count = N.pool.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
-
-
-
-
   }
 }
