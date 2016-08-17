@@ -94,15 +94,15 @@ extension Demo {
 /// MARK: - Node
 
 extension Demo {
-  final class Node : FLEA.Node {
+  final class SimpleNode : Node {
     var symbol = Tptp.Symbol("",.undefined)
-    var nodes : [Demo.Node]? = nil
+    var nodes : [Demo.SimpleNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
     lazy var description : String = self.debugDescription
   }
 
-  final class SharingNode : Sharing, FLEA.Node {
+  final class SharingNode : Sharing, Node {
     static var counter = 0
 
     static var pool = Set<Demo.SharingNode>()
@@ -137,21 +137,6 @@ extension Demo {
   }
 }
 
-// extension Demo.Node {
-//   typealias N = Demo.Node
-//   static func demo() {
-//     let nodes : [N] = demoCreateNodes()
-//     demoShow(nodes:nodes)
-//   }
-// }
-//
-// extension Demo.SharingNode {
-//   typealias N = Demo.SharingNode
-//   static func demo() {
-//     let nodes : [N] = demoCreateNodes()
-//     demoShow(nodes:nodes)
-//   }
-// }
 extension Demo {
   static func sharing() -> Int {
     typealias N = Demo.SharingNode
