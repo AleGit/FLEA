@@ -18,7 +18,7 @@ struct Tptp {
   /// equal nodes are the same objects
   /// pool holds string references to all created nodes,
   /// i.e. all nodes are permanent
-  final class SharingNode : FLEA.SharingNode, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class SharingNode : FLEA.Node, Sharing, SymbolStringTyped, ExpressibleByStringLiteral {
     static var pool = Set<Tptp.SharingNode>()
 
     var symbol = S("",.undefined)
@@ -30,7 +30,7 @@ struct Tptp {
 
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes.
-  final class SmartNode : FLEA.SharingNode, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class SmartNode : FLEA.Node, Sharing, SymbolStringTyped, ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.SmartNode>()
 
     var symbol = S("",.undefined)
@@ -43,7 +43,7 @@ struct Tptp {
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes,
   /// `folks` holds weak references to node's predecessors
-  final class KinNode : FLEA.KinNode, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class KinNode : FLEA.Node, Sharing, Kin, SymbolStringTyped, ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.KinNode>()
     var symbol = S("",.undefined)
     var nodes : [Tptp.KinNode]? = nil
@@ -53,7 +53,7 @@ struct Tptp {
     lazy var description : String = self.defaultDescription
   }
 
-  final class KinIntNode : FLEA.KinNode, FLEA.SymbolTabulating, SymbolStringTyped, ExpressibleByStringLiteral {
+  final class KinIntNode : FLEA.Node, Sharing, Kin, SymbolTabulating, SymbolStringTyped, ExpressibleByStringLiteral {
     static var pool = WeakSet<KinIntNode>()
     static var symbols = StringIntegerTable<Int>()
 

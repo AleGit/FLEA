@@ -4,7 +4,7 @@ import XCTest
 
 /// local minimal implementation of protocol
 /// to avoid side effects (pool) from ohter test classes
-private final class SmartNode : FLEA.SharingNode, SymbolStringTyped {
+private final class SmartNode : Sharing, FLEA.Node, SymbolStringTyped {
   typealias S = FLEA.Tptp.Symbol // choose the symbol
 
   static var pool = WeakSet<SmartNode>()

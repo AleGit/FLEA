@@ -102,7 +102,7 @@ extension Demo {
     lazy var description : String = self.debugDescription
   }
 
-  final class SharingNode : FLEA.SharingNode {
+  final class SharingNode : Sharing, FLEA.Node {
     static var counter = 0
 
     static var pool = Set<Demo.SharingNode>()
