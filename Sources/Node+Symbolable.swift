@@ -7,10 +7,10 @@ where N.Symbol:StringSymbolable {
 // MARK: type node convenience initializers to build terms with strings.
 
 extension Node where Symbol:StringSymbolable {
-  init(v:String) {
+  /* init(v:String) {
     let s = Symbol(v,.variable)
     self.init(variable:s)
-  }
+  } */
 
   init(c:String) {
     let s = Symbol(c,.function(0))
@@ -30,7 +30,7 @@ extension Node where Symbol:StringSymbolable {
 
 // MARK: type node calculated symbol string type property
 
-/// provide default implementations for Node : StringTyped
+/// provide default implementations for Node : SymbolStringTyped
 extension Node where Symbol:StringSymbolable {
   var symbolStringType : (String,Tptp.SymbolType) {
     return (self.symbol.string, self.symbol.type)
@@ -55,9 +55,9 @@ extension Node where Symbol:StringSymbolable {
 }
 
 /* 
-extension Node where Self:StringTyped {
+extension Node where Self:SymbolStringTyped {
   init<N:Node>(_ other:N) 
-  where N:StringTyped {
+  where N:SymbolStringTyped {
     // TODO
   }
 }

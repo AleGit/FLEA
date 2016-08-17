@@ -17,15 +17,25 @@ extension Tptp {
 /// Symbol string typed nodes have a proptery symbolStringType, e.g.
 /// - extension Node where Symbol:StringSymbolable {
 /// - extension Node where Self:StringSymbolTabulating, Symbols.Symbol == Symbol
-protocol StringTyped {
+protocol SymbolStringTyped {
+  /*
   init(v:String)
   init(c:String)
   init(f:String, _ nodes:[Self])
   init(p:String, _ nodes:[Self])
   // init()
+  */
+  associatedtype Symbol : Hashable
 
   var symbolStringType : StringType { get }
-  // static func symbolize(string:String, type:Tptp.SymbolType) -> Symbol
+  static func symbolize(string:String, type:Tptp.SymbolType) -> Symbol
+}
+
+extension Node where Self:SymbolStringTyped {
+  init(v:String) {
+    let s = Self.symbolize(string:v, type:.variable)
+    self.init(variable:s)
+  }
 }
 
 extension Tptp {

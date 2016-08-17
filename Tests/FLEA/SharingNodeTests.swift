@@ -4,7 +4,7 @@ import XCTest
 
 /// local minimal implementation of protocol
 /// to avoid side effects (pool) from other test classes
-private final class SharingNode : FLEA.SharingNode, FLEA.StringTyped {
+private final class SharingNode : FLEA.SharingNode, FLEA.SymbolStringTyped {
   typealias S = FLEA.Tptp.Symbol
 
   static var pool = Set<SharingNode>()

@@ -7,10 +7,10 @@ where N:StringSymbolTabulating,N.Symbol==N.Symbols.Symbol {
 // MARK: type node convenience initializers to build terms with strings.
 
 extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
-  init(v:String) {
+  /* init(v:String) {
     let s = Self.symbols.insert(v, .variable)
     self.init(variable:s)
-  }
+  } */
 
   init(c:String) {
     let s = Self.symbols.insert(c, .function(0))
@@ -30,7 +30,7 @@ extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol 
 
 // MARK: type node calculated symbol string type property
 
-/// provide default implementations for Node : StringTyped
+/// provide default implementations for Node : SymbolStringTyped
 extension Node where Self:StringSymbolTabulating, Symbol == Self.Symbols.Symbol {
   var symbolStringType : (String,Tptp.SymbolType) {
     return Self.symbols[self.symbol] ?? ("\(self.symbol)",.undefined)
