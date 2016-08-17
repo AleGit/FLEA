@@ -46,11 +46,19 @@ public class SmartNodeTests : XCTestCase {
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
+    XCTAssertTrue(fX.nodes!.first! == X)
+    XCTAssertTrue(fa.nodes!.first! == a)
 
     let count = Node.pool.count
     XCTAssertEqual(count,4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
+    let ffa = Node(f:"f", [ Node(f:"f",[Node(v:"Y")])]) * [ Node(v:"Y") : Node(c:"a")]
+    XCTAssertEqual(5, Node.pool.count, "\(nok)  \(#function) \(count) ≠ 5 smart nodes accumulated.")
+    let g = fX * [ X: fa]
+    XCTAssertEqual(5, Node.pool.count, "\(nok)  \(#function) \(count) ≠ 5 smart nodes accumulated.")
+    XCTAssertTrue(ffa == g)
 
+    XCTAssertFalse( Node.pool.one { $0.symbolStringType.0 == "Y" } ) /// Y must not be stored
   }
 
   /// accumulate four distict nodes
