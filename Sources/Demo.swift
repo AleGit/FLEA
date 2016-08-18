@@ -181,7 +181,8 @@ extension Demo {
 
 
 
-private func demoShow<N:Node where N:AnyObject, N:SymbolStringTyped>(nodes:[N]) {
+fileprivate func demoShow<N:Node>(nodes:[N]) 
+where N:AnyObject, N:SymbolStringTyped {
   print("nodes:\(nodes).count=\(nodes.count)")
 
   for s in Set(nodes) {
@@ -324,7 +325,8 @@ extension Demo {
   }
 }
 
-func demoParse<N:Node where N:SymbolStringTyped>(problem:String, show:Bool = Demo.show) -> [N] {
+func demoParse<N:Node>(problem:String, show:Bool = Demo.show) -> [N] 
+where N:SymbolStringTyped {
   if show{print("N:Node == \(String(reflecting:N.self))")}
 
   guard let url = URL(fileURLwithProblem:problem) else {

@@ -56,8 +56,8 @@ typealias StringType = (String, Tptp.SymbolType)
 
 /// A string symbol tabple that maps (string,type) to an integer symbol.
 struct StringIntegerTable<I:GenericInteger> : SymbolTable {
-  private var symbols = [String : I]()
-  private var strings = [I : StringType] ()
+  fileprivate var symbols = [String : I]()
+  fileprivate var strings = [I : StringType] ()
 
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
@@ -84,11 +84,11 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
 /// A string symbol table that maps (string,type) to the same string symbol:
 /// Only the symbol type needs to be stored.
 struct StringStringTable : SymbolTable {
-  // private var types = [String : Tptp.SymbolType]()
+  // fileprivate var types = [String : Tptp.SymbolType]()
   // error: type of expression is ambiguous without more context
-  // private var types = [String : Tptp.SymbolType]()
+  // fileprivate var types = [String : Tptp.SymbolType]()
   //                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
-  private var types = Dictionary<String,Tptp.SymbolType>()
+  fileprivate var types = Dictionary<String,Tptp.SymbolType>()
   
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> String {

@@ -42,7 +42,7 @@ extension Yices {
 extension Yices {
 
 	final class Context {
-		private var context : OpaquePointer
+		fileprivate var context : OpaquePointer
 
 		init() {
 			context = yices_new_context(nil)

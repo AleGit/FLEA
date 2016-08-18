@@ -13,8 +13,8 @@ public class SharingNodeTests : XCTestCase {
     ]
   }
 
-// local private adoption of protocol to avoid any side affects
-  private final class N : SymbolStringTyped, Sharing, Node {
+// local fileprivate adoption of protocol to avoid any side affects
+  fileprivate final class N : SymbolStringTyped, Sharing, Node {
   typealias S = Tptp.Symbol
   static var pool = Set<N>()
 

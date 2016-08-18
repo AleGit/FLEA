@@ -5,7 +5,7 @@ struct UtileIterator<S,T> : IteratorProtocol {
     private let data : (S) -> T
     private let predicate : (S) -> Bool
 
-    init(first:S?, step:(S)->S?, where predicate:(S)->Bool = { _ in true }, data:(S)->T) {
+    init(first:S?, step:@escaping (S)->S?, where predicate:@escaping (S)->Bool = { _ in true }, data:@escaping (S)->T) {
         self.this = first
         self.step = step
         self.data = data
@@ -31,7 +31,7 @@ struct UtileSequence<S,T> : Sequence {
     private let predicate : (S) -> Bool
     private let data : (S) -> T
 
-    init(first:S?, step:(S)->S?, where predicate:(S)->Bool = { _ in true }, data:(S)->T) {
+    init(first:S?, step:@escaping (S)->S?, where predicate: @escaping (S)->Bool = { _ in true }, data: @escaping (S)->T) {
         self.this = first
         self.step = step
         self.predicate = predicate

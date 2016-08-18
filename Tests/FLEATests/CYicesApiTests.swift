@@ -45,7 +45,7 @@ class CYicesApiTests : XCTestCase {
 
 
 
-  private func status(context:OpaquePointer, term: term_t, expected : smt_status = STATUS_SAT, line:Int = #line) {
+  fileprivate func status(context:OpaquePointer, term: term_t, expected : smt_status = STATUS_SAT, line:Int = #line) {
 
     guard let string = String(term: term) else { return }
 

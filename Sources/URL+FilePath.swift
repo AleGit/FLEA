@@ -65,20 +65,20 @@ extension URL {
     #endif
 
   }
-  private mutating func deleteExtension() {
+  fileprivate mutating func deleteExtension() {
     #if os(OSX)
     self.deletePathExtension()
     #elseif os(Linux)
     try? self.deletePathExtension()
     #endif
   }
-  private func deletingExtension() -> URL {
+  fileprivate func deletingExtension() -> URL {
     var url = self
     url.deleteExtension()
     return url
   }
 
-  private mutating func deleteLastComponent() {
+  fileprivate mutating func deleteLastComponent() {
     #if os(OSX)
     self.deleteLastPathComponent()
     #elseif os(Linux)
@@ -86,13 +86,13 @@ extension URL {
     #endif
   }
 
-  private func deletingLastComponent() -> URL {
+  fileprivate func deletingLastComponent() -> URL {
     var url = self
     url.deleteLastComponent()
     return url
   }
 
-  private mutating func deleteLastComponents(downTo c:String) {
+  fileprivate mutating func deleteLastComponents(downTo c:String) {
     var deleted = false
     while !deleted && self.lastPathComponent != "/" {
       if self.lastPathComponent == c {
@@ -102,13 +102,13 @@ extension URL {
     }
   }
 
-  private func deletingLastComponents(downTo c:String) -> URL {
+  fileprivate func deletingLastComponents(downTo c:String) -> URL {
     var url = self
     url.deleteLastComponent()
     return url
   }
 
-  private mutating func append(extension pex:String, delete:Bool = true) {
+  fileprivate mutating func append(extension pex:String, delete:Bool = true) {
     let pe = self.extensionOrEmpty
     guard pe != pex else { return } // nothing to do
 
@@ -121,13 +121,13 @@ extension URL {
     #endif
   }
 
-  private func appending(extension pex:String, delete:Bool = true) -> URL {
+  fileprivate func appending(extension pex:String, delete:Bool = true) -> URL {
     var url = self
     url.append(extension:pex, delete:delete)
     return url
   }
 
-  private mutating func append(component c:String) {
+  fileprivate mutating func append(component c:String) {
     #if os(OSX)
     self.appendPathComponent(c)
     #elseif os(Linux)
@@ -135,7 +135,7 @@ extension URL {
     #endif
   }
 
-  private func appending(component c:String) -> URL{
+  fileprivate func appending(component c:String) -> URL{
     var url = self
     url.append(component:c)
     return url
@@ -143,7 +143,7 @@ extension URL {
 }
 
 extension URL {
-  private init?(fileURLwithTptp name:String, ex:String,
+  fileprivate init?(fileURLwithTptp name:String, ex:String,
     roots:URL?...,
     f:((String)->String)? = nil) {
 

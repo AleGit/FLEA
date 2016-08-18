@@ -4,6 +4,8 @@ import Darwin
 import Glibc
 #endif
 
+public typealias Process = CommandLine
+
 import Foundation
 
 public extension Process {
@@ -64,10 +66,10 @@ public extension Process {
       guard let value = getenv(name) else { return nil }
       return String(validatingUTF8: value)
     }
-    private static func deletValue(for name: String) {
+    fileprivate static func deletValue(for name: String) {
       unsetenv(name)
     }
-    private static func set(value:String, for name: String, overwrite: Bool = true) {
+    fileprivate static func set(value:String, for name: String, overwrite: Bool = true) {
       setenv(name, value, overwrite ? 1 : 0)
     }
   }

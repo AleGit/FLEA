@@ -28,7 +28,7 @@ struct Syslog {
     // LOG_NOTICE     normal, but significant, condition
     // LOG_INFO       informational message
     // LOG_DEBUG      debug-level message
-    private var priority : Int32 {
+    fileprivate var priority : Int32 {
       switch self {
         case .emergency: return LOG_EMERG
         case .alert: return LOG_ALERT
@@ -71,7 +71,7 @@ struct Syslog {
     //                stderr as well.
     //
     // LOG_PID        Include PID with each message.
-    private var option: Int32 {
+    fileprivate var option: Int32 {
       switch self {
         case .console: return LOG_CONS
         case .immediately: return LOG_NDELAY
@@ -83,16 +83,16 @@ struct Syslog {
     }
   }
 
-  private static var activePriorities = Syslog.maskedPriorities
+  fileprivate static var activePriorities = Syslog.maskedPriorities
 
-  private static var configuration : [String:Set<Priority>]? = {
+  fileprivate static var configuration : [String:Set<Priority>]? = {
     /// TODO: read configuration
     nil
   }()
 }
 
 extension Syslog {
-  private static var maskedPriorities : Set<Priority> {
+  fileprivate static var maskedPriorities : Set<Priority> {
     let mask = setlogmask(255)
 
     let _ = setlogmask(mask)
@@ -124,7 +124,7 @@ extension Syslog {
 
   /* int setlogmask(int maskpri); */
 
-  private static func setLogMask() -> Int32 {
+  fileprivate static func setLogMask() -> Int32 {
     let mask = Syslog.activePriorities.reduce(0) { $0 + (1 << $1.priority)}
     return setlogmask(mask)
   }
@@ -149,7 +149,7 @@ extension Syslog {
   /*  void syslog(int priority, const char *format, ...); */
   /*  void vsyslog(int priority, const char *format, va_list ap); */
 
-  private static func syslog(
+  fileprivate static func syslog(
       priority : Int32,
       message : String,
       args : CVarArg...) {
@@ -158,7 +158,7 @@ extension Syslog {
         }
     }
 
-  private static func sysLog(
+  fileprivate static func sysLog(
     priority : Priority,
     args : CVarArg...,
     message : () -> String
@@ -168,7 +168,7 @@ extension Syslog {
       }
   }
 
-  private static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
+  fileprivate static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
     guard Syslog.activePriorities.contains(priority) else { return false }
 
     return true
@@ -193,7 +193,7 @@ extension Syslog {
     // return false
   }
 
-  private static func log(
+  fileprivate static func log(
     _ priority: Priority,
     errcode : Int32 = 0,
     file : String = #file,

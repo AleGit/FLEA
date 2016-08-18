@@ -6,8 +6,9 @@
 /// - An entry is invalid if it's element reference is nil (inserted element does not exist anymore)
 /// - Some invalid entries will be removed when mutating functions are performed.
 /// - The number of valid entries can decrease even for an immutable weak set.
-struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
-    private var contents = [Int: [WeakEntry<T>]](minimumCapacity:1)
+struct WeakSet<T> 
+where T: AnyObject, T: Hashable, T:CustomStringConvertible {
+    fileprivate var contents = [Int: [WeakEntry<T>]](minimumCapacity:1)
     init(){}
 
 }
@@ -16,7 +17,8 @@ struct WeakSet<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
 /// [ARC](https://en.wikipedia.org/wiki/Automatic_Reference_Counting)
 /// deallocates an object, when there is no strong reference left.
 /// Additionally weak references to this object will be set to nil.
-private struct WeakEntry<T where T: AnyObject, T: Hashable, T:CustomStringConvertible> {
+fileprivate struct WeakEntry<T> 
+where T: AnyObject, T: Hashable, T:CustomStringConvertible {
     weak var element: T?
 }
 
@@ -191,7 +193,7 @@ extension WeakEntry : CustomStringConvertible {
 
 extension WeakSet {
   /// Update and return list of valid (not nullified) entries for a value
-  private mutating func entries(at value: Int) -> [WeakEntry<T>]? {
+  fileprivate mutating func entries(at value: Int) -> [WeakEntry<T>]? {
     guard let count = contents[value]?.count else {
       // no entries at all
       return nil

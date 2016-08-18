@@ -87,10 +87,10 @@ public class WeakSetTests : XCTestCase {
   }
 }
 
-// MARK: - private data structure for weak set tests only
+// MARK: - fileprivate data structure for weak set tests only
 
 extension WeakSetTests {
-  private final class Stringly : Hashable, CustomStringConvertible {
+  fileprivate final class Stringly : Hashable, CustomStringConvertible {
     let string : String
     var hashValue : Int { return string.hashValue }
 
@@ -108,7 +108,7 @@ extension WeakSetTests {
   }
 }
 
-private func ==(lhs:WeakSetTests.Stringly, rhs:WeakSetTests.Stringly) -> Bool {
+fileprivate func ==(lhs:WeakSetTests.Stringly, rhs:WeakSetTests.Stringly) -> Bool {
   return lhs.string == rhs.string
 }
 

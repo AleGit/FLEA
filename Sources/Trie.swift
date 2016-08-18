@@ -272,7 +272,7 @@ final class TrieClass<K: Hashable, V: Hashable> : TrieStore {
 //     return extractVariants(subtrie, path:tail)
 // }
 
-// private func candidates<T:TrieType, N:Node where T.Leap==SymHop<String>, T.Value:Hashable, N.Symbol==String>(
+// fileprivate func candidates<T:TrieType, N:Node where T.Leap==SymHop<String>, T.Value:Hashable, N.Symbol==String>(
 //     _ indexed:T,
 //     queryTerm:N,
 //     extract:(T, path:[T.Leap]) -> Set<T.Value>?

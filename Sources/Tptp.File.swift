@@ -5,12 +5,12 @@ import Foundation
 extension Tptp {
   final class File {
 
-    private var store : StoreRef?
+    fileprivate var store : StoreRef?
     /// The root of the parsed <TPTP_file>
     /// <TPTP_file> ::= <TPTP_input>*
-    private(set) var root : TreeNodeRef?
+    fileprivate(set) var root : TreeNodeRef?
 
-    private init?(path:FilePath) {
+    fileprivate init?(path:FilePath) {
       Syslog.info { path }
       guard let size = path.fileSize, size > 0 else {
         return nil;
@@ -28,7 +28,7 @@ extension Tptp {
       // - Linux url.path : String?
       // - macOS url.path : String
       if url.isFileURL, let path = optional(url.path) {
-        Syslog.warning { "url.path : \(url.path.dynamicType)"}
+        Syslog.warning { "url.path : \(type(of:url.path))"}
         self.init(path:path)
       }
       else {
@@ -139,7 +139,7 @@ extension Tptp.File {
   }
 
   /// The sequence of stored tree nodes.
-  private var nodes : UtileSequence<TreeNodeRef,TreeNodeRef> {
+  fileprivate var nodes : UtileSequence<TreeNodeRef,TreeNodeRef> {
     let first = prlcFirstTreeNode(self.store!)
     let step = {
       (treeNode : TreeNodeRef) in
@@ -159,7 +159,7 @@ extension Tptp.File {
 
   /// The sequence of parsed <include> nodes.
   /// includes.count <= inputs.count
-  private var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
+  fileprivate var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
   }
 
@@ -171,7 +171,7 @@ extension Tptp.File {
 
   /// The sequence of parsed <fof_annotated> nodes.
   /// fofs.count <= inputs.count
-  private var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+  fileprivate var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
     return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
   }
 }
