@@ -19,6 +19,8 @@ public extension CommandLine {
       // fails when argc == 0, e.g. while unit testing
       // CommandLine.arguments.count causes an unwrap error
       return "n/a (CommandLine has no arguments.)"
+
+      // appears to be corrected at Swift 3 Preview 5/6
     }
     return CommandLine.arguments[0]
   }
