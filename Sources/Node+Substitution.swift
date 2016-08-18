@@ -91,26 +91,26 @@ where N:SymbolStringTyped {
 /*
 extension Dictionary where Key:Node, Value:Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?
-    fileprivate var isHomogenous : Bool {
+    private var isHomogenous : Bool {
         return type(of:self.keys.first?) == type(of:self.values.first?)
     }
 
     /// Are *variables* mapped to terms?
-    fileprivate var allKeysAreVariables : Bool {
+    private var allKeysAreVariables : Bool {
         return Array(self.keys).reduce(true) {
             $0 && $1.nodes == nil
         }
     }
 
     /// Are terms mapped to *variables*?
-    fileprivate var allValuesAreVariables : Bool {
+    private var allValuesAreVariables : Bool {
         return Array(self.values).reduce(true) {
             $0 && $1.nodes == nil
         }
     }
 
     /// Are distinct terms mapped to *distinguishable* terms?
-    fileprivate var isInjective : Bool {
+    private var isInjective : Bool {
         return self.keys.count == Set(self.values).count
     }
 

@@ -64,10 +64,10 @@ public extension CommandLine {
       guard let value = getenv(name) else { return nil }
       return String(validatingUTF8: value)
     }
-    fileprivate static func deletValue(for name: String) {
+    private static func deletValue(for name: String) {
       unsetenv(name)
     }
-    fileprivate static func set(value:String, for name: String, overwrite: Bool = true) {
+    private static func set(value:String, for name: String, overwrite: Bool = true) {
       setenv(name, value, overwrite ? 1 : 0)
     }
   }

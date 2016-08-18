@@ -8,7 +8,7 @@ import Glibc
 public typealias AbsoluteTime = Double
 
 /// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
-fileprivate func AbsoluteTimeGetCurrent() -> AbsoluteTime {
+private func AbsoluteTimeGetCurrent() -> AbsoluteTime {
   var atime = timeval()             // initialize C struct
   let _ = gettimeofday(&atime,nil)  // will return 0
   return AbsoluteTime(atime.tv_sec) // s + µs
@@ -17,11 +17,11 @@ fileprivate func AbsoluteTimeGetCurrent() -> AbsoluteTime {
 
 public typealias UtileTimes = (user:Double,system:Double,absolute:AbsoluteTime)
 
-fileprivate func ticksPerSecond() -> Double {
+private func ticksPerSecond() -> Double {
   return Double(sysconf(Int32(_SC_CLK_TCK)))
 }
 
-fileprivate func UtileTimesGetCurrent() -> UtileTimes {
+private func UtileTimesGetCurrent() -> UtileTimes {
   var ptime = tms()
   let _ = times(&ptime)
 
@@ -32,7 +32,7 @@ fileprivate func UtileTimesGetCurrent() -> UtileTimes {
   )
 }
 
-fileprivate func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
+private func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
   return (
     user:lhs.user-rhs.user,
     system:lhs.system-rhs.system,

@@ -181,7 +181,7 @@ extension Demo {
 
 
 
-fileprivate func demoShow<N:Node>(nodes:[N]) 
+private func demoShow<N:Node>(nodes:[N]) 
 where N:AnyObject, N:SymbolStringTyped {
   print("nodes:\(nodes).count=\(nodes.count)")
 
