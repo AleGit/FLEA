@@ -13,34 +13,34 @@ class CYicesApiTests : XCTestCase {
 
     XCTAssertEqual(
       "(()) -> ()",
-      "\(yices_init.dynamicType)")
+      "\(type(of:yices_init))")
 
     XCTAssertEqual(
       "(()) -> ()",
-      "\(yices_exit.dynamicType)")
+      "\(type(of:yices_exit))")
 
     XCTAssertEqual(
       "(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ImplicitlyUnwrappedOptional<OpaquePointer>",
-      "\(yices_new_context.dynamicType)")
+      "\(type(of:yices_new_context))")
     XCTAssertEqual(
       "(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ()",
-      "\(yices_free_context.dynamicType)")
+      "\(type(of:yices_free_context))")
 
     XCTAssertEqual(
       "(()) -> Int32",
-      "\(yices_bool_type.dynamicType)")
+      "\(type(of:yices_bool_type))")
     XCTAssertEqual(
       "(Int32) -> Int32",
-      "\(yices_new_uninterpreted_term.dynamicType)")
+      "\(type(of:yices_new_uninterpreted_term))")
     XCTAssertEqual(
       "((Int32, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> Int32",
-      "\(yices_set_term_name.dynamicType)")
+      "\(type(of:yices_set_term_name))")
     XCTAssertEqual(
       "((UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>, Int32)) -> Int32",
-      "\(yices_function_type.dynamicType)")
+      "\(type(of:yices_function_type))")
     XCTAssertEqual(
       "((Int32, UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>)) -> Int32",
-      "\(yices_application.dynamicType)")
+      "\(type(of:yices_application))")
   }
 
 

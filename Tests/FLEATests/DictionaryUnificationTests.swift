@@ -10,7 +10,7 @@ public class DictionaryUnificationTests : XCTestCase {
     ]
   }
 
-  func check<N:Node where N.Symbol:StringSymbolable>(
+  func check<N:Node>(
     _ lhs:N,
     _ rhs:N,
     _ expected:[N:N]? = nil,
@@ -18,7 +18,7 @@ public class DictionaryUnificationTests : XCTestCase {
     _ file: String = #file,
     _ function: String = #function,
     _ line : Int = #line
-  ) {
+  ) where N.Symbol:StringSymbolable {
     let actual = lhs =?= rhs
 
     // XCTFail("\n\(nok) \(message).\(file).\(function).\(line)")

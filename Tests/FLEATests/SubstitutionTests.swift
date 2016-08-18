@@ -15,7 +15,7 @@ public class SubstitutionTests : XCTestCase {
     let Z_c : Instantiator = [Q.Z : Q.c]
     let XYZ_abc : Instantiator = [Q.X : Q.a, Q.Y: Q.b, Q.Z : Q.c]
 
-    XCTAssertEqual("\(X_a.dynamicType))","Instantiator<SmartNode>)", nok)
+    XCTAssertEqual("\(type(of:X_a)))","Instantiator<SmartNode>)", nok)
 
     guard let lc = (X_a * Y_b), let lcombined = lc * Z_c else {
       XCTFail("\(X_a) * \(Y_b) * \(Z_c) was not derived.")
@@ -61,7 +61,7 @@ final class Instantiator<N:Node> : Substitution, Equatable {
 
   var description : String {
     let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
-    return "\(self.dynamicType) {\(pairs)}"
+    return "\(type(of:self)) {\(pairs)}"
   }
 }
 

@@ -1,5 +1,5 @@
 import XCTest
-@testable import FLEATestSuite
+@testable import FLEATests
 
 XCTMain([
   testCase(AuxiliaryTests.allTests),

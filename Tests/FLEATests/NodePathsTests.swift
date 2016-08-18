@@ -58,8 +58,8 @@ public class NodePathsTests : XCTestCase {
 #elseif os(Linux)
   // [[Int]] == [[Int]] does not work on Linux Swift 3P3.
       XCTAssertEqual(
-        Array(expected.flatten()),
-        Array(actual.flatten()), nok
+        Array(expected.joined()),
+        Array(actual.joined()), nok
       )
 
 #endif

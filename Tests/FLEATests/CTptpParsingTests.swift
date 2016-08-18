@@ -31,32 +31,32 @@ public class CTptpParsingApiTests : XCTestCase {
   func testTypes() {
     XCTAssertEqual(
       "ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_store>>"
-      ,"\(prlcParsingStore.dynamicType)",nok)
+      ,"\(type(of:prlcParsingStore))",nok)
     XCTAssertEqual(
       "ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_tree_node>>"
-      ,"\(prlcParsingRoot.dynamicType)",nok)
+      ,"\(type(of:prlcParsingRoot))",nok)
     XCTAssertEqual(
       "((ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>, ImplicitlyUnwrappedOptional<UnsafeMutablePointer<Optional<UnsafeMutablePointer<prlc_store>>>>, ImplicitlyUnwrappedOptional<UnsafeMutablePointer<Optional<UnsafeMutablePointer<prlc_tree_node>>>>)) -> Int32"
-      ,"\(prlcParsePath.dynamicType)",nok)
+      ,"\(type(of:prlcParsePath))",nok)
     XCTAssertEqual(
       "(ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_store>>) -> ()"
-      ,"\(prlcDestroyStore.dynamicType)",nok)
+      ,"\(type(of:prlcDestroyStore))",nok)
     XCTAssertEqual(
       "((ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_store>>, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>"
-      ,"\(prlcStoreSymbol.dynamicType)",nok)
+      ,"\(type(of:prlcStoreSymbol))",nok)
     XCTAssertEqual(
       "((ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_store>>, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>"
-      ,"\(prlcGetSymbol.dynamicType)",nok)
+      ,"\(type(of:prlcGetSymbol))",nok)
     XCTAssertEqual(
       "((ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_store>>, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>"
-      ,"\(prlcGetSymbol.dynamicType)",nok)
+      ,"\(type(of:prlcGetSymbol))",nok)
     XCTAssertEqual(
       "((ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_store>>, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>"
-      ,"\(prlcGetSymbol.dynamicType)",nok)
+      ,"\(type(of:prlcGetSymbol))",nok)
 
     XCTAssertEqual(
       "((ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_store>>, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> ImplicitlyUnwrappedOptional<UnsafeMutablePointer<prlc_tree_node>>"
-      ,"\(prlcStoreNodeFile.dynamicType)",nok)
+      ,"\(type(of:prlcStoreNodeFile))",nok)
 
 
   }

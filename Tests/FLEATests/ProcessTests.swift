@@ -57,7 +57,7 @@ public class ProcessTests : XCTestCase {
     #if os(OSX)
     XCTAssertEqual("/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xctest", name,"\(nok) \(name)")
     #elseif os(Linux)
-    XCTAssertTrue(name.hasSuffix(".build/debug/FLEATests.xctest"),"\(nok) \(name)")
+    XCTAssertTrue(name.hasSuffix(".build/debug/FLEAPackageTests.xctest"),"\(nok) \(name)")
     #endif
 
   }

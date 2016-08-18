@@ -90,11 +90,11 @@ public class StringPathTests : XCTestCase {
       nok)
 
 
-      print(Array(path.unicodeScalars).dynamicType)
+      print(type(of:Array(path.unicodeScalars)))
 
-      print(Array(path.characters).dynamicType)
-      print(Array(path.utf16).dynamicType)
-      print(Array(path.utf8).dynamicType)
+      print(type(of:Array(path.characters)))
+      print(type(of:Array(path.utf16)))
+      print(type(of:Array(path.utf8)))
 
   }
 
