@@ -12,11 +12,13 @@ public extension CommandLine {
   /// CommandLine.arguments.first ?? "n/a"
   public static var name : String {
     guard CommandLine.argc > 0 else {
-      Syslog.error { "process has no name." }
+      Syslog.error { "CommandLine has no arguments." }
+
+      assert(false, "CommandLine has no arguments.")
       // `guard CommandLine.arguments.count > 0 else ...`
       // fails when argc == 0, e.g. while unit testing
       // CommandLine.arguments.count causes an unwrap error
-      return "n/a"
+      return "n/a (CommandLine has no arguments.)"
     }
     return CommandLine.arguments[0]
   }
