@@ -5,12 +5,12 @@ import Foundation
 extension Tptp {
   final class File {
 
-    fileprivate var store : StoreRef?
+    private var store : StoreRef?
     /// The root of the parsed <TPTP_file>
     /// <TPTP_file> ::= <TPTP_input>*
-    fileprivate(set) var root : TreeNodeRef?
+    private(set) var root : TreeNodeRef?
 
-    fileprivate init?(path:FilePath) {
+    private init?(path:FilePath) {
       Syslog.info { path }
       guard let size = path.fileSize, size > 0 else {
         return nil;
@@ -38,7 +38,6 @@ extension Tptp {
         return nil
       }
     }
-
 
     init?(string:String, type: Tptp.SymbolType) {
       Syslog.info { string }
@@ -97,81 +96,73 @@ extension Tptp {
         prlcDestroyStore(store)
       }
     }
-  }
-}
 
-extension Tptp.File {
-
-  /// Transform the C representation of the abstract syntax tree
-  /// into a native Swift representation.
-  func ast<N:Node>() -> N?
-  where N:SymbolStringTyped {
-    guard let tree = self.root else { return nil }
-    let t : N = N(tree:tree)
-    return t
-  }
-
-  /// The path to the parsed file is store in the root.
-  var path: FilePath {
-    guard let cstring = root?.pointee.symbol else { return "n/a" }
-    return String(validatingUTF8:cstring) ?? "n/a"
-  }
-
-  /// The sequence of parsed <TPTP_input> nodes.
-  /// - <TPTP_input> ::= <annotated_formula> | <include>
-  var inputs : UtileSequence<TreeNodeRef,TreeNodeRef>{
-    return root!.children { $0 }
-  }
-
-  /// The sequence of stored symbols (paths, names, etc.)
-  var symbols : UtileSequence<CStringRef,String?> {
-    let first = prlcFirstSymbol(self.store!)
-    let step = {
-      (cstring : CStringRef) in
-      prlcNextSymbol(self.store!,cstring)
-    }
-    let data = {
-      (cstring : CStringRef) in
-      String(validatingUTF8:cstring)
+    /// Transform the C tree representation into a Swift representation.
+    func ast<N:Node>() -> N?
+    where N:SymbolStringTyped {
+      guard let tree = self.root else { return nil }
+      let t : N = N(tree:tree)
+      return t
     }
 
-    return UtileSequence(first:first, step:step, data:data)
-  }
-
-  /// The sequence of stored tree nodes.
-  fileprivate var nodes : UtileSequence<TreeNodeRef,TreeNodeRef> {
-    let first = prlcFirstTreeNode(self.store!)
-    let step = {
-      (treeNode : TreeNodeRef) in
-      prlcNextTreeNode(self.store!, treeNode)
+    /// The path to the parsed file is store in the root.
+    var path: FilePath {
+      guard let cstring = root?.pointee.symbol else { return "n/a" }
+      return String(validatingUTF8:cstring) ?? "n/a"
     }
-    let data = {
-      (treeNode : TreeNodeRef) in
-      treeNode
+
+    /// The sequence of parsed <TPTP_input> nodes.
+    /// - <TPTP_input> ::= <annotated_formula> | <include>
+    var inputs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+      return root!.children { $0 }
     }
-    return UtileSequence(first:first, step:step, data: data)
-  }
-}
 
+    /// The sequence of stored symbols (paths, names, etc.)
+    /// from first to last.
+    private var symbols : UtileSequence<CStringRef,String?> {
+      let first = prlcFirstSymbol(self.store!)
+      let step = {
+        (cstring : CStringRef) in
+        prlcNextSymbol(self.store!,cstring)
+      }
+      let data = {
+        (cstring : CStringRef) in
+        String(validatingUTF8:cstring)
+      }
 
-/// MARK: - -- unused --
-extension Tptp.File {
+      return UtileSequence(first:first, step:step, data:data)
+    }
 
-  /// The sequence of parsed <include> nodes.
-  /// includes.count <= inputs.count
-  fileprivate var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
-    return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
-  }
+    /// The sequence of stored tree nodes from first to last.
+    private var nodes : UtileSequence<TreeNodeRef,TreeNodeRef> {
+      let first = prlcFirstTreeNode(self.store!)
+      let step = {
+        (treeNode : TreeNodeRef) in
+        prlcNextTreeNode(self.store!, treeNode)
+      }
+      let data = {
+        (treeNode : TreeNodeRef) in
+        treeNode
+      }
+      return UtileSequence(first:first, step:step, data: data)
+    }
 
-  /// The sequence of parsed <cnf_annotated> nodes.
-  /// cnfs.count <= inputs.count
-  var cnfs : UtileSequence<TreeNodeRef,TreeNodeRef>{
-    return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
-  }
+    /// The sequence of parsed <include> nodes.
+    /// includes.count <= inputs.count
+    private var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
+      return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
+    }
 
-  /// The sequence of parsed <fof_annotated> nodes.
-  /// fofs.count <= inputs.count
-  fileprivate var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
-    return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
+    /// The sequence of parsed <cnf_annotated> nodes.
+    /// cnfs.count <= inputs.count
+    var cnfs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+      return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
+    }
+
+    /// The sequence of parsed <fof_annotated> nodes.
+    /// fofs.count <= inputs.count
+    private var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+      return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
+    }
   }
 }
