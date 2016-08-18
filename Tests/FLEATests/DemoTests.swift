@@ -16,8 +16,8 @@ public class DemoTests : XCTestCase {
 
   func testProblem() {
     Demo.show = false
-    XCTAssertEqual(12,Demo.Problem.puz001cnf(),nok)
-    XCTAssertEqual(14,Demo.Problem.puz001fof(),nok)
+    XCTAssertEqual(12,Demo.Problem.parseCnf(),nok)
+    XCTAssertEqual(14,Demo.Problem.parseFof(),nok)
     XCTAssertEqual(0,Demo.Problem.broken(),nok)
 
     // too expensive in debug mode

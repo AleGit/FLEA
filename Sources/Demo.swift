@@ -1,17 +1,21 @@
 
 public struct Demo {
+  static let hwvProblem = "HWV134-1"
+  static let cnfProblem = "PUZ001-1"
+  static let fofProblem = "PUZ001+1"
+
   static let line = Array(repeating:"=", count:80).joined(separator:"")
 
   static var show : Bool = true
 
   static let demos = [
-  "p1c" : (Demo.Problem.puz001cnf,"Parse PUZ001-1 (cnf)"),
-  "p1f" : (Demo.Problem.puz001fof,"Parse PUZ001+1 (fof)"),
-  // "hwv" : (Demo.Problem.hwv134cnf,"Parse HWV134-1 (expensive)"),
-  "simple" : (Demo.Problem.simpleNode,"Parse HWV134-1 with simple node(expensive)"),
-  "sharing" : (Demo.Problem.sharingNode,"Parse HWV134-1 with sharing node (expensive)"),
-  "smart" : (Demo.Problem.smartNode,"Parse HWV134-1 with smart node (expensive)"),
-  "Kin" : (Demo.Problem.kinNode,"Parse HWV134-1 with kin node (expensive)"),
+  "cnf" : (Demo.Problem.parseCnf,"Parse \(cnfProblem) (cnf)"),
+  "fof" : (Demo.Problem.parseFof,"Parse \(fofProblem) (fof)"),
+  // "hwv" : (Demo.Problem.hwv134cnf,"Parse \(hwvProblem) (expensive)"),
+  "simple" : (Demo.Problem.simpleNode,"Parse \(hwvProblem) with simple node(expensive)"),
+  "sharing" : (Demo.Problem.sharingNode,"Parse \(hwvProblem) with sharing node (expensive)"),
+  "smart" : (Demo.Problem.smartNode,"Parse \(hwvProblem) with smart node (expensive)"),
+  "Kin" : (Demo.Problem.kinNode,"Parse \(hwvProblem) with kin node (expensive)"),
   "broken" : (Demo.Problem.broken,"Parse invalid file"),
   "pool" : (Demo.sharing, "Node sharing"),
   "mgu" : (Demo.Unification.demo,"Unfication")
@@ -207,9 +211,9 @@ import Foundation // URL
 
 extension Demo {
   struct Problem {
-    static func puz001cnf() -> Int {
+    static func parseCnf() -> Int {
       typealias NodeType = Tptp.DefaultNode
-      let problem = "PUZ001-1"
+      let problem = cnfProblem
 
       let inputs : [NodeType] = demoParse(problem:problem)
       for (i,input) in inputs.enumerated() {
@@ -222,9 +226,9 @@ extension Demo {
       return inputs.count
     }
 
-    static func puz001fof() -> Int {
+    static func parseFof() -> Int {
       typealias NodeType = Tptp.DefaultNode
-      let problem = "Problems/PUZ001+1"
+      let problem = fofProblem
 
       let inputs : [NodeType] = demoParse(problem:problem)
       if show {
@@ -253,10 +257,9 @@ extension Demo {
 
     static func simpleNode() -> Int {
       typealias NodeType = Tptp.SimpleNode
-      let problem = "HWV134-1"
 
-      let inputs : [NodeType] = demoParse(problem:problem)
-      if show { print(problem, "count :", inputs.count) }
+      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
 
@@ -270,10 +273,9 @@ extension Demo {
     }
     static func sharingNode() -> Int {
       typealias NodeType = Tptp.SharingNode
-      let problem = "HWV134-1"
 
-      let inputs : [NodeType] = demoParse(problem:problem)
-      if show { print(problem, "count :", inputs.count) }
+      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
 
@@ -288,10 +290,9 @@ extension Demo {
     }
     static func smartNode() -> Int {
       typealias NodeType = Tptp.SmartNode
-      let problem = "Problems/HWV134-1"
 
-      let inputs : [NodeType] = demoParse(problem:problem)
-      if show { print(problem, "count :", inputs.count) }
+      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
 
@@ -306,10 +307,9 @@ extension Demo {
     }
     static func kinNode() -> Int {
       typealias NodeType = Tptp.KinNode
-      let problem = "Problems/HWV134-1"
 
-      let inputs : [NodeType] = demoParse(problem:problem)
-      if show { print(problem, "count :", inputs.count) }
+      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
 
