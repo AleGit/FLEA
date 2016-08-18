@@ -10,7 +10,7 @@ func optional<T>(_ value:T?) -> T? {
 extension URL {
   static var tptpDirectoryURL : URL? {
 
-    if let path = Process.Environment.getValue(for:"TPTP_ROOT")
+    if let path = CommandLine.Environment.getValue(for:"TPTP_ROOT")
     , path.isAccessibleDirectory {
       return URL(fileURLWithPath: path)
     }
@@ -33,7 +33,7 @@ extension URL {
   }
 
   static var homeDirectoryURL : URL? {
-    guard let path = Process.Environment.getValue(for:"HOME") else {
+    guard let path = CommandLine.Environment.getValue(for:"HOME") else {
       return nil
     }
     return URL(fileURLWithPath: path)

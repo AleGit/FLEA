@@ -4,40 +4,38 @@ import Darwin
 import Glibc
 #endif
 
-public typealias Process = CommandLine
-
 import Foundation
 
-public extension Process {
+public extension CommandLine {
   public typealias Option = (name:String,settings:[String])
 
-  /// Process.arguments.first ?? "n/a"
+  /// CommandLine.arguments.first ?? "n/a"
   public static var name : String {
-    guard Process.argc > 0 else {
+    guard CommandLine.argc > 0 else {
       Syslog.error { "process has no name." }
-      // `guard Process.arguments.count > 0 else ...`
+      // `guard CommandLine.arguments.count > 0 else ...`
       // fails when argc == 0, e.g. while unit testing
-      // Process.arguments.count causes an unwrap error
+      // CommandLine.arguments.count causes an unwrap error
       return "n/a"
     }
-    return Process.arguments[0]
+    return CommandLine.arguments[0]
   }
 
-  /// Process.arguments.dropFirst()
+  /// CommandLine.arguments.dropFirst()
   public static var parameters : [String] {
-    guard Process.argc > 0 else {
-      // `guard Process.arguments.count > 0 else ...`
+    guard CommandLine.argc > 0 else {
+      // `guard CommandLine.arguments.count > 0 else ...`
       // fails when argc == 0, e.g. while unit testing
-      // Process.arguments.count causes an unwrap error
+      // CommandLine.arguments.count causes an unwrap error
       return [String]()
     }
-    return Array(Process.arguments.dropFirst())
+    return Array(CommandLine.arguments.dropFirst())
   }
 
   static var options : [String : [String]]  = {
     var dictionary = ["" : [String]()]
     var name = ""
-    for parameter in Process.parameters {
+    for parameter in CommandLine.parameters {
       if parameter.hasPrefix("--") {
         name = parameter
         if dictionary[name] == nil {

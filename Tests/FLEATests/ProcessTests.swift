@@ -53,7 +53,7 @@ public class ProcessTests : XCTestCase {
   }
 
   func testName() {
-    let name = Process.name
+    let name = CommandLine.name
     #if os(OSX)
     XCTAssertEqual("/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xctest", name,"\(nok) \(name)")
     #elseif os(Linux)

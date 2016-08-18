@@ -10,8 +10,7 @@ public class UnificationTests : XCTestCase {
     ]
   }
 
-  func check<S:Substitution,N:Node where S.K==N, S.V==N, S:Equatable,
-  S.Iterator == DictionaryIterator<N,N>, N.Symbol:StringSymbolable>(
+  func check<S:Substitution,N:Node> (
     _ lhs:N,
     _ rhs:N,
     _ expected:S? = nil,
@@ -19,7 +18,9 @@ public class UnificationTests : XCTestCase {
     _ file: String = #file,
     _ function: String = #function,
     _ line : Int = #line
-  ) {
+  )
+  where S.K==N, S.V==N, S:Equatable, N.Symbol:StringSymbolable,
+  S.Iterator == DictionaryIterator<N,N> {
     let actual : S? = lhs =?= rhs
 
     // XCTFail("\n\(nok) \(message).\(file).\(function).\(line)")

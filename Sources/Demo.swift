@@ -18,7 +18,7 @@ public struct Demo {
   ]
 
   public static func demo() -> Int? {
-    guard let names = Process.options["--demo"] else {
+    guard let names = CommandLine.options["--demo"] else {
       return nil
     }
 
@@ -29,7 +29,7 @@ public struct Demo {
         print("   '\(key)' \tdescription:'\(value.1)")
 
       }
-      let prefix = "  $ \(Process.arguments[0]) --demo"
+      let prefix = "  $ \(CommandLine.arguments[0]) --demo"
       print("To execute all demos type the following line:")
       let args = demos.map { $0 }.reduce(prefix) { $0 + " \($1.0)"}
       print(args)
