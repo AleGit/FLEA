@@ -108,7 +108,7 @@ extension WeakSetTests {
   }
 }
 
-fileprivate func ==(lhs:WeakSetTests.Stringly, rhs:WeakSetTests.Stringly) -> Bool {
+private func ==(lhs:WeakSetTests.Stringly, rhs:WeakSetTests.Stringly) -> Bool {
   return lhs.string == rhs.string
 }
 
