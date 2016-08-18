@@ -1,22 +1,21 @@
 Procedure for *»Proving with Instances«*
 ===
 
-
 Setting the stage
 --
 
-First a prover has to (partially) read the input to build up a repository of clauses.
+The prover builds up a repository of clauses.
 
 - The prover reads a problem file.
-  The problem file contains a list of inputs:
+  The problem file contains a sequence of inputs:
 
   - `include(file [,selection]).`: additionally input files (with axioms)
   - `cnf(name,role,clause [,annotations]).`: first order clauses
   - `fof(name,role,formula [,annotations]).`: arbitrary first order formulas *[unsupported]*
 
-- The prover adds the cnf inputs as clauses to its clause repository.
+- The prover adds the first order clauses to its repository.
 
-- _[missing]_ The prover transforms fof inputs into a equisatisfiable formula in conjunctive normal form.
+- The prover transforms the arbitrary first order formulas into  equi-satisfiable first order clauses and adds them to its repository. *[unsupported]*
 
 - The prover reads the additionally files (if any) and adds the selected axioms to its clause repository.
 
