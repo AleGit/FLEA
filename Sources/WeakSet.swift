@@ -17,7 +17,7 @@ where T: AnyObject, T: Hashable, T:CustomStringConvertible {
 /// [ARC](https://en.wikipedia.org/wiki/Automatic_Reference_Counting)
 /// deallocates an object, when there is no strong reference left.
 /// Additionally weak references to this object will be set to nil.
-fileprivate struct WeakEntry<T> 
+private struct WeakEntry<T> 
 where T: AnyObject, T: Hashable, T:CustomStringConvertible {
     weak var element: T?
 }

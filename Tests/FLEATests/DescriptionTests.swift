@@ -11,8 +11,8 @@ public class DescriptionTests : XCTestCase {
     ]
   }
 
-  // local fileprivate adoption of protocol to avoid any side affects
-  fileprivate final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
+  // local private adoption of protocol to avoid any side affects
+  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
     typealias S = Int
     static var symbols = StringIntegerTable<S>()
     static var pool = WeakSet<N>()

@@ -34,7 +34,7 @@ public class SubstitutionTests : XCTestCase {
 }
 
 final class Instantiator<N:Node> : Substitution, Equatable {
-  fileprivate(set) var storage = [N:N]()
+  private(set) var storage = [N:N]()
 
   subscript(key:N) -> N? {
     get { return storage[key] }

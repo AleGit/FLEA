@@ -15,8 +15,8 @@ public class StringLiteralTests : XCTestCase {
   }
 
 
-// local fileprivate adoption of protocol to avoid any side affects
-  fileprivate final class N : SymbolStringTyped, Node, ExpressibleByStringLiteral {
+// local private adoption of protocol to avoid any side affects
+  private final class N : SymbolStringTyped, Node, ExpressibleByStringLiteral {
   typealias S = Tptp.Symbol
   
   var symbol : S = N.symbolize(string:"*", type:.variable)
