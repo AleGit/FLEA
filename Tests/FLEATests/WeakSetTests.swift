@@ -85,12 +85,8 @@ public class WeakSetTests : XCTestCase {
 
     XCTAssertEqual(temp.nilCount, 2)
   }
-}
 
-// MARK: - fileprivate data structure for weak set tests only
-
-extension WeakSetTests {
-  fileprivate final class Stringly : Hashable, CustomStringConvertible {
+  private final class Stringly : Hashable, CustomStringConvertible, ExpressibleByStringLiteral {
     let string : String
     var hashValue : Int { return string.hashValue }
 
@@ -105,21 +101,14 @@ extension WeakSetTests {
     var description : String {
       return string
     }
-  }
-}
-
-private func ==(lhs:WeakSetTests.Stringly, rhs:WeakSetTests.Stringly) -> Bool {
-  return lhs.string == rhs.string
-}
-
-extension WeakSetTests.Stringly: ExpressibleByStringLiteral {
-    typealias ExtendedGraphemeClusterLiteralType = StringLiteralType
+    class final func ==(lhs:Stringly, rhs:Stringly) -> Bool {
+      return lhs.string == rhs.string
+    }
+    typealias ExtendedGraphemeClusterLiteralType = StringLiteralType 
     typealias UnicodeScalarLiteralType = StringLiteralType
-
     convenience init(unicodeScalarLiteral value: UnicodeScalarLiteralType) {
         self.init("\(value)")
     }
-
     convenience init(extendedGraphemeClusterLiteral value: ExtendedGraphemeClusterLiteralType) {
         self.init(value)
     }
@@ -127,4 +116,5 @@ extension WeakSetTests.Stringly: ExpressibleByStringLiteral {
     convenience init(stringLiteral value: StringLiteralType) {
         self.init(value)
     }
+  }
 }
