@@ -141,15 +141,13 @@ private func UtileTimesGetCurrent() -> UtileTimes {
   )
 }
 
-#if os(Linux)
 func loggingTime() -> String {
   var t = time(nil) // : time_t 
   let tm = localtime(&t) // : struct tm *
   var s: Array<CChar> = Array(repeating: 0, count:64) // : char s[64];
-  strftime(&s, s.count, "%c", tm);
+  strftime(&s, s.count, "%F %T %z", tm);
   return String(cString:s)
 }
-#endif
 
 private func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
   return (
