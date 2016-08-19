@@ -6,10 +6,12 @@ let ok = "✅ "
 let nok = "❌ "
 
 public class FleaTestCase : XCTestCase {
+  /// set up logging once _before_ all tests of a test class
   override class public func setUp() {
     super.setUp()
     print("+++ FleaTestCase.\(#function) +++")
   }
+  /// teardown logging once _after_ all tests of a test class
   override class public func tearDown() {
     print("=== FleaTestCase.\(#function) ===")
     super.tearDown()
@@ -17,11 +19,14 @@ public class FleaTestCase : XCTestCase {
 }
 
 public class YicesTestCase : FleaTestCase {
-  override class public func setUp() {
+  /// set up yices globals _before_ each test function
+  override public func setUp() {
     super.setUp()
     Yices.setUp()
   }
-  override class public func tearDown() {
+
+  /// tear down yices globals _after_ each test function
+  override public func tearDown() {
     Yices.tearDown()
     super.tearDown()
   }

@@ -4,14 +4,6 @@ import Foundation
 @testable import FLEA
 
 public class YicesTests : YicesTestCase {
-  override class public func setUp() {
-    super.setUp()
-    Yices.setUp()
-  }
-  override class public func tearDown() {
-    Yices.tearDown()
-    super.tearDown()
-  }
 
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (YicesTests) -> () throws -> Void)]  {
@@ -67,15 +59,16 @@ public class YicesTests : YicesTestCase {
   }
 
   func testBottom() {
-    /*
+    
     let np = "~p(X)" as FLEA.Tptp.SimpleNode
     let p = "@cnf p(Y)" as FLEA.Tptp.SimpleNode
 
+    
     let context = Yices.Context()
     let _ = context.assert(clause:p)
     let _ = context.assert(clause:np)
     XCTAssertFalse(context.isSatisfiable)
-    */
+    
   }
 
   func testEmptyClause() {
