@@ -96,27 +96,27 @@ public class URLTests : FleaTestCase {
 
 
 /// Unfortuanatly URL signatures differ (did differ) between Swift 3 Previews on OSX and Linux.
-/// This test will highlight future changes. 
+/// This test will highlight future changes.
   func testTypes() {
     let url = URL(fileURLWithPath:"Problems/PUZ001-1.p")
 
       #if os(OSX)
-      XCTAssertTrue(String?.self == type(of:url.absoluteString),nok)
-      XCTAssertTrue(URL?.self == type(of:url.absoluteURL),nok)
+      XCTAssertTrue(String.self == type(of:url.absoluteString),nok)
+      XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
       XCTAssertTrue(URL?.self == type(of:url.baseURL),nok)
       XCTAssertTrue(String?.self == type(of:url.fragment),nok)
       XCTAssertTrue(Int.self == type(of:url.hashValue),nok)
       XCTAssertTrue(String?.self == type(of:url.host),nok)
       XCTAssertTrue(Bool.self == type(of:url.isFileURL),nok)
-      XCTAssertTrue(String?.self == type(of:url.lastPathComponent),nok)
+      XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
       XCTAssertTrue(String?.self == type(of:url.password),nok)
-      XCTAssertTrue(String?.self == type(of:url.path),nok)
-      XCTAssertTrue([String]?.self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
-      XCTAssertTrue(String?.self == type(of:url.pathExtension),nok)
+      XCTAssertTrue(String.self == type(of:url.path),nok)
+      XCTAssertTrue([String].self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
+      XCTAssertTrue(String.self == type(of:url.pathExtension),nok)
       XCTAssertTrue(Int?.self == type(of:url.port),nok)
       XCTAssertTrue(String?.self == type(of:url.query),nok)
-      XCTAssertTrue(String?.self == type(of:url.relativePath),nok)
-      XCTAssertTrue(String?.self == type(of:url.relativeString),nok)
+      XCTAssertTrue(String.self == type(of:url.relativePath),nok)
+      XCTAssertTrue(String.self == type(of:url.relativeString),nok)
       XCTAssertTrue(String?.self == type(of:url.scheme),nok)
       XCTAssertTrue(String?.self == type(of:url.user),nok)
       // print("var hasDirectoryPath: Bool     ",url.hasDirectoryPath) // OSX >=10.11
@@ -149,7 +149,7 @@ public class URLTests : FleaTestCase {
       XCTAssertTrue(String.self == type(of:url.relativeString),nok)
       XCTAssertTrue(String?.self == type(of:url.scheme),nok)
       XCTAssertTrue(String?.self == type(of:url.user),nok)
-      
+
       XCTAssertTrue(String?.self == type(of:url.path),nok)
       XCTAssertTrue(String?.self == type(of:url.path),nok)
       XCTAssertTrue(String?.self == type(of:url.path),nok)

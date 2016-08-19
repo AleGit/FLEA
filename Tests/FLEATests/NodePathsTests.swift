@@ -21,7 +21,7 @@ public class NodePathsTests : FleaTestCase {
 
     var symbol : S = N.symbolize(string:"*",type:.variable)
     var nodes : [N]? = nil
-    
+
     deinit {
       print("\(#function) \(self)")
     }
@@ -51,18 +51,18 @@ public class NodePathsTests : FleaTestCase {
       [g$,1,_$]
       ]
     let actual = ggfXfaX.leafPaths
-#if os(OSX)
     XCTAssertEqual(
-      expected,actual, nok
-    )
-#elseif os(Linux)
-  // [[Int]] == [[Int]] does not work on Linux Swift 3P3.
-      XCTAssertEqual(
+        expected.count,
+        actual.count, 
+        nok
+      )
+    XCTAssertEqual(
         Array(expected.joined()),
-        Array(actual.joined()), nok
+        Array(actual.joined()),
+        nok
       )
 
-#endif
+// #endif
     XCTAssertEqual(
       [g$,g$,f$,_$,f$,a$,_$],
       ggfXfaX.preordering, nok

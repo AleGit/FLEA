@@ -18,9 +18,19 @@ public class PositionTests : FleaTestCase {
     _ line : Int = #line
   ) {
     let actual = term.positions
-    #if os(OSX)
-    XCTAssertEqual(actual,expected,"\n\(nok):\(line) \(term).positions = \(actual) ≠ \(expected)")
-    #endif
+
+    XCTAssertEqual(
+      actual.count,
+      expected.count,
+      "\n\(nok):\(line) \(term).positions = \(actual) ≠ \(expected)"
+    )
+
+    XCTAssertEqual(
+      Array(actual.joined()),
+      Array(expected.joined()),
+      "\n\(nok):\(line) \(term).positions = \(actual) ≠ \(expected)"
+    )
+
   }
 
   func testBasics() {
