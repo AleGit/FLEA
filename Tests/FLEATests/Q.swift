@@ -23,10 +23,12 @@ public class YicesTestCase : FleaTestCase {
   override public func setUp() {
     super.setUp()
     Yices.setUp()
+    print("+++ YicesTestCase.\(#function) +++")
   }
 
   /// tear down yices globals _after_ each test function
   override public func tearDown() {
+    print("+++ YicesTestCase.\(#function) +++")
     Yices.tearDown()
     super.tearDown()
   }
