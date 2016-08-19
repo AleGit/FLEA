@@ -11,6 +11,7 @@ XCTMain([
   testCase(DictionaryUnificationTests.allTests),
 
   testCase(KinNodeTests.allTests),
+  testCase(NodeTests.allTests),
   testCase(NodePathsTests.allTests),
   // testCase(ParseTptpTests.allTests),
   testCase(PositionTests.allTests),

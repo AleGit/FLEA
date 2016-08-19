@@ -84,7 +84,7 @@ public class SyslogTests : XCTestCase {
   }
 
   func testContent() {
-    let path = "Config/sample.default"
+    let path = "Configs/sample.default"
     guard let content = path.content else {
       XCTFail("\(nok) config file '\(path)' not found.")
       return

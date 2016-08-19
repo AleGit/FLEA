@@ -3,7 +3,13 @@
 # calls swift build and swift test [-s .../...] to
 # run all tests, one test class or one test only.
 
-swift build -Xlinker -L/usr/local/lib
+# github.com/apple/swift-package-manager/CHANGELOG.md
+# * It is no longer necessary to run `swift build` before running `swift test` (it
+#   will always regenerates the build manifest when necessary). In addition, it
+#   now accepts (and requires) the same `-Xcc`, etc. options as are used with
+#   `swift build`.
+
+# swift build -Xlinker -L/usr/local/lib
 
 if [ "$1" = "--help" ]
 then
@@ -20,12 +26,12 @@ elif [ -n "$2" ]
 then
   T="FLEATests.${1}Tests/test${2}"
   echo "swift test -s ${T}"
-  swift test -s $T
+  swift test -Xlinker -L/usr/local/lib -s $T
 elif [ -n "$1" ]
 then
   T="FLEATests.${1}Tests"
   echo "swift test -s ${T}"
-  swift test -s $T
+  swift test -Xlinker -L/usr/local/lib -s $T
 else
-  swift test
+  swift test -Xlinker -L/usr/local/lib
 fi
