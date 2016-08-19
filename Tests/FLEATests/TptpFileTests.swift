@@ -3,7 +3,7 @@ import Foundation
 
 @testable import FLEA
 
-public class TptpFileTests : XCTestCase {
+public class TptpFileTests : FleaTestCase {
   static var allTests : [(String, (TptpFileTests) -> () throws -> Void)] {
     return [
     ("testNonFile", testNonFile),

@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-public class UnificationTests : XCTestCase {
+public class UnificationTests : FleaTestCase {
   static var allTests : [(String, (UnificationTests) -> () throws -> Void)] {
     return [
     ("testUnifiable", testUnifiable),

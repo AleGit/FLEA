@@ -3,7 +3,7 @@ import XCTest
 import Foundation
 @testable import FLEA
 
-public class ProcessTests : XCTestCase {
+public class ProcessTests : FleaTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (ProcessTests) -> () throws -> Void)]  {
     return [

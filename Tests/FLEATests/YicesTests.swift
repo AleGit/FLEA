@@ -3,7 +3,16 @@ import XCTest
 import Foundation
 @testable import FLEA
 
-public class YicesTests : XCTestCase {
+public class YicesTests : YicesTestCase {
+  override class public func setUp() {
+    super.setUp()
+    Yices.setUp()
+  }
+  override class public func tearDown() {
+    Yices.tearDown()
+    super.tearDown()
+  }
+
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (YicesTests) -> () throws -> Void)]  {
     return [
@@ -41,9 +50,6 @@ public class YicesTests : XCTestCase {
     print(cnfs.first?.description)
     print("\(cnfs.last!)")
 
-    Yices.setup()
-    defer { Yices.teardown() }
-
     let context = Yices.Context()
 
     let _ = cnfs.map { context.assert(clause:$0) }
@@ -54,30 +60,28 @@ public class YicesTests : XCTestCase {
   func testTop() {
 
     let p = "p|~p" as FLEA.Tptp.SimpleNode
-    Yices.setup()
-    defer { Yices.teardown() }
+
     let context = Yices.Context()
     let _ = context.assert(clause:p)
     XCTAssertTrue(context.isSatisfiable)
   }
 
   func testBottom() {
+    /*
     let np = "~p(X)" as FLEA.Tptp.SimpleNode
     let p = "@cnf p(Y)" as FLEA.Tptp.SimpleNode
-    Yices.setup()
-    defer { Yices.teardown() }
+
     let context = Yices.Context()
     let _ = context.assert(clause:p)
     let _ = context.assert(clause:np)
     XCTAssertFalse(context.isSatisfiable)
+    */
   }
 
   func testEmptyClause() {
     let symbol = Tptp.SimpleNode.symbolize(string:"|", type:.disjunction)
     let empty = Tptp.SimpleNode(symbol:symbol, nodes: Array<Tptp.SimpleNode>())
     
-    Yices.setup()
-    defer { Yices.teardown() }
     let context = Yices.Context()
     let _ = context.assert(clause:empty)
     XCTAssertFalse(context.isSatisfiable)

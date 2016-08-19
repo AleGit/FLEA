@@ -1,7 +1,7 @@
 import XCTest
 @testable import CTptpParsing
 
-public class CTptpParsingApiTests : XCTestCase {
+public class CTptpParsingApiTests : FleaTestCase {
   static var allTests : [(String, (CTptpParsingApiTests) -> () throws -> Void)] {
     return [
       ("testStore", testStore),

@@ -31,10 +31,10 @@ extension Yices {
 }
 
 extension Yices {
-	static func setup() {
+	static func setUp() {
 		yices_init()
 	}
-	static func teardown() {
+	static func tearDown() {
 		yices_exit()
 	}
 }

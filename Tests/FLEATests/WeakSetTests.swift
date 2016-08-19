@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-public class WeakSetTests : XCTestCase {
+public class WeakSetTests : FleaTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (WeakSetTests) -> () throws -> Void)]  {
     return [

@@ -1,7 +1,7 @@
 import XCTest
 @testable import CYices
 //
-class CYicesApiTests : XCTestCase {
+class CYicesApiTests : FleaTestCase {
   static var allTests : [(String, (CYicesApiTests) -> () throws -> Void)] {
     return [
     ("testTypes", testTypes),

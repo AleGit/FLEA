@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-public class SubstitutionPerformanceTests : XCTestCase {
+public class SubstitutionPerformanceTests : FleaTestCase {
   static var allTests : [(String, (SubstitutionPerformanceTests) -> () throws -> Void)] {
     return [
     ("testDictionarySubstitution", testDictionarySubstitution),
@@ -12,7 +12,7 @@ public class SubstitutionPerformanceTests : XCTestCase {
 
   public override func setUp() {
     super.setUp()
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    // Put setUp code here. This method is called before the invocation of each test method in the class.
     Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
     let _ = Syslog.setLogMask(upTo:.error)
 }
@@ -20,7 +20,7 @@ public class SubstitutionPerformanceTests : XCTestCase {
   public override func tearDown() {
 
     Syslog.closeLog()
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    // Put tearDown code here. This method is called after the invocation of each test method in the class.
     super.tearDown()
 }
 

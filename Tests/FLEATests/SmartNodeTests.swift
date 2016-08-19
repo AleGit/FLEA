@@ -4,7 +4,7 @@ import XCTest
 
 /// Test the accumulation of nodes in N.pool.
 /// Nodes MUST NOT accumulate between tests.
-public class SmartNodeTests : XCTestCase {
+public class SmartNodeTests : FleaTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SmartNodeTests) -> () throws -> Void)]  {
     return [

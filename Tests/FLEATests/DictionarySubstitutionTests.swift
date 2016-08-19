@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-public class DictionarySubstitutionTests : XCTestCase {
+public class DictionarySubstitutionTests : FleaTestCase {
   static var allTests : [(String, (DictionarySubstitutionTests) -> () throws -> Void)] {
     return [
       ("testBasics", testBasics)

@@ -1,8 +1,7 @@
 import XCTest
-
 @testable import FLEA
 
-public class AuxiliaryTests : XCTestCase {
+public class AuxiliaryTests : FleaTestCase {
   static var allTests : [(String, (AuxiliaryTests) -> () throws -> Void)] {
     return [
       ("testDecomposing", testDecomposing),

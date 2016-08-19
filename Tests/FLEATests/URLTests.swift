@@ -4,7 +4,7 @@ import Foundation
 
 @testable import FLEA
 
-public class URLTests : XCTestCase {
+public class URLTests : FleaTestCase {
   static var allTests : [(String, (URLTests) -> () throws -> Void)] {
     return [
     ("testTptpDirectory", testTptp),

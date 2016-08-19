@@ -10,7 +10,7 @@ import XCTest
 
 @testable import FLEA
 
-public class SyslogTests : XCTestCase {
+public class SyslogTests : FleaTestCase {
   static var allTests : [(String, (SyslogTests) -> () throws -> Void)] {
     return [
     ("testSyslog", testSyslog),
@@ -26,7 +26,7 @@ public class SyslogTests : XCTestCase {
   /// Messages should appear near the output of the test,
   public override func setUp() {
     super.setUp()
-    // Put setup code here. This method is called before the invocation of each test method in the class.
+    // Put setUp code here. This method is called before the invocation of each test method in the class.
     // Syslog.openLog(ident:"ABC", options:.console,.pid,.perror)
     let _ = Syslog.setLogMask(upTo:.debug)
   }
@@ -34,7 +34,7 @@ public class SyslogTests : XCTestCase {
   public override func tearDown() {
 
     // Syslog.closeLog()
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
+    // Put tearDown code here. This method is called after the invocation of each test method in the class.
     super.tearDown()
   }
 

@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-public class StringPathTests : XCTestCase {
+public class StringPathTests : FleaTestCase {
 
 
   static var allTests : [(String, (StringPathTests) -> () throws -> Void)] {

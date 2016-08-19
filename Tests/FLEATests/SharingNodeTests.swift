@@ -4,7 +4,7 @@ import XCTest
 
 /// Test the accumulation of nodes in Q.N.pool.
 /// Nodes MAY accumulate between tests.
-public class SharingNodeTests : XCTestCase {
+public class SharingNodeTests : FleaTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (SharingNodeTests) -> () throws -> Void)]  {
     return [

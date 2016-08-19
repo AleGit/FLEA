@@ -2,7 +2,7 @@ import XCTest
 
 @testable import FLEA
 
-public class DescriptionTests : XCTestCase {
+public class DescriptionTests : FleaTestCase {
 
   static var allTests : [(String, (DescriptionTests) -> () throws -> Void)] {
     return [

@@ -3,7 +3,7 @@ import XCTest
 @testable import FLEA
 
 public class ParseTptpTests
-// : XCTestCase // deactivated
+// : FleaTestCase // deactivated
 {
   static var allTests : [(String, (ParseTptpTests) -> () throws -> Void)] {
     return [

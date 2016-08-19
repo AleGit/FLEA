@@ -1,9 +1,31 @@
 import Foundation
-
+import XCTest
 @testable import FLEA
 
 let ok = "✅ "
 let nok = "❌ "
+
+public class FleaTestCase : XCTestCase {
+  override class public func setUp() {
+    super.setUp()
+    print("+++ FleaTestCase.\(#function) +++")
+  }
+  override class public func tearDown() {
+    print("=== FleaTestCase.\(#function) ===")
+    super.tearDown()
+  }
+}
+
+public class YicesTestCase : FleaTestCase {
+  override class public func setUp() {
+    super.setUp()
+    Yices.setUp()
+  }
+  override class public func tearDown() {
+    Yices.tearDown()
+    super.tearDown()
+  }
+}
 
 struct Q {
   typealias Node = Tptp.SmartNode
