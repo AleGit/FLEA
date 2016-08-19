@@ -14,7 +14,7 @@ public class SyslogTests : FleaTestCase {
   static var allTests : [(String, (SyslogTests) -> () throws -> Void)] {
     return [
     ("testSyslog", testSyslog),
-    ("testContent", testContent)
+    ("testConfiguration", testConfiguration)
     ]
   }
 
@@ -83,8 +83,8 @@ public class SyslogTests : FleaTestCase {
     let _ = Syslog.setLogMask(upTo:.debug)
   }
 
-  func testContent() {
-    let path = "Configs/sample.default"
+  func testConfiguration() {
+    let path = "Configs/logging.default"
     guard let content = path.content else {
       XCTFail("\(nok) config file '\(path)' not found.")
       return
@@ -99,7 +99,11 @@ public class SyslogTests : FleaTestCase {
      }
      XCTAssertTrue(entries.count > 0)
 
-
-
+     guard let configuration = Syslog.configuration else {
+       XCTFail("\(nok) configuration not available")
+       return
+     }
+  
+  print(configuration)
   }
 }

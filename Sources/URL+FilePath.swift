@@ -33,10 +33,18 @@ extension URL {
   }
 
   static var homeDirectoryURL : URL? {
+
     guard let path = CommandLine.Environment.getValue(for:"HOME") else {
       return nil
     }
     return URL(fileURLWithPath: path)
+  }
+
+  static var loggingConfigurationURL : URL? {
+
+    print("***",CommandLine.name,"***")
+    // TODO: enviroment, arguments, process name
+    return URL(fileURLWithPath: "Configs/logging.default")
   }
 }
 
@@ -323,5 +331,11 @@ extension String {
 
   var trimmingWhitespace : String {
     return self.trimmingCharacters(in: CharacterSet.whitespaces)
+  }
+
+  var pealing : String {
+    let start = self.index(after:self.startIndex)
+    let end = self.index(before:self.endIndex)
+    return self.substring(with:start..<end)
   }
 }

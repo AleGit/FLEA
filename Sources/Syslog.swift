@@ -41,6 +41,30 @@ struct Syslog {
       }
     }
 
+    fileprivate init?(string:String) {
+      switch string {
+        case "emergency":
+        self = .emergency
+        case "alert":
+        self = .alert
+        case "critical":
+        self = .critical
+        case "error":
+        self = .error
+        case "warning":
+        self = .warning
+        case "notice":
+        self = .notice
+        case "info":
+        self = .info
+        case "debug":
+        self = .debug
+        default:
+        return nil
+
+      }
+    }
+
     static var all = [Priority.emergency, Priority.alert, Priority.critical, Priority.error, Priority.warning, Priority.notice, Priority.info, Priority.debug]
   }
 
@@ -85,9 +109,56 @@ struct Syslog {
 
   fileprivate static var activePriorities = Syslog.maskedPriorities
 
-  fileprivate static var configuration : [String:Set<Priority>]? = {
-    /// TODO: read configuration
-    nil
+  static let configuration : [String:Priority]? = {
+    
+    guard 
+      let path = URL.loggingConfigurationURL?.path,
+      let content = path.content else {
+        print("*** syslog configuration not available ***")
+      return nil
+    }
+
+    var lines = content.lines
+    lines[4] = "  "
+    lines[5] = "\t"
+
+    let entries = lines.filter {
+      !($0.hasPrefix("#") || $0.trimmingWhitespace.isEmpty)
+     }
+
+     var d = [String:Priority]()
+
+     for entry in entries {
+       guard let colonIndex = entry.characters.index(of:(":")) else {
+         print("*** ### invalid entry : \(entry) ### ***")
+         continue
+       }
+       let after = entry.characters.index(after:colonIndex)
+       let key = String(entry.characters.prefix(upTo:colonIndex)).trimmingWhitespace.pealing
+       var value = ""
+       var comment = ""
+       if let dashIndex = entry.characters.index(of:("#")) {
+         value = String(entry.characters[after..<dashIndex]).trimmingWhitespace.pealing
+         comment = String(entry.characters.suffix(from:dashIndex)).trimmingWhitespace
+       }
+       else {
+         value = String(entry.characters.suffix(from:after)).trimmingWhitespace.pealing
+       }
+       print("\(key):\(value)_\(comment)")
+
+
+       guard let p = Priority(string:value) else {
+         continue
+       }
+
+       d[key] = p
+
+
+
+
+     }
+
+    return d
   }()
 }
 
