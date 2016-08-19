@@ -1,15 +1,20 @@
 #!/bin/bash
 
-# calls swift build and swift test [-s .../...] to
-# run all tests, one test class or one test only.
+# $ Scripts/tests.sh [<1> [<2>]]
+# calls `swift test -Xlinker -L/usr/local/libe [-s <1>Tests[/test<2>]]
+# to run all tests, one test class or one test only:
 
-# github.com/apple/swift-package-manager/CHANGELOG.md
+# swift test -Xlinker -L/usr/local/lib
+# swift test -Xlinker -L/usr/local/lib -s FLEATests.NodeTests/
+# swift test -Xlinker -L/usr/local/lib -s FLEATests.NodeTests/testInit
+
+# ================================================================================
+# https://github.com/apple/swift-package-manager/blob/master/CHANGELOG.md
 # * It is no longer necessary to run `swift build` before running `swift test` (it
 #   will always regenerates the build manifest when necessary). In addition, it
 #   now accepts (and requires) the same `-Xcc`, etc. options as are used with
 #   `swift build`.
-
-# swift build -Xlinker -L/usr/local/lib
+# ================================================================================
 
 if [ "$1" = "--help" ]
 then
