@@ -1,9 +1,17 @@
-# sample configuration
+# CONFIGURATION
 
-"*" : .error
-"String+Path.swift" : .debug
+# log levels: 1...8
+# emergency < alert < critical < error < warning < notice < info < .debug
+
+# maximal log level - nothing higher than this will be logged
+# default log level - the log level for unspecified files or functions
+# specific log level for files and functions
+# actual default log level <= maximal log level
+# actual specific log level <= maximal log level
+
+"***" : "debug"  # maximal log level
+"*" : "error"    # default log level
+"String+Path.swift" : "debug" # specific file log level
+"Demo.swift" : "error"
 
 
-"Demo.swift" : .error
-
- Ok

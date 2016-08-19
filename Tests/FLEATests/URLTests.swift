@@ -8,7 +8,6 @@ public class URLTests : FleaTestCase {
   static var allTests : [(String, (URLTests) -> () throws -> Void)] {
     return [
     ("testTptpDirectory", testTptp),
-    ("testConfigPath", testConfig),
     ("testProblem",testProblem),
     ("testTypes", testTypes),
     ]
@@ -28,9 +27,6 @@ public class URLTests : FleaTestCase {
     print("\(ok) \(#function) \(tptpDirectoryURL.path)")
   }
 
-    func testConfig() {
-      // XCTAssertEqual("Config/xctest.default",FilePath.configPath)
-    }
 
   func testProblem() {
     guard let homeDirectoryURL = URL.homeDirectoryURL else {
