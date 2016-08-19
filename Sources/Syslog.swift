@@ -278,13 +278,21 @@ extension Syslog {
     if errcode != 0 {
       Syslog.sysLog(priority:priority,
         args: line, column) {
-          "#\(priority) \(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) '%m' \(message())"
+          #if os(OSX)
+          return "\(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) '%m' \(message())"
+          #elseif os(Linux)
+          return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) '%m' \(message())"
+          #endif
         }
     }
     else {
       Syslog.sysLog(priority:priority,
         args: line, column) {
-          "#\(priority) \(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) \(message())"
+          #if os(OSX)
+          return "\(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) \(message())"
+          #elseif os(Linux)
+          return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) \(message())"
+          #endif
         }
     }
   }
