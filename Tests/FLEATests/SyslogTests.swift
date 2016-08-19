@@ -44,13 +44,13 @@ public class SyslogTests : FleaTestCase {
     #if os(OSX)
     let ident = "at.maringele.flea.xctest"
     #elseif os(Linux)
-    let ident = "" // up to 6 charactes on Linux
+    let ident = "X" // up to 6 charactes on Linux
     #endif
 
     XCTAssertEqual(Syslog.configured, Syslog.Priority.all, nok)
 
     // void openlog(const char *ident, int logopt, int facility);
-    Syslog.openLog(ident:ident, options:.console,.pid,.perror)
+    Syslog.openLog(options:.console,.pid,.perror)
     defer {
       //  void closelog(void);
       Syslog.closeLog();

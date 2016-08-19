@@ -1,3 +1,8 @@
+#if os(OSX)
+import Darwin
+#elseif os(Linux)
+import Glibc
+#endif
 import Foundation
 import XCTest
 @testable import FLEA
@@ -6,14 +11,18 @@ let ok = "✅ "
 let nok = "❌ "
 
 public class FleaTestCase : XCTestCase {
+
   /// set up logging once _before_ all tests of a test class
   override class public func setUp() {
     super.setUp()
+    Syslog.openLog(options:.console,.pid,.perror)
+    let _ = Syslog.setLogMask(upTo:.debug)
     print("+++ FleaTestCase.\(#function) +++")
   }
   /// teardown logging once _after_ all tests of a test class
   override class public func tearDown() {
     print("=== FleaTestCase.\(#function) ===")
+    Syslog.closeLog()
     super.tearDown()
   }
 }

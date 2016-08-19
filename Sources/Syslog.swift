@@ -117,9 +117,11 @@ extension Syslog {
 
   /* void openlog(const char *ident, int logopt, int facility); */
 
-  static func openLog(ident:String, options:Syslog.Option..., facility:Int32 = LOG_USER) {
+  static func openLog(ident:String?=nil, options:Syslog.Option..., facility:Int32 = LOG_USER) {
     let option = options.reduce(0) { $0 | $1.option }
     openlog(ident, option, facility);
+    // ident == nil => use process name
+    // idetn != nil => does not work on Linux
   }
 
   /* int setlogmask(int maskpri); */

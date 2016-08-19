@@ -13,6 +13,7 @@ public class AuxiliaryTests : FleaTestCase {
   }
 
   func testDecomposing() {
+    Syslog.info { "*#* info *#*"}
     let array = [11,12,13]
     guard let (h1,t1) = array.decomposing else {
       XCTFail(nok)
