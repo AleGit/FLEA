@@ -10,12 +10,19 @@ func optional<T>(_ value:T?) -> T? {
 extension URL {
   static var tptpDirectoryURL : URL? {
 
+    // --tptp_root has the highest priority
+    if let path = CommandLine.options["--tptp_root"]?.first,
+    path.isAccessibleDirectory {
+      return URL(fileURLWithPath: path)
+    }
+
+    // the environment has a high priority
     if let path = CommandLine.Environment.getValue(for:"TPTP_ROOT")
     , path.isAccessibleDirectory {
       return URL(fileURLWithPath: path)
     }
 
-    // home directory has a low priority
+    // home directory has a medium priority
     if let url = URL.homeDirectoryURL?.appending(component:"/TPTP")
     , url.isAccessibleDirectory {
       Syslog.warning { "fallback to \(url.relativeString)"}
@@ -41,10 +48,16 @@ extension URL {
   }
 
   static var loggingConfigurationURL : URL? {
+    // --config path/to/file
+    if let path = CommandLine.options["--config"]?.first, path.isAccessible {
+      return URL(fileURLWithPath: path)
+    }
 
-    print("***",CommandLine.name,"***")
-    // TODO: enviroment, arguments, process name
-    return URL(fileURLWithPath: "Configs/logging.default")
+    // FLEA_CONFIGS_PATH not supported yet
+    // FLEA_CONFIG not supported yet
+    // logging.<name.extension> not supperted yet
+
+    return URL(fileURLWithPath: "Configs/logging.xctest")
   }
 }
 
@@ -266,6 +279,7 @@ extension FilePath {
 
   var isAccessible : Bool {
     guard let f = fopen(self,"r") else {
+      Syslog.info { "Path \(self) is not accessible."}
       return false
     }
     fclose(f)
@@ -274,6 +288,7 @@ extension FilePath {
 
   var isAccessibleDirectory : Bool {
     guard let d = opendir(self) else {
+      Syslog.info { "Directory \(self) does not exist."}
       return false
     }
     closedir(d)
@@ -311,6 +326,9 @@ extension FilePath {
 
 extension String {
   var lines:[String] {
+
+    defer { Syslog.debug { ": [String]" } }
+
     #if os(OSX) /**************************************************************/
 
     var result = [String]()

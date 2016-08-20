@@ -16,7 +16,9 @@ public class FleaTestCase : XCTestCase {
   override class public func setUp() {
     super.setUp()
     Syslog.openLog(options:.console,.pid,.perror)
-    let _ = Syslog.setLogMask(upTo:.debug)
+    let logLevel = Syslog.configuration?["+++"] ?? .debug
+
+    let _ = Syslog.setLogMask(upTo:logLevel)
     print("+++ FleaTestCase.\(#function) +++")
   }
   /// teardown logging once _after_ all tests of a test class

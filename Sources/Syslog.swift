@@ -10,6 +10,8 @@ import Foundation
 /// Static wrapper for [syslog](https://en.wikipedia.org/wiki/Syslog),
 /// see [man 3 syslog]http://www.unix.com/man-page/POSIX/3posix/syslog/
 struct Syslog {
+  fileprivate static var active = false
+
   enum Priority {
     case emergency
     case alert
@@ -109,7 +111,11 @@ struct Syslog {
 
   fileprivate static var activePriorities = Syslog.maskedPriorities
 
+// TODO: better implementation
   static let configuration : [String:Priority]? = {
+    defer { Syslog.active = true }
+    print(#function,#line,"started")
+    defer { print(#function,#line,"finished")}
     
     guard 
       let path = URL.loggingConfigurationURL?.path,
@@ -118,11 +124,7 @@ struct Syslog {
       return nil
     }
 
-    var lines = content.lines
-    lines[4] = "  "
-    lines[5] = "\t"
-
-    let entries = lines.filter {
+    let entries = content.lines.filter {
       !($0.hasPrefix("#") || $0.trimmingWhitespace.isEmpty)
      }
 
@@ -144,7 +146,6 @@ struct Syslog {
        else {
          value = String(entry.characters.suffix(from:after)).trimmingWhitespace.pealing
        }
-       print("\(key):\(value)_\(comment)")
 
 
        guard let p = Priority(string:value) else {
@@ -241,29 +242,38 @@ extension Syslog {
       }
   }
 
+  private static var maximalLogLevel : Int32 = Syslog.configuration?["+++"]?.priority ?? Priority.error.priority
+  private static var minimalLogLevel : Int32 = Syslog.configuration?["---"]?.priority ?? Priority.error.priority
+  private static var defaultLogLevel : Int32 = Syslog.configuration?["***"]?.priority ?? Priority.error.priority
+
+
   fileprivate static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
-    guard Syslog.activePriorities.contains(priority) else { return false }
+    guard Syslog.active, 
+    Syslog.activePriorities.contains(priority) else { 
+      return false 
+    }
 
-    return true
+    // without a configuration or a priority <= minimal log level priority : log it
 
-    // TODO: register and unregister files, functions, lines for logging
+    guard let configuration = Syslog.configuration   // is a configuration available
+    , priority.priority > Syslog.minimalLogLevel     // is the priority > minimal logged priority
+    else { return true }
 
-    // guard let configuration = Syslog.configuration else { return true }
-    //
-    //
-    // let fileName = file.lastPathComponent
-    //
-    // if let ps = configuration["\(fileName).\(function)"] {
-    //   return ps.contains(priority)
-    // }
-    // if let ps = configuration["\(fileName)"] {
-    //   return ps.contains(priority)
-    // }
-    // if let ps = configuration["*"] {
-    //   return ps.contains(priority)
-    // }
-    //
-    // return false
+    // configuration and minimal log level < priority
+
+    let fileName = URL(fileURLWithPath:file).lastComponentOrEmpty 
+    if fileName.isEmpty {
+      print("••• Last path element of \(file) could not be extracted. •••")
+    }
+    
+    if let ps = configuration["\(fileName)/\(function)"] {
+      return priority.priority <= ps.priority
+    }
+    if let ps = configuration["\(fileName)"] {
+      return priority.priority <= ps.priority
+    }
+
+    return priority.priority <= Syslog.defaultLogLevel
   }
 
   fileprivate static func log(

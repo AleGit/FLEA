@@ -91,6 +91,12 @@ public class SyslogTests : FleaTestCase {
     }
 
     var lines = content.lines
+
+    guard lines.count > 5 else {
+      XCTFail("\(nok) config file has too few lines.")
+      return
+    }
+
     lines[4] = "  "
     lines[5] = "\t"
 

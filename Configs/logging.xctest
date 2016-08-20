@@ -1,3 +1,12 @@
 # debug configuration
 
+# emergency < alert < critical < error < warning < notice < info < .debug
+
+"+++"                           : "error"  # maximal log level
+"---"                           : "error"  # minimum log level
+"***"                           : "warning"  # default log level
+
+# "Tptp.File.swift"               : "error"
+# "URL+FilePath.swift"            : "info"
+
  

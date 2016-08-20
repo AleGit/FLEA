@@ -15,7 +15,7 @@
 # setLogMask(upTo:minimal)
 
 "---"                        : "error"  # minimal log level
-"+++"                        : "debug"  # maximal log level 
+"+++"                        : "error"  # maximal log level 
 "***"                        : "error"  # default log level
 "String+Path.swift"          : "debug"  # specific file log level
 "Demo.swift"                 : "error"  # specific file log level
