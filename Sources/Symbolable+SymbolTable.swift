@@ -1,3 +1,24 @@
+/*
+  ### Tasks: find better names for (some) protocols and typealias
+  1. _protocol_ `SymbolStringTyped`, i.e. a type with a symbol and a `Self.Symbol` <-> `(String,SymbolType)` conversion,
+     default implementations are provided for types that
+     - either adopt `SymbolTabulating`  
+     - or use Self.Symbol : StringSymbolable
+  2. _protocol_ `StringSymbolable`, i.e. a _symbol_ (type) with a `Self` <-> (String,SymbolType)` conversion. 
+  3. _typealias_ `StringType = (String,SymbolType)` 
+  4. _protocol_ `SymbolTable`, i.e. a type with a 'Key' -> 'Symbol' mapping. (Key type is usually `String`)
+  5. _protocol_ `SymbolTabulating`, i.e. a type that stores symbols (strings, types) in a symbol table.
+
+  ### Proposals
+  1. Rename `SymbolStringTyped` to 
+  2. Rename `StringSymbolable` to `StringTyped`, since `where Self.Symbol : StringTyped` is nice to read.
+  3. Rename `StringType` to `StringTypePair`, `StringSymbolType`, `StringSymbolTypePair` for more clarity.
+  4.
+  5.
+*/
+
+
+
 /// Symbol string typed nodes can convert symbols to pairs of string and type, 
 /// and vice versa e.g.
 /// - extension Node where Symbol:StringSymbolable {
@@ -11,7 +32,7 @@ protocol SymbolStringTyped {
 }
 
 
-/// A string typed symbol contains its string representation and its symbol type.
+/// A string symbolable type contains its string representation and its symbol type.
 protocol StringSymbolable {
   var string : String { get }
   var type : Tptp.SymbolType { get }
@@ -20,6 +41,7 @@ protocol StringSymbolable {
 }
 
 /// A symbol table maps symbols to pairs of string and type, and vice versa.
+/// (usually Key == String)
 protocol SymbolTable {
   associatedtype Key : Hashable
   associatedtype Symbol : Hashable
