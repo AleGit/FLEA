@@ -10,9 +10,8 @@ import Foundation
 /// Static wrapper for [syslog](https://en.wikipedia.org/wiki/Syslog),
 /// see [man 3 syslog]http://www.unix.com/man-page/POSIX/3posix/syslog/
 struct Syslog {
-  fileprivate static var active = false
 
-  enum Priority {
+  enum Priority : Comparable {
     case emergency
     case alert
     case critical
@@ -41,6 +40,12 @@ struct Syslog {
         case .info: return LOG_INFO
         case .debug: return LOG_DEBUG
       }
+    }
+
+    /// Since `Syslog.Priority` is allready `Equatable` 
+    /// it is sufficient to implement < to adopt `Comparable`
+    static func <(_ lhs:Priority, rhs:Priority) -> Bool {
+      return lhs.priority < rhs.priority
     }
 
     fileprivate init?(string:String) {
@@ -109,30 +114,39 @@ struct Syslog {
     }
   }
 
+  /// 
   fileprivate static var activePriorities = Syslog.maskedPriorities
 
-// TODO: better implementation
+  /// Syslog is active _after_ reading the configuration.
+  fileprivate static var active = false
+  
+  /// read in the logging configuration (from file)
+  /// TODO: provide a cleaner/better implementation
   static let configuration : [String:Priority]? = {
-    defer { Syslog.active = true }
-    print(#function,#line,"started")
-    defer { print(#function,#line,"finished")}
+    defer { 
+      Syslog.active = true
+    }
+    print(#function,#line,"reading configuration started")
+    defer { print(#function,#line,"reading configuration finished")}
     
     guard 
       let path = URL.loggingConfigurationURL?.path,
       let content = path.content else {
-        print("*** syslog configuration not available ***")
+        print(#function,#line,"*!* configuration file is not available *!*")
       return nil
     }
 
+    // ignore comments (#...) and empty (whitespace only) lines
     let entries = content.lines.filter {
       !($0.hasPrefix("#") || $0.trimmingWhitespace.isEmpty)
      }
 
-     var d = [String:Priority]()
+     // create configuration
+     var cnfg = [String:Priority]()
 
      for entry in entries {
        guard let colonIndex = entry.characters.index(of:(":")) else {
-         print("*** ### invalid entry : \(entry) ### ***")
+         print(#function,#line,">>> invalid configuration entry : \(entry) <<<")
          continue
        }
        let after = entry.characters.index(after:colonIndex)
@@ -152,15 +166,45 @@ struct Syslog {
          continue
        }
 
-       d[key] = p
-
-
-
+       cnfg[key] = p
 
      }
 
-    return d
+    return cnfg
   }()
+
+  static var maximalLogLevel : Priority { return Syslog.configuration?["+++"] ?? Priority.error }
+  static var minimalLogLevel : Priority { return Syslog.configuration?["---"] ?? Priority.error }
+  static var defaultLogLevel : Priority { return Syslog.configuration?["***"] ?? Priority.error }
+
+  fileprivate static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
+    guard Syslog.active, 
+    Syslog.activePriorities.contains(priority) else { 
+      return false 
+    }
+
+    // without a configuration or a priority <= minimal log level priority : log it
+
+    guard let configuration = Syslog.configuration   // is a configuration available
+    , priority > Syslog.minimalLogLevel    // is the priority > minimal logged priority
+    else { return true }
+
+    // configuration and minimal log level < priority
+
+    let fileName = URL(fileURLWithPath:file).lastComponentOrEmpty 
+    if fileName.isEmpty {
+      print("••• Last path element of \(file) could not be extracted. •••")
+    }
+    
+    if let ps = configuration["\(fileName)/\(function)"] {
+      return priority <= ps
+    }
+    if let ps = configuration["\(fileName)"] {
+      return priority <= ps
+    }
+
+    return priority <= Syslog.defaultLogLevel
+  }
 }
 
 extension Syslog {
@@ -240,40 +284,6 @@ extension Syslog {
       withVaList(args) {
         vsyslog(priority.priority, message(), $0)
       }
-  }
-
-  private static var maximalLogLevel : Int32 = Syslog.configuration?["+++"]?.priority ?? Priority.error.priority
-  private static var minimalLogLevel : Int32 = Syslog.configuration?["---"]?.priority ?? Priority.error.priority
-  private static var defaultLogLevel : Int32 = Syslog.configuration?["***"]?.priority ?? Priority.error.priority
-
-
-  fileprivate static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
-    guard Syslog.active, 
-    Syslog.activePriorities.contains(priority) else { 
-      return false 
-    }
-
-    // without a configuration or a priority <= minimal log level priority : log it
-
-    guard let configuration = Syslog.configuration   // is a configuration available
-    , priority.priority > Syslog.minimalLogLevel     // is the priority > minimal logged priority
-    else { return true }
-
-    // configuration and minimal log level < priority
-
-    let fileName = URL(fileURLWithPath:file).lastComponentOrEmpty 
-    if fileName.isEmpty {
-      print("••• Last path element of \(file) could not be extracted. •••")
-    }
-    
-    if let ps = configuration["\(fileName)/\(function)"] {
-      return priority.priority <= ps.priority
-    }
-    if let ps = configuration["\(fileName)"] {
-      return priority.priority <= ps.priority
-    }
-
-    return priority.priority <= Syslog.defaultLogLevel
   }
 
   fileprivate static func log(

@@ -120,15 +120,14 @@ public class URLTests : FleaTestCase {
       XCTAssertTrue(String?.self == type(of:url.scheme),nok)
       XCTAssertTrue(String?.self == type(of:url.user),nok)
       // print("var hasDirectoryPath: Bool     ",url.hasDirectoryPath) // OSX >=10.11
-      print("var standardized: URL          ", url.standardized)
-      print("var standardizedFileURL: URL   ", url.standardizedFileURL)
-      //
-      print("func checkPromisedItemIsReachable()  ",(try? url.checkPromisedItemIsReachable()))
-      print("func checkResourceIsReachable()      ",(try? url.checkResourceIsReachable()))
-      //
-      print("func deletingLastPathComponent()     ",url.deletingLastPathComponent().path)
-      print("func deletingPathExtension()         ",url.deletingPathExtension().path)
-      print("func resolvingSymlinksInPath()       ",url.resolvingSymlinksInPath().path)
+
+      XCTAssertTrue(URL.self == type(of:url.standardized),nok)
+      XCTAssertTrue(URL.self == type(of:url.standardizedFileURL),nok)
+      XCTAssertTrue(Bool?.self == type(of:(try? url.checkPromisedItemIsReachable())),nok)
+      XCTAssertTrue(Bool?.self == type(of:(try? url.checkResourceIsReachable())),nok)
+      XCTAssertTrue(URL.self == type(of:url.deletingLastPathComponent()),nok)
+      XCTAssertTrue(URL.self == type(of:url.deletingPathExtension()),nok)
+      XCTAssertTrue(URL.self == type(of:url.resolvingSymlinksInPath()),nok)
 
       #elseif os(Linux)
       XCTAssertTrue(String?.self == type(of:url.absoluteString),nok)
@@ -150,13 +149,9 @@ public class URLTests : FleaTestCase {
       XCTAssertTrue(String?.self == type(of:url.scheme),nok)
       XCTAssertTrue(String?.self == type(of:url.user),nok)
 
-      XCTAssertTrue(String?.self == type(of:url.path),nok)
-      XCTAssertTrue(String?.self == type(of:url.path),nok)
-      XCTAssertTrue(String?.self == type(of:url.path),nok)
-      XCTAssertTrue(String?.self == type(of:url.path),nok)
-
       for (url,message) in [
         (try? url.standardized(),"standardized"),
+        (try? url.standardizedFileURL(),"standardizedFileURL"),
         (try? url.deletingLastPathComponent(),"deletingLastPathComponent"),
         (try? url.deletingPathExtension(),"deletingPathExtension"),
         (try? url.resolvingSymlinksInPath(),"resolvingSymlinksInPath")

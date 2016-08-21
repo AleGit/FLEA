@@ -16,7 +16,7 @@ public class FleaTestCase : XCTestCase {
   override class public func setUp() {
     super.setUp()
     Syslog.openLog(options:.console,.pid,.perror)
-    let logLevel = Syslog.configuration?["+++"] ?? .debug
+    let logLevel = Syslog.maximalLogLevel
 
     let _ = Syslog.setLogMask(upTo:logLevel)
     print("+++ FleaTestCase.\(#function) +++")
