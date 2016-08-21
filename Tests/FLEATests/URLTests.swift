@@ -151,7 +151,7 @@ public class URLTests : FleaTestCase {
 
       for (url,message) in [
         (try? url.standardized(),"standardized"),
-        (try? url.standardizedFileURL(),"standardizedFileURL"),
+        // (try? url.standardizedFileURL(),"standardizedFileURL"),
         (try? url.deletingLastPathComponent(),"deletingLastPathComponent"),
         (try? url.deletingPathExtension(),"deletingPathExtension"),
         (try? url.resolvingSymlinksInPath(),"resolvingSymlinksInPath")
