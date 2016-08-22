@@ -1,18 +1,21 @@
 # debug configuration for tests
 
 # emergency < alert < critical < error < warning < notice < info < debug
-# "emergency is prior to alert" 
+# for details see Project/Configs.
 
-"+++"                           : "debug"   # maximal log priority
-"***"                           : "warning" # default log priority
-"---"                           : "error"   # minimum log priority
+"---"                           : "error"   # global minimum log priority
+"+++"                           : "debug"   # global maximal log priority
+"***"                           : "warning" # global default log priority
 
-# special log priorities for files and functions 
-# "<filename>" : "priority"
-# "<filname>/<functionname>" : "priority"
+# evaluationn for for logging active 
+# priority of origin »file«/»function»:
+# »file«/»function»:»value«
+# »file : »value«
+# »***»
+"***"                           : "warning" # global default log priority: »value«
 
-# the default log priority for a file/function is the global default priority
-# the actual log priority for a file/function is between minimal and maximal log priority
+
+ 
 
 # "Tptp.File.swift"               : "error"
 # "URL+FilePath.swift"            : "info"

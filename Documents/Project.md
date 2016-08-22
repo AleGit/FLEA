@@ -29,8 +29,40 @@ Details
 ### .build
 This directory contains the output of swift debug or release builds.
 
-### Configs
-*[not supported yed]* 
+### Configs _[Preliminary]_
+This directory holds configuration files for logging.
+The confiuration file will be selected by command line argument
+or based on the process name, e.g. /path/to/name.xctest -> logging.xctest.
+A logging configuration file determines the general and specific 
+loggging priorities. At runtime a logging message with priority »priortiy« 
+and originating from »file«/»function« (with »scope« _n/a_) will be written:
+- if the message »priority« is smaller than the maximal logging priority _and_
+  - the message »priorty« is prior to the minimal logging priority
+  - _or_ the »file«/»function« priority value exists
+      _and_ »priority« is prior to it,
+  - _or_ the "»file»/»function»" priority does not exist,
+    the »file» priority value exists, 
+      _and_ the message »priority« is prior to it,
+  - _or_ neither the "»file»/»function»" proority value
+      nor the "»file»" priority value exist, and
+      the message «priority« is prior to the default priority.
+
+#### Logging configuration file _[preliminary_]
+- comment lines start with \# and will be ignored
+- whitespace lines (spaces and tabs) will be ignored
+- lines with "key" : "value" pairs will be read
+- possible keys are
+    - "+++" the key for the maximal logging priority,
+      i.e. logging messages with a poseterior priority 
+      than the maximal priority will never be logged.
+    - "---" the key for the minimal logging priority,
+      i.e. logging messages with a prior priority than 
+      the miniaml logging priorty will allways be logged.
+    - "+++" the key for the default logging priority.
+    - "<file>" the logging priortiy for a source file.
+    - "<file>/<function" the logging priority for a 
+      function in a file.
+- possible values are logging priorities
 
 ### Documents
 Concepts, ideas, overviews, etc.

@@ -178,31 +178,47 @@ struct Syslog {
   static var defaultLogLevel : Priority { return Syslog.configuration?["***"] ?? Priority.error }
 
   fileprivate static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
+
     guard Syslog.active, 
     Syslog.activePriorities.contains(priority) else { 
       return false 
     }
 
-    // without a configuration or a priority <= minimal log level priority : log it
+    // the configuration is active, i.e. it was read in completely
+    // and `priority`` is smaller than the maximal logging priority.
+
+    // the message is always logged when one the two sufficient conditions hold:
+    // - there is no configuration at all or
+    // - the message priority is not bigger than the minimal logging priority
+
 
     guard let configuration = Syslog.configuration   // is a configuration available
-    , priority > Syslog.minimalLogLevel    // is the priority > minimal logged priority
+    , priority > Syslog.minimalLogLevel    // is the priority > minimal logging priority
     else { return true }
 
-    // configuration and minimal log level < priority
+    // at this point a configuration is available and the minimal logging priority < message »priority«.
+
+    // extract »file« key
 
     let fileName = URL(fileURLWithPath:file).lastComponentOrEmpty 
     if fileName.isEmpty {
       print("••• Last path element of \(file) could not be extracted. •••")
     }
     
+    // check for "»file«/»function«" priority 
     if let ps = configuration["\(fileName)/\(function)"] {
       return priority <= ps
     }
+
+    // "»file«/»function«" priority does not exist
+    // check for "»file«" priority  
     if let ps = configuration["\(fileName)"] {
       return priority <= ps
     }
 
+    // "»file«" priority does not exist
+    // check for default priority
+    
     return priority <= Syslog.defaultLogLevel
   }
 }
