@@ -1,0 +1,18 @@
+// informal comment, unused config file
+
+{
+    "logging" : {
+        "+++" : "debug",
+        "---" : "error",
+        "***" : "warning"
+
+    },
+
+    "logging.xctest" : {
+        "+++" : "debug",
+        "---" : "error",
+        "***" : "warning",
+        "»file»/»function«" : "»priorit«",
+        "»file«" : "»priority«"
+    }
+}

@@ -43,7 +43,7 @@ and originating from »file«/»function« (with »scope« _n/a_) will be writte
   - _or_ the "»file»/»function»" priority does not exist,
     the »file» priority value exists, 
       _and_ the message »priority« is prior to it,
-  - _or_ neither the "»file»/»function»" proority value
+  - _or_ neither the "»file»/»function»" priority value
       nor the "»file»" priority value exist, and
       the message «priority« is prior to the default priority.
 
