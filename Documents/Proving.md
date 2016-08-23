@@ -38,7 +38,7 @@ The Loop
 --
 
 As long as there is an unprocessed clause the prover ...
-- selects an unprocessed clause
+- selects an unprocessed clause (by a strategy)
 - asserts the grounded selected clause in `yices` context
 - checks the satisfiability of the context
   - if unsatisfiable the prover exits the loop
@@ -53,7 +53,10 @@ As long as there is an unprocessed clause the prover ...
 
 ### Indexing of selected literals
 
-After a clause is processed its selected literal is put into the term index. But the selected literal of already processed clauses could change when the model changes. This invalidates entries in the index.
+After a clause is processed its selected literal is put into the term index.
+But the selected literal of already processed clauses could change
+when the model changes through the assertion of subsequent clauses. 
+This invalidates entries in the index.
 There are two approaches:
 - **synchronous**: After getting a new model run through all processed clauses and check if the selected literal still holds and update the index if necessary
 - **lazy**: retrieve clashing literals, check if clashing literal still holds in model
