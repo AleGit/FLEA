@@ -4,7 +4,7 @@ extension Node where Self:SymbolStringTyped {
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[SymHop<Symbol>]] {
     guard let nodes = self.nodes else {
-      return [[.symbol(Self.symbolize(string:"*",type:.variable))]]
+      return [[.symbol(Self.symbolize(string:Tptp.asterisk,type:.variable))]]
     }
     guard nodes.count > 0 else {
       return [[.symbol(self.symbol)]]
@@ -29,7 +29,7 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[Int]] {
     guard let nodes = self.nodes else {
-      return [[Self.symbolize(string:"*",type:.variable)]]
+      return [[Self.symbolize(string:Tptp.asterisk,type:.variable)]]
     }
     guard nodes.count > 0 else {
       return [[self.symbol]]
@@ -47,7 +47,7 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
   var preordering : [Int] {
     guard let nodes = self.nodes else {
       // a variable leaf
-      return [Self.symbolize(string:"*",type:.variable)]
+      return [Self.symbolize(string:Tptp.asterisk,type:.variable)]
     }
     guard nodes.count > 0 else {
       // a constant (function) leaf
@@ -67,7 +67,7 @@ extension Node where Self:SymbolStringTyped {
   var preordering : [Symbol] {
     guard let nodes = self.nodes else {
       // a variable leaf
-      return [Self.symbolize(string:"*",type:.variable)]
+      return [Self.symbolize(string:Tptp.asterisk,type:.variable)]
     }
     guard nodes.count > 0 else {
       // a constant (function) leaf

@@ -3,13 +3,15 @@ import Foundation
 
 // πρῶτος
 struct ΠρῶτοςProver<N:Node> 
-where N:SymbolStringTyped {
+where N:SymbolStringTyped, N.Symbol == Int {
     typealias ClauseTuple = (String,String,N)
 
     typealias AxiomFileTriple = (String,URL,[String])
     let problem : (String,URL)
     var clauses : [ClauseTuple]
     var includes : [AxiomFileTriple]
+
+    var literalsTrie = TrieClass<Int,Int>()
 
 
     /// initialize the prover with a problem, i.e.
@@ -62,4 +64,27 @@ where N:SymbolStringTyped {
         }
     }
 
+    func run(timeout:AbsoluteTime = 5.0) {
+        let endtime = AbsoluteTimeGetCurrent() + timeout
+        Syslog.info { "timeaout after \(timeout) seconds." }
+        
+
+        let (_,runtimes) = utileMeasure {
+            while AbsoluteTimeGetCurrent() < endtime {
+                sleep(1)
+                print(AbsoluteTimeGetCurrent())
+
+                // select clause
+                // process clause
+                // select literal
+                // search clashes
+                // insert clauses
+                // insert indices
+
+
+            }
+        }
+        Syslog.info { "runtimes = \(runtimes)" }
+    }
 }
+

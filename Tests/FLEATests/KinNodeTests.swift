@@ -20,12 +20,14 @@ public class KinNodeTests : FleaTestCase {
     static var pool = WeakSet<N>()
     var folks = WeakSet<N>()
     
-    var symbol : S = N.symbolize(string:"*", type:.variable)
+    var symbol : S = N.symbolize(string:Tptp.asterisk, type:.variable)
     var nodes : [N]? = nil
   }
 
   /// accumulate four distict nodes
   func testEqualityX() {
+    let symbol = N.symbolize(string:"*", type:.variable) 
+    XCTAssertEqual(1,symbol)  
 
     let X : N = "X"
     let a : N = "a"

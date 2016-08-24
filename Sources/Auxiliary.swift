@@ -117,7 +117,7 @@ struct UtileSequence<S,T> : Sequence {
 public typealias AbsoluteTime = Double
 
 /// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
-private func AbsoluteTimeGetCurrent() -> AbsoluteTime {
+func AbsoluteTimeGetCurrent() -> AbsoluteTime {
   var atime = timeval()             // initialize C struct
   let _ = gettimeofday(&atime,nil)  // will return 0
   return AbsoluteTime(atime.tv_sec) // s + µs

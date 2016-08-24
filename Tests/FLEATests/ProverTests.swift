@@ -22,7 +22,7 @@ public class ProverTests : FleaTestCase {
     static var pool = WeakSet<N>()
     var folks = WeakSet<N>()
     
-    var symbol : S = N.symbolize(string:"*", type:.variable)
+    var symbol : S = N.symbolize(string:Tptp.asterisk, type:.variable)
     var nodes : [N]? = nil
   }
 
@@ -41,6 +41,8 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertEqual(problem,name)
       XCTAssertEqual(12, prover.clauses.count)
       XCTAssertEqual(0, prover.includes.count)
+
+      XCTAssertTrue(prover.literalsTrie.isEmpty)
   }
 
   func testInitPUZ062c1() {
@@ -63,7 +65,7 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertTrue(prover.includes.first!.1.isAccessible)
       XCTAssertTrue(prover.includes.last!.1.isAccessible)
 
-      
+      XCTAssertTrue(prover.literalsTrie.isEmpty)
 
   }
 }

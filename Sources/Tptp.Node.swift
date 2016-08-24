@@ -1,6 +1,7 @@
 
 
 struct Tptp {
+  static let asterisk = "*"
 
   typealias S = Tptp.Symbol   // choose a symbol type
   typealias I = Int
@@ -9,7 +10,7 @@ struct Tptp {
   /// equal nodes are not always the same object
   /// depending on the method to build composite nodes
   final class SimpleNode : SymbolStringTyped, Node, ExpressibleByStringLiteral {
-    var symbol = S("",.undefined)
+    var symbol = S(asterisk,.variable)
     var nodes : [Tptp.SimpleNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -22,7 +23,7 @@ struct Tptp {
   final class SharingNode : SymbolStringTyped, Sharing, Node, ExpressibleByStringLiteral {
     static var pool = Set<Tptp.SharingNode>()
 
-    var symbol = S("",.undefined)
+    var symbol = S(asterisk,.variable)
     var nodes : [Tptp.SharingNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -34,7 +35,7 @@ struct Tptp {
   final class SmartNode : SymbolStringTyped, Sharing, Node, ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.SmartNode>()
 
-    var symbol = S("",.undefined)
+    var symbol = S(asterisk,.variable)
     var nodes : [Tptp.SmartNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -48,7 +49,7 @@ struct Tptp {
     static var pool = WeakSet<Tptp.KinNode>()
     var folks =  WeakSet<Tptp.KinNode>()
 
-    var symbol = S("",.undefined)
+    var symbol = S(asterisk,.variable)
     var nodes : [Tptp.KinNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
@@ -60,7 +61,7 @@ struct Tptp {
     static var pool = WeakSet<KinIntNode>()
     var folks = WeakSet<KinIntNode>()
     
-    var symbol = Int.max
+    var symbol : Int = KinIntNode.symbolize(string:asterisk,type:.variable)
     var nodes : [KinIntNode]? = nil
 
     lazy var hashValue : Int = self.defaultHashValue
