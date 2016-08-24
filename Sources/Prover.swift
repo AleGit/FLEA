@@ -1,13 +1,22 @@
 import Foundation
 
-struct Prover<N:Node> 
+// πρῶτος
+struct ΠρῶτοςProver<N:Node> 
 where N:SymbolStringTyped {
 
-    typealias Clause = (String,String,N)
+    typealias ClauseTuple = (String,String,N)
     let problem : (String,URL)
-    var clauses : [Clause]
-    var includes : [N]
-    
+    var clauses : [ClauseTuple]
+    var includes : [(String,[String])]
+
+    /// initialize the prover with a problem, i.e.
+    /// - read all the clauses from the file
+    /// - read all the includes from the file
+    ///   but not read the clauses from the includes
+    /// - create an (empty) index structure 
+    ///   for selected literals of processed clauses
+    /// - create an (empty) index structure
+    ///   for processed clauses
     init?(problem:String) {
         guard let url = URL(fileURLwithProblem:problem) else {
             Syslog.error { "Problem \(problem) could not be found." }
@@ -30,8 +39,14 @@ where N:SymbolStringTyped {
             return (name,role,N(tree:cnf))
         }
 
-        self.includes = file.includes.map {
-            N(tree:$0)
+        self.includes = file.includes.flatMap {
+            guard let file = $0.symbol else {
+                return nil
+            }
+            let selection = $0.children.flatMap {
+                $0.symbol
+            }
+            return (file,selection)
         }
 
 

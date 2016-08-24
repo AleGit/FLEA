@@ -28,7 +28,7 @@ extension Tptp {
       // - Linux url.path : String?
       // - macOS url.path : String
       if url.isFileURL, let path = optional(url.path) {
-        Syslog.warning { "url.path : \(type(of:url.path))"}
+        Syslog.debug { "url.path : \(type(of:url.path))"}
         self.init(path:path)
       }
       else {

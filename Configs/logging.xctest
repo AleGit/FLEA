@@ -11,13 +11,9 @@
 # priority of origin »file«/»function»:
 # »file«/»function»:»value«
 # »file : »value«
-# »***»
-"***"                           : "warning" # global default log priority: »value«
+# »***» : »value« 
 
-
- 
-
-# "Tptp.File.swift"               : "error"
-# "URL+FilePath.swift"            : "info"
+#"Tptp.File.swift"               : "info"
+#"URL+FilePath.swift"            : "info"
 
  
