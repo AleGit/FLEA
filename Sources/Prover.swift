@@ -1,13 +1,16 @@
 import Foundation
 
+
 // πρῶτος
 struct ΠρῶτοςProver<N:Node> 
 where N:SymbolStringTyped {
-
     typealias ClauseTuple = (String,String,N)
+
+    typealias AxiomFileTriple = (String,URL,[String])
     let problem : (String,URL)
     var clauses : [ClauseTuple]
-    var includes : [(String,[String])]
+    var includes : [AxiomFileTriple]
+
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
@@ -34,24 +37,29 @@ where N:SymbolStringTyped {
             let role = child.symbol,
             let cnf = child.sibling else {
                 Syslog.error { "invalid input file \(problem) \(url)"}
+                assert(false)
                 return nil
             }
             return (name,role,N(tree:cnf))
         }
 
         self.includes = file.includes.flatMap {
-            guard let file = $0.symbol else {
+            guard let file = $0.symbol,
+            let axiomURL = URL(fileURLwithAxiom:file,
+            problemURL:url) else {
+                Syslog.error { "Axiom file was not found."}
+                assert(false)
                 return nil
             }
             let selection = $0.children.flatMap {
                 $0.symbol
             }
-            return (file,selection)
+            return (file,axiomURL,selection)
         }
 
-
-
-
+        Syslog.info {
+            "Prover(problem:\(problem)) was successful."
+        }
     }
 
 }

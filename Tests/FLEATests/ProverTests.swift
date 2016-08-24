@@ -41,11 +41,7 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertEqual(problem,name)
       XCTAssertEqual(12, prover.clauses.count)
       XCTAssertEqual(0, prover.includes.count)
-
-  
   }
-
-
 
   func testInitPUZ062c1() {
       let problem = "PUZ062-1"
@@ -62,9 +58,12 @@ private typealias Prover = ΠρῶτοςProver<N>
 
       XCTAssertEqual("'Axioms/MSC001-1.ax'", prover.includes.first!.0)
       XCTAssertEqual("'Axioms/MSC001-0.ax'", prover.includes.last!.0)
-      XCTAssertEqual(0, prover.includes.first!.1.count)
-      XCTAssertEqual(0, prover.includes.last!.1.count)
+      XCTAssertEqual(0, prover.includes.first!.2.count)
+      XCTAssertEqual(0, prover.includes.last!.2.count)
+      XCTAssertTrue(prover.includes.first!.1.isAccessible)
+      XCTAssertTrue(prover.includes.last!.1.isAccessible)
 
+      
 
   }
 }
