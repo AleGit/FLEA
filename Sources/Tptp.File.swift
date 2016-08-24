@@ -149,7 +149,7 @@ extension Tptp {
 
     /// The sequence of parsed <include> nodes.
     /// includes.count <= inputs.count
-    private var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
+    var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
       return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
     }
 

@@ -15,6 +15,7 @@ XCTMain([
   testCase(NodePathsTests.allTests),
   // testCase(ParseTptpTests.allTests),
   testCase(PositionTests.allTests),
+  testCase(ProverTests.allTests),
 
   testCase(ProcessTests.allTests),
   testCase(SharingNodeTests.allTests),
