@@ -49,6 +49,7 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertEqual(11,prover.roles[.hypothesis]?.count)
       XCTAssertEqual(1,prover.roles[.negated_conjecture]?.count)
   }
+  
   func testInitPUZ062c1() {
       let problem = "PUZ062-1"
       guard let prover = Prover(problem:problem) else {

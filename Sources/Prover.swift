@@ -4,22 +4,20 @@ protocol Prover {
 
 }
 
-extension Prover {
-    static func f<T>(_ array:[(name:String,role:Tptp.Role,node:T)] ) -> ([String:Set<Int>], [Tptp.Role:Set<Int>]) {
-        var names = [String:Set<Int>]()
-        var roles = Dictionary<Tptp.Role,Set<Int>>()
-        for (index,element) in array.enumerated() {
-            let (name,role,_) = element
+private func collectNamesAndRoles<T>(_ array:[(name:String,role:Tptp.Role,node:T)] ) -> ([String:Set<Int>], [Tptp.Role:Set<Int>]) {
+    var names = [String:Set<Int>]()
+    var roles = Dictionary<Tptp.Role,Set<Int>>()
+    for (index,element) in array.enumerated() {
+        let (name,role,_) = element
 
-            if names[name]?.insert(index) == nil {
-                names[name] = Set(arrayLiteral:index)
-            }
-            if roles[role]?.insert(index) == nil {
-                roles[role] = Set(arrayLiteral:index)
-            }
+        if names[name]?.insert(index) == nil {
+            names[name] = Set(arrayLiteral:index)
         }
-        return (names,roles)
+        if roles[role]?.insert(index) == nil {
+            roles[role] = Set(arrayLiteral:index)
+        }
     }
+    return (names,roles)
 }
 
 
@@ -86,7 +84,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
             return (file,axiomURL,selection)
         }
 
-        (names,roles) = ΠρῶτοςProver.f(clauses)
+        (names,roles) = collectNamesAndRoles(clauses)
 
         Syslog.info {
             "Prover(problem:\(problem)) was successful."
