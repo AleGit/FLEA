@@ -4,6 +4,18 @@ protocol Prover {
 
 }
 
+private func urlFile(name:String) -> (URL,Tptp.File)? {
+    guard let url = URL(fileURLwithProblem:name) else {
+        Syslog.error { "Problem \(name) could not be found." }
+        return nil
+    }
+    guard let file = Tptp.File(url:url) else {
+        Syslog.error { "Problem \(name) at \(url.path) could not be read and parsed." }
+        return nil
+    }
+    return (url,file)
+}
+
 private func collectNamesAndRoles<T>(_ array:[(name:String,role:Tptp.Role,node:T)] ) -> ([String:Set<Int>], [Tptp.Role:Set<Int>]) {
     var names = [String:Set<Int>]()
     var roles = Dictionary<Tptp.Role,Set<Int>>()
@@ -80,12 +92,18 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// - create an (empty) index structure
     ///   for processed clauses
     init?(problem name:String) {
+        /*
         guard let url = URL(fileURLwithProblem:name) else {
             Syslog.error { "Problem \(name) could not be found." }
             return nil
         }
         guard let file = Tptp.File(url:url) else {
             Syslog.error { "Problem \(name) at \(url.path) could not be read and parsed." }
+            return nil
+        }
+        */
+
+        guard let (url,file) = urlFile(name:name) else {
             return nil
         }
         problem = (name, url)
