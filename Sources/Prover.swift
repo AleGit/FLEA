@@ -19,7 +19,8 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
     // var names : [String:Set<Int>]
     var names = TrieClass<Character,Int>()
-    var roles : [Tptp.Role:Set<Int>]
+    var roles : [Tptp.Role : Set<Int>]
+    var sizes : [Set<Int>]
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
@@ -29,12 +30,14 @@ where N:SymbolStringTyped, N.Symbol == Int {
     ///   for selected literals of processed clauses
     /// - create an (empty) index structure
     ///   for processed clauses
+    /// - create a mapping from names to clauses (1:n) where n >=1 
+    /// - create a mapping from roles to clauses (1:n) where n >= 0
     init?(problem name:String) {
         guard let (url,file) = urlFile(name:name) else { return nil }
         problem = (name, url)
         clauses = extractClauseTriples(from:file)
         includes = extractIncludeTriples(from:file, url:url)
-        (names,roles) = collectNamesAndRoles(clauses)
+        (names,roles,sizes) = collectNamesRolesSizes(clauses)
         Syslog.info { "with \(name)) was successful." }
     }
 
@@ -76,18 +79,32 @@ private func urlFile(name:String) -> (URL,Tptp.File)? {
     return (url,file)
 }
 
-private func collectNamesAndRoles<T>(_ array:[(name:String,role:Tptp.Role,node:T)] ) -> (TrieClass<Character,Int>, [Tptp.Role:Set<Int>]) {
+private func collectNamesRolesSizes<T:Node>(_ array:[(name:String,role:Tptp.Role,node:T)] ) 
+-> (TrieClass<Character,Int>, [Tptp.Role : Set<Int>], [Set<Int>]) {
     var names = TrieClass<Character,Int>() // [String:Set<Int>]()
     var roles = Dictionary<Tptp.Role,Set<Int>>()
+    var sizes = Array<Set<Int>>()
     for (index,element) in array.enumerated() {
-        let (name,role,_) = element
+        let (name,role,node) = element
 
         names.insert(index, at:name.characters)
         if roles[role]?.insert(index) == nil {
             roles[role] = Set(arrayLiteral:index)
         }
+        if let count = node.nodes?.count {
+            while sizes.count <= count {
+                sizes.append(Set<Int>())
+            }
+            sizes[count].insert(index)
+
+        }
+        else {
+            let message = "A variable \(node) is not a literal"
+            Syslog.error { message }
+            assert(false, message )
+        }
     }
-    return (names,roles)
+    return (names,roles,sizes)
 }
 
 private func extractClauseTriples<N:Node>(from file:Tptp.File) -> [(String,Tptp.Role,N)] 
