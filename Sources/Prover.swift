@@ -4,6 +4,66 @@ protocol Prover {
 
 }
 
+
+// πρῶτος
+struct ΠρῶτοςProver<N:Node> : Prover
+where N:SymbolStringTyped, N.Symbol == Int {
+    typealias ClauseTuple = (String,Tptp.Role,N)
+    typealias AxiomFileTriple = (String,URL,[String])
+
+    let problem : (String,URL)
+    var clauses : [ClauseTuple]
+    var includes : [AxiomFileTriple]
+
+    var literalsTrie = TrieClass<Int,Int>()
+
+    // var names : [String:Set<Int>]
+    var names = TrieClass<Character,Int>()
+    var roles : [Tptp.Role:Set<Int>]
+
+    /// initialize the prover with a problem, i.e.
+    /// - read all the clauses from the file
+    /// - read all the includes from the file
+    ///   but not read the clauses from the includes
+    /// - create an (empty) index structure 
+    ///   for selected literals of processed clauses
+    /// - create an (empty) index structure
+    ///   for processed clauses
+    init?(problem name:String) {
+        guard let (url,file) = urlFile(name:name) else { return nil }
+        problem = (name, url)
+        clauses = extractClauseTriples(from:file)
+        includes = extractIncludeTriples(from:file, url:url)
+        (names,roles) = collectNamesAndRoles(clauses)
+        Syslog.info { "with \(name)) was successful." }
+    }
+
+    func run(timeout:AbsoluteTime = 5.0) {
+        let endtime = AbsoluteTimeGetCurrent() + timeout
+        Syslog.info { "timeaout after \(timeout) seconds." }
+
+        let (_,runtimes) = utileMeasure {
+            while AbsoluteTimeGetCurrent() < endtime {
+                sleep(1)
+                print(AbsoluteTimeGetCurrent())
+
+                // select clause
+                // process clause
+                // select literal
+                // search clashes
+                // insert clauses
+                // insert indices
+
+
+            }
+        }
+        Syslog.info { "runtimes = \(runtimes)" }
+    }
+}
+
+// MARK: helper functions
+
+
 private func urlFile(name:String) -> (URL,Tptp.File)? {
     guard let url = URL(fileURLwithProblem:name) else {
         Syslog.error { "Problem \(name) could not be found." }
@@ -60,63 +120,6 @@ private func extractIncludeTriples(from file:Tptp.File, url:URL) -> [(String,URL
             $0.symbol
         }
         return (file,axiomURL,selection)
-    }
-}
-
-
-// πρῶτος
-struct ΠρῶτοςProver<N:Node> : Prover
-where N:SymbolStringTyped, N.Symbol == Int {
-    typealias ClauseTuple = (String,Tptp.Role,N)
-    typealias AxiomFileTriple = (String,URL,[String])
-
-    let problem : (String,URL)
-    var clauses : [ClauseTuple]
-    var includes : [AxiomFileTriple]
-
-    var literalsTrie = TrieClass<Int,Int>()
-
-    // var names : [String:Set<Int>]
-    var names = TrieClass<Character,Int>()
-    var roles : [Tptp.Role:Set<Int>]
-
-    /// initialize the prover with a problem, i.e.
-    /// - read all the clauses from the file
-    /// - read all the includes from the file
-    ///   but not read the clauses from the includes
-    /// - create an (empty) index structure 
-    ///   for selected literals of processed clauses
-    /// - create an (empty) index structure
-    ///   for processed clauses
-    init?(problem name:String) {
-        guard let (url,file) = urlFile(name:name) else { return nil }
-        problem = (name, url)
-        clauses = extractClauseTriples(from:file)
-        includes = extractIncludeTriples(from:file, url:url)
-        (names,roles) = collectNamesAndRoles(clauses)
-        Syslog.info { "with \(name)) was successful." }
-    }
-
-    func run(timeout:AbsoluteTime = 5.0) {
-        let endtime = AbsoluteTimeGetCurrent() + timeout
-        Syslog.info { "timeaout after \(timeout) seconds." }
-
-        let (_,runtimes) = utileMeasure {
-            while AbsoluteTimeGetCurrent() < endtime {
-                sleep(1)
-                print(AbsoluteTimeGetCurrent())
-
-                // select clause
-                // process clause
-                // select literal
-                // search clashes
-                // insert clauses
-                // insert indices
-
-
-            }
-        }
-        Syslog.info { "runtimes = \(runtimes)" }
     }
 }
 

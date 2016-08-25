@@ -46,6 +46,11 @@ private typealias Prover = ΠρῶτοςProver<N>
 
       XCTAssertFalse(prover.names.isEmpty)
       XCTAssertEqual(12,prover.names.allValues.count)
+
+      let nc = "prove_neither_charles_nor_butler_did_it"
+      print(prover.names.retrieve(from:nc.characters))
+
+
       XCTAssertEqual(2,prover.roles.count)
       XCTAssertEqual(11,prover.roles[.hypothesis]?.count)
       XCTAssertEqual(1,prover.roles[.negated_conjecture]?.count)
