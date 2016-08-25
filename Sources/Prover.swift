@@ -1,18 +1,21 @@
 import Foundation
 
+protocol Prover {
+
+}
+
 
 // πρῶτος
-struct ΠρῶτοςProver<N:Node> 
+struct ΠρῶτοςProver<N:Node> : Prover
 where N:SymbolStringTyped, N.Symbol == Int {
     typealias ClauseTuple = (String,String,N)
-
     typealias AxiomFileTriple = (String,URL,[String])
+
     let problem : (String,URL)
     var clauses : [ClauseTuple]
     var includes : [AxiomFileTriple]
 
     var literalsTrie = TrieClass<Int,Int>()
-
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
@@ -38,8 +41,9 @@ where N:SymbolStringTyped, N.Symbol == Int {
             let child = $0.child, 
             let role = child.symbol,
             let cnf = child.sibling else {
-                Syslog.error { "invalid input file \(problem) \(url)"}
-                assert(false)
+                let symbol = $0.symbol ?? "n/a"
+                Syslog.error { "Invalid cnf \(symbol) in \(problem) \(url)"}
+                assert(false,"Invalid cnf in \(symbol) in \(problem) \(url.path)")
                 return nil
             }
             return (name,role,N(tree:cnf))
@@ -49,8 +53,9 @@ where N:SymbolStringTyped, N.Symbol == Int {
             guard let file = $0.symbol,
             let axiomURL = URL(fileURLwithAxiom:file,
             problemURL:url) else {
-                Syslog.error { "Axiom file was not found."}
-                assert(false)
+                let symbol = $0.symbol ?? "'n/a'"
+                Syslog.error { "Include file \(symbol) was not found."}
+                assert(false, "Include file \(symbol) was not found.")
                 return nil
             }
             let selection = $0.children.flatMap {
