@@ -38,6 +38,16 @@ extension Node where Self:SymbolStringTyped {
 }
 
 extension Tptp {
+  enum Role : String {
+     case axiom, hypothesis, definition, assumption
+     case lemma, theorem, corollary, conjecture
+     case negated_conjecture
+     case plain, type
+     case fi_domain, fi_functors, fi_predicates
+     case unknown                     
+
+    
+  }
   enum SymbolType : Equatable {
     case undefined
 
@@ -60,7 +70,7 @@ extension Tptp {
     case existential  // ? X Y ... s with implicit arity == 1..<∞
 
     case negation     // ~ s with implicit arity == 1
-    case disjunction  // s | t ... with implicit arity == 0..<∞
+    case disjunction  // s, t ... with implicit arity == 0..<∞
     case conjunction  // s & t ... with implicit arity == 0..<∞
 
     case implication  // s => t with implicit arity == 2

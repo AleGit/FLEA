@@ -4,11 +4,29 @@ protocol Prover {
 
 }
 
+extension Prover {
+    static func f<T>(_ array:[(name:String,role:Tptp.Role,node:T)] ) -> ([String:Set<Int>], [Tptp.Role:Set<Int>]) {
+        var names = [String:Set<Int>]()
+        var roles = Dictionary<Tptp.Role,Set<Int>>()
+        for (index,element) in array.enumerated() {
+            let (name,role,_) = element
+
+            if names[name]?.insert(index) == nil {
+                names[name] = Set(arrayLiteral:index)
+            }
+            if roles[role]?.insert(index) == nil {
+                roles[role] = Set(arrayLiteral:index)
+            }
+        }
+        return (names,roles)
+    }
+}
+
 
 // πρῶτος
 struct ΠρῶτοςProver<N:Node> : Prover
 where N:SymbolStringTyped, N.Symbol == Int {
-    typealias ClauseTuple = (String,String,N)
+    typealias ClauseTuple = (String,Tptp.Role,N)
     typealias AxiomFileTriple = (String,URL,[String])
 
     let problem : (String,URL)
@@ -16,6 +34,9 @@ where N:SymbolStringTyped, N.Symbol == Int {
     var includes : [AxiomFileTriple]
 
     var literalsTrie = TrieClass<Int,Int>()
+
+    var names : [String:Set<Int>]
+    var roles : [Tptp.Role:Set<Int>]
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
@@ -39,7 +60,8 @@ where N:SymbolStringTyped, N.Symbol == Int {
         self.clauses = file.cnfs.flatMap {
             guard let name = $0.symbol,
             let child = $0.child, 
-            let role = child.symbol,
+            let string = child.symbol,
+            let role = Tptp.Role(rawValue:string),
             let cnf = child.sibling else {
                 let symbol = $0.symbol ?? "n/a"
                 Syslog.error { "Invalid cnf \(symbol) in \(problem) \(url)"}
@@ -63,6 +85,8 @@ where N:SymbolStringTyped, N.Symbol == Int {
             }
             return (file,axiomURL,selection)
         }
+
+        (names,roles) = ΠρῶτοςProver.f(clauses)
 
         Syslog.info {
             "Prover(problem:\(problem)) was successful."
