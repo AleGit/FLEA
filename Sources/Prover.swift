@@ -79,24 +79,24 @@ where N:SymbolStringTyped, N.Symbol == Int {
     ///   for selected literals of processed clauses
     /// - create an (empty) index structure
     ///   for processed clauses
-    init?(problem:String) {
-        guard let url = URL(fileURLwithProblem:problem) else {
-            Syslog.error { "Problem \(problem) could not be found." }
+    init?(problem name:String) {
+        guard let url = URL(fileURLwithProblem:name) else {
+            Syslog.error { "Problem \(name) could not be found." }
             return nil
         }
         guard let file = Tptp.File(url:url) else {
-            Syslog.error { "Problem \(problem) at \(url.path) could not be read and parsed." }
+            Syslog.error { "Problem \(name) at \(url.path) could not be read and parsed." }
             return nil
         }
-        self.problem = (problem, url)
+        problem = (name, url)
 
-        self.clauses = extractClauseTriples(from:file)
+        clauses = extractClauseTriples(from:file)
 
-        self.includes = extractIncludeTriples(from:file, url:url)
+        includes = extractIncludeTriples(from:file, url:url)
 
         (names,roles) = collectNamesAndRoles(clauses)
 
-        Syslog.info { "Prover(problem:\(problem)) was successful." }
+        Syslog.info { "with \(name)) was successful." }
     }
 
     func run(timeout:AbsoluteTime = 5.0) {
