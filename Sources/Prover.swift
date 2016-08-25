@@ -16,15 +16,13 @@ private func urlFile(name:String) -> (URL,Tptp.File)? {
     return (url,file)
 }
 
-private func collectNamesAndRoles<T>(_ array:[(name:String,role:Tptp.Role,node:T)] ) -> ([String:Set<Int>], [Tptp.Role:Set<Int>]) {
-    var names = [String:Set<Int>]()
+private func collectNamesAndRoles<T>(_ array:[(name:String,role:Tptp.Role,node:T)] ) -> (TrieClass<Character,Int>, [Tptp.Role:Set<Int>]) {
+    var names = TrieClass<Character,Int>() // [String:Set<Int>]()
     var roles = Dictionary<Tptp.Role,Set<Int>>()
     for (index,element) in array.enumerated() {
         let (name,role,_) = element
 
-        if names[name]?.insert(index) == nil {
-            names[name] = Set(arrayLiteral:index)
-        }
+        names.insert(index, at:name.characters)
         if roles[role]?.insert(index) == nil {
             roles[role] = Set(arrayLiteral:index)
         }
@@ -32,8 +30,7 @@ private func collectNamesAndRoles<T>(_ array:[(name:String,role:Tptp.Role,node:T
     return (names,roles)
 }
 
-private func extractClauseTriples<N:Node>(from file:Tptp.File) 
--> [(String,Tptp.Role,N)] 
+private func extractClauseTriples<N:Node>(from file:Tptp.File) -> [(String,Tptp.Role,N)] 
 where N:SymbolStringTyped {
     return file.cnfs.flatMap {
         guard let name = $0.symbol,
@@ -50,8 +47,7 @@ where N:SymbolStringTyped {
     }
 }
 
-private func extractIncludeTriples(from file:Tptp.File, url:URL) 
--> [(String,URL,[String])] {
+private func extractIncludeTriples(from file:Tptp.File, url:URL) -> [(String,URL,[String])] {
     return file.includes.flatMap {
         guard let file = $0.symbol,
         let axiomURL = URL(fileURLwithAxiom:file,problemURL:url) else {
@@ -80,7 +76,8 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
     var literalsTrie = TrieClass<Int,Int>()
 
-    var names : [String:Set<Int>]
+    // var names : [String:Set<Int>]
+    var names = TrieClass<Character,Int>()
     var roles : [Tptp.Role:Set<Int>]
 
     /// initialize the prover with a problem, i.e.
@@ -92,28 +89,11 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// - create an (empty) index structure
     ///   for processed clauses
     init?(problem name:String) {
-        /*
-        guard let url = URL(fileURLwithProblem:name) else {
-            Syslog.error { "Problem \(name) could not be found." }
-            return nil
-        }
-        guard let file = Tptp.File(url:url) else {
-            Syslog.error { "Problem \(name) at \(url.path) could not be read and parsed." }
-            return nil
-        }
-        */
-
-        guard let (url,file) = urlFile(name:name) else {
-            return nil
-        }
+        guard let (url,file) = urlFile(name:name) else { return nil }
         problem = (name, url)
-
         clauses = extractClauseTriples(from:file)
-
         includes = extractIncludeTriples(from:file, url:url)
-
         (names,roles) = collectNamesAndRoles(clauses)
-
         Syslog.info { "with \(name)) was successful." }
     }
 

@@ -44,7 +44,8 @@ private typealias Prover = ΠρῶτοςProver<N>
 
       XCTAssertTrue(prover.literalsTrie.isEmpty)
 
-      XCTAssertEqual(12,prover.names.count)
+      XCTAssertFalse(prover.names.isEmpty)
+      XCTAssertEqual(12,prover.names.allValues.count)
       XCTAssertEqual(2,prover.roles.count)
       XCTAssertEqual(11,prover.roles[.hypothesis]?.count)
       XCTAssertEqual(1,prover.roles[.negated_conjecture]?.count)

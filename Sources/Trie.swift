@@ -172,9 +172,14 @@ extension TrieStore {
       return self.valueStore
   }
 
-  var subvalues : [Value] {
-    return trieStore.values.flatMap { $0.values }
+
+  /// Complexity : O(n)
+  var allValues : Set<Value> {
+    return self.valueStore.union (
+      trieStore.values.flatMap { $0.allValues }
+    )
   }
+  
 
   var leaps : Set<Leap> {
     return Set(self.trieStore.keys)
