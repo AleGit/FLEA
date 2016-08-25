@@ -20,6 +20,41 @@ private func collectNamesAndRoles<T>(_ array:[(name:String,role:Tptp.Role,node:T
     return (names,roles)
 }
 
+private func extractClauseTriples<N:Node>(from file:Tptp.File) 
+-> [(String,Tptp.Role,N)] 
+where N:SymbolStringTyped {
+    return file.cnfs.flatMap {
+        guard let name = $0.symbol,
+        let child = $0.child, 
+        let string = child.symbol,
+        let role = Tptp.Role(rawValue:string),
+        let cnf = child.sibling else {
+            let symbol = $0.symbol ?? "n/a"
+            Syslog.error { "Invalid cnf \(symbol) in \(file.path)"}
+            assert(false,"Invalid cnf in \(symbol) in \(file.path)")
+            return nil
+        }
+        return (name,role,N(tree:cnf))
+    }
+}
+
+private func extractIncludeTriples(from file:Tptp.File, url:URL) 
+-> [(String,URL,[String])] {
+    return file.includes.flatMap {
+        guard let file = $0.symbol,
+        let axiomURL = URL(fileURLwithAxiom:file,problemURL:url) else {
+            let symbol = $0.symbol ?? "'n/a'"
+            Syslog.error { "Include file \(symbol) was not found."}
+            assert(false, "Include file \(symbol) was not found.")
+            return nil
+        }
+        let selection = $0.children.flatMap {
+            $0.symbol
+        }
+        return (file,axiomURL,selection)
+    }
+}
+
 
 // πρῶτος
 struct ΠρῶτοςProver<N:Node> : Prover
@@ -55,46 +90,18 @@ where N:SymbolStringTyped, N.Symbol == Int {
         }
         self.problem = (problem, url)
 
-        self.clauses = file.cnfs.flatMap {
-            guard let name = $0.symbol,
-            let child = $0.child, 
-            let string = child.symbol,
-            let role = Tptp.Role(rawValue:string),
-            let cnf = child.sibling else {
-                let symbol = $0.symbol ?? "n/a"
-                Syslog.error { "Invalid cnf \(symbol) in \(problem) \(url)"}
-                assert(false,"Invalid cnf in \(symbol) in \(problem) \(url.path)")
-                return nil
-            }
-            return (name,role,N(tree:cnf))
-        }
+        self.clauses = extractClauseTriples(from:file)
 
-        self.includes = file.includes.flatMap {
-            guard let file = $0.symbol,
-            let axiomURL = URL(fileURLwithAxiom:file,
-            problemURL:url) else {
-                let symbol = $0.symbol ?? "'n/a'"
-                Syslog.error { "Include file \(symbol) was not found."}
-                assert(false, "Include file \(symbol) was not found.")
-                return nil
-            }
-            let selection = $0.children.flatMap {
-                $0.symbol
-            }
-            return (file,axiomURL,selection)
-        }
+        self.includes = extractIncludeTriples(from:file, url:url)
 
         (names,roles) = collectNamesAndRoles(clauses)
 
-        Syslog.info {
-            "Prover(problem:\(problem)) was successful."
-        }
+        Syslog.info { "Prover(problem:\(problem)) was successful." }
     }
 
     func run(timeout:AbsoluteTime = 5.0) {
         let endtime = AbsoluteTimeGetCurrent() + timeout
         Syslog.info { "timeaout after \(timeout) seconds." }
-        
 
         let (_,runtimes) = utileMeasure {
             while AbsoluteTimeGetCurrent() < endtime {
