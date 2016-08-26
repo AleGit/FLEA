@@ -164,5 +164,43 @@ extension Tptp {
     private var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
       return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
     }
+    
+    func nameRoleClauseTriples<N:Node>(predicate:(String,Tptp.Role) -> Bool = { _,_ in true }) 
+    -> [(String,Tptp.Role,N)] 
+    where N:SymbolStringTyped {
+        return self.cnfs.flatMap {
+            guard let name = $0.symbol,
+            let child = $0.child, 
+            let string = child.symbol,
+            let role = Tptp.Role(rawValue:string),
+            let cnf = child.sibling else {
+                let symbol = $0.symbol ?? "n/a"
+                Syslog.error { "Invalid cnf \(symbol) in \(self.path)"}
+                assert(false,"Invalid cnf in \(symbol) in \(self.path)")
+                return nil
+            }
+            guard predicate(name,role) else {
+                // name and role did not pass the test
+                return nil
+            }
+            return (name,role,N(tree:cnf))
+        }
+    }
+    
+    func includeSelectionURLTriples(url:URL) -> [(String,[String],URL)] {
+      return self.includes.flatMap {
+        guard let name = $0.symbol,
+        let axiomURL = URL(fileURLwithAxiom:name,problemURL:url) else {
+          let symbol = $0.symbol ?? "'n/a'"
+          Syslog.error { "Include file \(symbol) was not found."}
+          assert(false, "Include file \(symbol) was not found.")
+          return nil
+        }
+        let selection = $0.children.flatMap {
+          $0.symbol
+        }
+        return (name,selection,axiomURL)
+      }
+    }
   }
 }

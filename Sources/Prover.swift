@@ -9,7 +9,7 @@ protocol Prover {
 final class ΠρῶτοςProver<N:Node> : Prover
 where N:SymbolStringTyped, N.Symbol == Int {
     typealias ClauseTuple = (String,Tptp.Role,N)
-    typealias AxiomFileTriple = (String,URL,[String])
+    typealias AxiomFileTriple = (String,[String],URL)
 
     let problem : (String,URL)
     var clauses : [ClauseTuple]
@@ -34,8 +34,10 @@ where N:SymbolStringTyped, N.Symbol == Int {
     init?(problem name:String) {
         guard let (url,file) = urlFile(name:name) else { return nil }
         problem = (name, url)
-        includes = extractIncludeTriples(from:file, url:url)
-        clauses = extractClauseTriples(from:file)
+        // includes = extractIncludeTriples(from:file, url:url)
+        includes = file.includeSelectionURLTriples(url:url)
+        // clauses = extractClauseTriples(from:file)
+        clauses = file.nameRoleClauseTriples()
         (names,roles,sizes) = collectNamesRolesSizes(clauses)
 
         helloWorld()
@@ -70,7 +72,6 @@ where N:SymbolStringTyped, N.Symbol == Int {
 }
 
 // MARK: helper functions
-
 
 private func urlFile(name:String) -> (URL,Tptp.File)? {
     guard let url = URL(fileURLwithProblem:name) else {
@@ -112,6 +113,7 @@ private func collectNamesRolesSizes<T:Node>(_ array:[(name:String,role:Tptp.Role
     return (names,roles,sizes)
 }
 
+/*
 private func extractClauseTriples<N:Node>(from file:Tptp.File, predicate:(String,Tptp.Role) 
 -> Bool = { _,_ in true }) -> [(String,Tptp.Role,N)] 
 where N:SymbolStringTyped {
@@ -136,6 +138,7 @@ where N:SymbolStringTyped {
         return (name,role,N(tree:cnf))
     }
 }
+*/
 
 private func extractIncludeTriples(from file:Tptp.File, url:URL) -> [(String,URL,[String])] {
     return file.includes.flatMap {
@@ -152,4 +155,7 @@ private func extractIncludeTriples(from file:Tptp.File, url:URL) -> [(String,URL
         return (file,axiomURL,selection)
     }
 }
+
+
+
 
