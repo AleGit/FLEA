@@ -37,6 +37,11 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// map clausses to *term_t* literals
     var clause2literals = Dictionary<Int,[term_t]>()
 
+    /// collect processed clauses
+    var processed = Set<Int>()
+    var ignored = Set<Int>() // subset of processed
+    
+
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
     /// - read all the includes from the file
