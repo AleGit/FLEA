@@ -59,7 +59,7 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertEqual(0, prover.sizes[0].count) // no empty clauses
       XCTAssertEqual(5, prover.sizes[1].count) // 5 unit clauses
       XCTAssertEqual(5, prover.sizes[2].count) // 5 clauses with two literals
-      XCTAssertEqual(2, prover.sizes[3].count) // 2 clause with three literals
+      XCTAssertEqual(2, prover.sizes[3].count) // 2 clauses with three literals
 
       XCTAssertEqual(Set([0,1,2,6,7]), prover.sizes[1])
       XCTAssertEqual(Set([3,4,8,9,11]), prover.sizes[2])

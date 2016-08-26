@@ -6,7 +6,7 @@ protocol Prover {
 
 
 // πρῶτος
-struct ΠρῶτοςProver<N:Node> : Prover
+final class ΠρῶτοςProver<N:Node> : Prover
 where N:SymbolStringTyped, N.Symbol == Int {
     typealias ClauseTuple = (String,Tptp.Role,N)
     typealias AxiomFileTriple = (String,URL,[String])
@@ -15,12 +15,11 @@ where N:SymbolStringTyped, N.Symbol == Int {
     var clauses : [ClauseTuple]
     var includes : [AxiomFileTriple]
 
-    var literalsTrie = TrieClass<Int,Int>()
-
-    // var names : [String:Set<Int>]
-    var names = TrieClass<Character,Int>()
-    var roles : [Tptp.Role : Set<Int>]
+    var names : TrieClass<Character,Int>
+    var roles : Dictionary<Tptp.Role, Set<Int>>
     var sizes : [Set<Int>]
+
+    var literalsTrie = TrieClass<Int,Int>()
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
@@ -35,10 +34,16 @@ where N:SymbolStringTyped, N.Symbol == Int {
     init?(problem name:String) {
         guard let (url,file) = urlFile(name:name) else { return nil }
         problem = (name, url)
-        clauses = extractClauseTriples(from:file)
         includes = extractIncludeTriples(from:file, url:url)
+        clauses = extractClauseTriples(from:file)
         (names,roles,sizes) = collectNamesRolesSizes(clauses)
+
+        helloWorld()
         Syslog.info { "with \(name)) was successful." }
+    }
+
+    func helloWorld() {
+        Syslog.info { "Hello World" }
     }
 
     func run(timeout:AbsoluteTime = 5.0) {
@@ -107,8 +112,10 @@ private func collectNamesRolesSizes<T:Node>(_ array:[(name:String,role:Tptp.Role
     return (names,roles,sizes)
 }
 
-private func extractClauseTriples<N:Node>(from file:Tptp.File) -> [(String,Tptp.Role,N)] 
+private func extractClauseTriples<N:Node>(from file:Tptp.File, predicate:(String,Tptp.Role) 
+-> Bool = { _,_ in true }) -> [(String,Tptp.Role,N)] 
 where N:SymbolStringTyped {
+
     return file.cnfs.flatMap {
         guard let name = $0.symbol,
         let child = $0.child, 
@@ -120,6 +127,12 @@ where N:SymbolStringTyped {
             assert(false,"Invalid cnf in \(symbol) in \(file.path)")
             return nil
         }
+
+        guard predicate(name,role) else {
+            // name and role did not pass the test
+            return nil
+        }
+         
         return (name,role,N(tree:cnf))
     }
 }
