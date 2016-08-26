@@ -1,4 +1,5 @@
 import Foundation
+import CYices
 
 protocol Prover {
 
@@ -11,15 +12,30 @@ where N:SymbolStringTyped, N.Symbol == Int {
     typealias ClauseTuple = (String,Tptp.Role,N)
     typealias AxiomFileTriple = (String,[String],URL)
 
+    /// store name and file URL of problem
     let problem : (String,URL)
+
+    /// store names, roles and clauses
     var clauses : [ClauseTuple]
+
+    /// store names, selections, and file URL of includes
     var includes : [AxiomFileTriple]
 
+    /// map names to clauses, usually 1:1
     var names : TrieClass<Character,Int>
+    /// map roles to clauses, 1:n
     var roles : Dictionary<Tptp.Role, Set<Int>>
+    /// map sizes (number of literals) to clauses
     var sizes : [Set<Int>]
 
+    /// map literal paths to clauses
     var literalsTrie = TrieClass<Int,Int>()
+
+    /// map *term_t* literals to clauses 
+    var yliterals = Dictionary<term_t, Set<Int>>()
+
+    /// map clases to *term_t* literals
+    var cliterasl = Dictionary<Int,[term_t]>()
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
@@ -34,18 +50,10 @@ where N:SymbolStringTyped, N.Symbol == Int {
     init?(problem name:String) {
         guard let (url,file) = urlFile(name:name) else { return nil }
         problem = (name, url)
-        // includes = extractIncludeTriples(from:file, url:url)
         includes = file.includeSelectionURLTriples(url:url)
-        // clauses = extractClauseTriples(from:file)
         clauses = file.nameRoleClauseTriples()
         (names,roles,sizes) = collectNamesRolesSizes(clauses)
-
-        helloWorld()
         Syslog.info { "with \(name)) was successful." }
-    }
-
-    func helloWorld() {
-        Syslog.info { "Hello World" }
     }
 
     func run(timeout:AbsoluteTime = 5.0) {
