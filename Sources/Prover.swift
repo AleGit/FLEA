@@ -32,10 +32,10 @@ where N:SymbolStringTyped, N.Symbol == Int {
     var literalsTrie = TrieClass<Int,Int>()
 
     /// map *term_t* literals to clauses 
-    var yliterals = Dictionary<term_t, Set<Int>>()
+    var literal2clauses = Dictionary<term_t, Set<Int>>()
 
-    /// map clases to *term_t* literals
-    var cliterasl = Dictionary<Int,[term_t]>()
+    /// map clausses to *term_t* literals
+    var clause2literals = Dictionary<Int,[term_t]>()
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
