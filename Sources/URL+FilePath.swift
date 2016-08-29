@@ -57,7 +57,19 @@ extension URL {
     // FLEA_CONFIG not supported yet
     // logging.<name.extension> not supperted yet
 
-    return URL(fileURLWithPath: "Configs/logging.xctest")
+    let url = URL(fileURLWithPath:CommandLine.name)
+
+    if let name = url.lastPathComponent {
+      let url = URL(fileURLWithPath:"Configs/\(name).logging")
+      if url.isAccessible { return url }
+      
+      print(url,"is not accessible")
+    }
+    
+    return URL(fileURLWithPath: "Configs/default.logging")
+
+
+    
   }
 }
 

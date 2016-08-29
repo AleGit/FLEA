@@ -84,7 +84,7 @@ public class SyslogTests : FleaTestCase {
   }
 
   func testConfiguration() {
-    let path = "Configs/logging.default"
+    let path = "Configs/default.logging"
     guard let content = path.content else {
       XCTFail("\(nok) config file '\(path)' not found.")
       return

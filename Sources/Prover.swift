@@ -22,11 +22,11 @@ where N:SymbolStringTyped, N.Symbol == Int {
     var includes : [AxiomFileTriple]
 
     /// map names to clauses, usually 1:1
-    var names : TrieClass<Character,Int>
+    var names = TrieClass<Character,Int>()
     /// map roles to clauses, 1:n
-    var roles : Dictionary<Tptp.Role, Set<Int>>
+    var roles = Dictionary<Tptp.Role, Set<Int>> ()
     /// map sizes (number of literals) to clauses
-    var sizes : [Set<Int>]
+    var sizes = [Set<Int>]()
 
     /// map literal paths to clauses
     var literalsTrie = TrieClass<Int,Int>()
@@ -57,8 +57,30 @@ where N:SymbolStringTyped, N.Symbol == Int {
         problem = (name, url)
         includes = file.includeSelectionURLTriples(url:url)
         clauses = file.nameRoleClauseTriples()
-        (names,roles,sizes) = collectNamesRolesSizes(clauses)
         Syslog.info { "with \(name)) was successful." }
+    }
+
+    func collect() {
+        for (index,element) in clauses.enumerated() {
+        let (name,role,node) = element
+
+        names.insert(index, at:name.characters)
+        if roles[role]?.insert(index) == nil {
+            roles[role] = Set(arrayLiteral:index)
+        }
+        if let count = node.nodes?.count {
+            while sizes.count <= count {
+                sizes.append(Set<Int>())
+            }
+            sizes[count].insert(index)
+
+        }
+        else {
+            let message = "A variable \(node) is not a literal"
+            Syslog.error { message }
+            assert(false, message )
+        }
+    }
     }
 
     func run(timeout:AbsoluteTime = 5.0) {

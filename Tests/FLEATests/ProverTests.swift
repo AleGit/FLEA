@@ -11,7 +11,7 @@ public class ProverTests : FleaTestCase {
     return [
       ("testInitPUZ001c1", testInitPUZ001c1),
 
-      ("testInitPUZ062c1", testInitPUZ062c1),
+      ("testInitPUZ062c1", testInitPUZ062c1)
     ]
   }
 
@@ -43,6 +43,8 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertEqual(0, prover.includes.count)
 
       XCTAssertTrue(prover.literalsTrie.isEmpty)
+
+      prover.collect()
 
       XCTAssertFalse(prover.names.isEmpty)
       XCTAssertEqual(12,prover.names.allValues.count)

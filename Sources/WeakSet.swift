@@ -52,7 +52,7 @@ extension WeakSet : WeakPartialSetAlgebra {
       return (true,newElement)
     }
 
-    assert(validEntries.count < 2,"\(#function) \(validEntries.count)")
+    assert(validEntries.count < 12,"\(#function) \(validEntries.count)")
 
     for entry in validEntries {
       if let element = entry.element, element == newElement {
