@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# 
+# build a binary
 # ================================================================================
 
 cp Scripts/main.swift Sources/main.swift
-swift build -c release
+swift build "$@"
 rm Sources/main.swift
