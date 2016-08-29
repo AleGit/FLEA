@@ -56,7 +56,7 @@ protocol SymbolTabulating {
   static var symbols : Symbols { get set }
 }
 
-/// A helper protocol to use Iteger as generic constraint.
+/// Integers that can be initialized with an `Int` value.
 protocol GenericInteger : Integer {
   init(_ value:Int)
 }
