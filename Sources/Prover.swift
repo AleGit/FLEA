@@ -45,7 +45,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
     /// - read all the includes from the file
-    ///   but not read the clauses from the includes
+    ///   but do not read the clauses from the includes
     /// - create an (empty) index structure 
     ///   for selected literals of processed clauses
     /// - create an (empty) index structure

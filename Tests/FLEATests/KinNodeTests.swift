@@ -20,7 +20,7 @@ public class KinNodeTests : FleaTestCase {
     static var pool = WeakSet<N>()
     var folks = WeakSet<N>()
     
-    var symbol : S = N.symbolize(string:Tptp.asterisk, type:.variable)
+    var symbol : S = N.symbolize(string:Tptp.wildcard, type:.variable)
     var nodes : [N]? = nil
   }
 
