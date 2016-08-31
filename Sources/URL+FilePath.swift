@@ -59,7 +59,10 @@ extension URL {
 
     let url = URL(fileURLWithPath:CommandLine.name)
 
-    if let name = url.lastPathComponent {
+    // macOS: lastPathComponent : String
+    // Linux: lastPathComponent : String?
+    Syslog.warning { "optional(url.lastPathComponent)" }
+    if let name = optional(url.lastPathComponent) {
       let url = URL(fileURLWithPath:"Configs/\(name).logging")
       if url.isAccessible { return url }
       
