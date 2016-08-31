@@ -10,6 +10,8 @@ protocol Prover {
 final class ΠρῶτοςProver<N:Node> : Prover
 where N:SymbolStringTyped, N.Symbol == Int {
     typealias ClauseTuple = (String,Tptp.Role,N)
+
+    /* *** postpone until after talk *** */
     typealias AxiomFileTriple = (String,[String],URL)
 
     /// store name and file URL of problem
@@ -65,6 +67,11 @@ where N:SymbolStringTyped, N.Symbol == Int {
         Syslog.info { "with \(name)) was successful." }
     }
 
+
+    func selectClause() -> Int {
+        return processed.count
+    }
+
     /* *** postpone until after talk *** */
     func collect() {
         for (index,element) in clauses.enumerated() {
@@ -94,9 +101,8 @@ where N:SymbolStringTyped, N.Symbol == Int {
         Syslog.info { "timeaout after \(timeout) seconds." }
 
         let (_,runtimes) = utileMeasure {
-            while AbsoluteTimeGetCurrent() < endtime {
-                sleep(1)
-                print(AbsoluteTimeGetCurrent())
+            while AbsoluteTimeGetCurrent() < endtime && processed.count < clauses.count {
+                process(clause:selectClause())
 
                 // select clause
                 // process clause
@@ -109,6 +115,21 @@ where N:SymbolStringTyped, N.Symbol == Int {
             }
         }
         Syslog.info { "runtimes = \(runtimes)" }
+    }
+
+    func process(clause index:Int) {
+        let (_,_,clause) = clauses[index]
+
+        Syslog.info { "Process clause #\(index)"}
+        Syslog.debug { "Processing '\(clause)'" }
+
+        let (a,b,c) = Yices.clause(clause)
+        print (a,b,c)
+
+
+
+        processed.insert(index)
+
     }
 }
 
