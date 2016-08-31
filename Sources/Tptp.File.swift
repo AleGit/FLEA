@@ -184,7 +184,9 @@ extension Tptp {
                 // name and role did not pass the test
                 return nil
             }
-            return (name,role,N(tree:cnf))
+            let tree = N(tree:cnf)
+            Syslog.info{ "\(tree)"}
+            return (name,role, tree)
         }
     }
     

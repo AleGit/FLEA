@@ -101,8 +101,11 @@ where N:SymbolStringTyped, N.Symbol == Int {
         Syslog.info { "timeaout after \(timeout) seconds." }
 
         let (_,runtimes) = utileMeasure {
-            while AbsoluteTimeGetCurrent() < endtime && processed.count < clauses.count {
+            while AbsoluteTimeGetCurrent() < endtime 
+            && processed.count < clauses.count 
+            {
                 process(clause:selectClause())
+                // sleep(1)
 
                 // select clause
                 // process clause
@@ -118,14 +121,13 @@ where N:SymbolStringTyped, N.Symbol == Int {
     }
 
     func process(clause index:Int) {
-        let (_,_,clause) = clauses[index]
+        let (name,role,clause) = clauses[index]
 
         Syslog.info { "Process clause #\(index)"}
-        Syslog.debug { "Processing '\(clause)'" }
+        Syslog.debug { "Processing '\(name)' '\(role)' '\(clause)'" }
 
         let (a,b,c) = Yices.clause(clause)
-        print (a,b,c)
-
+        Syslog.debug { "yices:\(a) \(b) \(c)" }
 
 
         processed.insert(index)
