@@ -21,10 +21,15 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// store names, selections, and file URL of includes
     var includes : [AxiomFileTriple]
 
+    /* *** postpone until after talk *** */
     /// map names to clauses, usually 1:1
     var names = TrieClass<Character,Int>()
+
+    /* *** postpone until after talk *** */
     /// map roles to clauses, 1:n
     var roles = Dictionary<Tptp.Role, Set<Int>> ()
+
+    /* *** postpone until after talk *** */
     /// map sizes (number of literals) to clauses
     var sizes = [Set<Int>]()
 
@@ -60,27 +65,28 @@ where N:SymbolStringTyped, N.Symbol == Int {
         Syslog.info { "with \(name)) was successful." }
     }
 
+    /* *** postpone until after talk *** */
     func collect() {
         for (index,element) in clauses.enumerated() {
-        let (name,role,node) = element
+            let (name,role,node) = element
 
-        names.insert(index, at:name.characters)
-        if roles[role]?.insert(index) == nil {
-            roles[role] = Set(arrayLiteral:index)
-        }
-        if let count = node.nodes?.count {
-            while sizes.count <= count {
-                sizes.append(Set<Int>())
+            names.insert(index, at:name.characters)
+            if roles[role]?.insert(index) == nil {
+                roles[role] = Set(arrayLiteral:index)
             }
-            sizes[count].insert(index)
+            if let count = node.nodes?.count {
+                while sizes.count <= count {
+                    sizes.append(Set<Int>())
+                }
+                sizes[count].insert(index)
 
+            }
+            else {
+                let message = "A variable \(node) is not a literal"
+                Syslog.error { message }
+                assert(false, message )
+            }
         }
-        else {
-            let message = "A variable \(node) is not a literal"
-            Syslog.error { message }
-            assert(false, message )
-        }
-    }
     }
 
     func run(timeout:AbsoluteTime = 5.0) {
@@ -119,35 +125,5 @@ private func urlFile(name:String) -> (URL,Tptp.File)? {
     }
     return (url,file)
 }
-
-private func collectNamesRolesSizes<T:Node>(_ array:[(name:String,role:Tptp.Role,node:T)] ) 
--> (TrieClass<Character,Int>, [Tptp.Role : Set<Int>], [Set<Int>]) {
-    var names = TrieClass<Character,Int>() // [String:Set<Int>]()
-    var roles = Dictionary<Tptp.Role,Set<Int>>()
-    var sizes = Array<Set<Int>>()
-    for (index,element) in array.enumerated() {
-        let (name,role,node) = element
-
-        names.insert(index, at:name.characters)
-        if roles[role]?.insert(index) == nil {
-            roles[role] = Set(arrayLiteral:index)
-        }
-        if let count = node.nodes?.count {
-            while sizes.count <= count {
-                sizes.append(Set<Int>())
-            }
-            sizes[count].insert(index)
-
-        }
-        else {
-            let message = "A variable \(node) is not a literal"
-            Syslog.error { message }
-            assert(false, message )
-        }
-    }
-    return (names,roles,sizes)
-}
-
-
 
 
