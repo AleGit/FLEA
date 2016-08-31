@@ -100,55 +100,55 @@ public class URLTests : FleaTestCase {
   func testTypes() {
     let url = URL(fileURLWithPath:"Problems/PUZ001-1.p")
 
-      #if os(OSX)
-      XCTAssertTrue(String.self == type(of:url.absoluteString),nok)
-      XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
+    // matching URL property and function signatures on macOS and Linux
+      XCTAssertTrue(Int.self == type(of:url.hashValue),nok)
       XCTAssertTrue(URL?.self == type(of:url.baseURL),nok)
       XCTAssertTrue(String?.self == type(of:url.fragment),nok)
-      XCTAssertTrue(Int.self == type(of:url.hashValue),nok)
       XCTAssertTrue(String?.self == type(of:url.host),nok)
       XCTAssertTrue(Bool.self == type(of:url.isFileURL),nok)
-      XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
       XCTAssertTrue(String?.self == type(of:url.password),nok)
-      XCTAssertTrue(String.self == type(of:url.path),nok)
-      XCTAssertTrue([String].self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
-      XCTAssertTrue(String.self == type(of:url.pathExtension),nok)
       XCTAssertTrue(Int?.self == type(of:url.port),nok)
       XCTAssertTrue(String?.self == type(of:url.query),nok)
-      XCTAssertTrue(String.self == type(of:url.relativePath),nok)
       XCTAssertTrue(String.self == type(of:url.relativeString),nok)
       XCTAssertTrue(String?.self == type(of:url.scheme),nok)
       XCTAssertTrue(String?.self == type(of:url.user),nok)
-      // print("var hasDirectoryPath: Bool     ",url.hasDirectoryPath) // OSX >=10.11
 
+      #if os(OSX)
+      // (m.a) non-optional on macOS
+      XCTAssertTrue(String.self == type(of:url.absoluteString),nok)
+      XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
+      XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
+      XCTAssertTrue(String.self == type(of:url.path),nok)
+      XCTAssertTrue([String].self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
+      XCTAssertTrue(String.self == type(of:url.pathExtension),nok)
+      XCTAssertTrue(String.self == type(of:url.relativePath),nok)
+
+      if #available(macOS 10.11,*) {
+        XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath),nok) // OSX >=10.11
+      }
+
+      // (m.b) non-throwing on macOS
       XCTAssertTrue(URL.self == type(of:url.standardized),nok)
       XCTAssertTrue(URL.self == type(of:url.standardizedFileURL),nok)
-      XCTAssertTrue(Bool?.self == type(of:(try? url.checkPromisedItemIsReachable())),nok)
-      XCTAssertTrue(Bool?.self == type(of:(try? url.checkResourceIsReachable())),nok)
       XCTAssertTrue(URL.self == type(of:url.deletingLastPathComponent()),nok)
       XCTAssertTrue(URL.self == type(of:url.deletingPathExtension()),nok)
       XCTAssertTrue(URL.self == type(of:url.resolvingSymlinksInPath()),nok)
 
+      // (m.c) only on macOS
+      XCTAssertTrue(Bool?.self == type(of:(try? url.checkPromisedItemIsReachable())),nok)
+      XCTAssertTrue(Bool?.self == type(of:(try? url.checkResourceIsReachable())),nok)
+
       #elseif os(Linux)
+      // (l.a) optional on Linux
       XCTAssertTrue(String?.self == type(of:url.absoluteString),nok)
       XCTAssertTrue(URL?.self == type(of:url.absoluteURL),nok)
-      XCTAssertTrue(URL?.self == type(of:url.baseURL),nok)
-      XCTAssertTrue(String?.self == type(of:url.fragment),nok)
-      XCTAssertTrue(Int.self == type(of:url.hashValue),nok)
-      XCTAssertTrue(String?.self == type(of:url.host),nok)
-      XCTAssertTrue(Bool.self == type(of:url.isFileURL),nok)
       XCTAssertTrue(String?.self == type(of:url.lastPathComponent),nok)
-      XCTAssertTrue(String?.self == type(of:url.password),nok)
       XCTAssertTrue(String?.self == type(of:url.path),nok)
       XCTAssertTrue([String]?.self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
       XCTAssertTrue(String?.self == type(of:url.pathExtension),nok)
-      XCTAssertTrue(Int?.self == type(of:url.port),nok)
-      XCTAssertTrue(String?.self == type(of:url.query),nok)
       XCTAssertTrue(String?.self == type(of:url.relativePath),nok)
-      XCTAssertTrue(String.self == type(of:url.relativeString),nok)
-      XCTAssertTrue(String?.self == type(of:url.scheme),nok)
-      XCTAssertTrue(String?.self == type(of:url.user),nok)
 
+      // (l.b) throwing on Linux
       for (url,message) in [
         (try? url.standardized(),"standardized"),
         // (try? url.standardizedFileURL(),"standardizedFileURL"),
@@ -158,6 +158,7 @@ public class URLTests : FleaTestCase {
       ] {
         XCTAssertTrue(URL?.self == type(of:url),"\(nok) url.\(message) -> \(type(of:url))")
       }
+
 
       #endif
   }
