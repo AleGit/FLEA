@@ -126,12 +126,17 @@ where N:SymbolStringTyped, N.Symbol == Int {
         Syslog.info { "Process clause #\(index)"}
         Syslog.debug { "Processing '\(name)' '\(role)' '\(clause)'" }
 
-        let (a,b,c) = Yices.clause(clause)
-        Syslog.debug { "yices:\(a) \(b) \(c)" }
+        let (yClause,yLiterals,ycl) = Yices.clause(clause)
+        Syslog.debug { "yices:\(yClause) \(yLiterals) \(ycl)" }
 
 
         processed.insert(index)
 
+    }
+
+    func indicate<S:Sequence>(clause index: Int, literals: S) 
+     where S.Iterator.Element == term_t {
+        
     }
 }
 

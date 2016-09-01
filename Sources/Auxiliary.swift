@@ -39,6 +39,21 @@ extension Sequence {
   }
 }
 
+/* postbone after talk */
+typealias MultiSet<T:Hashable> = Dictionary<T,Int>
+
+/* postbone after talk */
+extension Sequence where Iterator.Element : Hashable {
+  var multiSet : MultiSet<Iterator.Element> {
+    var d = MultiSet<Iterator.Element>()
+    for element in self {
+      d[element] = (d[element] ?? 0) + 1
+    }
+    return d
+  }
+}
+
+
 extension String {
   /// check if the string has an uppercase character at given index.
   func isUppercased(at: Index) -> Bool {

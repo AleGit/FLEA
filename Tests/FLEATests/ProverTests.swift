@@ -10,8 +10,8 @@ public class ProverTests : YicesTestCase {
   static var allTests : [(String, (ProverTests) -> () throws -> Void)]  {
     return [
       ("testInitPUZ001c1", testInitPUZ001c1),
-
-      ("testInitPUZ062c1", testInitPUZ062c1)
+      ("testInitPUZ062c1", testInitPUZ062c1),
+      ("testRun", testRun)
     ]
   }
 
@@ -68,8 +68,6 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertEqual(Set([0,1,2,6,7]), prover.sizes[1])
       XCTAssertEqual(Set([3,4,8,9,11]), prover.sizes[2])
       XCTAssertEqual(Set([5,10]), prover.sizes[3])
-
-      prover.run(timeout:3.0)
   }
   
   func testInitPUZ062c1() {
@@ -94,5 +92,23 @@ private typealias Prover = ΠρῶτοςProver<N>
 
       XCTAssertTrue(prover.literalsTrie.isEmpty)
 
+  }
+
+  func testRun() {
+      let problem = "PUZ001-1"
+      guard let prover = Prover(problem:problem) else {
+          XCTFail()
+          return
+      }
+
+      let (name,_) = prover.problem
+
+      XCTAssertEqual(problem,name)
+      XCTAssertEqual(12, prover.clauses.count)
+      XCTAssertEqual(0, prover.includes.count)
+
+      XCTAssertTrue(prover.literalsTrie.isEmpty)
+
+      prover.run(timeout:3.0)
   }
 }
