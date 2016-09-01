@@ -48,3 +48,12 @@ $ swift test -l                                     # list all tests
 $ swift test                                        # run all tests
 ```
 The first (failing) `swift build` is necessary to download the system packages. But it cannot succeed because the parsing lib is not installed yet.
+
+- Build (workaround) and run a binary
+```
+$ Scripts/build.sh -c release -Xlinker -L/usr/lib
+$ .build/release/FLEA --demo
+```
+The build workaround is necessary because otherwise `Sources/main.swift` 
+and `Tests/LinuxMain.swift` would clash on Linux when building the tests.
+
