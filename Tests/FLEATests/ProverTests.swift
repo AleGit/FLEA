@@ -111,9 +111,11 @@ private typealias Prover = ΠρῶτοςProver<N>
 
       XCTAssertTrue(prover.literal2clauses.isEmpty)
 
-      let _ = prover.run(timeout:3.0)
+      if let x = prover.run(timeout:30.0) {
+          XCTAssertTrue(x)
+      }
 
-      // XCTAssertFalse(prover.context.isSatisfiable)
+      XCTAssertFalse(prover.context.isSatisfiable)
 
       XCTAssertFalse(prover.literal2clauses.isEmpty)
   }

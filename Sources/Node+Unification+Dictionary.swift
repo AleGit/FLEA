@@ -52,7 +52,8 @@ func =?=<N:Node>(lhs:N, rhs:N) -> [N:N]? {
 }
 
 extension Node where Self:SymbolStringTyped {
-  var negating : Self {
+  
+  var unnegating : Self {
     let (_,type) = self.symbolStringType 
     switch type {
 
@@ -62,9 +63,7 @@ extension Node where Self:SymbolStringTyped {
 
       case .equation:
         assert(self.nodes?.count == 2)
-        return Self(
-          symbol:Self.symbolize(string:"!=", type:.inequation),
-          nodes:[self.nodes!.first!, self.nodes!.last!])
+        return self
           
       case .inequation:
         assert(self.nodes?.count == 2)
@@ -73,12 +72,10 @@ extension Node where Self:SymbolStringTyped {
           nodes:[self.nodes!.first!, self.nodes!.last!])
 
       case .predicate:
-        return Self(
-          symbol:Self.symbolize(string:"~",type:.negation), 
-          nodes:[self])
+        return self
 
       default:
-        Syslog.error { "\(self) with root type \(type) cannot be negated."}
+        Syslog.error { "\(self) with root type \(type) cannot be unnegated."}
         assert(false)
     }
   }

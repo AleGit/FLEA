@@ -179,19 +179,12 @@ where N:SymbolStringTyped, N.Symbol == Int {
         yTuples[index] = (yClause,yLiterals,selected)
 
         
-        print("=== \(index).\(selected): \(literal) \(clause) ===")
+        Syslog.debug { "\(index).\(selected): '\(literal)' of '\(clause)'" }
     
 
         let (leafPaths,negatedPaths) = literal.leafPathsPair
 
         // search clashing selected literals
-
-/*
-        if let candidates = literalsTrie.candidates(from:negatedPaths) {
-            print("hi ############")
-        }
-*/
-       //  Syslog.error { "\(index).\(selected) may clash with \(candidates)"}
 
        var candidates = processed.subtracting(ignored) // all
 
@@ -202,6 +195,64 @@ where N:SymbolStringTyped, N.Symbol == Int {
            }
            candidates.formIntersection(cs)
        }
+
+       for candidate in candidates {
+           let (candidateName,candidateRole,candidateClause) = clauses[candidate]
+           // check if selected literal still holds in context
+           guard 
+           let candidateLiterals = candidateClause.nodes,
+           let (ycClause,ycLiterals,ycSelected) = yTuples[candidate]
+           else {
+               assert(false)
+           }
+
+           var selIdx = ycSelected
+
+           assert(ycLiterals.count == candidateLiterals.count)
+           assert(ycLiterals.count > ycSelected)
+
+           var ySelectedLiteral = yLiterals[ycSelected]
+
+           if !model.implies(t:ySelectedLiteral) {
+               print("remove \(ySelectedLiteral)")
+               for path in candidateLiterals[ycSelected].leafPaths {
+                   let _ = literalsTrie.remove(candidate,at:path)
+               }
+
+               for (i,t) in ycLiterals.enumerated() {
+
+                   guard t != ySelectedLiteral else {
+                       continue
+                   }
+
+                   if model.implies(t:t) {
+                       selIdx = i
+                       ySelectedLiteral = t
+                       yTuples[candidate]?.2 = selIdx
+                       break
+                   }
+
+
+               }
+
+               assert(selIdx != ycSelected)  
+           }
+
+           let a = literal.unnegating
+           let b = candidateLiterals[selIdx].unnegating
+
+           if let mgu = (a =?= b) {
+               clauses.append(("\(name) \(mgu)",role,(clause * mgu)))
+               clauses.append(("\(candidateName) \(mgu)",candidateRole,(candidateClause * mgu)))
+           }
+           else {
+               print(">>>>> \(a) and \(b) are not unifiable")
+           }
+       }
+
+
+
+
 
 
 
