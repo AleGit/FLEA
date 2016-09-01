@@ -29,7 +29,10 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths : [[Int]] {
     guard let nodes = self.nodes else {
-      return [[Self.symbolize(string:Tptp.wildcard,type:.variable)]]
+      // let symbol = Self.symbolize(string:Tptp.wildcard,type:.variable)
+      // assert(symbol == 0)
+      // return [[Self.symbolize(string:Tptp.wildcard,type:.variable)]]
+      return [[-1]]
     }
     guard nodes.count > 0 else {
       return [[self.symbol]]
@@ -75,7 +78,7 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
         negated = [[Int]]()
     }
 
-    print(self,paths, negated)
+    Syslog.debug { "\(self), \(paths), \(negated)" }
 
     return (paths,negated)
 

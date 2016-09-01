@@ -52,9 +52,9 @@ public class NodePathsTests : FleaTestCase {
     XCTAssertEqual(count,6, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
     let expected = [
-      [g$,0,g$,0,f$,0,_$],
+      [g$,0,g$,0,f$,0,-1],
       [g$,0,g$,1,f$,0,a$],
-      [g$,1,_$]
+      [g$,1,-1]
       ]
     let actual = ggfXfaX.leafPaths
     XCTAssertEqual(

@@ -12,9 +12,9 @@ import Foundation
 
 extension Yices {
   typealias Tuple = (
-    clause: term_t,
-    literals: [term_t]?,
-    yicesLiterals : [term_t]?
+    clause: term_t
+    , literals: [term_t]
+    , yicesLiterals : [term_t]
   )
 
   /// Return a yices clause and yices literals from a node clause.
@@ -29,7 +29,7 @@ extension Yices {
     switch type {
       case .disjunction:
         guard let literals = clause.nodes, literals.count > 0 else {
-          return (Yices.bot, nil,nil)
+          return (Yices.bot, [Yices.bot],[Yices.bot])
         }
 
         return Yices.clause(literals)
@@ -44,7 +44,7 @@ extension Yices {
       default:
             Syslog.error { "'\(clause)' is of type \(type)" }
             assert(false, "\(#function)(\(clause)) Argument is of type \(type)")
-            return (Yices.bot, nil, nil)
+            return (Yices.bot, [Yices.bot], [Yices.bot])
     }
 
 

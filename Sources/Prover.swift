@@ -49,6 +49,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
     var ignored = Set<Int>() // subset of processed
 
     var context = Yices.Context()
+    var yTuples = Dictionary<Int,(term_t,[term_t],Int)>()
     
 
     /// initialize the prover with a problem, i.e.
@@ -98,63 +99,126 @@ where N:SymbolStringTyped, N.Symbol == Int {
         }
     }
 
-    func run(timeout:AbsoluteTime = 5.0) {
+    func run(timeout:AbsoluteTime = 5.0) -> Bool? {
         let endtime = AbsoluteTimeGetCurrent() + timeout
         Syslog.info { "timeaout after \(timeout) seconds." }
 
-        let (_,runtimes) = utileMeasure {
-            while AbsoluteTimeGetCurrent() < endtime 
-            && processed.count < clauses.count 
+        let (result,runtimes) = utileMeasure {
+            () -> Bool? in
+            while processed.count < clauses.count 
             {
-                process(clause:selectClause())
-                // sleep(1)
+                guard AbsoluteTimeGetCurrent() < endtime else { 
+                    // Don't know (timeout)
+                    return nil 
+                }
 
-                // select clause
-                // process clause
-                // select literal
-                // search clashes
-                // insert clauses
-                // insert indices
-
-
+                let index = selectClause()
+                guard process(clause:index) else {
+                    return false // Unsatisfiable
+                }
             }
+
+            // Saturated
+            return true // Satisfiable
         }
         Syslog.info { "runtimes = \(runtimes)" }
+        return result
     }
 
-    func process(clause index:Int) {
-        defer {
-            processed.insert(index)
-        }
-
+    func process(clause index:Int) -> Bool {
+        defer { processed.insert(index) }
 
         let (name,role,clause) = clauses[index]
 
-        Syslog.info { "Process clause #\(index)"}
-        Syslog.debug { "Processing '\(name)' '\(role)' '\(clause)'" }
+        Syslog.debug { "#\(index): Processing' \(name)' '\(role)' '\(clause)'" }
 
-        let (_,a,b) = context.assert(clause:clause)
-
-        if (a != nil && b != nil && a! != b!) {
-            Syslog.debug { "\(index) \(a!) \(b!)"}
-        }
-
-        guard let yLiterals = a else {
-            assert(false)
-            return 
-        } 
-
+        let (yClause,yLiterals,_) = Yices.clause(clause)
 
         guard isNotIndicated(yLiterals:yLiterals) else {
             Syslog.notice { "Clause \(index) ignored."  }
             ignored.insert(index)
-            return
+            // nothing has changed
+            return true
         }
-        
+
+        guard context.assert(clause:yClause) == true, 
+        let model = Yices.Model(context:context) else {
+            // not satisfaible, no model
+            return false
+        }
+
         indicate(clause:index, yLiterals:yLiterals)
 
         Syslog.info { "Clause \(index) activated."  }
-       
+
+        var sli : Int?
+
+        for (tidx,t) in yLiterals.enumerated() {
+
+            if model.implies(t:t) {
+                Syslog.notice {
+                    "\(clause) \(clause.nodes![tidx]) \(index).\(tidx)"
+                }
+                sli = tidx    
+                break            
+            }
+        }
+
+        guard let selected = sli else {
+            Syslog.error { "Satisfiable context, but no literal did hold?" }
+            assert(false)
+            return false // not satisfiable
+        }
+
+        guard let literal = clause.nodes?[selected] else {
+            Syslog.error { "Selected literal does not exist" }
+            assert(false)
+            return false
+        }
+
+        yTuples[index] = (yClause,yLiterals,selected)
+
+        
+        print("=== \(index).\(selected): \(literal) \(clause) ===")
+    
+
+        let (leafPaths,negatedPaths) = literal.leafPathsPair
+
+        // search clashing selected literals
+
+/*
+        if let candidates = literalsTrie.candidates(from:negatedPaths) {
+            print("hi ############")
+        }
+*/
+       //  Syslog.error { "\(index).\(selected) may clash with \(candidates)"}
+
+       var candidates = processed.subtracting(ignored) // all
+
+       for path in negatedPaths {
+           guard let cs = literalsTrie.candidates(from:path) else {
+               candidates = Set<Int>()
+               continue;
+           }
+           candidates.formIntersection(cs)
+       }
+
+
+
+
+
+        /// map selected literal leaf paths to clause index
+        for path in leafPaths {
+            literalsTrie.insert(index, at:path)
+        }
+
+
+
+
+        return true // still satisfiable
+        
+        
+      
 
     }
 
