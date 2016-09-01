@@ -47,6 +47,8 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// collect processed clauses
     var processed = Set<Int>()
     var ignored = Set<Int>() // subset of processed
+
+    var context = Yices.Context()
     
 
     /// initialize the prover with a problem, i.e.
@@ -131,7 +133,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
         Syslog.info { "Process clause #\(index)"}
         Syslog.debug { "Processing '\(name)' '\(role)' '\(clause)'" }
 
-        let (_,a,b) = Yices.clause(clause)
+        let (_,a,b) = context.assert(clause:clause)
 
         if (a != nil && b != nil && a! != b!) {
             Syslog.debug { "\(index) \(a!) \(b!)"}
@@ -144,12 +146,14 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
 
         guard isNotIndicated(yLiterals:yLiterals) else {
-            Syslog.info { "Clause \(index) ignored."  }
+            Syslog.notice { "Clause \(index) ignored."  }
             ignored.insert(index)
             return
         }
-
+        
         indicate(clause:index, yLiterals:yLiterals)
+
+        Syslog.info { "Clause \(index) activated."  }
        
 
     }

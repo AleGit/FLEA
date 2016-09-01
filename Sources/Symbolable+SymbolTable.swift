@@ -85,7 +85,7 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
   mutating func insert(_ string: String, _ type:Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
       // symbol is allready in the table
-      assert(strings[symbol]?.1 == type, "\(strings[symbol]?.1) != \(type)")
+      assert(strings[symbol]?.1 == type, "\(strings[symbol]?.1) != \(type) \(string)")
 
       return symbol
     }

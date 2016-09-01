@@ -8,12 +8,14 @@ public class NodePathsTests : FleaTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests : [(String, (NodePathsTests) -> () throws -> Void)]  {
     return [
-      ("testNodePaths", testNodePaths)
+      ("testNodePaths", testNodePaths),
+      ("testNegatedPaths",testNegatedPaths)
     ]
   }
 
   // local private adoption of protocol to avoid any side affects
-  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node  {
+  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+  ExpressibleByStringLiteral  {
     typealias S = Int
     static var symbols = StringIntegerTable<Int>()
     static var pool = WeakSet<N>()
@@ -67,6 +69,46 @@ public class NodePathsTests : FleaTestCase {
       [g$,g$,f$,_$,f$,a$,_$],
       ggfXfaX.preordering, nok
     )
+  }
+
+  func testNegatedPaths() {
+    let pfx : N = "@fof p(f(X))" // p is predicate
+    let npfx : N = "~p(f(X))"
+    let a_X : N = "a = X"
+    let a_n_X : N = "a != x"
+
+    var expected = pfx.leafPaths
+    var actual = npfx.negatedLeafPaths
+
+    XCTAssertEqual(
+      Array(expected.joined()),
+      Array(actual.joined())
+    )
+
+    expected = npfx.leafPaths
+    actual = pfx.negatedLeafPaths
+
+    XCTAssertEqual(
+      Array(expected.joined()),
+      Array(actual.joined())
+    )
+
+    expected = a_X.leafPaths
+    actual = a_n_X.negatedLeafPaths
+
+    XCTAssertEqual(
+      Array(expected.joined()),
+      Array(actual.joined())
+    )
+
+    expected = a_n_X.leafPaths
+    actual = a_X.negatedLeafPaths
+
+    XCTAssertEqual(
+      Array(expected.joined()),
+      Array(actual.joined())
+    )
+
   }
 
 

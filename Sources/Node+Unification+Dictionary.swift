@@ -50,3 +50,36 @@ func =?=<N:Node>(lhs:N, rhs:N) -> [N:N]? {
   }
   return mgu
 }
+
+extension Node where Self:SymbolStringTyped {
+  var negating : Self {
+    let (_,type) = self.symbolStringType 
+    switch type {
+
+      case .negation:
+        assert(self.nodes?.count == 1)
+        return self.nodes!.first!
+
+      case .equation:
+        assert(self.nodes?.count == 2)
+        return Self(
+          symbol:Self.symbolize(string:"!=", type:.inequation),
+          nodes:[self.nodes!.first!, self.nodes!.last!])
+          
+      case .inequation:
+        assert(self.nodes?.count == 2)
+        return Self(
+          symbol:Self.symbolize(string:"=", type:.inequation),
+          nodes:[self.nodes!.first!, self.nodes!.last!])
+
+      case .predicate:
+        return Self(
+          symbol:Self.symbolize(string:"~",type:.negation), 
+          nodes:[self])
+
+      default:
+        Syslog.error { "\(self) with root type \(type) cannot be negated."}
+        assert(false)
+    }
+  }
+}

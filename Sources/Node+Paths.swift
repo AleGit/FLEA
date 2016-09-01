@@ -44,6 +44,38 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
     return ps
   }
 
+  var negatedLeafPaths : [[Int]] {
+    let (_,type) = self.symbolStringType 
+
+    switch type {
+
+      case .negation:
+        assert(self.nodes?.count == 1)
+        return self.nodes!.first!.leafPaths
+
+      case .equation:
+        let symbol = Self.symbolize(string:"!=", type:.inequation)
+        return leafPaths.map {
+          [symbol] + $0.suffix(from:1)
+        }
+          
+      case .inequation:
+        let symbol = Self.symbolize(string:"=", type:.equation)
+        return leafPaths.map {
+          [symbol] + $0.suffix(from:1)
+        }
+
+      case .predicate:
+      let symbol = Self.symbolize(string:"~",type:.negation)
+      return leafPaths.map { [symbol,0] + $0 }
+
+      default:
+        Syslog.error { "\(self) with root type \(type) cannot be negated."}
+        assert(false)
+    }
+
+  }
+
   var preordering : [Int] {
     guard let nodes = self.nodes else {
       // a variable leaf

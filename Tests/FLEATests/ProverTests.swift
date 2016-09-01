@@ -113,6 +113,8 @@ private typealias Prover = ΠρῶτοςProver<N>
 
       prover.run(timeout:3.0)
 
+      XCTAssertFalse(prover.context.isSatisfiable)
+
       XCTAssertFalse(prover.literal2clauses.isEmpty)
   }
 }
