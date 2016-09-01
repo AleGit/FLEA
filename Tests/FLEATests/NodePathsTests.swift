@@ -27,6 +27,10 @@ public class NodePathsTests : FleaTestCase {
     deinit {
       print("\(#function) \(self)")
     }
+
+    var description : String {
+      return defaultDescription
+    }
   }
 
   /// accumulate four distict nodes
@@ -75,38 +79,44 @@ public class NodePathsTests : FleaTestCase {
     let pfx : N = "@fof p(f(X))" // p is predicate
     let npfx : N = "~p(f(X))"
     let a_X : N = "a = X"
-    let a_n_X : N = "a != x"
+    let a_n_X : N = "a != X"
 
-    var expected = pfx.leafPaths
-    var actual = npfx.negatedLeafPaths
+    var expected = pfx.leafPathsPair.0
+    var actual = npfx.leafPathsPair.1
 
-    XCTAssertEqual(
-      Array(expected.joined()),
-      Array(actual.joined())
-    )
-
-    expected = npfx.leafPaths
-    actual = pfx.negatedLeafPaths
+    
 
     XCTAssertEqual(
       Array(expected.joined()),
       Array(actual.joined())
     )
 
-    expected = a_X.leafPaths
-    actual = a_n_X.negatedLeafPaths
+    expected = npfx.leafPathsPair.0
+    actual = pfx.leafPathsPair.1
 
     XCTAssertEqual(
       Array(expected.joined()),
       Array(actual.joined())
     )
 
-    expected = a_n_X.leafPaths
-    actual = a_X.negatedLeafPaths
+     
+
+    expected = a_X.leafPathsPair.0
+    actual = a_n_X.leafPathsPair.1
 
     XCTAssertEqual(
       Array(expected.joined()),
-      Array(actual.joined())
+      Array(actual.joined()),
+      "\(a_X) \(a_n_X)"
+    )
+
+    expected = a_n_X.leafPathsPair.0
+    actual = a_X.leafPathsPair.1
+
+    XCTAssertEqual(
+      Array(expected.joined()),
+      Array(actual.joined()),
+      "\(a_n_X) \(a_X)"
     )
 
   }
