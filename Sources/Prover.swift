@@ -121,22 +121,63 @@ where N:SymbolStringTyped, N.Symbol == Int {
     }
 
     func process(clause index:Int) {
+        defer {
+            processed.insert(index)
+        }
+
+
         let (name,role,clause) = clauses[index]
 
         Syslog.info { "Process clause #\(index)"}
         Syslog.debug { "Processing '\(name)' '\(role)' '\(clause)'" }
 
-        let (yClause,yLiterals,ycl) = Yices.clause(clause)
-        Syslog.debug { "yices:\(yClause) \(yLiterals) \(ycl)" }
+        let (_,a,b) = Yices.clause(clause)
+
+        if (a != nil && b != nil && a! != b!) {
+            Syslog.debug { "\(index) \(a!) \(b!)"}
+        }
+
+        guard let yLiterals = a else {
+            assert(false)
+            return 
+        } 
 
 
-        processed.insert(index)
+        guard isNotIndicated(yLiterals:yLiterals) else {
+            Syslog.info { "Clause \(index) ignored."  }
+            ignored.insert(index)
+            return
+        }
+
+        indicate(clause:index, yLiterals:yLiterals)
+       
 
     }
 
-    func indicate<S:Sequence>(clause index: Int, literals: S) 
+    func isNotIndicated<S:Sequence>(yLiterals:S) -> Bool 
+    where S.Iterator.Element == term_t {
+        var candidates = processed.subtracting(ignored)
+        for t in Set(yLiterals) {
+            guard let s = literal2clauses[t],
+            !s.isEmpty else {
+                return true
+            }
+            candidates.formIntersection(s)
+            Syslog.debug {
+                "\(t) \(s) \(candidates)"
+            }
+            if candidates.isEmpty { return true }
+        }
+        return false
+    }
+
+    func indicate<S:Sequence>(clause index: Int, yLiterals: S) 
      where S.Iterator.Element == term_t {
-        
+         for t in yLiterals {
+             if literal2clauses[t]?.insert(index) == nil {
+                 literal2clauses[t] = Set(arrayLiteral:index)
+             }
+         }
     }
 }
 

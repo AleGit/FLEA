@@ -95,7 +95,7 @@ private typealias Prover = ΠρῶτοςProver<N>
   }
 
   func testRun() {
-      let problem = "PUZ001-1"
+      let problem = "PUZ001-1x"
       guard let prover = Prover(problem:problem) else {
           XCTFail()
           return
@@ -104,11 +104,15 @@ private typealias Prover = ΠρῶτοςProver<N>
       let (name,_) = prover.problem
 
       XCTAssertEqual(problem,name)
-      XCTAssertEqual(12, prover.clauses.count)
+      XCTAssertEqual(24, prover.clauses.count)
       XCTAssertEqual(0, prover.includes.count)
 
       XCTAssertTrue(prover.literalsTrie.isEmpty)
 
+      XCTAssertTrue(prover.literal2clauses.isEmpty)
+
       prover.run(timeout:3.0)
+
+      XCTAssertFalse(prover.literal2clauses.isEmpty)
   }
 }

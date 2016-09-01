@@ -62,7 +62,7 @@ extension URL {
     // macOS: lastPathComponent : String
     // Linux: lastPathComponent : String?
     Syslog.warning { "optional(url.lastPathComponent)" }
-    if let name = optional(url.lastPathComponent) {
+    if let name = optional(url.pathExtension) {
       let url = URL(fileURLWithPath:"Configs/\(name).logging")
       if url.isAccessible { return url }
       

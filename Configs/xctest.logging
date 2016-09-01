@@ -15,6 +15,6 @@
 
 #"Tptp.File.swift"               : "info"
 #"URL+FilePath.swift"            : "info"
-"Prover.swift" : "info"
+"Prover.swift" : "debug"
 
  
