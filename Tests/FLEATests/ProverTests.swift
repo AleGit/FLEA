@@ -95,7 +95,7 @@ private typealias Prover = ΠρῶτοςProver<N>
   }
 
   func testRun() {
-      let problem = "PUZ001-1x"
+      let problem = "PUZ001-1"
       guard let prover = Prover(problem:problem) else {
           XCTFail()
           return

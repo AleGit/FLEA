@@ -125,68 +125,77 @@ where N:SymbolStringTyped, N.Symbol == Int {
         return result
     }
 
+    func selectLiteral(with model: Yices.Model, yicesLiterals:[term_t]) -> Int {
+        for (literalIndex, yicesLiteral) in yicesLiterals.enumerated() {
+            if model.implies(t:yicesLiteral) {
+                return literalIndex
+            }
+        }
+        assert(false,"\(#function) model implies none of the literals.")
+        return -1
+    }
+
+    func reselectLiterals(with model: Yices.Model) {
+        for (clauseIndex,triple) in yTuples {
+            let (_,_,tptpClause) = clauses[clauseIndex]
+            let (yicesClause,yicesLiterals,selectedLiteralIndex) = triple
+
+            if !model.implies(t:yicesLiterals[selectedLiteralIndex]) {
+
+                let tptpLiterals = tptpClause.nodes!
+
+                for path in tptpLiterals[selectedLiteralIndex].leafPaths {
+                    let _ = literalsTrie.remove(clauseIndex, at:path)
+                }
+
+                let selected = selectLiteral(with:model, yicesLiterals:yicesLiterals)
+
+                for path in tptpLiterals[selected].leafPaths {
+                    literalsTrie.insert(clauseIndex, at:path)
+                }
+                yTuples[clauseIndex]?.2 = selected
+
+                Syslog.debug { "\(clauseIndex).\(selected) '\(tptpClause)' reselected !!!."}
+                continue
+            }
+        }
+    }
+
     func process(clause index:Int) -> Bool {
         defer { processed.insert(index) }
 
-        let (name,role,clause) = clauses[index]
+        let (_,_,tptpClause) = clauses[index]
+        let (yicesClause,yicesLiterals,_) = Yices.clause(tptpClause)
 
-        Syslog.debug { "#\(index): Processing' \(name)' '\(role)' '\(clause)'" }
-
-        let (yClause,yLiterals,_) = Yices.clause(clause)
-
-        guard isNotIndicated(yLiterals:yLiterals) else {
-            Syslog.notice { "Clause \(index) ignored."  }
+        guard isNotIndicated(yicesLiterals:yicesLiterals) else {
             ignored.insert(index)
+            Syslog.info { "\(index) '\(tptpClause)' ignored."}
             // nothing has changed
             return true
         }
 
-        guard context.assert(clause:yClause) == true, 
+        guard context.insure(clause:yicesClause), 
         let model = Yices.Model(context:context) else {
             // not satisfaible, no model
             return false
         }
-
-        indicate(clause:index, yLiterals:yLiterals)
-
-        Syslog.info { "Clause \(index) activated."  }
-
-        var sli : Int?
-
-        for (tidx,t) in yLiterals.enumerated() {
-
-            if model.implies(t:t) {
-                Syslog.notice {
-                    "\(clause) \(clause.nodes![tidx]) \(index).\(tidx)"
-                }
-                sli = tidx    
-                break            
-            }
-        }
-
-        guard let selected = sli else {
-            Syslog.error { "Satisfiable context, but no literal did hold?" }
-            assert(false)
-            return false // not satisfiable
-        }
-
-        guard let literal = clause.nodes?[selected] else {
-            Syslog.error { "Selected literal does not exist" }
-            assert(false)
-            return false
-        }
-
-        yTuples[index] = (yClause,yLiterals,selected)
-
         
-        Syslog.debug { "\(index).\(selected): '\(literal)' of '\(clause)'" }
-    
+        reselectLiterals(with:model)
 
-        let (leafPaths,negatedPaths) = literal.leafPathsPair
+        indicate(clause:index, yicesLiterals:yicesLiterals)
+        
+        let selected = selectLiteral(with:model, yicesLiterals:yicesLiterals)
+        let tptpLiteral = tptpClause.nodes![selected]
+
+        yTuples[index] = (yicesClause,yicesLiterals,selected)
+        
+        Syslog.debug { "\(index).\(selected) '\(tptpClause)' activated."}
+        
+        let (leafPaths,negatedPaths) = tptpLiteral.leafPathsPair
 
         // search clashing selected literals
 
-       var candidates = processed.subtracting(ignored) // all
+        var candidates = processed.subtracting(ignored) // all
 
        for path in negatedPaths {
            guard let cs = literalsTrie.candidates(from:path) else {
@@ -198,70 +207,26 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
        for candidate in candidates {
            let (candidateName,candidateRole,candidateClause) = clauses[candidate]
-           // check if selected literal still holds in context
-           guard 
-           let candidateLiterals = candidateClause.nodes,
-           let (ycClause,ycLiterals,ycSelected) = yTuples[candidate]
-           else {
-               assert(false)
-           }
 
-           var selIdx = ycSelected
+           let (_,yicesCandidateLiterals,selectedCandidateLiteralIndex) = yTuples[candidate]!
 
-           assert(ycLiterals.count == candidateLiterals.count)
-           assert(ycLiterals.count > ycSelected)
+           let candidateLiterals = candidateClause.nodes!
 
-           var ySelectedLiteral = yLiterals[ycSelected]
-
-           if !model.implies(t:ySelectedLiteral) {
-               print("remove \(ySelectedLiteral)")
-               for path in candidateLiterals[ycSelected].leafPaths {
-                   let _ = literalsTrie.remove(candidate,at:path)
-               }
-
-               for (i,t) in ycLiterals.enumerated() {
-
-                   guard t != ySelectedLiteral else {
-                       continue
-                   }
-
-                   if model.implies(t:t) {
-                       selIdx = i
-                       ySelectedLiteral = t
-                       yTuples[candidate]?.2 = selIdx
-                       break
-                   }
-
-
-               }
-
-               assert(selIdx != ycSelected)  
-           }
-
-           let a = literal.unnegating
-           let b = candidateLiterals[selIdx].unnegating
+           let a = tptpLiteral.unnegating
+           let b = candidateLiterals[selectedCandidateLiteralIndex].unnegating
 
            if let mgu = (a =?= b) {
-               clauses.append(("\(name) \(mgu)",role,(clause * mgu)))
-               clauses.append(("\(candidateName) \(mgu)",candidateRole,(candidateClause * mgu)))
+
+               for clause in [tptpClause,candidateClause] {
+                   clauses.append(("",.unknown,clause * mgu))
+               }
            }
-           else {
-               print(">>>>> \(a) and \(b) are not unifiable")
-           }
+
        }
 
-
-
-
-
-
-
-
-
-        /// map selected literal leaf paths to clause index
-        for path in leafPaths {
-            literalsTrie.insert(index, at:path)
-        }
+       for path in leafPaths {
+           literalsTrie.insert(index, at:path)
+       }
 
 
 
@@ -273,28 +238,27 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
     }
 
-    func isNotIndicated<S:Sequence>(yLiterals:S) -> Bool 
+    func isNotIndicated<S:Sequence>(yicesLiterals:S) -> Bool 
     where S.Iterator.Element == term_t {
         var candidates = processed.subtracting(ignored)
-        for t in Set(yLiterals) {
-            guard let s = literal2clauses[t],
+        for yicesLiteral in Set(yicesLiterals) {
+            guard let s = literal2clauses[yicesLiteral],
             !s.isEmpty else {
                 return true
             }
             candidates.formIntersection(s)
-            Syslog.debug {
-                "\(t) \(s) \(candidates)"
-            }
+            
             if candidates.isEmpty { return true }
         }
+
         return false
     }
 
-    func indicate<S:Sequence>(clause index: Int, yLiterals: S) 
+    func indicate<S:Sequence>(clause index: Int, yicesLiterals: S) 
      where S.Iterator.Element == term_t {
-         for t in yLiterals {
-             if literal2clauses[t]?.insert(index) == nil {
-                 literal2clauses[t] = Set(arrayLiteral:index)
+         for yicesLiteral in yicesLiterals {
+             if literal2clauses[yicesLiteral]?.insert(index) == nil {
+                 literal2clauses[yicesLiteral] = Set(arrayLiteral:index)
              }
          }
     }

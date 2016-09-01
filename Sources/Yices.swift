@@ -52,7 +52,7 @@ extension Yices {
 			yices_free_context(context)
 		}
 
-		func assert<N:Node>(clause:N) -> Yices.Tuple 
+		func insure<N:Node>(clause:N) -> Yices.Tuple 
 		where N:SymbolStringTyped {
 			let triple = Yices.clause(clause)
 
@@ -61,14 +61,22 @@ extension Yices {
 			return triple
 		}
 
-		func assert(clause:term_t) -> Bool {
+		func insure(clause:term_t) -> Bool {
 			yices_assert_formula(context,clause)
 			return isSatisfiable
 
 		}
 
 		var isSatisfiable : Bool {
-			return yices_check_context(context,nil) == STATUS_SAT
+			switch yices_check_context(context,nil) {
+				case STATUS_SAT:
+				return true
+				case STATUS_UNSAT:
+				return false
+				default:
+				assert(false)
+				return true
+			}
 		}
 
 	}

@@ -44,7 +44,7 @@ public class YicesTests : YicesTestCase {
 
     let context = Yices.Context()
 
-    let _ = cnfs.map { context.assert(clause:$0) }
+    let _ = cnfs.map { context.insure(clause:$0) }
 
     XCTAssertTrue(context.isSatisfiable)
   }
@@ -54,7 +54,7 @@ public class YicesTests : YicesTestCase {
     let p = "p|~p" as FLEA.Tptp.SimpleNode
 
     let context = Yices.Context()
-    let _ = context.assert(clause:p)
+    let _ = context.insure(clause:p)
     XCTAssertTrue(context.isSatisfiable)
   }
 
@@ -65,8 +65,8 @@ public class YicesTests : YicesTestCase {
 
     
     let context = Yices.Context()
-    let _ = context.assert(clause:p)
-    let _ = context.assert(clause:np)
+    let _ = context.insure(clause:p)
+    let _ = context.insure(clause:np)
     XCTAssertFalse(context.isSatisfiable)
     
   }
@@ -76,7 +76,7 @@ public class YicesTests : YicesTestCase {
     let empty = Tptp.SimpleNode(symbol:symbol, nodes: Array<Tptp.SimpleNode>())
     
     let context = Yices.Context()
-    let _ = context.assert(clause:empty)
+    let _ = context.insure(clause:empty)
     XCTAssertFalse(context.isSatisfiable)
   }
 }

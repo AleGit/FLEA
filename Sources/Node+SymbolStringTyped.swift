@@ -21,3 +21,16 @@ extension Node where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol, Self.
 }
 
 
+func *<N:Node>(t:N, s:Int) -> N 
+where N:SymbolStringTyped
+{
+    guard let nodes = t.nodes else { 
+      let (string,type) = t.symbolStringType
+      let symbol = N.symbolize(string:"\(string)_\(s)", type:type)
+      return N(symbol:symbol, nodes:nil)
+    } // a variable
+
+    return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
+}
+
+

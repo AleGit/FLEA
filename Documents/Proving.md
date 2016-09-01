@@ -63,6 +63,7 @@ There are two approaches:
   - if it holds, use it
   - if it does not hold, update index, check if newly selected
     literal clashes
+  - **this will fail** so we stay with **synchronous**
 
 ### Avoiding clause variants
 
