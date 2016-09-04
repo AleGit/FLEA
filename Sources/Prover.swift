@@ -138,7 +138,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
     func reselectLiterals(with model: Yices.Model) {
         for (clauseIndex,triple) in yTuples {
             let (_,_,tptpClause) = clauses[clauseIndex]
-            let (yicesClause,yicesLiterals,selectedLiteralIndex) = triple
+            let (_,yicesLiterals,selectedLiteralIndex) = triple
 
             if !model.implies(t:yicesLiterals[selectedLiteralIndex]) {
 
@@ -206,9 +206,9 @@ where N:SymbolStringTyped, N.Symbol == Int {
        }
 
        for candidate in candidates {
-           let (candidateName,candidateRole,candidateClause) = clauses[candidate]
+           let (_,_,candidateClause) = clauses[candidate]
 
-           let (_,yicesCandidateLiterals,selectedCandidateLiteralIndex) = yTuples[candidate]!
+           let (_,_,selectedCandidateLiteralIndex) = yTuples[candidate]!
 
            let candidateLiterals = candidateClause.nodes!
 

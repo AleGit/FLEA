@@ -193,6 +193,7 @@ extension TrieStore where Leap == Int, Value == Int {
 
       default:
       assert(false)
+      return nil
     }
 
   }

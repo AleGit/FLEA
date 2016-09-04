@@ -21,6 +21,7 @@ func process(problem:String) {
 let options = CommandLine.options
 if let problems = options["--problem"] {
     for problem in problems {
+        print("Problem:\(problem)")
         process(problem:problem)
 
     }

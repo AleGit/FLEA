@@ -77,6 +77,7 @@ extension Node where Self:SymbolStringTyped {
       default:
         Syslog.error { "\(self) with root type \(type) cannot be unnegated."}
         assert(false)
+        return self
     }
   }
 }
