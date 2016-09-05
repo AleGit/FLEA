@@ -42,6 +42,17 @@ struct Tptp {
     lazy var description : String = self.defaultDescription
   }
 
+  final class SmartIntNode : SymbolStringTyped, SymbolTabulating, Sharing, Node, ExpressibleByStringLiteral {
+    static var symbols = StringIntegerTable<Int>()
+    static var pool = WeakSet<KinIntNode>()
+    
+    var symbol : Int = SmartIntNode.symbolize(string:wildcard,type:.variable)
+    var nodes : [SmartIntNode]? = nil
+
+    lazy var hashValue : Int = self.defaultHashValue
+    lazy var description : String = self.defaultDescription
+  }
+
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes,
   /// `folks` holds weak references to node's predecessors
