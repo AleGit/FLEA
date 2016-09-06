@@ -63,6 +63,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// - create a mapping from names to clauses (1:n) where n >=1 
     /// - create a mapping from roles to clauses (1:n) where n >= 0
     init?(problem name:String) {
+        print("Hu?")
         guard let (url,file) = urlFile(name:name) else { return nil }
         problem = (name, url)
         includes = file.includeSelectionURLTriples(url:url)

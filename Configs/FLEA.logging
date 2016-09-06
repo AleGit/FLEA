@@ -13,8 +13,9 @@
 # »file : »value«
 # »***» : »value« 
 
-# "Tptp.File.swift"               : "debug"
-# "URL+FilePath.swift"            : "debug"
-# "Prover.swift" : "debug"
-
+# "Tptp.File.swift"       : "debug"
+# "URL+FilePath.swift"    : "debug"
+# "Prover.swift"          : "debug"
+# "main.swift"            : "debug"
+"CommandLine.swift" : "String"
  
