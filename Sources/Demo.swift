@@ -329,7 +329,7 @@ func demoParse<N:Node>(problem:String, show:Bool = Demo.show) -> [N]
 where N:SymbolStringTyped {
   if show{print("N:Node == \(String(reflecting:N.self))")}
 
-  guard let url = URL(fileURLwithProblem:problem) else {
+  guard let url = URL(fileURLWithProblem:problem) else {
     if show{print("FileURL for '\(problem)' could not be found.")}
     return [N]()
   }

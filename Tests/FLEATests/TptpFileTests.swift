@@ -24,7 +24,7 @@ public class TptpFileTests : FleaTestCase {
     _ line : Int = #line
   ) {
     let (_, runtime) = utileMeasure {
-      guard let url = URL(fileURLwithProblem:name) else {
+      guard let url = URL(fileURLWithProblem:name) else {
         XCTFail("\(nok):\(line) \(name).p not found.")
         return
       }
@@ -44,7 +44,7 @@ public class TptpFileTests : FleaTestCase {
       XCTAssertEqual(nodes.count, expected, "\(nok):\(line)")
 
       if nodes.count == expected {
-        print("\(ok):\(line) URL(fileURLwithProblem:\(name) -> \(url.relativePath)")
+        print("\(ok):\(line) URL(fileURLWithProblem:\(name) -> \(url.relativePath)")
       }
     }
 
@@ -57,8 +57,8 @@ public class TptpFileTests : FleaTestCase {
 
   func testNonFile() {
     let name = "Problems/PUZ001" // local path (does not exist)
-    if let url = URL(fileURLwithProblem:name) {
-      XCTFail("(nok) URL(fileURLwithProblem:\(name)) \(url.relativePath)")
+    if let url = URL(fileURLWithProblem:name) {
+      XCTFail("(nok) URL(fileURLWithProblem:\(name)) \(url.relativePath)")
     }
   }
 

@@ -10,6 +10,7 @@ public class URLTests : FleaTestCase {
     ("testTptpDirectory", testTptp),
     ("testProblem",testProblem),
     ("testTypes", testTypes),
+    ("testFileManager", testFileManager)
     ]
   }
 
@@ -42,7 +43,7 @@ public class URLTests : FleaTestCase {
     XCTAssertFalse(homeDirectoryURL == tptpDirectoryURL,nok)
 
     var name = "PUZ001-1"
-    if let url = URL(fileURLwithProblem:name) {
+    if let url = URL(fileURLWithProblem:name) {
       XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
       XCTAssertTrue(url.path.hasPrefix(tptpDirectoryURL.path))
     }
@@ -52,7 +53,7 @@ public class URLTests : FleaTestCase {
 
     // test local path
     name = "Problems/PUZ001-1"
-    if let url = URL(fileURLwithProblem:name) {
+    if let url = URL(fileURLWithProblem:name) {
       XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
       XCTAssertFalse(url.path.hasPrefix(tptpDirectoryURL.path))
     } else {
@@ -61,7 +62,7 @@ public class URLTests : FleaTestCase {
     }
 
     name = "PUZ999-1"
-    if let url = URL(fileURLwithProblem:name) {
+    if let url = URL(fileURLWithProblem:name) {
       XCTFail("\(nok) Problem '\(name)' must not exist at \(url.relativeString)")
     }
 
@@ -87,7 +88,7 @@ public class URLTests : FleaTestCase {
     }
 
     name = "/Users/Shared/TPTP/Problems/PUZ/PUZ001-1"
-    if let absURL = URL(fileURLwithProblem:name) {
+    if let absURL = URL(fileURLWithProblem:name) {
       // XCTAssertEqual(name+".p", absURL.path,"\(nok)")
       print(ok,absURL.path)
     }
@@ -144,5 +145,18 @@ public class URLTests : FleaTestCase {
       XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath),nok)
 
       #endif
+  }
+
+  func testFileManager() {
+    
+
+    guard let url = URL(fileURLWithProblem:"PUZ001-1") else {
+      XCTFail("")
+      return
+    }
+
+    print(url)
+
+
   }
 }

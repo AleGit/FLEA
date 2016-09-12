@@ -268,7 +268,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
 // MARK: helper functions
 
 private func urlFile(name:String) -> (URL,Tptp.File)? {
-    guard let url = URL(fileURLwithProblem:name) else {
+    guard let url = URL(fileURLWithProblem:name) else {
         Syslog.error { "Problem \(name) could not be found." }
         return nil
     }

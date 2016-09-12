@@ -19,7 +19,7 @@ func process(problem:String) {
 //     for name in problems {
 
         print("xProblem:\(name)")
-    guard let url = URL(fileURLwithProblem:name) else {
+    guard let url = URL(fileURLWithProblem:name) else {
         Syslog.error { "Problem \(name) could not be found." }
         return
     }

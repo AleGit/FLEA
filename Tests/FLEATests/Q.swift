@@ -80,7 +80,7 @@ extension Q {
   where N:SymbolStringTyped {
     print("N:Node == \(String(reflecting:N.self))")
 
-    guard let url = URL(fileURLwithProblem:problem) else {
+    guard let url = URL(fileURLWithProblem:problem) else {
       print("Path for '\(problem)' could not be found.")
       return [N]()
     }

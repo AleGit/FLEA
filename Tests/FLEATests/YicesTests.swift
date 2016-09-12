@@ -19,7 +19,7 @@ public class YicesTests : YicesTestCase {
 
   func testPUZ001c1() {
     let problem = "PUZ001-1"
-    guard let url = URL(fileURLwithProblem:problem) else {
+    guard let url = URL(fileURLWithProblem:problem) else {
       XCTFail("\(nok) '\(problem)' was not found.")
       return
     }

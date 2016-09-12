@@ -83,38 +83,19 @@ extension URL {
 /// these workaround will not build when signatures change
 extension URL {
 
-  fileprivate mutating func deleteExtension() {
-    self.deletePathExtension()
-  }
-  fileprivate func deletingExtension() -> URL {
-    var url = self
-    url.deleteExtension()
-    return url
-  }
-
-  fileprivate mutating func deleteLastComponent() {
-    self.deleteLastPathComponent()
-  }
-
-  fileprivate func deletingLastComponent() -> URL {
-    var url = self
-    url.deleteLastComponent()
-    return url
-  }
-
   fileprivate mutating func deleteLastComponents(downTo c:String) {
     var deleted = false
     while !deleted && self.lastPathComponent != "/" {
       if self.lastPathComponent == c {
         deleted = true
       }
-      self.deleteLastComponent()
+      self.deleteLastPathComponent()
     }
   }
 
   fileprivate func deletingLastComponents(downTo c:String) -> URL {
     var url = self
-    url.deleteLastComponent()
+    url.deleteLastPathComponent()
     return url
   }
 
@@ -122,7 +103,7 @@ extension URL {
     let pe = self.pathExtension
     guard pe != pex else { return } // nothing to do
 
-    if delete { self.deleteExtension() }
+    if delete { self.deletePathExtension() }
 
     self.appendPathExtension(pex)
     
@@ -189,7 +170,7 @@ extension URL {
   /// - the absolute path to a file, e.g. '/path/to/dir/PUZ001-1[.p]'
   /// with or without extension 'p'.
   /// If no resolved problem file path is accessible, nil is returned.
-  init?(fileURLwithProblem problem:String) {
+  init?(fileURLWithProblem problem:String) {
     guard let url = URL(fileURLwithTptp: problem, ex:"p",
       roots: // start search in ...
       // $TPTP_ROOT/
@@ -217,7 +198,7 @@ extension URL {
     guard let url = URL(fileURLwithTptp: axiom, ex:"ax",
       roots: // start search in ...
       // $Y/problem.p -> $Y/
-      problemURL?.deletingLastComponent(),
+      problemURL?.deletingLastPathComponent(),
       // $Y/Problems[/ppath]/p.p -> $Y/
       problemURL?.deletingLastComponents(downTo:"Problems"),
       // $TPTP_ROOT/

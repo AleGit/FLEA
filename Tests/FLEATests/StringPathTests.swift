@@ -156,7 +156,7 @@ public class StringPathTests : FleaTestCase {
     // let problem = "PUZ024-1"
     // let axiom = "PUZ002-0"
     //
-    // guard let problemUrl = URL(fileURLwithProblem:problem) else {
+    // guard let problemUrl = URL(fileURLWithProblem:problem) else {
     //   XCTFail("\(nok) no url for \(problem)")
     // }
     // XCTAssertTrue(problemUrl.path.hasSuffix("/TPTP/Problems/PUZ/PUZ024-1.p"),nok)
