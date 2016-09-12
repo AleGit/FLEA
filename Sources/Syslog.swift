@@ -144,7 +144,6 @@ struct Syslog {
      var cnfg = [String:Priority]()
 
      for entry in entries {
-       print(entry)
        guard let colonIndex = entry.characters.index(of:(":")) else {
          print(#function,#line,">>> invalid configuration entry : \(entry) <<<")
          continue
@@ -202,7 +201,7 @@ struct Syslog {
 
     let fileName = URL(fileURLWithPath:file).lastPathComponent 
     if fileName.isEmpty {
-      print("••• Last path element of \(file) could not be extracted. •••")
+      Syslog.debug { "Last path element of \(file) could not be extracted." }
     }
     
     // check for "»file«/»function«" priority 
