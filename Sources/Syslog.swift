@@ -129,22 +129,22 @@ struct Syslog {
     print(#function,#line,"reading configuration started")
     defer { print(#function,#line,"reading configuration finished")}
     
-    guard 
-      let path = URL.loggingConfigurationURL?.path,
-      let content = path.content else {
-        print(#function,#line,"*!* configuration file is not available *!*")
-      return nil
-    }
+    
 
     // ignore comments (#...) and empty (whitespace only) lines
-    let entries = content.lines.filter {
-      !($0.hasPrefix("#") || $0.trimmingWhitespace.isEmpty)
+
+
+     guard let entries = URL.loggingConfigurationURL?.path.lines(predicate: {
+       !($0.hasPrefix("#") || $0.isEmpty)
+     }), entries.count > 0 else {
+       return nil
      }
 
      // create configuration
      var cnfg = [String:Priority]()
 
      for entry in entries {
+       print(entry)
        guard let colonIndex = entry.characters.index(of:(":")) else {
          print(#function,#line,">>> invalid configuration entry : \(entry) <<<")
          continue

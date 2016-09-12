@@ -85,31 +85,23 @@ public class SyslogTests : FleaTestCase {
 
   func testConfiguration() {
     let path = "Configs/default.logging"
-    guard let content = path.content else {
-      XCTFail("\(nok) config file '\(path)' not found.")
+
+    guard let allLines = path.lines(), allLines.count > 15 else {
+      XCTFail()
+      return
+    }
+    
+    guard let lines = path.lines(predicate:{
+       !($0.hasPrefix("#") || $0.isEmpty)
+    }), lines.count == 6 else {
+      XCTFail()
       return
     }
 
-    var lines = content.lines
+    XCTAssertTrue(allLines.count > lines.count)
 
-    guard lines.count > 5 else {
-      XCTFail("\(nok) config file has too few lines.")
-      return
-    }
 
-    lines[4] = "  "
-    lines[5] = "\t"
 
-    let entries = lines.filter {
-      !($0.hasPrefix("#") || $0.trimmingWhitespace.isEmpty)
-     }
-     XCTAssertTrue(entries.count > 0)
-
-     guard let configuration = Syslog.configuration else {
-       XCTFail("\(nok) configuration not available")
-       return
-     }
-  
-  print(configuration)
+     
   }
 }

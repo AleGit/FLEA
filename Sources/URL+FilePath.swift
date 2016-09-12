@@ -276,33 +276,39 @@ extension FilePath {
 
     #endif  /******************************************************************/
   }
+
+  func lines(predicate:(String) -> Bool = { _ in true }) -> [String]? {
+    guard let f = fopen(self,"r") else {
+      Syslog.error { "File at '\(self)' could not be opened."}
+      return nil
+    }
+    guard let bufsize = self.fileSize else {
+      return nil
+    }
+
+    var strings = [String]()
+    var buf = [CChar](repeating:CChar(0), count:bufsize)
+
+    while let s = fgets(&buf, Int32(bufsize), f) {
+      guard 
+      let string = String(validatingUTF8:s)?.trimmingWhitespace, 
+      predicate(string) else {
+        continue
+      }
+
+      print(string,predicate(string),string.isEmpty)
+      strings.append(string)
+    }
+    return strings
+
+
+  }
 }
 
 extension String {
-  var lines:[String] {
-
-    defer { Syslog.debug { ": [String]" } }
-
-    #if os(OSX) /**************************************************************/
-
-    var result = [String]()
-    enumerateLines {
-      (l,_) -> () in
-      result.append(l)
-    }
-    return result
-     
-    #elseif os (Linux) /*******************************************************/
-    // fatal error: enumerateSubstrings(in:options:using:) is not yet implemented: file Foundation/NSString.swift, line 810
-
-    Syslog.notice { Syslog.Tags.system() + " " + Syslog.Tags.workaround() }
-    return self.components(separatedBy:"\n")
-
-    #endif /********************************************************/
-  }
 
   var trimmingWhitespace : String {
-    return self.trimmingCharacters(in: CharacterSet.whitespaces)
+    return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
   }
 
   var pealing : String {

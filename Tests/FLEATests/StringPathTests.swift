@@ -188,7 +188,15 @@ public class StringPathTests : FleaTestCase {
     XCTAssertEqual("A Bc", "      A Bc".trimmingWhitespace,nok)
     XCTAssertEqual("A Bc", "   A Bc   ".trimmingWhitespace,nok)
     XCTAssertEqual("A Bc", "A Bc      ".trimmingWhitespace,nok)
-    print(ok,#function)
+
+    XCTAssertEqual("A Bc", "A Bc\n".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", " A Bc\n".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", " A Bc \n".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", "A Bc \n".trimmingWhitespace,nok)
+
+    XCTAssertEqual("A Bc", "      A Bc\n".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", "   A Bc   \n".trimmingWhitespace,nok)
+    XCTAssertEqual("A Bc", "A Bc      \n".trimmingWhitespace,nok)
   }
 
 }
