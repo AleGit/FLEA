@@ -117,7 +117,7 @@ extension URL {
 }
 
 extension URL {
-  fileprivate init?(fileURLwithTptp name:String, ex:String,
+  fileprivate init?(fileURLWithTptp name:String, ex:String,
     roots:URL?...,
     f:((String)->String)? = nil) {
 
@@ -162,7 +162,7 @@ extension URL {
   /// with or without extension 'p'.
   /// If no resolved problem file path is accessible, nil is returned.
   init?(fileURLWithProblem problem:String) {
-    guard let url = URL(fileURLwithTptp: problem, ex:"p",
+    guard let url = URL(fileURLWithTptp: problem, ex:"p",
       roots: // start search in ...
       // $TPTP_ROOT/
       URL.tptpDirectoryURL, // $TPTP_ROOT/Problems/PUZ/PUZ001-1.ps
@@ -186,7 +186,7 @@ extension URL {
   /// file tree parallel to the problem file.
   /// If no resolved axiom file path is accessible, nil is returned.
   init?(fileURLWithAxiom axiom:String, problemURL:URL? = nil) {
-    guard let url = URL(fileURLwithTptp: axiom, ex:"ax",
+    guard let url = URL(fileURLWithTptp: axiom, ex:"ax",
       roots: // start search in ...
       // $Y/problem.p -> $Y/
       problemURL?.deletingLastPathComponent(),
