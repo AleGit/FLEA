@@ -95,12 +95,12 @@ public class URLTests : FleaTestCase {
   }
 
 
-/// Unfortuanatly URL signatures differ (did differ) between Swift 3 Previews on OSX and Linux.
-/// This test will highlight future changes.
+/// Unfortuanatly URL signatures differed between Swift 3 Previews on OSX and Linux.
+/// With Swift 3.0 GM Candidate this differences were removed.
   func testTypes() {
     let url = URL(fileURLWithPath:"Problems/PUZ001-1.p")
 
-    // matching URL property and function signatures on macOS and Linux
+    
       XCTAssertTrue(Int.self == type(of:url.hashValue),nok)
       XCTAssertTrue(URL?.self == type(of:url.baseURL),nok)
       XCTAssertTrue(String?.self == type(of:url.fragment),nok)
@@ -113,8 +113,7 @@ public class URLTests : FleaTestCase {
       XCTAssertTrue(String?.self == type(of:url.scheme),nok)
       XCTAssertTrue(String?.self == type(of:url.user),nok)
 
-      #if os(OSX)
-      // (m.a) non-optional on macOS
+      // (m.a) non-optional on macOS and linux
       XCTAssertTrue(String.self == type(of:url.absoluteString),nok)
       XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
       XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
@@ -127,38 +126,22 @@ public class URLTests : FleaTestCase {
         XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath),nok) // OSX >=10.11
       }
 
-      // (m.b) non-throwing on macOS
+      // (m.b) non-throwing on macOS and linux
       XCTAssertTrue(URL.self == type(of:url.standardized),nok)
       XCTAssertTrue(URL.self == type(of:url.standardizedFileURL),nok)
       XCTAssertTrue(URL.self == type(of:url.deletingLastPathComponent()),nok)
       XCTAssertTrue(URL.self == type(of:url.deletingPathExtension()),nok)
       XCTAssertTrue(URL.self == type(of:url.resolvingSymlinksInPath()),nok)
 
+      #if os(OSX)
+
       // (m.c) only on macOS
       XCTAssertTrue(Bool?.self == type(of:(try? url.checkPromisedItemIsReachable())),nok)
       XCTAssertTrue(Bool?.self == type(of:(try? url.checkResourceIsReachable())),nok)
 
       #elseif os(Linux)
-      // (l.a) was optional on Linux
-      XCTAssertTrue(String.self == type(of:url.absoluteString),nok)
-      XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
-      XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
-      XCTAssertTrue(String.self == type(of:url.path),nok)
-      XCTAssertTrue([String].self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
-      XCTAssertTrue(String.self == type(of:url.pathExtension),nok)
-      XCTAssertTrue(String.self == type(of:url.relativePath),nok)
 
-      // (l.b) was throwing on Linux
-      for (url,message) in [
-        (url.standardized,"standardized"),
-        // (try? url.standardizedFileURL(),"standardizedFileURL"),
-        (url.deletingLastPathComponent(),"deletingLastPathComponent"),
-        (url.deletingPathExtension(),"deletingPathExtension"),
-        (url.resolvingSymlinksInPath(),"resolvingSymlinksInPath")
-      ] {
-        XCTAssertTrue(URL.self == type(of:url),"\(nok) url.\(message) -> \(type(of:url))")
-      }
-
+      XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath),nok)
 
       #endif
   }
