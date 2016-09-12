@@ -1,12 +1,6 @@
 
 import Foundation
 
-/// Some functions and properties have an optional return type on Linux,
-/// while an non optional on macOS.
-func optional<T>(_ value:T?) -> T? {
-  return value
-}
-
 extension URL {
   static var tptpDirectoryURL : URL? {
 
@@ -59,18 +53,14 @@ extension URL {
 
     let url = URL(fileURLWithPath:CommandLine.name)
 
-    // macOS: lastPathComponent : String
-    // Linux: lastPathComponent : String?
-    Syslog.warning { "optional(url.lastPathComponent)" }
-    if let name = optional(url.lastPathComponent), !name.isEmpty {
+    let name = url.lastPathComponent
+    if !name.isEmpty {
 
       let url = URL(fileURLWithPath:"Configs/\(name).logging")
       if url.isAccessible { return url }
       
       print(url,"is not accessible")
     }
-
-    print("*** default.logging ***")
     
     return URL(fileURLWithPath: "Configs/default.logging")
 
@@ -135,7 +125,8 @@ extension URL {
     self.append(extension:ex)
 
     var names = [name]
-    if let rs = optional(self.relativePath), !names.contains(rs) {
+    let rs = self.relativePath 
+    if !names.contains(rs) {
       names.append(rs)
     }
 
@@ -215,11 +206,11 @@ extension URL {
 
 extension URL {
   var isAccessible : Bool {
-    return optional(self.path)?.isAccessible ?? false
+    return self.path.isAccessible
   }
 
   var isAccessibleDirectory : Bool {
-    return optional(self.path)?.isAccessibleDirectory ?? false
+    return self.path.isAccessibleDirectory
   }
 }
 

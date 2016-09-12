@@ -27,7 +27,8 @@ extension Tptp {
       // Swift 3 Preview 4:
       // - Linux url.path : String?
       // - macOS url.path : String
-      if url.isFileURL, let path = optional(url.path) {
+      if url.isFileURL  {
+        let path = url.path
         Syslog.debug { "url.path : \(type(of:url.path))"}
         self.init(path:path)
       }
