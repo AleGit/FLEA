@@ -43,8 +43,8 @@ public class URLTests : FleaTestCase {
 
     var name = "PUZ001-1"
     if let url = URL(fileURLwithProblem:name) {
-      XCTAssertTrue(url.pathOrEmpty.hasPrefix(homeDirectoryURL.pathOrEmpty))
-      XCTAssertTrue(url.pathOrEmpty.hasPrefix(tptpDirectoryURL.pathOrEmpty))
+      XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
+      XCTAssertTrue(url.path.hasPrefix(tptpDirectoryURL.path))
     }
     else {
       XCTFail("\(nok) Problem '\(name)' not found")
@@ -53,8 +53,8 @@ public class URLTests : FleaTestCase {
     // test local path
     name = "Problems/PUZ001-1"
     if let url = URL(fileURLwithProblem:name) {
-      XCTAssertTrue(url.pathOrEmpty.hasPrefix(homeDirectoryURL.pathOrEmpty))
-      XCTAssertFalse(url.pathOrEmpty.hasPrefix(tptpDirectoryURL.pathOrEmpty))
+      XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
+      XCTAssertFalse(url.path.hasPrefix(tptpDirectoryURL.path))
     } else {
       XCTFail("\(nok) Problem '\(name)' not found")
       return
@@ -67,29 +67,29 @@ public class URLTests : FleaTestCase {
 
     name = "PUZ001-0"
     if let axiomURL = URL(fileURLwithAxiom:name) {
-      XCTAssertTrue(axiomURL.pathOrEmpty.hasSuffix("Axioms/"+name+".ax"))
+      XCTAssertTrue(axiomURL.path.hasSuffix("Axioms/"+name+".ax"))
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")
     }
 
     name = "Axioms/PUZ001-0"
     if let noURL = URL(fileURLwithAxiom:name) {
-      XCTAssertTrue(noURL.pathOrEmpty.hasSuffix(name+".ax"))
+      XCTAssertTrue(noURL.path.hasSuffix(name+".ax"))
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")
     }
 
     name = "Axioms/PUZ001-0"
     if let wrongHint = URL(fileURLwithAxiom:name, problemURL: homeDirectoryURL) {
-      XCTAssertTrue(wrongHint.pathOrEmpty.hasSuffix(name+".ax"))
+      XCTAssertTrue(wrongHint.path.hasSuffix(name+".ax"))
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")
     }
 
     name = "/Users/Shared/TPTP/Problems/PUZ/PUZ001-1"
     if let absURL = URL(fileURLwithProblem:name) {
-      // XCTAssertEqual(name+".p", absURL.pathOrEmpty,"\(nok)")
-      print(ok,absURL.pathOrEmpty)
+      // XCTAssertEqual(name+".p", absURL.path,"\(nok)")
+      print(ok,absURL.path)
     }
 
   }
@@ -139,24 +139,24 @@ public class URLTests : FleaTestCase {
       XCTAssertTrue(Bool?.self == type(of:(try? url.checkResourceIsReachable())),nok)
 
       #elseif os(Linux)
-      // (l.a) optional on Linux
-      XCTAssertTrue(String?.self == type(of:url.absoluteString),nok)
-      XCTAssertTrue(URL?.self == type(of:url.absoluteURL),nok)
-      XCTAssertTrue(String?.self == type(of:url.lastPathComponent),nok)
-      XCTAssertTrue(String?.self == type(of:url.path),nok)
-      XCTAssertTrue([String]?.self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
-      XCTAssertTrue(String?.self == type(of:url.pathExtension),nok)
-      XCTAssertTrue(String?.self == type(of:url.relativePath),nok)
+      // (l.a) was optional on Linux
+      XCTAssertTrue(String.self == type(of:url.absoluteString),nok)
+      XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
+      XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
+      XCTAssertTrue(String.self == type(of:url.path),nok)
+      XCTAssertTrue([String].self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
+      XCTAssertTrue(String.self == type(of:url.pathExtension),nok)
+      XCTAssertTrue(String.self == type(of:url.relativePath),nok)
 
-      // (l.b) throwing on Linux
+      // (l.b) was throwing on Linux
       for (url,message) in [
-        (try? url.standardized(),"standardized"),
+        (url.standardized,"standardized"),
         // (try? url.standardizedFileURL(),"standardizedFileURL"),
-        (try? url.deletingLastPathComponent(),"deletingLastPathComponent"),
-        (try? url.deletingPathExtension(),"deletingPathExtension"),
-        (try? url.resolvingSymlinksInPath(),"resolvingSymlinksInPath")
+        (url.deletingLastPathComponent(),"deletingLastPathComponent"),
+        (url.deletingPathExtension(),"deletingPathExtension"),
+        (url.resolvingSymlinksInPath(),"resolvingSymlinksInPath")
       ] {
-        XCTAssertTrue(URL?.self == type(of:url),"\(nok) url.\(message) -> \(type(of:url))")
+        XCTAssertTrue(URL.self == type(of:url),"\(nok) url.\(message) -> \(type(of:url))")
       }
 
 

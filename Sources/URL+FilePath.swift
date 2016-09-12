@@ -82,34 +82,9 @@ extension URL {
 /// with Swift 3 Preview 4/5 the URL signatures diverged between macOS and linux
 /// these workaround will not build when signatures change
 extension URL {
-  var pathOrEmpty : String {
-    #if os(OSX)
-    return self.path
-    #elseif os(Linux)
-    return self.path ?? ""
-    #endif
-  }
-  var extensionOrEmpty : String {
-    #if os(OSX)
-    return self.pathExtension
-    #elseif os(Linux)
-    return self.pathExtension ?? ""
-    #endif
-  }
-  var lastComponentOrEmpty : String {
-    #if os(OSX)
-    return self.lastPathComponent
-    #elseif os(Linux)
-    return self.lastPathComponent ?? ""
-    #endif
 
-  }
   fileprivate mutating func deleteExtension() {
-    #if os(OSX)
     self.deletePathExtension()
-    #elseif os(Linux)
-    try? self.deletePathExtension()
-    #endif
   }
   fileprivate func deletingExtension() -> URL {
     var url = self
@@ -118,11 +93,7 @@ extension URL {
   }
 
   fileprivate mutating func deleteLastComponent() {
-    #if os(OSX)
     self.deleteLastPathComponent()
-    #elseif os(Linux)
-    try? self.deleteLastPathComponent()
-    #endif
   }
 
   fileprivate func deletingLastComponent() -> URL {
@@ -148,16 +119,13 @@ extension URL {
   }
 
   fileprivate mutating func append(extension pex:String, delete:Bool = true) {
-    let pe = self.extensionOrEmpty
+    let pe = self.pathExtension
     guard pe != pex else { return } // nothing to do
 
     if delete { self.deleteExtension() }
 
-    #if os(OSX)
     self.appendPathExtension(pex)
-    #elseif os(Linux)
-    try? self.appendPathExtension(pex)
-    #endif
+    
   }
 
   fileprivate func appending(extension pex:String, delete:Bool = true) -> URL {
@@ -167,11 +135,7 @@ extension URL {
   }
 
   fileprivate mutating func append(component c:String) {
-    #if os(OSX)
     self.appendPathComponent(c)
-    #elseif os(Linux)
-    try? self.appendPathComponent(c)
-    #endif
   }
 
   fileprivate func appending(component c:String) -> URL{
@@ -194,7 +158,7 @@ extension URL {
       names.append(rs)
     }
 
-    let lastComponent = self.lastComponentOrEmpty
+    let lastComponent = self.lastPathComponent
     if !lastComponent.isEmpty {
       if !names.contains(lastComponent) {
         names.append(lastComponent)

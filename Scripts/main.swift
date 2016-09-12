@@ -32,14 +32,12 @@ func process(problem:String) {
         Tptp.KinIntNode(tree:$0)
         }
 
-    print(array.count)
+    let includes = file.includeSelectionURLTriples(url:url)
+    let clauses : [(String,Tptp.Role,Tptp.KinIntNode)] = file.nameRoleClauseTriples()
+
+    print(array.count,clauses.count,includes.count)
 
     print(file.path)
-
-    if let prover = ΠρῶτοςProver<Tptp.KinIntNode>(problem:problem) {
-        print(Tptp.KinIntNode.pool.count)
-        print(prover.clauses.count,prover.includes.count)
-    }
 
 //     }
 // }

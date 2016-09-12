@@ -200,7 +200,7 @@ struct Syslog {
 
     // extract »file« key
 
-    let fileName = URL(fileURLWithPath:file).lastComponentOrEmpty 
+    let fileName = URL(fileURLWithPath:file).lastPathComponent 
     if fileName.isEmpty {
       print("••• Last path element of \(file) could not be extracted. •••")
     }
@@ -315,9 +315,9 @@ extension Syslog {
       Syslog.sysLog(priority:priority,
         args: line, column) {
           #if os(OSX)
-          return "\(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) '%m' \(message())"
+          return "\(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) '%m' \(message())"
           #elseif os(Linux)
-          return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) '%m' \(message())"
+          return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) '%m' \(message())"
           #endif
         }
     }
@@ -325,9 +325,9 @@ extension Syslog {
       Syslog.sysLog(priority:priority,
         args: line, column) {
           #if os(OSX)
-          return "\(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) \(message())"
+          return "\(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) \(message())"
           #elseif os(Linux)
-          return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastComponentOrEmpty)[%d:%d] \(function) \(message())"
+          return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) \(message())"
           #endif
         }
     }
