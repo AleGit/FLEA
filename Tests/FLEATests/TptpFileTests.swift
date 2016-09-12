@@ -7,10 +7,7 @@ public class TptpFileTests : FleaTestCase {
   static var allTests : [(String, (TptpFileTests) -> () throws -> Void)] {
     return [
     ("testNonFile", testNonFile),
-    ("testPuzFiles", testPUZ),
-    ("testHwvFiles", testHWV),
-
-    ("testHWV039f", testHWV039f),
+    ("testProblems", testProblems),
     ]
   }
 
@@ -41,7 +38,7 @@ public class TptpFileTests : FleaTestCase {
         return
       }
 
-      XCTAssertEqual(nodes.count, expected, "\(nok):\(line)")
+      XCTAssertEqual(nodes.count, expected, "\(nok):\(name)")
 
       if nodes.count == expected {
         print("\(ok):\(line) URL(fileURLWithProblem:\(name) -> \(url.relativePath)")
@@ -62,18 +59,38 @@ public class TptpFileTests : FleaTestCase {
     }
   }
 
-  func testPUZ() {
-    check("PUZ001-1", 12, 0.1) // local or canonical path
-    check("Problems/PUZ001+1", 14, 0.1) // local path
-  }
+  func testProblems() {
+    for (problem,count,runtime) in [
+      ("Problems/PUZ001+1", 14, 0.1),
 
-  func testHWV() {
-    check("HWV001-1", 42, 0.1) // local or canonical path
-    // check("HWV134-1", 2332428, 400.0) // debug build is slow
-    // check("HWV134+1", 128975, 200.003)
-  }
+      ("PUZ001-1", 12, 0.1),
+      ("HWV001-1", 42, 0.1),
+      ("HWV002-1", 51, 0.1),
+      ("HWV003-1", 42, 0.1),
+      ("HWV004-1", 36, 0.1),
+      ("HWV005-1", 10, 0.1),
+      ("HWV006-1", 16, 0.1),
+      ("HWV007-1", 14, 0.1),
+      // ("HWV008-1", 10, 0.1),
+      ("HWV009-1", 3, 0.1),
+      ("HWV010-1", 3, 0.1),
 
-  func testHWV039f() {
-    check("HWV039+1", 744, 0.12) // local or canonical path
+      ("HWV011-1", 3, 0.1),
+      ("HWV012-1", 4, 0.1),
+      ("HWV013-1", 6, 0.1),
+      ("HWV014-1", 6, 0.1),
+      ("HWV015-1", 6, 0.1),
+      ("HWV016-1", 6, 0.1),
+      ("HWV017-1", 7, 0.1),
+      ("HWV018-1", 6, 0.1),
+
+      ("HWV019-1", 5, 0.1),
+      ("HWV020-1", 6, 0.1),
+
+      ("HWV039+1", 744, 0.12),
+      // ("HWV067-1",94241,20.0)
+    ] {
+      check(problem,count,runtime) 
+    }
   }
 }
