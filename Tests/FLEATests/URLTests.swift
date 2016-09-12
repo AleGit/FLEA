@@ -67,21 +67,21 @@ public class URLTests : FleaTestCase {
     }
 
     name = "PUZ001-0"
-    if let axiomURL = URL(fileURLwithAxiom:name) {
+    if let axiomURL = URL(fileURLWithAxiom:name) {
       XCTAssertTrue(axiomURL.path.hasSuffix("Axioms/"+name+".ax"))
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")
     }
 
     name = "Axioms/PUZ001-0"
-    if let noURL = URL(fileURLwithAxiom:name) {
+    if let noURL = URL(fileURLWithAxiom:name) {
       XCTAssertTrue(noURL.path.hasSuffix(name+".ax"))
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")
     }
 
     name = "Axioms/PUZ001-0"
-    if let wrongHint = URL(fileURLwithAxiom:name, problemURL: homeDirectoryURL) {
+    if let wrongHint = URL(fileURLWithAxiom:name, problemURL: homeDirectoryURL) {
       XCTAssertTrue(wrongHint.path.hasSuffix(name+".ax"))
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")

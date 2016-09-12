@@ -193,7 +193,7 @@ extension Tptp {
     func includeSelectionURLTriples(url:URL) -> [(String,[String],URL)] {
       return self.includes.flatMap {
         guard let name = $0.symbol,
-        let axiomURL = URL(fileURLwithAxiom:name,problemURL:url) else {
+        let axiomURL = URL(fileURLWithAxiom:name,problemURL:url) else {
           let symbol = $0.symbol ?? "'n/a'"
           Syslog.error { "Include file \(symbol) was not found."}
           assert(false, "Include file \(symbol) was not found.")

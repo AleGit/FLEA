@@ -194,7 +194,7 @@ extension URL {
   /// If a problem URL is given, the axiom file is searches on a position in the
   /// file tree parallel to the problem file.
   /// If no resolved axiom file path is accessible, nil is returned.
-  init?(fileURLwithAxiom axiom:String, problemURL:URL? = nil) {
+  init?(fileURLWithAxiom axiom:String, problemURL:URL? = nil) {
     guard let url = URL(fileURLwithTptp: axiom, ex:"ax",
       roots: // start search in ...
       // $Y/problem.p -> $Y/
