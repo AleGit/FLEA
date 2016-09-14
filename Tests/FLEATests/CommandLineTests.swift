@@ -55,7 +55,7 @@ public class ProcessTests : FleaTestCase {
   func testName() {
     let name = CommandLine.name
     #if os(OSX)
-    XCTAssertEqual("/Applications/Xcode-beta.app/Contents/Developer/usr/bin/xctest", name,"\(nok) \(name)")
+    XCTAssertEqual("/Applications/Xcode.app/Contents/Developer/usr/bin/xctest", name,"\(nok) \(name)")
     #elseif os(Linux)
     XCTAssertTrue(name.hasSuffix(".build/debug/FLEAPackageTests.xctest"),"\(nok) \(name)")
     #endif

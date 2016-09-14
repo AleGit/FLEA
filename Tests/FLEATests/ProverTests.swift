@@ -11,7 +11,7 @@ public class ProverTests : YicesTestCase {
     return [
       ("testInitPUZ001c1", testInitPUZ001c1),
       ("testInitPUZ062c1", testInitPUZ062c1),
-      ("testRun", testRun)
+      ("testRunning", testRunning)
     ]
   }
 
@@ -94,7 +94,7 @@ private typealias Prover = ΠρῶτοςProver<N>
 
   }
 
-  func testRun() {
+  func testRunning() {
       let problem = "PUZ001-1"
       guard let prover = Prover(problem:problem) else {
           XCTFail()
