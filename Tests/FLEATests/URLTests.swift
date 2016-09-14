@@ -4,32 +4,17 @@ import Foundation
 
 @testable import FLEA
 
-public class URLTests : FleaTestCase {
-  static var allTests : [(String, (URLTests) -> () throws -> Void)] {
+public class URLTests: FleaTestCase {
+  static var allTests: [(String, (URLTests) -> () throws -> Void)] {
     return [
-    ("testTptpDirectory", testTptp),
-    ("testProblem",testProblem),
+    ("testDirectories", testDirectories),
+    ("testPaths", testPaths),
     ("testTypes", testTypes),
     ("testFileManager", testFileManager)
     ]
   }
 
-
-  /// A /path/to/TPTP should be avaiable on every platform
-  func testTptp() {
-    guard let tptpDirectoryURL = URL.tptpDirectoryURL else {
-      XCTFail("TPTP root path is not available.")
-      return
-    }
-    XCTAssertEqual("TPTP", tptpDirectoryURL.lastPathComponent,
-    "TPTP root path '\(tptpDirectoryURL) does not end with 'TPTP'")
-
-
-    print("\(ok) \(#function) \(tptpDirectoryURL.path)")
-  }
-
-
-  func testProblem() {
+  func testDirectories() {
     guard let homeDirectoryURL = URL.homeDirectoryURL else {
       XCTFail("\(nok) home directory not available!")
       return
@@ -40,18 +25,27 @@ public class URLTests : FleaTestCase {
       return
     }
 
-    XCTAssertFalse(homeDirectoryURL == tptpDirectoryURL,nok)
+    XCTAssertEqual("TPTP", tptpDirectoryURL.lastPathComponent,
+    "TPTP root path '\(tptpDirectoryURL) does not end with 'TPTP'")
+
+    XCTAssertFalse(homeDirectoryURL == tptpDirectoryURL, nok)
+  }
+
+  func testPaths() {
+    guard let homeDirectoryURL = URL.homeDirectoryURL,
+    let tptpDirectoryURL = URL.tptpDirectoryURL else {
+      XCTFail("\(nok) home or tptp directory not available!")
+      return
+    }
 
     var name = "PUZ001-1"
     if let url = URL(fileURLWithProblem:name) {
       XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
       XCTAssertTrue(url.path.hasPrefix(tptpDirectoryURL.path))
-    }
-    else {
+    } else {
       XCTFail("\(nok) Problem '\(name)' not found")
     }
 
-    // test local path
     name = "Problems/PUZ001-1"
     if let url = URL(fileURLWithProblem:name) {
       XCTAssertTrue(url.path.hasPrefix(homeDirectoryURL.path))
@@ -75,33 +69,33 @@ public class URLTests : FleaTestCase {
 
     name = "Axioms/PUZ001-0"
     if let noURL = URL(fileURLWithAxiom:name) {
-      XCTAssertTrue(noURL.path.hasSuffix(name+".ax"))
+      XCTAssertTrue(noURL.path.hasSuffix("Axioms/PUZ001-0.ax"), "\(nok) \(name) \(noURL.path)")
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")
     }
 
     name = "Axioms/PUZ001-0"
     if let wrongHint = URL(fileURLWithAxiom:name, problemURL: homeDirectoryURL) {
-      XCTAssertTrue(wrongHint.path.hasSuffix(name+".ax"))
+      XCTAssertTrue(wrongHint.path.hasSuffix("Axioms/PUZ001-0.ax"),
+      "\(nok) \(name) \(wrongHint.path)")
     } else {
       XCTFail("\(nok) Axiom '\(name)' not found")
     }
 
     name = "/Users/Shared/TPTP/Problems/PUZ/PUZ001-1"
     if let absURL = URL(fileURLWithProblem:name) {
-      // XCTAssertEqual(name+".p", absURL.path,"\(nok)")
-      print(ok,absURL.path)
+      XCTAssertTrue(absURL.path.hasSuffix("TPTP/Problems/PUZ/PUZ001-1.p"), "\(nok)")
+      print(ok, absURL.path)
     }
-
   }
 
 
-/// Unfortuanatly URL signatures differed between Swift 3 Previews on OSX and Linux.
+/// Unfortuanatly URL signatures differed on Swift 3 Previews on OSX and Linux.
 /// With Swift 3.0 GM Candidate this differences were removed.
   func testTypes() {
     let url = URL(fileURLWithPath:"Problems/PUZ001-1.p")
 
-    
+
       XCTAssertTrue(Int.self == type(of:url.hashValue),nok)
       XCTAssertTrue(URL?.self == type(of:url.baseURL),nok)
       XCTAssertTrue(String?.self == type(of:url.fragment),nok)
@@ -119,7 +113,9 @@ public class URLTests : FleaTestCase {
       XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
       XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
       XCTAssertTrue(String.self == type(of:url.path),nok)
-      XCTAssertTrue([String].self == type(of:url.pathComponents),"\(nok) \(type(of:url.pathComponents))")
+      XCTAssertTrue(
+        [String].self == type(of:url.pathComponents),
+        "\(nok) \(type(of:url.pathComponents))")
       XCTAssertTrue(String.self == type(of:url.pathExtension),nok)
       XCTAssertTrue(String.self == type(of:url.relativePath),nok)
 
@@ -148,7 +144,7 @@ public class URLTests : FleaTestCase {
   }
 
   func testFileManager() {
-    
+
 
     guard let url = URL(fileURLWithProblem:"PUZ001-1") else {
       XCTFail("")
