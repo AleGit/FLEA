@@ -12,31 +12,32 @@ protocol Trie {
     init()
 
     /// creates a trie with one value at path.
-    init<C:Collection>(with:Value, at:C) 
-    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
+    init<C:Collection>(with:Value, at:C)
+    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// inserts one value at Leap path
-    mutating func insert<C:Collection>(_ newMember:Value, at: C) -> (inserted:Bool, memberAfterInsert:Value)
-    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
+    mutating func insert<C: Collection>(_ newMember:Value, at: C)
+    -> (inserted: Bool, memberAfterInsert: Value)
+    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// removes and returns one value at Leap path,
     /// if path or value do not exist trie stays unchanged and nil is returned
-    mutating func remove<C:Collection>(_ value:Value, at: C) -> Value?
-    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
+    mutating func remove<C: Collection>(_ value:Value, at: C) -> Value?
+    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// returns all values at path
-    func retrieve<C:Collection>(from:C) -> ValueS?
-    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
+    func retrieve<C:Collection>(from: C) -> ValueS?
+    where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// stores one value at trie node
-    mutating func insert(_ newMember:Value) -> (inserted:Bool, memberAfterInsert:Value)
+    mutating func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value)
 
     /// removes and returns one value from trie node
-    mutating func remove(_ member:Value) -> Value?
+    mutating func remove(_ member: Value) -> Value?
 
     /// Get (or set) subnode with step.
     /// For efficiency the Setter MUST NOT store an empty trie,
@@ -64,8 +65,8 @@ protocol Trie {
 extension Trie {
 
   /// Create a new trie with one value at path.
-  init<C:Collection>(with value:Value, at path:C) 
-  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
+  init<C:Collection>(with value:Value, at path:C)
+  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
   C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
     self.init() // initialize trie
     let _ = self.insert(value, at:path)
@@ -73,29 +74,30 @@ extension Trie {
 
   /// Inserts value at path. Possibly missing subtrie is created.
   @discardableResult
-  mutating func insert<C:Collection>(_ newMember:Value, at path:C) -> (inserted:Bool, memberAfterInsert:Value) 
-  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
-  C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence{
-    guard let (head,tail) = path.decomposing else {
+  mutating func insert<C: Collection>(_ newMember: Value, at path: C)
+  -> (inserted:Bool, memberAfterInsert:Value)
+  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
+  C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
+    guard let (head, tail) = path.decomposing else {
       return self.insert(newMember)
     }
 
     if self[head] == nil {
-      self[head] = Self(with:newMember,at:tail)
-      return (true,newMember)
+      self[head] = Self(with: newMember, at: tail)
+      return (true, newMember)
     }
     else {
-      return self[head]!.insert(newMember, at:tail)
+      return self[head]!.insert(newMember, at: tail)
     }
   }
 
   /// remove value at path. Returns removed value or nil
   /// if path does not exist or value was not stored at path.
   /// Empty subtries are removed.
-  mutating func remove<C:Collection>(_ member:Value, at path:C) -> Value? 
-  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
+  mutating func remove<C: Collection>(_ member: Value, at path: C) -> Value?
+  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
   C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
-    guard let (head,tail) = path.decomposing else {
+    guard let (head, tail) = path.decomposing else {
       return self.remove(member)
     }
     guard var trie = self[head] else { return nil }
@@ -105,10 +107,10 @@ extension Trie {
   }
 
   /// Returns values at path or nil if path does not exist.
-  func retrieve<C:Collection>(from path:C) -> ValueS? 
-  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap, 
+  func retrieve<C: Collection>(from path: C) -> ValueS?
+  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
   C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
-    guard let (head,tail) = path.decomposing else {
+    guard let (head, tail) = path.decomposing else {
       return values
     }
     guard let trie = self[head] else { return nil }
@@ -116,7 +118,7 @@ extension Trie {
   }
 }
 
-func ==<T:Trie>(lhs:T,rhs:T) -> Bool 
+func ==<T:Trie>(lhs: T, rhs: T) -> Bool
 where T.Value:Hashable, T.Leap:Hashable, T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap> {
   guard lhs.values == rhs.values else { return false }
   guard lhs.leaps == rhs.leaps else { return false }
@@ -128,29 +130,28 @@ where T.Value:Hashable, T.Leap:Hashable, T.ValueS == Set<T.Value>, T.LeapS == Se
 
 
 
-protocol TrieStore : Trie, Equatable {
+protocol TrieStore: Trie, Equatable {
   associatedtype Leap : Hashable
   associatedtype Value : Hashable
 
-  var trieStore : [Leap: Self]  { set get }
-  var valueStore : Set<Value> { set get }
+  var trieStore: [Leap: Self]  { set get }
+  var valueStore: Set<Value> { set get }
 }
 
 extension TrieStore {
   /// It is assumed that no empty subtries are stored, i.e.
   /// the trie has to be carefully maintained when values are removed.
   /// _Complexity_: O(1)
-  var isEmpty : Bool {
+  var isEmpty: Bool {
     return valueStore.isEmpty && trieStore.isEmpty
     // valueStore.isEmtpy is obviously necessary
     // then valueStore.isEmtpy is obviously sufficiant,
     // but not necessary when empty subtries are possible.
   }
-
 }
 
 extension TrieStore where Leap == Int, Value == Int {
-  func candidates(from path:[Int], x:Int = -1) -> Set<Int>? {
+  func candidates(from path: [Int], x: Int = -1) -> Set<Int>? {
 
 
     /*
@@ -170,7 +171,7 @@ extension TrieStore where Leap == Int, Value == Int {
       // variable at end of path end of path
       // (*,[])
       return self.allValues
-      
+
       case (_, 0):
       // constant at end of path end of path
       // (a,[])
@@ -202,7 +203,7 @@ extension TrieStore where Leap == Int, Value == Int {
 
 extension TrieStore {
 
-  mutating func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value) {
+  mutating func insert(_ newMember: Value) -> (inserted: Bool, memberAfterInsert: Value) {
       return valueStore.insert(newMember)
   }
 
@@ -210,7 +211,7 @@ extension TrieStore {
       return valueStore.remove(member)
   }
 
-  subscript(key:Leap) -> Self? {
+  subscript(key: Leap) -> Self? {
       get { return trieStore[key] }
 
       /// setter MUST NOT store an empty trie
@@ -219,24 +220,24 @@ extension TrieStore {
       }
   }
 
-  var values : Set<Value> {
+  var values: Set<Value> {
       return self.valueStore
   }
 
 
   /// Complexity : O(n)
-  var allValues : Set<Value> {
+  var allValues: Set<Value> {
     return self.valueStore.union (
       trieStore.values.flatMap { $0.allValues }
     )
   }
-  
 
-  var leaps : Set<Leap> {
+
+  var leaps: Set<Leap> {
     return Set(self.trieStore.keys)
   }
 
-  var tries : [Self] {
+  var tries: [Self] {
       let ts = trieStore.values
       return Array(ts)
   }
@@ -280,6 +281,25 @@ final class TrieClass<K: Hashable, V: Hashable> : TrieStore {
 //             }
 //     }
 // }
+
+extension TrieStore {
+  /// values asterisk must be different from all other leap values,
+  /// e.g. Int == Leap => asterisk must not conflict with positions
+  func unifiables(path: [Leap], asterisk: Leap) -> Set<Value>? {
+    guard let (head, tail) = path.decomposing, head != asterisk else {
+      return allValues
+    }
+
+    guard let subtrie = self[head] else {
+      return self[asterisk]?.allValues
+    }
+
+
+
+    return nil
+  }
+
+}
 
 // func extractUnifiables<T:TrieType where T.Leap==SymHop<String>, T.Value:Hashable>(_ trie:T, path:[T.Leap]) -> Set<T.Value>? {
 //     guard let (head,tail) = path.decompose else {
