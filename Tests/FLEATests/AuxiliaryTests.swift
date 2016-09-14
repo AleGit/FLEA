@@ -1,42 +1,42 @@
 import XCTest
 @testable import FLEA
 
-public class AuxiliaryTests : FleaTestCase {
-  static var allTests : [(String, (AuxiliaryTests) -> () throws -> Void)] {
+public class AuxiliaryTests: FleaTestCase {
+  static var allTests: [(String, (AuxiliaryTests) -> () throws -> Void)] {
     return [
       ("testDecomposing", testDecomposing),
       ("testAllOneCount", testAllOneCount),
       ("testUppercased", testUppercased),
       ("testContains", testContains),
-      ("testIds",testIds)
+      ("testIds", testIds)
     ]
   }
 
   func testDecomposing() {
     Syslog.info { "*#* info *#*"}
-    let array = [11,12,13]
-    guard let (h1,t1) = array.decomposing else {
+    let array = [11, 12, 13]
+    guard let (h1, t1) = array.decomposing else {
       XCTFail(nok)
       return
     }
-    XCTAssertEqual(11,h1,nok)
-    guard let (h2,t2) = t1.decomposing else {
+    XCTAssertEqual(11, h1, nok)
+    guard let (h2, t2) = t1.decomposing else {
         XCTFail(nok)
         return
     }
-    XCTAssertEqual(12,h2,nok)
+    XCTAssertEqual(12, h2, nok)
 
-    guard let (h3,t3) = t2.decomposing else {
+    guard let (h3, t3) = t2.decomposing else {
         XCTFail(nok)
         return
     }
-    XCTAssertEqual(13,h3,nok)
+    XCTAssertEqual(13, h3, nok)
 
-    XCTAssertNil(t3.decomposing,nok)
+    XCTAssertNil(t3.decomposing, nok)
   }
 
   func testAllOneCount() {
-    let array = [2,3,5,7,11,13]
+    let array = [2, 3, 5, 7, 11, 13]
 
     var checks = 0
     XCTAssertFalse(array.all { 
@@ -99,7 +99,7 @@ public class AuxiliaryTests : FleaTestCase {
     XCTAssertTrue(ü.isUppercased(at:ü.index(ü.startIndex, offsetBy:2)))
     XCTAssertFalse(ü.isUppercased(at:ü.index(before:ü.endIndex)))
     
-    XCTAssertFalse(ä.isUppercased(at:ä.startIndex),nok)
+    XCTAssertFalse(ä.isUppercased(at:ä.startIndex), nok)
 
   }
 
@@ -137,21 +137,21 @@ public class AuxiliaryTests : FleaTestCase {
 
   func testIds() {
     let $ = "$"
-    XCTAssertEqual($,"$")
+    XCTAssertEqual($, "$")
     let a$ = "a$"
-    XCTAssertEqual(a$,"a$")
+    XCTAssertEqual(a$, "a$")
     // let $a = "$a" // error: expected numeric value following '$'
     // XCTAssertEqual($a,"$a")
     let a$a = "a$a"
-    XCTAssertEqual(a$a,"a$a")
+    XCTAssertEqual(a$a, "a$a")
 
     let € = "?"
-    XCTAssertEqual(€,"?")
+    XCTAssertEqual(€, "?")
     let a€ = "?"
-    XCTAssertEqual(a€,"?")
+    XCTAssertEqual(a€, "?")
     let €a = "?"
-    XCTAssertEqual(€a,"?")
+    XCTAssertEqual(€a, "?")
     let a€a = "?"
-    XCTAssertEqual(a€a,"?")
+    XCTAssertEqual(a€a, "?")
   }
 }
