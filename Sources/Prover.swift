@@ -38,7 +38,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
     /// map literal paths to clauses
     var literalsTrie = TrieClass<Int,Int>()
 
-    /// map *term_t* literals to clauses 
+    /// map *term_t* literals to clauses
     var literal2clauses = Dictionary<term_t, Set<Int>>()
 
     /// map clausses to *term_t* literals
@@ -50,17 +50,17 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
     var context = Yices.Context()
     var yTuples = Dictionary<Int,(term_t,[term_t],Int)>()
-    
+
 
     /// initialize the prover with a problem, i.e.
     /// - read all the clauses from the file
     /// - read all the includes from the file
     ///   but do not read the clauses from the includes
-    /// - create an (empty) index structure 
+    /// - create an (empty) index structure
     ///   for selected literals of processed clauses
     /// - create an (empty) index structure
     ///   for processed clauses
-    /// - create a mapping from names to clauses (1:n) where n >=1 
+    /// - create a mapping from names to clauses (1:n) where n >=1
     /// - create a mapping from roles to clauses (1:n) where n >= 0
     init?(problem name:String) {
         print("Hu?")
@@ -78,8 +78,8 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
     /* *** postpone until after talk *** */
     func collect() {
-        for (index,element) in clauses.enumerated() {
-            let (name,role,node) = element
+        for (index, element) in clauses.enumerated() {
+            let (name, role, node) = element
 
             names.insert(index, at:name.characters)
             if roles[role]?.insert(index) == nil {
@@ -104,13 +104,13 @@ where N:SymbolStringTyped, N.Symbol == Int {
         let endtime = AbsoluteTimeGetCurrent() + timeout
         Syslog.info { "timeaout after \(timeout) seconds." }
 
-        let (result,runtimes) = utileMeasure {
+        let (result, runtimes) = utileMeasure {
             () -> Bool? in
-            while processed.count < clauses.count 
+            while processed.count < clauses.count
             {
-                guard AbsoluteTimeGetCurrent() < endtime else { 
+                guard AbsoluteTimeGetCurrent() < endtime else {
                     // Don't know (timeout)
-                    return nil 
+                    return nil
                 }
 
                 let index = selectClause()
@@ -126,13 +126,13 @@ where N:SymbolStringTyped, N.Symbol == Int {
         return result
     }
 
-    func selectLiteral(with model: Yices.Model, yicesLiterals:[term_t]) -> Int {
+    func selectLiteral(with model: Yices.Model, yicesLiterals: [term_t]) -> Int {
         for (literalIndex, yicesLiteral) in yicesLiterals.enumerated() {
             if model.implies(t:yicesLiteral) {
                 return literalIndex
             }
         }
-        assert(false,"\(#function) model implies none of the literals.")
+        assert(false, "\(#function) model implies none of the literals.")
         return -1
     }
 
@@ -175,24 +175,24 @@ where N:SymbolStringTyped, N.Symbol == Int {
             return true
         }
 
-        guard context.insure(clause:yicesClause), 
+        guard context.insure(clause:yicesClause),
         let model = Yices.Model(context:context) else {
             // not satisfaible, no model
             return false
         }
-        
+
         reselectLiterals(with:model)
 
         indicate(clause:index, yicesLiterals:yicesLiterals)
-        
+
         let selected = selectLiteral(with:model, yicesLiterals:yicesLiterals)
         let tptpLiteral = tptpClause.nodes![selected]
 
         yTuples[index] = (yicesClause,yicesLiterals,selected)
-        
+
         Syslog.debug { "\(index).\(selected) '\(tptpClause)' activated."}
-        
-        let (leafPaths,negatedPaths) = tptpLiteral.leafPathsPair
+
+        let (leafPaths, negatedPaths) = tptpLiteral.leafPathsPair
 
         // search clashing selected literals
 
@@ -206,7 +206,19 @@ where N:SymbolStringTyped, N.Symbol == Int {
            candidates.formIntersection(cs)
        }
 
-       for candidate in candidates {
+
+    defer {
+        for path in leafPaths {
+           literalsTrie.insert(index, at:path)
+       }
+    }
+       guard let unifiables = literalsTrie.unifiables(paths:negatedPaths, wildcard: -1) else {
+           return true
+       }
+
+       assert (unifiables.count >= candidates.count)
+
+       for candidate in unifiables {
            let (_,_,candidateClause) = clauses[candidate]
 
            let (_,_,selectedCandidateLiteralIndex) = yTuples[candidate]!
@@ -218,28 +230,26 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
            if let mgu = (a =?= b) {
 
-               for clause in [tptpClause,candidateClause] {
-                   clauses.append(("",.unknown,clause * mgu))
+               for clause in [tptpClause, candidateClause] {
+                   clauses.append(("", .unknown, clause * mgu))
                }
            }
 
        }
 
-       for path in leafPaths {
-           literalsTrie.insert(index, at:path)
-       }
+
 
 
 
 
         return true // still satisfiable
-        
-        
-      
+
+
+
 
     }
 
-    func isNotIndicated<S:Sequence>(yicesLiterals:S) -> Bool 
+    func isNotIndicated<S:Sequence>(yicesLiterals:S) -> Bool
     where S.Iterator.Element == term_t {
         var candidates = processed.subtracting(ignored)
         for yicesLiteral in Set(yicesLiterals) {
@@ -248,14 +258,14 @@ where N:SymbolStringTyped, N.Symbol == Int {
                 return true
             }
             candidates.formIntersection(s)
-            
+
             if candidates.isEmpty { return true }
         }
 
         return false
     }
 
-    func indicate<S:Sequence>(clause index: Int, yicesLiterals: S) 
+    func indicate<S:Sequence>(clause index: Int, yicesLiterals: S)
      where S.Iterator.Element == term_t {
          for yicesLiteral in yicesLiterals {
              if literal2clauses[yicesLiteral]?.insert(index) == nil {

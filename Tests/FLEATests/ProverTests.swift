@@ -21,7 +21,7 @@ public class ProverTests : YicesTestCase {
     static var symbols = StringIntegerTable<S>()
     static var pool = WeakSet<N>()
     var folks = WeakSet<N>()
-    
+
     var symbol : S = N.symbolize(string:Tptp.wildcard, type:.variable)
     var nodes : [N]? = nil
 
@@ -69,7 +69,7 @@ private typealias Prover = ΠρῶτοςProver<N>
       XCTAssertEqual(Set([3,4,8,9,11]), prover.sizes[2])
       XCTAssertEqual(Set([5,10]), prover.sizes[3])
   }
-  
+
   func testInitPUZ062c1() {
       let problem = "PUZ062-1"
       guard let prover = Prover(problem:problem) else {
@@ -101,22 +101,22 @@ private typealias Prover = ΠρῶτοςProver<N>
           return
       }
 
-      let (name,_) = prover.problem
+      let (name, _) = prover.problem
 
-      XCTAssertEqual(problem,name)
-      XCTAssertEqual(24, prover.clauses.count)
-      XCTAssertEqual(0, prover.includes.count)
+      XCTAssertEqual(problem, name, nok)
+      XCTAssertEqual(12, prover.clauses.count, nok)
+      XCTAssertEqual(0, prover.includes.count, nok)
 
-      XCTAssertTrue(prover.literalsTrie.isEmpty)
+      XCTAssertTrue(prover.literalsTrie.isEmpty, nok)
 
-      XCTAssertTrue(prover.literal2clauses.isEmpty)
+      XCTAssertTrue(prover.literal2clauses.isEmpty, nok)
 
       if let x = prover.run(timeout:30.0) {
           XCTAssertTrue(x)
       }
 
-      XCTAssertFalse(prover.context.isSatisfiable)
+      XCTAssertFalse(prover.context.isSatisfiable, nok)
 
-      XCTAssertFalse(prover.literal2clauses.isEmpty)
+      XCTAssertFalse(prover.literal2clauses.isEmpty, nok)
   }
 }
