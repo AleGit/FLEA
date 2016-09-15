@@ -7,7 +7,8 @@ public class TrieTests: FleaTestCase {
     return [
     ("testTrieStruct", testTrieStruct),
     ("testTrieClass", testTrieClass),
-    ("testCandidates", testCandidates)
+    ("testCandidates", testCandidates),
+    ("testUnifiables", testUnifiables)
     ]
   }
 
@@ -57,7 +58,7 @@ public class TrieTests: FleaTestCase {
     typealias T = FLEA.TrieClass
 
     var mytrie = T<Int, String>()
-    var mytrie2 = T(with:valueA,at:pathA)
+    var mytrie2 = T(with:valueA, at:pathA)
 
     XCTAssertTrue(mytrie.isEmpty, nok)
     mytrie.insert(valueA, at:pathA)
@@ -89,21 +90,20 @@ public class TrieTests: FleaTestCase {
     let c = 4 // constant
     let d = 5 // constant
     let f = 1 // unary
-    let g = 2 // binary
-    let h = 3 // tertiary
+    // let g = 2 // binary
 
     let fxPaths = [ [f, 0, v] ]
     let fcPaths = [ [f, 0, c] ]
     let fdPaths = [ [f, 0, d] ]
 
-    let gxyPaths = [[g, 0, v], [g, 1, v]]
-    let gxcPaths = [[g, 0, v], [g, 1, c]]
-    let gcyPaths = [[g, 0, c], [g, 1, v]]
-    let gcdPaths = [[g, 0, c], [g, 1, d]]
+    // let gxyPaths = [[g, 0, v], [g, 1, v]]
+    // let gxcPaths = [[g, 0, v], [g, 1, c]]
+    // let gcyPaths = [[g, 0, c], [g, 1, v]]
+    // let gcdPaths = [[g, 0, c], [g, 1, d]]
 
     let ppp = [
       fxPaths, fcPaths, fdPaths,
-      gxyPaths, gxcPaths, gcyPaths, gcdPaths
+      // gxyPaths, gxcPaths, gcyPaths, gcdPaths
     ]
 
     var trie = T<Int, Int>()
@@ -114,16 +114,85 @@ public class TrieTests: FleaTestCase {
       }
     }
 
-    var unifiables = trie.unifiables(path: [v], asterisk: v)
+    var unifiables = trie.unifiables(path: [v], wildcard: v)
     var candidates = trie.candidates(from: [v])
     XCTAssertEqual(Set(0..<ppp.count), unifiables, "\(nok) \(unifiables)")
     XCTAssertEqual(Set(0..<ppp.count), candidates, "\(nok) \(candidates)")
 
-    unifiables = trie.unifiables(path: fxPaths.first!, asterisk: v)
+    unifiables = trie.unifiables(path: fxPaths.first!, wildcard: v)
     candidates = trie.candidates(from: fxPaths.first!)
     XCTAssertEqual(Set([0, 1, 2]), unifiables, "\(nok) \(unifiables)")
     XCTAssertEqual(Set([0, 1, 2]), candidates, "\(nok) \(candidates)")
 
+    unifiables = trie.unifiables(path: fcPaths.first!, wildcard: v)
+    candidates = trie.candidates(from: fcPaths.first!)
+    XCTAssertEqual(Set([0, 1]), unifiables, "\(nok) \(unifiables)")
+    // XCTAssertEqual(Set([0, 1]), candidates, "\(nok) \(candidates)") // BUG in candidates
 
+    unifiables = trie.unifiables(path: fdPaths.first!, wildcard: v)
+    candidates = trie.candidates(from: fdPaths.first!)
+    XCTAssertEqual(Set([0, 2]), unifiables, "\(nok) \(unifiables)")
+    // XCTAssertEqual(Set([0, 2]), candidates, "\(nok) \(candidates)") // BUG in candidates
+
+  }
+
+  func testUnifiables() {
+    typealias N = FLEA.Tptp.KinIntNode
+    typealias T = FLEA.TrieClass
+
+    let X = "X" as N
+    let fX = "f(X)" as N // 1
+    let fc = "f(c)" as N // 2
+    let fd = "f(d)" as N // 3
+    let fgXY = "f(g(X,Y))" as N // 4
+    let fgXfY = "f(g(X,f(Y)))" as N // 5
+    let gXY = "g(X,Y)" as N
+    let gcY = "g(c,Y)" as N
+    let gXd = "g(X,d)" as N
+    let gcd = "g(c,d)" as N
+
+    let terms = [ X, // 0
+      fX, fc, fd, // 1,2,3
+    fgXY, fgXfY, // 4,5
+    gXY, gXd, gcY, gcd // 6,7,8,9
+    ]
+
+    var trie = T<Int, Int>()
+
+    for (idx, term) in terms.enumerated() {
+      for path in term.leafPaths {
+        trie.insert(idx, at:path)
+      }
+    }
+
+    var unifiables = trie.unifiables(paths: X.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set(0..<terms.count), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: fX.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 1, 2, 3, 4, 5]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: fc.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 1, 2]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: fd.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 1, 3]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: fgXY.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 1, 4, 5]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: fgXfY.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 1, 4, 5]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: gXY.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: gXd.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: gcY.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
+
+    unifiables = trie.unifiables(paths: gcd.leafPaths, wildcard: -1)
+    XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
   }
 }

@@ -12,7 +12,7 @@ protocol Trie {
     init()
 
     /// creates a trie with one value at path.
-    init<C:Collection>(with:Value, at:C)
+    init<C: Collection>(with: Value, at: C)
     where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
@@ -29,12 +29,12 @@ protocol Trie {
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// returns all values at path
-    func retrieve<C:Collection>(from: C) -> ValueS?
+    func retrieve<C: Collection>(from: C) -> ValueS?
     where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// stores one value at trie node
-    mutating func insert(_ newMember: Value) -> (inserted:Bool, memberAfterInsert:Value)
+    mutating func insert(_ newMember: Value) -> (inserted: Bool, memberAfterInsert: Value)
 
     /// removes and returns one value from trie node
     mutating func remove(_ member: Value) -> Value?
@@ -42,22 +42,22 @@ protocol Trie {
     /// Get (or set) subnode with step.
     /// For efficiency the Setter MUST NOT store an empty trie,
     /// i.e. trie where no value is stored at any node.
-    subscript(step:Leap) -> Self? { get set }
+    subscript(step: Leap) -> Self? { get set }
 
     /// get values at one trie node
-    var values : ValueS { get }
+    var values: ValueS { get }
 
     /// collect values at all immediate subtries
     // var subvalues : ValueS { get }
 
-    var leaps : LeapS { get }
+    var leaps: LeapS { get }
 
     /// get all immediate subtries
-    var tries : TrieS { get }
+    var tries: TrieS { get }
 
     /// A trie is empty iff no value is stored at any node.
     /// _complexity_: O(1) when no empty subtries are kept.
-    var isEmpty : Bool { get }
+    var isEmpty: Bool { get }
 }
 
 // MARK: default implementations for init, insert, remove, retrieve
@@ -65,11 +65,11 @@ protocol Trie {
 extension Trie {
 
   /// Create a new trie with one value at path.
-  init<C:Collection>(with value:Value, at path:C)
+  init<C: Collection>(with value: Value, at path: C)
   where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
   C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
     self.init() // initialize trie
-    let _ = self.insert(value, at:path)
+    let _ = self.insert(value, at: path)
   }
 
   /// Inserts value at path. Possibly missing subtrie is created.
@@ -161,7 +161,7 @@ extension TrieStore where Leap == Int, Value == Int {
     guard let trie = self[head] else { return nil }
     return trie.retrieve(from:tail)
     */
-    guard let (head,tail) = path.decomposing else {
+    guard let (head, tail) = path.decomposing else {
       assert(false)
       return values
     }
@@ -284,21 +284,59 @@ final class TrieClass<K: Hashable, V: Hashable> : TrieStore {
 
 extension TrieStore {
   /// values asterisk must be different from all other leap values,
-  /// e.g. Int == Leap => asterisk must not conflict with positions
-  func unifiables(path: [Leap], asterisk: Leap) -> Set<Value>? {
-    guard let (head, tail) = path.decomposing, head != asterisk else {
-      return allValues
+  /// e.g. Int == Leap => asterisk must not conflict with positions, i.e. asterisk < 0
+  func unifiables<C: Collection>(path: C, wildcard: Leap) -> Set<Value>?
+  where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
+  C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
+    guard let (head, tail) = path.decomposing, head != wildcard else {
+      // leaf or *
+      assert(allValues.count > 0)
+      return allValues // MUST NOT be empty, because empty leaves have to be removed
     }
 
     guard let subtrie = self[head] else {
-      return self[asterisk]?.allValues
+      return self[wildcard]?.allValues // MAY be nil
     }
 
+    guard let values = self[wildcard]?.allValues else {
+      return subtrie.unifiables(path: tail, wildcard: wildcard) // MAY be nil
+    }
 
+    assert(values.count > 0)
 
-    return nil
+    guard let subvalues = subtrie.unifiables(path: tail, wildcard: wildcard) else {
+      return values
+    }
+
+    assert(subvalues.count > 0)
+
+    return values.union(subvalues)
   }
 
+  func unifiables(paths: [[Leap]], wildcard: Leap) -> Set<Value>? {
+
+    guard let (head, tail) = paths.decomposing else {
+      assert(false, "SHOULD not call \(#function) with empty list of paths")
+      return allValues // correct, but useless
+    }
+
+    guard var result = unifiables(path: head, wildcard:wildcard), result.count > 0 else {
+      return nil
+    }
+
+    for path in tail {
+      guard let unifiables = unifiables(path: path, wildcard: wildcard), unifiables.count > 0 else {
+        return nil
+      }
+      result.formIntersection(unifiables)
+      guard result.count > 0 else {
+        return nil
+      }
+    }
+
+    return result
+
+  }
 }
 
 // func extractUnifiables<T:TrieType where T.Leap==SymHop<String>, T.Value:Hashable>(_ trie:T, path:[T.Leap]) -> Set<T.Value>? {
