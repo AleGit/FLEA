@@ -1,5 +1,6 @@
 import Foundation
 
+// MARK: - a generic trie protocol
 
 protocol Trie {
     associatedtype Leap
@@ -126,9 +127,7 @@ where T.Value:Hashable, T.Leap:Hashable, T.ValueS == Set<T.Value>, T.LeapS == Se
   return true
 }
 
-// MARK: a trie with hashable leaps and values
-
-
+// MARK: - trie with hashable leaps and values
 
 protocol TrieStore: Trie, Equatable {
   associatedtype Leap : Hashable
@@ -151,16 +150,9 @@ extension TrieStore {
 }
 
 extension TrieStore where Leap == Int, Value == Int {
+  @available(*, deprecated, message: "Use `unifiables` instead!")
+
   func candidates(from path: [Int], x: Int = -1) -> Set<Int>? {
-
-
-    /*
-    guard let (head,tail) = path.decomposing else {
-      return values
-    }
-    guard let trie = self[head] else { return nil }
-    return trie.retrieve(from:tail)
-    */
     guard let (head, tail) = path.decomposing else {
       assert(false)
       return values
@@ -243,45 +235,6 @@ extension TrieStore {
   }
 }
 
-// MARK: concrete value trie type
-
-struct TrieStruct<K: Hashable, V: Hashable> : TrieStore {
-  typealias Key = K
-  typealias Value = V
-  var trieStore = [Key: TrieStruct<Key, Value>]()
-  var valueStore = Set<Value>()
-}
-
-// MARK: concrete reference trie type
-
-final class TrieClass<K: Hashable, V: Hashable> : TrieStore {
-  typealias Key = K
-  typealias Value = V
-  var trieStore = [Key: TrieClass<Key, Value>]()
-  var valueStore = Set<Value>()
-}
-
-// extension Trie where Value==Int {
-//     typealias LeapPath = [Leap]
-//
-//     mutating func fill<N:Node, R:Sequence, S:Sequence where
-//         R.Iterator.Element == N,
-//         S.Iterator.Element == LeapPath>(_ nodes:R, paths:(N) -> S ) {
-//             for (index,node) in nodes.enumerated() {
-//                 for path in paths(node) {
-//                     self.insert(path, value:index)
-//                 }
-//             }
-//     }
-//
-//     mutating func fill<N:Node, R:Sequence where
-//         R.Iterator.Element == N>(_ nodes:R, path:(N) -> LeapPath) {
-//             for (index,node) in nodes.enumerated() {
-//                 self.insert(path(node), value:index)
-//             }
-//     }
-// }
-
 extension TrieStore {
   /// values asterisk must be different from all other leap values,
   /// e.g. Int == Leap => asterisk must not conflict with positions, i.e. asterisk < 0
@@ -339,86 +292,22 @@ extension TrieStore {
   }
 }
 
-// func extractUnifiables<T:TrieType where T.Leap==SymHop<String>, T.Value:Hashable>(_ trie:T, path:[T.Leap]) -> Set<T.Value>? {
-//     guard let (head,tail) = path.decompose else {
-//         return trie.payload
-//     }
-//
-//     switch head {
-//     case .hop(_):
-//         guard let subtrie = trie[head] else { return nil }
-//         return extractUnifiables(subtrie, path:tail)
-//     case .symbol("*"):
-//         // collect everything
-//         return Set(trie.tries.flatMap { $0.payload })
-//
-//     default:
-//         // collect variable and exeact match
-//
-//         let variables = trie[.symbol("*")]?.payload
-//
-//         guard let exactly = trie[head] else {
-//             return variables
-//         }
-//
-//         guard var payload = extractUnifiables(exactly, path:tail) else {
-//             return variables
-//         }
-//
-//
-//         if variables != nil {
-//             payload.formUnion(variables!)
-//         }
-//         return payload
-//
-//     }
-// }
+// MARK: - concrete trie implementations
 
+// MARK: concrete value trie type
 
-/// extract exact path matches
-// func extractVariants<T:TrieType where T.Leap==SymHop<String>, T.Value:Hashable>(_ trie:T, path:[T.Leap]) -> Set<T.Value>? {
-//     guard let (head,tail) = path.decompose else {
-//         return trie.payload
-//     }
-//
-//     guard let subtrie = trie[head] else { return nil }
-//
-//     return extractVariants(subtrie, path:tail)
-// }
+struct TrieStruct<K: Hashable, V: Hashable> : TrieStore {
+  typealias Key = K
+  typealias Value = V
+  var trieStore = [Key: TrieStruct<Key, Value>]()
+  var valueStore = Set<Value>()
+}
 
-// private func candidates<T:TrieType, N:Node where T.Leap==SymHop<String>, T.Value:Hashable, N.Symbol==String>(
-//     _ indexed:T,
-//     queryTerm:N,
-//     extract:(T, path:[T.Leap]) -> Set<T.Value>?
-//
-//     ) -> Set<T.Value>? {
-//
-//     guard let (first,tail) = queryTerm.paths.decompose else { return nil }
-//
-//     guard var result = extract(indexed, path: first) else { return nil }
-//
-//     for path in tail {
-//         guard let next = extract(indexed, path:path) else { return nil }
-//         result.formIntersection(next)
-//     }
-//     return result
-// }
+// MARK: concrete reference trie type
 
-// func candidateComplementaries<T:TrieType, N:Node where T.Leap==SymHop<N.Symbol>, T.Value:Hashable, N.Symbol==String>(_ indexed:T, term:N) -> Set<T.Value>? {
-//     var queryTerm: N
-//     switch term.symbol {
-//     case "~":
-//         queryTerm = term.nodes!.first!
-//     case "!=":
-//         queryTerm = N(symbol: "=", nodes: term.nodes)
-//     case "=":
-//         queryTerm = N(symbol:"!=", nodes: term.nodes)
-//     default:
-//         queryTerm = N(symbol:"~", nodes: [term])
-//     }
-//     return candidates(indexed, queryTerm:queryTerm) { a,b in extractUnifiables(a,path:b) }
-// }
-
-// func candidateVariants<T:TrieType, N:Node where T.Leap==SymHop<String>, T.Value:Hashable, N.Symbol==String>(_ indexed:T, term:N) -> Set<T.Value>? {
-//     return candidates(indexed, queryTerm:term) { a,b in extractVariants(a,path:b) }
-// }
+final class TrieClass<K: Hashable, V: Hashable> : TrieStore {
+  typealias Key = K
+  typealias Value = V
+  var trieStore = [Key: TrieClass<Key, Value>]()
+  var valueStore = Set<Value>()
+}

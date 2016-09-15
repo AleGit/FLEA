@@ -7,7 +7,6 @@ public class TrieTests: FleaTestCase {
     return [
     ("testTrieStruct", testTrieStruct),
     ("testTrieClass", testTrieClass),
-    ("testCandidates", testCandidates),
     ("testUnifiables", testUnifiables)
     ]
   }
@@ -80,60 +79,6 @@ public class TrieTests: FleaTestCase {
     // remove value b from path b
     XCTAssertEqual(valueB, mytrie.remove(valueB, at:pathB), nok)
     XCTAssertTrue(mytrie.isEmpty, nok)
-  }
-
-  func testCandidates() {
-    typealias T = FLEA.TrieClass
-
-    let v = -1 // variable *
-
-    let c = 4 // constant
-    let d = 5 // constant
-    let f = 1 // unary
-    // let g = 2 // binary
-
-    let fxPaths = [ [f, 0, v] ]
-    let fcPaths = [ [f, 0, c] ]
-    let fdPaths = [ [f, 0, d] ]
-
-    // let gxyPaths = [[g, 0, v], [g, 1, v]]
-    // let gxcPaths = [[g, 0, v], [g, 1, c]]
-    // let gcyPaths = [[g, 0, c], [g, 1, v]]
-    // let gcdPaths = [[g, 0, c], [g, 1, d]]
-
-    let ppp = [
-      fxPaths, fcPaths, fdPaths,
-      // gxyPaths, gxcPaths, gcyPaths, gcdPaths
-    ]
-
-    var trie = T<Int, Int>()
-
-    for (idx, paths) in ppp.enumerated() {
-      for path in paths {
-        trie.insert(idx, at:path)
-      }
-    }
-
-    var unifiables = trie.unifiables(path: [v], wildcard: v)
-    var candidates = trie.candidates(from: [v])
-    XCTAssertEqual(Set(0..<ppp.count), unifiables, "\(nok) \(unifiables)")
-    XCTAssertEqual(Set(0..<ppp.count), candidates, "\(nok) \(candidates)")
-
-    unifiables = trie.unifiables(path: fxPaths.first!, wildcard: v)
-    candidates = trie.candidates(from: fxPaths.first!)
-    XCTAssertEqual(Set([0, 1, 2]), unifiables, "\(nok) \(unifiables)")
-    XCTAssertEqual(Set([0, 1, 2]), candidates, "\(nok) \(candidates)")
-
-    unifiables = trie.unifiables(path: fcPaths.first!, wildcard: v)
-    candidates = trie.candidates(from: fcPaths.first!)
-    XCTAssertEqual(Set([0, 1]), unifiables, "\(nok) \(unifiables)")
-    // XCTAssertEqual(Set([0, 1]), candidates, "\(nok) \(candidates)") // BUG in candidates
-
-    unifiables = trie.unifiables(path: fdPaths.first!, wildcard: v)
-    candidates = trie.candidates(from: fdPaths.first!)
-    XCTAssertEqual(Set([0, 2]), unifiables, "\(nok) \(unifiables)")
-    // XCTAssertEqual(Set([0, 2]), candidates, "\(nok) \(candidates)") // BUG in candidates
-
   }
 
   func testUnifiables() {
