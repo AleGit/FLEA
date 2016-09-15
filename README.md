@@ -1,12 +1,11 @@
-# FLEA *library* & *tests*
+# FLEA *library*, *tests, and binary*
 **F**irst order **L**ogic with **E**quality theorem **A**ttesting
 
-- *library still in development*
-- *see [FleaBite](https://AleGit/FleaBite) for an executable and some demos.*
+- *still in development*
 
 ### Platforms:
 - Mac (OS X El Capitan, macOS Sierra)
-- Linux 64-bit (Ubuntu 14.04, 15.10)
+- Linux 64-bit (Ubuntu 14.04, 15.10, 16.04)
 
 ### Installation
 
@@ -15,11 +14,11 @@
 $ yices -V
 Yices 2.4.2
 ```
-- Install [Swift 3 Preview 4](https://swift.org/download/) and check:
+- Install [Swift 3 Release](https://swift.org/download/) (15.10 binary on Ubuntu 16.04) and check:
 ```
 $ swift -version                  
 Apple Swift version 3.0 (swiftlang-800.0.41.2 clang-800.0.36) # Mac
-Swift version 3.0 (swift-3.0-PREVIEW-4)                       # Linux
+Swift version 3.0 (swift-3.0-RELEASE)                       # Linux
 
 $ xcode-select -pxcode-select -p          # Mac only
 /Applications/Xcode-beta.app/Contents/Developer
