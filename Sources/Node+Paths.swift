@@ -2,9 +2,9 @@ extension Node where Self:SymbolStringTyped {
   /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
-  var leafPaths : [[SymHop<Symbol>]] {
+  var leafPaths: [[SymHop<Symbol>]] {
     guard let nodes = self.nodes else {
-      return [[.symbol(Self.symbolize(string:Tptp.wildcard,type:.variable))]]
+      return [[.symbol(Self.symbolize(string:Tptp.wildcard, type:.variable))]]
     }
     guard nodes.count > 0 else {
       return [[.symbol(self.symbol)]]
@@ -14,9 +14,9 @@ extension Node where Self:SymbolStringTyped {
 
     var ps = [[SymHop<Symbol>]]()
     for (i,node) in nodes.enumerated() {
-      let hop : SymHop<Symbol> = SymHop.hop(i)
+      let hop: SymHop<Symbol> = SymHop.hop(i)
       for path in node.leafPaths {
-        ps.append([sym,hop] + path)
+        ps.append([sym, hop] + path)
       }
     }
     return ps
@@ -27,7 +27,7 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
   /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
-  var leafPaths : [[Int]] {
+  var leafPaths: [[Int]] {
     guard let nodes = self.nodes else {
       // let symbol = Self.symbolize(string:Tptp.wildcard,type:.variable)
       // assert(symbol == 0)
@@ -39,21 +39,21 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
     }
 
     var ps = [[Int]]()
-    for (hop,node) in nodes.enumerated() {
+    for (hop, node) in nodes.enumerated() {
       for path in node.leafPaths {
-        ps.append([self.symbol,hop] + path)
+        ps.append([self.symbol, hop] + path)
       }
     }
     return ps
   }
 
 
-  var leafPathsPair : ([[Int]],[[Int]]) {
+  var leafPathsPair: ([[Int]],[[Int]]) {
     let paths = leafPaths
-    
-    let negated : [[Int]]
-    let (_,type) = self.symbolStringType
-   
+
+    let negated: [[Int]]
+    let (_, type) = self.symbolStringType
+
     switch type {
 
       case .negation:
@@ -63,14 +63,14 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
       case .equation:
         let symbol = Self.symbolize(string:"!=", type:.inequation)
         negated = paths.map { [symbol] + $0.suffix(from:1) }
-          
+
       case .inequation:
         let symbol = Self.symbolize(string:"=", type:.equation)
         negated = leafPaths.map { [symbol] + $0.suffix(from:1)}
 
       case .predicate:
-        let symbol = Self.symbolize(string:"~",type:.negation)
-        negated = paths.map { [symbol,0] + $0 }
+        let symbol = Self.symbolize(string:"~", type:.negation)
+        negated = paths.map { [symbol, 0] + $0 }
 
       default:
         Syslog.error { "\(self) with root type \(type) cannot be negated."}
@@ -80,14 +80,14 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
 
     Syslog.debug { "\(self), \(paths), \(negated)" }
 
-    return (paths,negated)
+    return (paths, negated)
 
   }
 
-  var preordering : [Int] {
+  var preordering: [Int] {
     guard let nodes = self.nodes else {
       // a variable leaf
-      return [Self.symbolize(string:Tptp.wildcard,type:.variable)]
+      return [Self.symbolize(string:Tptp.wildcard, type:.variable)]
     }
     guard nodes.count > 0 else {
       // a constant (function) leaf
@@ -104,10 +104,10 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
 
 extension Node where Self:SymbolStringTyped {
   /// The list of symbols in the node tree in depth-first traversal.
-  var preordering : [Symbol] {
+  var preordering: [Symbol] {
     guard let nodes = self.nodes else {
       // a variable leaf
-      return [Self.symbolize(string:Tptp.wildcard,type:.variable)]
+      return [Self.symbolize(string:Tptp.wildcard, type:.variable)]
     }
     guard nodes.count > 0 else {
       // a constant (function) leaf
