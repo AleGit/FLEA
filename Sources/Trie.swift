@@ -13,24 +13,24 @@ protocol Trie {
     init()
 
     /// creates a trie with one value at path.
-    init<C: Collection>(with: Value, at: C)
+    init<C: Collection>(with: Value, at path: C)
     where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// inserts one value at Leap path
-    mutating func insert<C: Collection>(_ newMember:Value, at: C)
+    mutating func insert<C: Collection>(_ newMember:Value, at path: C)
     -> (inserted: Bool, memberAfterInsert: Value)
     where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// removes and returns one value at Leap path,
     /// if path or value do not exist trie stays unchanged and nil is returned
-    mutating func remove<C: Collection>(_ value:Value, at: C) -> Value?
+    mutating func remove<C: Collection>(_ value:Value, at path: C) -> Value?
     where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
     /// returns all values at path
-    func retrieve<C: Collection>(from: C) -> ValueS?
+    func retrieve<C: Collection>(from path: C) -> ValueS?
     where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
     C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence
 
