@@ -86,8 +86,7 @@ extension Trie {
     if self[head] == nil {
       self[head] = Self(with: newMember, at: tail)
       return (true, newMember)
-    }
-    else {
+    } else {
       return self[head]!.insert(newMember, at: tail)
     }
   }
@@ -119,7 +118,7 @@ extension Trie {
   }
 }
 
-func ==<T:Trie>(lhs: T, rhs: T) -> Bool
+func ==<T: Trie>(lhs: T, rhs: T) -> Bool
 where T.Value:Hashable, T.Leap:Hashable, T.ValueS == Set<T.Value>, T.LeapS == Set<T.Leap> {
   guard lhs.values == rhs.values else { return false }
   guard lhs.leaps == rhs.leaps else { return false }
@@ -133,7 +132,7 @@ protocol TrieStore: Trie, Equatable {
   associatedtype Leap : Hashable
   associatedtype Value : Hashable
 
-  var trieStore: [Leap: Self]  { set get }
+  var trieStore: [Leap: Self] { set get }
   var valueStore: Set<Value> { set get }
 }
 
@@ -169,12 +168,12 @@ extension TrieStore where Leap == Int, Value == Int {
       // (a,[])
       return self[head]?.valueStore
 
-      case (_,_) where tail.count % 2 == 1:
+      case (_, _) where tail.count % 2 == 1:
       // (n,[X]) of (n,[f,0,X]) etc.
       guard let trie = self[head] else { return nil }
       return trie.candidates(from:Array(tail))
 
-      case (_,_) where tail.count % 2 == 0:
+      case (_, _) where tail.count % 2 == 0:
       guard var vs = self[x]?.allValues else {
         return self[head]?.candidates(from:Array(tail))
       }

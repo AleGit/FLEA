@@ -7,7 +7,7 @@ import XCTest
 public class ProverTests: YicesTestCase {
 
   /// Collect all tests by hand for Linux.
-  static var allTests: [(String, (ProverTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (ProverTests) -> () throws -> Void)] {
     return [
       ("testInitPUZ001c1", testInitPUZ001c1),
       ("testInitPUZ062c1", testInitPUZ062c1),
