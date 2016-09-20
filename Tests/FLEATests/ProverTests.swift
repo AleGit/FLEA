@@ -31,7 +31,7 @@ public class ProverTests: YicesTestCase {
   }
 
 
-private typealias Prover = ΠρῶτοςProver<N>
+private typealias Prover = ΠρῶτοςProver<TestNode>
 
   func testInitPUZ001c1() {
       let problem = "PUZ001-1"
