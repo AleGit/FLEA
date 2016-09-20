@@ -198,13 +198,6 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
         var candidates = processed.subtracting(ignored) // all
 
-       for path in negatedPaths {
-           guard let cs = literalsTrie.candidates(from:path) else {
-               candidates = Set<Int>()
-               continue;
-           }
-           candidates.formIntersection(cs)
-       }
 
 
     defer {
@@ -215,8 +208,6 @@ where N:SymbolStringTyped, N.Symbol == Int {
        guard let unifiables = literalsTrie.unifiables(paths:negatedPaths, wildcard: -1) else {
            return true
        }
-
-       assert (unifiables.count >= candidates.count)
 
        for candidate in unifiables {
            let (_,_,candidateClause) = clauses[candidate]

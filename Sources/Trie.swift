@@ -148,50 +148,6 @@ extension TrieStore {
   }
 }
 
-extension TrieStore where Leap == Int, Value == Int {
-  @available(*, deprecated, message: "Use `unifiables` instead!")
-
-  func candidates(from path: [Int], x: Int = -1) -> Set<Int>? {
-    guard let (head, tail) = path.decomposing else {
-      assert(false)
-      return values
-    }
-
-    switch (head, tail.count) {
-      case (x, 0):
-      // variable at end of path end of path
-      // (*,[])
-      return self.allValues
-
-      case (_, 0):
-      // constant at end of path end of path
-      // (a,[])
-      return self[head]?.valueStore
-
-      case (_, _) where tail.count % 2 == 1:
-      // (n,[X]) of (n,[f,0,X]) etc.
-      guard let trie = self[head] else { return nil }
-      return trie.candidates(from:Array(tail))
-
-      case (_, _) where tail.count % 2 == 0:
-      guard var vs = self[x]?.allValues else {
-        return self[head]?.candidates(from:Array(tail))
-      }
-      guard let cs = self[head]?.candidates(from:Array(tail)) else {
-        return vs
-      }
-      vs.formUnion(cs)
-      return vs
-
-      default:
-      assert(false)
-      return nil
-    }
-
-  }
-
-}
-
 extension TrieStore {
 
   mutating func insert(_ newMember: Value) -> (inserted: Bool, memberAfterInsert: Value) {
