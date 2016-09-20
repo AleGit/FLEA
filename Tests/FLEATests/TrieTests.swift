@@ -81,6 +81,7 @@ public class TrieTests: FleaTestCase {
     XCTAssertTrue(mytrie.isEmpty, nok)
   }
 
+  // swiftlint:disable function_body_length
   func testUnifiables() {
     typealias N = FLEA.Tptp.KinIntNode
     typealias T = FLEA.TrieClass
