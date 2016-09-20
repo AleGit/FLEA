@@ -305,18 +305,28 @@ extension TrieStore {
     }
 
     guard var result = unifiables(path: first, wildcard:wildcard), result.count > 0 else {
+      // ensured: nothing matches the first path
       return nil
     }
 
     for path in reminder {
       guard let unifiables = unifiables(path: path, wildcard: wildcard), unifiables.count > 0 else {
+        // ensured: nothing matches the actual path
         return nil
       }
+      // ensured: all paths had matches so far
+
       result.formIntersection(unifiables)
       guard result.count > 0 else {
+        // ensured: intersection of matches is already empty
         return nil
       }
+
+      // ensured: intersection of matches so far is still not empty
     }
+
+    // ensured: all paths had matches
+    // ensured: intersection of matches is not empty
 
     return result
 
