@@ -143,4 +143,29 @@ public class TrieTests: FleaTestCase {
     unifiables = trie.unifiables(paths: gcd.leafPaths, wildcard: -1)
     XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
   }
+
+  func testPrefixes() {
+    typealias T = FLEA.TrieClass
+    var trie = T<Character, String>()
+
+    let all = Set([
+      "a", "b", "aa", "ab", "ba", "ba", "*"
+    ])
+
+    for s in all {
+      trie.insert(s, at:s.characters)
+    }
+
+    var matches = trie.unifiables(paths:[ ["a"]  ], wildcard:"*")
+    XCTAssertEqual(Set(["a", "aa", "ab", "*"]), matches, "\(nok) \(matches)")
+
+    matches = trie.unifiables(paths:[ ["*"]  ], wildcard:"*")
+    XCTAssertEqual(all, matches, "\(nok) \(matches)")
+
+    matches = trie.unifiables(paths:[ ["a", "*"]  ], wildcard:"*")
+    XCTAssertEqual(Set(["a", "aa", "ab", "*"]), matches, "\(nok) \(matches)")
+
+
+
+  }
 }
