@@ -95,11 +95,14 @@ public class TrieTests: FleaTestCase {
     let gcY = "g(c,Y)" as N
     let gXd = "g(X,d)" as N
     let gcd = "g(c,d)" as N
+    let gfXY = "g(f(X),Y)" as N
+    let gXfY = "g(X,f(Y))" as N
 
     let terms = [ X, // 0
       fX, fc, fd, // 1,2,3
     fgXY, fgXfY, // 4,5
-    gXY, gXd, gcY, gcd // 6,7,8,9
+    gXY, gXd, gcY, gcd, // 6,7,8,9
+    gfXY, gXfY // 10,11
     ]
 
     var trie = T<Int, Int>()
@@ -129,13 +132,13 @@ public class TrieTests: FleaTestCase {
     XCTAssertEqual(Set([0, 1, 4, 5]), unifiables, "\(nok) \(unifiables)")
 
     unifiables = trie.unifiables(paths: gXY.leafPaths, wildcard: -1)
-    XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
+    XCTAssertEqual(Set([0, 6, 7, 8, 9, 10, 11]), unifiables, "\(nok) \(unifiables)")
 
     unifiables = trie.unifiables(paths: gXd.leafPaths, wildcard: -1)
-    XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
+    XCTAssertEqual(Set([0, 6, 7, 8, 9, 10]), unifiables, "\(nok) \(unifiables)")
 
     unifiables = trie.unifiables(paths: gcY.leafPaths, wildcard: -1)
-    XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
+    XCTAssertEqual(Set([0, 6, 7, 8, 9, 11]), unifiables, "\(nok) \(unifiables)")
 
     unifiables = trie.unifiables(paths: gcd.leafPaths, wildcard: -1)
     XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
