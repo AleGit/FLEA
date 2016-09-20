@@ -96,49 +96,49 @@ public class URLTests: FleaTestCase {
     let url = URL(fileURLWithPath:"Problems/PUZ001-1.p")
 
 
-      XCTAssertTrue(Int.self == type(of:url.hashValue),nok)
-      XCTAssertTrue(URL?.self == type(of:url.baseURL),nok)
-      XCTAssertTrue(String?.self == type(of:url.fragment),nok)
-      XCTAssertTrue(String?.self == type(of:url.host),nok)
-      XCTAssertTrue(Bool.self == type(of:url.isFileURL),nok)
-      XCTAssertTrue(String?.self == type(of:url.password),nok)
-      XCTAssertTrue(Int?.self == type(of:url.port),nok)
-      XCTAssertTrue(String?.self == type(of:url.query),nok)
-      XCTAssertTrue(String.self == type(of:url.relativeString),nok)
-      XCTAssertTrue(String?.self == type(of:url.scheme),nok)
-      XCTAssertTrue(String?.self == type(of:url.user),nok)
+      XCTAssertTrue(Int.self == type(of:url.hashValue), nok)
+      XCTAssertTrue(URL?.self == type(of:url.baseURL), nok)
+      XCTAssertTrue(String?.self == type(of:url.fragment), nok)
+      XCTAssertTrue(String?.self == type(of:url.host), nok)
+      XCTAssertTrue(Bool.self == type(of:url.isFileURL), nok)
+      XCTAssertTrue(String?.self == type(of:url.password), nok)
+      XCTAssertTrue(Int?.self == type(of:url.port), nok)
+      XCTAssertTrue(String?.self == type(of:url.query), nok)
+      XCTAssertTrue(String.self == type(of:url.relativeString), nok)
+      XCTAssertTrue(String?.self == type(of:url.scheme), nok)
+      XCTAssertTrue(String?.self == type(of:url.user), nok)
 
       // (m.a) non-optional on macOS and linux
-      XCTAssertTrue(String.self == type(of:url.absoluteString),nok)
-      XCTAssertTrue(URL.self == type(of:url.absoluteURL),nok)
-      XCTAssertTrue(String.self == type(of:url.lastPathComponent),nok)
-      XCTAssertTrue(String.self == type(of:url.path),nok)
+      XCTAssertTrue(String.self == type(of:url.absoluteString), nok)
+      XCTAssertTrue(URL.self == type(of:url.absoluteURL), nok)
+      XCTAssertTrue(String.self == type(of:url.lastPathComponent), nok)
+      XCTAssertTrue(String.self == type(of:url.path), nok)
       XCTAssertTrue(
         [String].self == type(of:url.pathComponents),
         "\(nok) \(type(of:url.pathComponents))")
-      XCTAssertTrue(String.self == type(of:url.pathExtension),nok)
-      XCTAssertTrue(String.self == type(of:url.relativePath),nok)
+      XCTAssertTrue(String.self == type(of:url.pathExtension), nok)
+      XCTAssertTrue(String.self == type(of:url.relativePath), nok)
 
-      if #available(macOS 10.11,*) {
-        XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath),nok) // OSX >=10.11
+      if #available(macOS 10.11, *) {
+        XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath), nok) // OSX >=10.11
       }
 
       // (m.b) non-throwing on macOS and linux
-      XCTAssertTrue(URL.self == type(of:url.standardized),nok)
-      XCTAssertTrue(URL.self == type(of:url.standardizedFileURL),nok)
-      XCTAssertTrue(URL.self == type(of:url.deletingLastPathComponent()),nok)
-      XCTAssertTrue(URL.self == type(of:url.deletingPathExtension()),nok)
-      XCTAssertTrue(URL.self == type(of:url.resolvingSymlinksInPath()),nok)
+      XCTAssertTrue(URL.self == type(of:url.standardized), nok)
+      XCTAssertTrue(URL.self == type(of:url.standardizedFileURL), nok)
+      XCTAssertTrue(URL.self == type(of:url.deletingLastPathComponent()), nok)
+      XCTAssertTrue(URL.self == type(of:url.deletingPathExtension()), nok)
+      XCTAssertTrue(URL.self == type(of:url.resolvingSymlinksInPath()), nok)
 
       #if os(OSX)
 
       // (m.c) only on macOS
-      XCTAssertTrue(Bool?.self == type(of:(try? url.checkPromisedItemIsReachable())),nok)
-      XCTAssertTrue(Bool?.self == type(of:(try? url.checkResourceIsReachable())),nok)
+      XCTAssertTrue(Bool?.self == type(of:(try? url.checkPromisedItemIsReachable())), nok)
+      XCTAssertTrue(Bool?.self == type(of:(try? url.checkResourceIsReachable())), nok)
 
       #elseif os(Linux)
 
-      XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath),nok)
+      XCTAssertTrue(Bool.self == type(of:url.hasDirectoryPath), nok)
 
       #endif
   }

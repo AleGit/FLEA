@@ -13,7 +13,7 @@ extension Node where Self:SymbolStringTyped {
     let sym = SymHop.symbol(self.symbol)
 
     var ps = [[SymHop<Symbol>]]()
-    for (i,node) in nodes.enumerated() {
+    for (i, node) in nodes.enumerated() {
       let hop: SymHop<Symbol> = SymHop.hop(i)
       for path in node.leafPaths {
         ps.append([sym, hop] + path)
@@ -48,7 +48,7 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
   }
 
 
-  var leafPathsPair: ([[Int]],[[Int]]) {
+  var leafPathsPair: ([[Int]], [[Int]]) {
     let paths = leafPaths
 
     let negated: [[Int]]

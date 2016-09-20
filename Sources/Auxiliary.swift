@@ -1,13 +1,6 @@
 //  Copyright © 2016 Alexander Maringele. All rights reserved.
 
 import Foundation
-/*
-#if os(OSX)
-import Darwin
-#elseif os(Linux)
-import Glibc
-#endif
-*/
 
 extension Collection where Iterator.Element == SubSequence.Iterator.Element {
   /// Split a collection in a pair of its first element and the remaining elements.
@@ -40,11 +33,11 @@ extension Sequence {
 }
 
 /* postbone after talk */
-typealias MultiSet<T:Hashable> = Dictionary<T,Int>
+typealias MultiSet<T:Hashable> = Dictionary<T, Int>
 
 /* postbone after talk */
 extension Sequence where Iterator.Element : Hashable {
-  var multiSet : MultiSet<Iterator.Element> {
+  var multiSet: MultiSet<Iterator.Element> {
     var d = MultiSet<Iterator.Element>()
     for element in self {
       d[element] = (d[element] ?? 0) + 1
@@ -56,20 +49,23 @@ extension Sequence where Iterator.Element : Hashable {
 
 extension String {
   /// check if the string has an uppercase character at given index.
+  // swiftlint:disable variable_name
   func isUppercased(at: Index) -> Bool {
+    // swiftlint:enable variable_name
+
     let range = at..<self.index(after: at)
     return self.rangeOfCharacter(from: .uppercaseLetters, options: [], range: range) != nil
   }
 }
 
-extension String  {
+extension String {
   /// check if at least on member of a sequence is a substring of the string
-  func containsOne<S:Sequence>(_ strings:S) -> Bool 
+  func containsOne<S: Sequence>(_ strings:S) -> Bool
   where S.Iterator.Element == String {
     return strings.reduce(false) { $0 || self.contains($1) }
   }
   /// check if all members of a sequence are substrings of the string
-  func containsAll<S:Sequence>(_ strings:S) -> Bool 
+  func containsAll<S: Sequence>(_ strings:S) -> Bool
   where S.Iterator.Element == String {
     return strings.reduce(true) { $0 && self.contains($1) }
   }
@@ -77,15 +73,16 @@ extension String  {
 
 // MARK: - utile iterator and sequence /* ******************* */
 
-struct UtileIterator<S,T> : IteratorProtocol {
-    private var this : S?
-    private let step : (S) -> S?
-    private let data : (S) -> T
-    private let predicate : (S) -> Bool
+struct UtileIterator<S, T> : IteratorProtocol {
+    private var this: S?
+    private let step: (S) -> S?
+    private let data: (S) -> T
+    private let predicate: (S) -> Bool
 
-
-    /// a iterator may outlive its creator, hence the functions `step`, `predicate`, and `data` may escape their context.
-    init(first:S?, step:@escaping (S)->S?, where predicate:@escaping (S)->Bool = { _ in true }, data:@escaping (S)->T) {
+    /// a iterator may outlive its creator,
+    /// hence the functions `step`, `predicate`, and `data` may escape their context.
+    init(first: S?, step:@escaping (S) -> S?, where
+    predicate:@escaping (S) -> Bool = { _ in true }, data:@escaping (S) -> T) {
         self.this = first
         self.step = step
         self.data = data
@@ -105,21 +102,23 @@ struct UtileIterator<S,T> : IteratorProtocol {
     }
 }
 
-struct UtileSequence<S,T> : Sequence {
-    private let this : S?
-    private let step : (S) -> S?
-    private let predicate : (S) -> Bool
-    private let data : (S) -> T
+struct UtileSequence<S, T> : Sequence {
+    private let this: S?
+    private let step: (S) -> S?
+    private let predicate: (S) -> Bool
+    private let data: (S) -> T
 
-    /// a sequence may outlive its creator, hence the functions `step`, `predicate`, and `data` may escape their context.
-    init(first:S?, step:@escaping (S)->S?, where predicate: @escaping (S)->Bool = { _ in true }, data: @escaping (S)->T) {
+    /// a sequence may outlive its creator,
+    /// hence the functions `step`, `predicate`, and `data` may escape their context.
+    init(first: S?, step:@escaping (S) -> S?, where
+    predicate: @escaping (S) -> Bool = { _ in true }, data: @escaping (S) -> T) {
         self.this = first
         self.step = step
         self.predicate = predicate
         self.data = data
     }
 
-    func makeIterator() -> UtileIterator<S,T> {
+    func makeIterator() -> UtileIterator<S, T> {
         return UtileIterator(first: this, step: step, where:predicate, data: data)
     }
 
@@ -134,12 +133,12 @@ public typealias AbsoluteTime = Double
 /// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
 func AbsoluteTimeGetCurrent() -> AbsoluteTime {
   var atime = timeval()             // initialize C struct
-  let _ = gettimeofday(&atime,nil)  // will return 0
+  let _ = gettimeofday(&atime, nil)  // will return 0
   return AbsoluteTime(atime.tv_sec) // s + µs
   + AbsoluteTime(atime.tv_usec)/AbsoluteTime(1_000_000.0)
 }
 
-public typealias UtileTimes = (user:Double,system:Double,absolute:AbsoluteTime)
+public typealias UtileTimes = (user: Double, system: Double, absolute: AbsoluteTime)
 
 private func ticksPerSecond() -> Double {
   return Double(sysconf(Int32(_SC_CLK_TCK)))
@@ -157,14 +156,14 @@ private func UtileTimesGetCurrent() -> UtileTimes {
 }
 
 func loggingTime() -> String {
-  var t = time(nil) // : time_t 
+  var t = time(nil) // : time_t
   let tm = localtime(&t) // : struct tm *
   var s: Array<CChar> = Array(repeating: 0, count:64) // : char s[64];
-  strftime(&s, s.count, "%F %T %z", tm);
+  strftime(&s, s.count, "%F %T %z", tm)
   return String(cString:s)
 }
 
-private func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
+private func - (lhs: UtileTimes, rhs: UtileTimes) -> UtileTimes {
   return (
     user:lhs.user-rhs.user,
     system:lhs.system-rhs.system,
@@ -174,11 +173,11 @@ private func -(lhs:UtileTimes, rhs:UtileTimes) -> UtileTimes {
 
 /// Measure the absolute runtime of a code block.
 /// Usage: `let (result,runtime) = measure { *code to measure* }`
-public func utileMeasure<R>(f:()->R) -> (R, UtileTimes) {
+// swiftlint:disable variable_name
+public func utileMeasure<R>(f: () -> R) -> (R, UtileTimes) {
+// swiftlint:enable variable_name
   let start = UtileTimesGetCurrent()
   let result = f()
   let end = UtileTimesGetCurrent()
   return (result, end - start)
 }
-
-

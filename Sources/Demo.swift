@@ -1,4 +1,4 @@
-
+/// Demo
 public struct Demo {
   static let hwvProblem = "HWV134-1"
   static let cnfProblem = "PUZ001-1"
@@ -6,19 +6,19 @@ public struct Demo {
 
   static let line = Array(repeating:"=", count:80).joined(separator:"")
 
-  static var show : Bool = true
+  static var show: Bool = true
 
   static let demos = [
-  "cnf" : (Demo.Problem.parseCnf,"Parse \(cnfProblem) (cnf)"),
-  "fof" : (Demo.Problem.parseFof,"Parse \(fofProblem) (fof)"),
+  "cnf" : (Demo.Problem.parseCnf, "Parse \(cnfProblem) (cnf)"),
+  "fof" : (Demo.Problem.parseFof, "Parse \(fofProblem) (fof)"),
   // "hwv" : (Demo.Problem.hwv134cnf,"Parse \(hwvProblem) (expensive)"),
-  "simple" : (Demo.Problem.simpleNode,"Parse \(hwvProblem) with simple node(expensive)"),
-  "sharing" : (Demo.Problem.sharingNode,"Parse \(hwvProblem) with sharing node (expensive)"),
-  "smart" : (Demo.Problem.smartNode,"Parse \(hwvProblem) with smart node (expensive)"),
-  "Kin" : (Demo.Problem.kinNode,"Parse \(hwvProblem) with kin node (expensive)"),
-  "broken" : (Demo.Problem.broken,"Parse invalid file"),
+  "simple" : (Demo.Problem.simpleNode, "Parse \(hwvProblem) with simple node(expensive)"),
+  "sharing" : (Demo.Problem.sharingNode, "Parse \(hwvProblem) with sharing node (expensive)"),
+  "smart" : (Demo.Problem.smartNode, "Parse \(hwvProblem) with smart node (expensive)"),
+  "Kin" : (Demo.Problem.kinNode, "Parse \(hwvProblem) with kin node (expensive)"),
+  "broken" : (Demo.Problem.broken, "Parse invalid file"),
   "pool" : (Demo.sharing, "Node sharing"),
-  "mgu" : (Demo.Unification.demo,"Unfication")
+  "mgu" : (Demo.Unification.demo, "Unfication")
   ]
 
   public static func demo() -> Int? {
@@ -29,7 +29,7 @@ public struct Demo {
     guard names.count > 0 else {
       print(line)
       print("You've selected '--demo' with no list of demos.")
-      for (key,value) in demos {
+      for (key, value) in demos {
         print("   '\(key)' \tdescription:'\(value.1)")
 
       }
@@ -47,8 +47,8 @@ public struct Demo {
         continue
       }
       print("utileMeasure DEMO '\(n)'")
-      let (_,runtime) = utileMeasure(f:f)
-      print("RUNTIME OF DEMO '\(n)'",runtime)
+      let (_, runtime) = utileMeasure(f:f)
+      print("RUNTIME OF DEMO '\(n)'", runtime)
     }
     print(line)
     return names.count
@@ -71,7 +71,7 @@ extension Demo {
       let a = Tptp.DefaultNode(c: "a")
       let b = Tptp.DefaultNode(c: "a")
 
-      let fXY = Tptp.DefaultNode(f: "f", [X,Y])
+      let fXY = Tptp.DefaultNode(f: "f", [X, Y])
 
       let fYX = fXY * [X:Y, Y:X]
       let fYZ = fXY * [X:Y, Y:Z]
@@ -98,40 +98,42 @@ extension Demo {
 /// MARK: - Node
 
 extension Demo {
-  final class SimpleNode : Node {
-    var symbol = Tptp.Symbol("",.undefined)
-    var nodes : [Demo.SimpleNode]? = nil
+  final class SimpleNode: Node {
+    var symbol = Tptp.Symbol("", .undefined)
+    var nodes: [Demo.SimpleNode]? = nil
 
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.debugDescription
+    lazy var hashValue: Int = self.defaultHashValue
+    lazy var description: String = self.debugDescription
   }
 
-  final class SharingNode : Sharing, Node {
+  final class SharingNode: Sharing, Node {
     static var counter = 0
 
     static var pool = Set<Demo.SharingNode>()
 
-    var symbol = Tptp.Symbol("",.undefined)
-    var nodes : [Demo.SharingNode]? = nil
-    var c : Int = {
+    var symbol = Tptp.Symbol("", .undefined)
+    var nodes: [Demo.SharingNode]? = nil
+    // swiftlint:disable variable_name
+    var c: Int = {
       let a = SharingNode.counter
       SharingNode.counter += 1
       return a
     }()
+    // swiftlint:enable variable_name
 
     init() {
       print("\(#function)#\(self.c)")
     }
 
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.debugDescription
+    lazy var hashValue: Int = self.defaultHashValue
+    lazy var description: String = self.debugDescription
 
-    var debugDescription : String {
+    var debugDescription: String {
       guard let nodes = self.nodes?.map({$0.description}), nodes.count > 0
       else {
         return "\(self.symbol)'\(self.c)"
       }
-      let tuple = nodes.map{ $0 }.joined(separator:",")
+      let tuple = nodes.map { $0 }.joined(separator:",")
       return "\(self.symbol)'\(self.c)(\(tuple))"
     }
 
@@ -148,32 +150,32 @@ extension Demo {
 
 
     func fxy() -> N {
-      let X = N(variable:S("X",.variable))
-      let Y = N(variable:S("Y",.variable))
-      return N(symbol:S("f",.function(2)), nodes: [ X, Y ])
+      let X = N(variable: S("X", .variable))
+      let Y = N(variable: S("Y", .variable))
+      return N(symbol: S("f", .function(2)), nodes: [ X, Y ])
     }
 
     func pfxyz() -> N {
-      let Z = N(variable:S("Z",.variable))
+      let Z = N(variable: S("Z", .variable))
       let fXY = fxy()
-      return N(symbol:S("p",.predicate(2)), nodes: [fXY, Z])
+      return N(symbol: S("p", .predicate(2)), nodes: [fXY, Z])
 
     }
 
     print("Perfect sharing")
     print("Create 'p(f(X,Y),Z)'")
     let p  = pfxyz()
-    print("'p(f(X,Y),Z)':",p)
+    print("'p(f(X,Y),Z)':", p)
 
 
     print("Create 'f(X,Y)'")
     let f  = fxy()
-    print("'f(X,Y)':",f)
+    print("'f(X,Y)':", f)
 
     print("Perfect sharing")
     print("Create 'p(f(X,Y),Z)'")
     let q  = pfxyz()
-    print("'p(f(X,Y),Z)':",q)
+    print("'p(f(X,Y),Z)':", q)
 
 
     print("all nodes", N.pool)
@@ -185,7 +187,7 @@ extension Demo {
 
 
 
-private func demoShow<N:Node>(nodes:[N]) 
+private func demoShow<N: Node>(nodes:[N])
 where N:AnyObject, N:SymbolStringTyped {
   print("nodes:\(nodes).count=\(nodes.count)")
 
@@ -196,7 +198,7 @@ where N:AnyObject, N:SymbolStringTyped {
   }
 
   for (i, a) in nodes.enumerated() {
-    for (j,b) in nodes.enumerated().map({$0})[(i+1)..<nodes.count] {
+    for (j, b) in nodes.enumerated().map({$0})[(i+1)..<nodes.count] {
       guard a == b else { continue }
       let s = a === b ? "===" : ">-<"
       print("\(a) == \(b) : #\(i) \(s) #\(j)")
@@ -215,14 +217,14 @@ extension Demo {
       typealias NodeType = Tptp.DefaultNode
       let problem = cnfProblem
 
-      let inputs : [NodeType] = demoParse(problem:problem)
-      for (i,input) in inputs.enumerated() {
-        if show {print(i,input)}
+      let inputs: [NodeType] = demoParse(problem:problem)
+      for (i, input) in inputs.enumerated() {
+        if show {print(i, input)}
         guard input.variables.count > 0 else { continue }
         if show {print("⊥", input⊥)}
       }
 
-      if show {print("Node == \(String(reflecting:NodeType.self))")}
+      if show {print("Node == \(String(reflecting: NodeType.self))")}
       return inputs.count
     }
 
@@ -230,13 +232,13 @@ extension Demo {
       typealias NodeType = Tptp.DefaultNode
       let problem = fofProblem
 
-      let inputs : [NodeType] = demoParse(problem:problem)
+      let inputs: [NodeType] = demoParse(problem:problem)
       if show {
-        for (i,input) in inputs.enumerated() {
-          print(i,input.description)
+        for (i, input) in inputs.enumerated() {
+          print(i, input.description)
         }
 
-        print("Node == \(String(reflecting:NodeType.self))")
+        print("Node == \(String(reflecting: NodeType.self))")
       }
       return inputs.count
     }
@@ -245,12 +247,12 @@ extension Demo {
       typealias NodeType = Tptp.DefaultNode
       let problem = "Package.swift"
 
-      let inputs : [NodeType] = demoParse(problem:problem)
+      let inputs: [NodeType] = demoParse(problem:problem)
       if show {
-        for (i,input) in inputs.enumerated() {
-          print(i,input.description)
+        for (i, input) in inputs.enumerated() {
+          print(i, input.description)
         }
-        print("Node == \(String(reflecting:NodeType.self))")
+        print("Node == \(String(reflecting: NodeType.self))")
       }
       return inputs.count
     }
@@ -258,7 +260,7 @@ extension Demo {
     static func simpleNode() -> Int {
       typealias NodeType = Tptp.SimpleNode
 
-      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
@@ -266,15 +268,15 @@ extension Demo {
       if show {
         print("#1", inputs[0])
         print("#1", inputs[0].debugDescription)
-        print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
-        print("Node == \(String(reflecting:NodeType.self))")
+        print("#\(inputs.count)", inputs[inputs.count-1].debugDescription)
+        print("Node == \(String(reflecting: NodeType.self))")
       }
       return inputs.count
     }
     static func sharingNode() -> Int {
       typealias NodeType = Tptp.SharingNode
 
-      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
@@ -282,16 +284,16 @@ extension Demo {
       if show {
         print("#1", inputs[0])
         print("#1", inputs[0].debugDescription)
-        print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
+        print("#\(inputs.count)", inputs[inputs.count-1].debugDescription)
 
-        print("Node == \(String(reflecting:NodeType.self))")
+        print("Node == \(String(reflecting: NodeType.self))")
       }
       return inputs.count
     }
     static func smartNode() -> Int {
       typealias NodeType = Tptp.SmartNode
 
-      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
@@ -299,16 +301,16 @@ extension Demo {
       if show {
         print("#1", inputs[0])
         print("#1", inputs[0].debugDescription)
-        print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
+        print("#\(inputs.count)", inputs[inputs.count-1].debugDescription)
 
-        print("Node == \(String(reflecting:NodeType.self))")
+        print("Node == \(String(reflecting: NodeType.self))")
       }
       return inputs.count
     }
     static func kinNode() -> Int {
       typealias NodeType = Tptp.KinNode
 
-      let inputs : [NodeType] = demoParse(problem:hwvProblem)
+      let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }
 
       guard inputs.count > 0 else { return 0 }
@@ -316,21 +318,21 @@ extension Demo {
       if show {
         print("#1", inputs[0])
         print("#1", inputs[0].debugDescription)
-        print("#\(inputs.count)",inputs[inputs.count-1].debugDescription)
+        print("#\(inputs.count)", inputs[inputs.count-1].debugDescription)
 
-        print("Node == \(String(reflecting:NodeType.self))")
+        print("Node == \(String(reflecting: NodeType.self))")
       }
       return inputs.count
     }
   }
 }
 
-func demoParse<N:Node>(problem:String, show:Bool = Demo.show) -> [N] 
+func demoParse<N: Node>(problem:String, show:Bool = Demo.show) -> [N]
 where N:SymbolStringTyped {
-  if show{print("N:Node == \(String(reflecting:N.self))")}
+  if show { print("N:Node == \(String(reflecting: N.self))")}
 
   guard let url = URL(fileURLWithProblem:problem) else {
-    if show{print("FileURL for '\(problem)' could not be found.")}
+    if show { print("FileURL for '\(problem)' could not be found.")}
     return [N]()
   }
 
@@ -344,12 +346,12 @@ where N:SymbolStringTyped {
   if show {print("parse time: \(parseTime) '\(url.relativePath)'")}
 
   let (countResult, countTime) = utileMeasure {
-    tptpFile.inputs.reduce(0) { (a,_) in a + 1 }
+    tptpFile.inputs.reduce(0) { (a, _) in a + 1 }
   }
 
   if show {print("count=\(countResult), time=\(countTime) '\(url.relativePath)'")}
 
-  let (result,time) = utileMeasure {
+  let (result, time) = utileMeasure {
     // tptpFile.inputs.map { N(tree:$0) }
     tptpFile.ast() as N?
   }

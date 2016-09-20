@@ -7,10 +7,10 @@ import Glibc
 import Foundation
 
 public extension CommandLine {
-  public typealias Option = (name:String,settings:[String])
+  public typealias Option = (name: String, settings: [String])
 
   /// CommandLine.arguments.first ?? "n/a"
-  public static var name : String {
+  public static var name: String {
     guard CommandLine.argc > 0 else {
       Syslog.error { "CommandLine has no arguments." }
 
@@ -26,7 +26,7 @@ public extension CommandLine {
   }
 
   /// CommandLine.arguments.dropFirst()
-  public static var parameters : [String] {
+  public static var parameters: [String] {
     guard CommandLine.argc > 0 else {
       // `guard CommandLine.arguments.count > 0 else ...`
       // fails when argc == 0, e.g. while unit testing
@@ -36,7 +36,7 @@ public extension CommandLine {
     return Array(CommandLine.arguments.dropFirst())
   }
 
-  static var options : [String : [String]]  = {
+  static var options: [String : [String]] = {
     print("options")
     var dictionary = ["" : [String]()]
     var name = ""
@@ -46,8 +46,7 @@ public extension CommandLine {
         if dictionary[name] == nil {
           dictionary[name] = [String]()
         }
-      }
-      else {
+      } else {
         /// --A 1 2 4 --B 5 --C -A 7
         // "" : []
         // "--A" : 1,2,4,7
@@ -73,7 +72,7 @@ public extension CommandLine {
     private static func deletValue(for name: String) {
       unsetenv(name)
     }
-    private static func set(value:String, for name: String, overwrite: Bool = true) {
+    private static func set(value: String, for name: String, overwrite: Bool = true) {
       setenv(name, value, overwrite ? 1 : 0)
     }
   }
