@@ -193,7 +193,7 @@ extension TrieStore {
 extension TrieStore {
   /// `wildcard` must be distinct from all other leap values,
   /// e.g. Int == Leap => asterisk must not conflict with positions, i.e. asterisk < 0
-  private func unifiables<C: Collection>(path: C, wildcard: Leap) -> Set<Value>?
+  private func values<C: Collection>(prefix path: C, wildcard: Leap) -> Set<Value>?
   where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
   C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
     guard let (head, tail) = path.decomposing, head != wildcard else {
@@ -224,7 +224,7 @@ extension TrieStore {
     guard let values = self[wildcard]?.allValues else {
       // ensured: subtrie for wildcard does not exist
       // unifiables for tail MAY not exist
-      return subtrie.unifiables(path: tail, wildcard: wildcard)
+      return subtrie.values(prefix: tail, wildcard: wildcard)
     }
 
     assert(
@@ -234,7 +234,7 @@ extension TrieStore {
     // ensured: values for wildcard exist
     // unifiables for tail MAY not exist
 
-    guard let subvalues = subtrie.unifiables(path: tail, wildcard: wildcard) else {
+    guard let subvalues = subtrie.values(prefix: tail, wildcard: wildcard) else {
       // ensured: unifiables for tail do not exist
       return values
     }
@@ -259,13 +259,13 @@ extension TrieStore {
       return allValues // correct, but useless
     }
 
-    guard var result = unifiables(path: first, wildcard:wildcard), result.count > 0 else {
+    guard var result = values(prefix: first, wildcard: wildcard), result.count > 0 else {
       // ensured: nothing matches the first path
       return nil
     }
 
     for path in reminder {
-      guard let unifiables = unifiables(path: path, wildcard: wildcard), unifiables.count > 0 else {
+      guard let unifiables = values(prefix: path, wildcard: wildcard), unifiables.count > 0 else {
         // ensured: nothing matches the actual path
         return nil
       }
