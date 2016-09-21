@@ -1,10 +1,6 @@
 import Foundation
 import CYices
 
-protocol Prover {
-
-}
-
 
 // πρῶτος
 final class ΠρῶτοςProver<N:Node> : Prover
@@ -277,7 +273,7 @@ private func urlFile(name:String) -> (URL,Tptp.File)? {
         Syslog.error { "Problem \(name) at \(url.path) could not be read and parsed." }
         return nil
     }
-    return (url,file)
+    return (url, file)
 }
 
 
