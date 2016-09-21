@@ -1,5 +1,4 @@
 import Foundation
-import CYices
 
 protocol Prover {
     /// Initialize Prover with problem name, e.g. 'PUZ001-1':
@@ -27,6 +26,17 @@ extension Prover {
     }
 
     static func URLAndFile(axiom name: String, problemURL: URL?) -> (URL, Tptp.File)? {
-        return nil
+        guard let url = URL(fileURLWithAxiom: name, problemURL: problemURL) else {
+            Syslog.error { "Axiom \(name) could not be found. (Problem: \(problemURL?.path))" }
+            return nil
+        }
+
+        guard let file = Tptp.File(url:url) else {
+            Syslog.error {
+                "Axiom \(name) at \(url.path) could not be read and parsed."
+                }
+            return nil
+        }
+        return (url, file)
     }
 }
