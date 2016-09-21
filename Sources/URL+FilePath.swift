@@ -1,8 +1,7 @@
-
 import Foundation
 
 extension URL {
-  static var tptpDirectoryURL : URL? {
+  static var tptpDirectoryURL: URL? {
 
     // --tptp_root has the highest priority
     if let path = CommandLine.options["--tptp_root"]?.first,
@@ -11,21 +10,21 @@ extension URL {
     }
 
     // the environment has a high priority
-    if let path = CommandLine.Environment.getValue(for:"TPTP_ROOT")
-    , path.isAccessibleDirectory {
+    if let path = CommandLine.Environment.getValue(for:"TPTP_ROOT"),
+    path.isAccessibleDirectory {
       return URL(fileURLWithPath: path)
     }
 
     // home directory has a medium priority
-    if let url = URL.homeDirectoryURL?.appending(component:"/TPTP")
-    , url.isAccessibleDirectory {
+    if let url = URL.homeDirectoryURL?.appending(component:"/TPTP"),
+    url.isAccessibleDirectory {
       Syslog.notice { "fallback to \(url.relativeString)"}
       return url
     }
 
     // ~/Downloads has a very low priority
-    if let url = URL.homeDirectoryURL?.appending(component:"/Downloads/TPTP")
-    , url.isAccessibleDirectory {
+    if let url = URL.homeDirectoryURL?.appending(component:"/Downloads/TPTP"),
+    url.isAccessibleDirectory {
       Syslog.notice { "fallback to \(url.relativeString)"}
       return url
     }
@@ -33,7 +32,7 @@ extension URL {
     return nil
   }
 
-  static var homeDirectoryURL : URL? {
+  static var homeDirectoryURL: URL? {
 
     guard let path = CommandLine.Environment.getValue(for:"HOME") else {
       return nil
@@ -41,7 +40,7 @@ extension URL {
     return URL(fileURLWithPath: path)
   }
 
-  static var loggingConfigurationURL : URL? {
+  static var loggingConfigurationURL: URL? {
     // --config path/to/file
     if let path = CommandLine.options["--config"]?.first, path.isAccessible {
       return URL(fileURLWithPath: path)
@@ -58,14 +57,14 @@ extension URL {
 
       let url = URL(fileURLWithPath:"Configs/\(name).logging")
       if url.isAccessible { return url }
-      
-      print(url,"is not accessible")
+
+      print(url, "is not accessible")
     }
-    
+
     return URL(fileURLWithPath: "Configs/default.logging")
 
 
-    
+
   }
 }
 
@@ -73,59 +72,59 @@ extension URL {
 /// these workaround will not build when signatures change
 extension URL {
 
-  fileprivate mutating func deleteLastComponents(downTo c:String) {
+  fileprivate mutating func deleteLastComponents(downTo cmp: String) {
     var deleted = false
     while !deleted && self.lastPathComponent != "/" {
-      if self.lastPathComponent == c {
+      if self.lastPathComponent == cmp {
         deleted = true
       }
       self.deleteLastPathComponent()
     }
   }
 
-  fileprivate func deletingLastComponents(downTo c:String) -> URL {
+  fileprivate func deletingLastComponents(downTo cmp: String) -> URL {
     var url = self
-    url.deleteLastPathComponent()
+    url.deleteLastComponents(downTo: cmp)
     return url
   }
 
-  fileprivate mutating func append(extension pex:String, delete:Bool = true) {
+  fileprivate mutating func append(extension pex: String, delete: Bool = true) {
     let pe = self.pathExtension
     guard pe != pex else { return } // nothing to do
 
     if delete { self.deletePathExtension() }
 
     self.appendPathExtension(pex)
-    
+
   }
 
-  fileprivate func appending(extension pex:String, delete:Bool = true) -> URL {
+  fileprivate func appending(extension pex: String, delete: Bool = true) -> URL {
     var url = self
     url.append(extension:pex, delete:delete)
     return url
   }
 
-  fileprivate mutating func append(component c:String) {
-    self.appendPathComponent(c)
+  fileprivate mutating func append(component cmp: String) {
+    self.appendPathComponent(cmp)
   }
 
-  fileprivate func appending(component c:String) -> URL{
+  fileprivate func appending(component cmp: String) -> URL {
     var url = self
-    url.append(component:c)
+    url.append(component:cmp)
     return url
   }
 }
 
 extension URL {
-  fileprivate init?(fileURLWithTptp name:String, ex:String,
-    roots:URL?...,
-    f:((String)->String)? = nil) {
+  fileprivate init?(fileURLWithTptp name: String, pex: String,
+    roots: URL?...,
+    foo: ((String) -> String)? = nil) {
 
     self = URL(fileURLWithPath:name)
-    self.append(extension:ex)
+    self.append(extension:pex)
 
     var names = [name]
-    let rs = self.relativePath 
+    let rs = self.relativePath
     if !names.contains(rs) {
       names.append(rs)
     }
@@ -135,7 +134,7 @@ extension URL {
       if !names.contains(lastComponent) {
         names.append(lastComponent)
       }
-      if let g = f?(lastComponent), !names.contains(g) {
+      if let g = foo?(lastComponent), !names.contains(g) {
         names.append(g)
       }
     }
@@ -161,14 +160,14 @@ extension URL {
   /// - the absolute path to a file, e.g. '/path/to/dir/PUZ001-1[.p]'
   /// with or without extension 'p'.
   /// If no resolved problem file path is accessible, nil is returned.
-  init?(fileURLWithProblem problem:String) {
-    guard let url = URL(fileURLWithTptp: problem, ex:"p",
+  init?(fileURLWithProblem problem: String) {
+    guard let url = URL(fileURLWithTptp: problem, pex:"p",
       roots: // start search in ...
       // $TPTP_ROOT/
       URL.tptpDirectoryURL, // $TPTP_ROOT/Problems/PUZ/PUZ001-1.ps
       // $HOME/TPTP/
       URL.homeDirectoryURL?.appending(component:"TPTP"), // fallback
-      f: {
+      foo: {
         let abc = $0[$0.startIndex..<($0.index($0.startIndex, offsetBy:3))]
         return "Problems/\(abc)/\($0)"
       }
@@ -185,8 +184,8 @@ extension URL {
   /// If a problem URL is given, the axiom file is searches on a position in the
   /// file tree parallel to the problem file.
   /// If no resolved axiom file path is accessible, nil is returned.
-  init?(fileURLWithAxiom axiom:String, problemURL:URL? = nil) {
-    guard let url = URL(fileURLWithTptp: axiom, ex:"ax",
+  init?(fileURLWithAxiom axiom: String, problemURL: URL? = nil) {
+    guard let url = URL(fileURLWithTptp: axiom, pex:"ax",
       roots: // start search in ...
       // $Y/problem.p -> $Y/
       problemURL?.deletingLastPathComponent(),
@@ -196,7 +195,7 @@ extension URL {
       URL.tptpDirectoryURL,
       // $HOME/TPTP/
       URL.homeDirectoryURL?.appending(component:"TPTP"),
-      f: { "Axioms/\($0)" }
+      foo: { "Axioms/\($0)" }
     ) else { return nil }
 
     self = url
@@ -205,11 +204,11 @@ extension URL {
 }
 
 extension URL {
-  var isAccessible : Bool {
+  var isAccessible: Bool {
     return self.path.isAccessible
   }
 
-  var isAccessibleDirectory : Bool {
+  var isAccessibleDirectory: Bool {
     return self.path.isAccessibleDirectory
   }
 }
@@ -217,12 +216,12 @@ extension URL {
 typealias FilePath = String
 
 extension FilePath {
-  var fileSize : Int? {
+  var fileSize: Int? {
     var status = stat()
 
     let code = stat(self, &status)
     switch (code, S_IFREG & status.st_mode) {
-      case (0,S_IFREG):
+      case (0, S_IFREG):
         return Int(status.st_size)
       default:
         return nil
@@ -231,8 +230,8 @@ extension FilePath {
       // return Int(status.st_size)
   }
 
-  var isAccessible : Bool {
-    guard let f = fopen(self,"r") else {
+  var isAccessible: Bool {
+    guard let f = fopen(self, "r") else {
       Syslog.info { "Path \(self) is not accessible."}
       return false
     }
@@ -240,7 +239,7 @@ extension FilePath {
     return true
   }
 
-  var isAccessibleDirectory : Bool {
+  var isAccessibleDirectory: Bool {
     guard let d = opendir(self) else {
       Syslog.info { "Directory \(self) does not exist."}
       return false
@@ -251,7 +250,7 @@ extension FilePath {
 }
 
 extension FilePath {
-  var content : String? {
+  var content: String? {
     #if os(OSX) /**************************************************************/
 
     return try? String(contentsOfFile:self)
@@ -262,7 +261,7 @@ extension FilePath {
       "#Linux #workaround : init(contentsOfFile:usedEncoding:) is not yet implemented."
     }
 
-    guard let f = fopen(self,"r") else {
+    guard let f = fopen(self, "r") else {
       return nil
     }
     defer { fclose(f) }
@@ -277,8 +276,8 @@ extension FilePath {
     #endif  /******************************************************************/
   }
 
-  func lines(predicate:(String) -> Bool = { _ in true }) -> [String]? {
-    guard let f = fopen(self,"r") else {
+  func lines(predicate: (String) -> Bool = { _ in true }) -> [String]? {
+    guard let f = fopen(self, "r") else {
       Syslog.error { "File at '\(self)' could not be opened."}
       return nil
     }
@@ -290,13 +289,12 @@ extension FilePath {
     var buf = [CChar](repeating:CChar(0), count:bufsize)
 
     while let s = fgets(&buf, Int32(bufsize), f) {
-      guard 
-      let string = String(validatingUTF8:s)?.trimmingWhitespace, 
+      guard
+      let string = String(validatingUTF8:s)?.trimmingWhitespace,
       predicate(string) else {
         continue
       }
 
-      print(string,predicate(string),string.isEmpty)
       strings.append(string)
     }
     return strings
@@ -307,11 +305,11 @@ extension FilePath {
 
 extension String {
 
-  var trimmingWhitespace : String {
+  var trimmingWhitespace: String {
     return self.trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
   }
 
-  var pealing : String {
+  var pealing: String {
     let start = self.index(after:self.startIndex)
     let end = self.index(before:self.endIndex)
     return self.substring(with:start..<end)
