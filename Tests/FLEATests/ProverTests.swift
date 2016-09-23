@@ -121,4 +121,20 @@ private typealias Prover = ΠρῶτοςProver<TestNode>
 
       XCTAssertFalse(prover.literal2clauses.isEmpty, nok)
   }
+
+  func testPUZ007 () {
+      let problem = "PUZ007-1"
+      guard let prover = FLEA.ProverY<TestNode>(problem:problem) else {
+          XCTFail(nok)
+          return
+      }
+
+      XCTAssertEqual(28, prover.clauses.count, nok) // 12 + 16
+      XCTAssertEqual(2, prover.files.count, nok)    // PUZ007-1.p, PUZ0001-0.ax
+
+      for f in prover.files {
+          print(ok, f)
+      }
+
+  }
 }
