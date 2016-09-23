@@ -18,16 +18,20 @@ where N:SymbolStringTyped {
         files.append((name, url, clauses.count, includes.count))
 
         for (name, list, url) in includes {
-            let s = Set(list)
             guard let axioms: Array<(String, Tptp.Role, N)>
             = Tptp.File(url: url)?.nameRoleClauseTriples(
-                predicate: { n, _ in s.isEmpty || s.contains(n) }
-            ) else { continue }
+                predicate: { n, _ in list.isEmpty || Set(list).contains(n) }
+            ) else {
+                Syslog.error { "\(name) at \(url) was not read correctly." }
+                return nil
+            }
             clauses += axioms
             files.append((name, url, axioms.count, 0))
         }
     }
+}
 
+extension ProverY {
     func run(timeout: AbsoluteTime) -> Bool? {
         guard let name = files.first?.0 else {
             Syslog.error { "Problem is empty" }

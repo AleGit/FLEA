@@ -136,5 +136,9 @@ private typealias Prover = ΠρῶτοςProver<TestNode>
           print(ok, f)
       }
 
+      for (idx, c) in prover.clauses.enumerated() {
+          print( c, "  FROM:", idx < prover.files.first!.2 ? prover.files.first!.0 : prover.files.last!.0)
+      }
+
   }
 }
