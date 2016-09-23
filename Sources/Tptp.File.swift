@@ -5,15 +5,15 @@ import Foundation
 extension Tptp {
   final class File {
 
-    private var store : StoreRef?
+    private var store: StoreRef?
     /// The root of the parsed <TPTP_file>
     /// <TPTP_file> ::= <TPTP_input>*
-    private(set) var root : TreeNodeRef?
+    private(set) var root: TreeNodeRef?
 
-    private init?(path:FilePath) {
+    private init?(path: FilePath) {
       Syslog.info { path }
       guard let size = path.fileSize, size > 0 else {
-        return nil;
+        return nil
       }
       let code = prlcParsePath(path, &store, &root)
       guard code == 0 && self.store != nil && self.root != nil else {
@@ -21,18 +21,15 @@ extension Tptp {
       }
     }
 
-    convenience init?(url:URL) {
+    convenience init?(url: URL) {
       Syslog.info { "Tptp.File(url:\(url))" }
 
-      // Swift 3 Preview 4:
-      // - Linux url.path : String?
-      // - macOS url.path : String
-      if url.isFileURL  {
+      if url.isFileURL {
         let path = url.path
         Syslog.debug { "url.path : \(type(of:url.path))"}
         self.init(path:path)
-      }
-      else {
+      } else {
+        Syslog.error { "\(url) is not a file URL!" }
         // TODO: Download file into
         // - canonical place and parse the saved file
         // - memory an parse string of type .file
@@ -40,10 +37,10 @@ extension Tptp {
       }
     }
 
-    init?(string:String, type: Tptp.SymbolType) {
+    init?(string: String, type: Tptp.SymbolType) {
       Syslog.info { string }
 
-      let code : Int32
+      let code: Int32
 
       switch type {
         /// variables and (constant) are terms.
@@ -99,10 +96,10 @@ extension Tptp {
     }
 
     /// Transform the C tree representation into a Swift representation.
-    func ast<N:Node>() -> N?
+    func ast<N: Node>() -> N?
     where N:SymbolStringTyped {
       guard let tree = self.root else { return nil }
-      let t : N = N(tree:tree)
+      let t: N = N(tree:tree)
       return t
     }
 
@@ -114,20 +111,20 @@ extension Tptp {
 
     /// The sequence of parsed <TPTP_input> nodes.
     /// - <TPTP_input> ::= <annotated_formula> | <include>
-    var inputs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+    var inputs: UtileSequence<TreeNodeRef, TreeNodeRef> {
       return root!.children { $0 }
     }
 
     /// The sequence of stored symbols (paths, names, etc.)
     /// from first to last.
-    private var symbols : UtileSequence<CStringRef,String?> {
+    private var symbols: UtileSequence<CStringRef, String?> {
       let first = prlcFirstSymbol(self.store!)
       let step = {
-        (cstring : CStringRef) in
-        prlcNextSymbol(self.store!,cstring)
+        (cstring: CStringRef) in
+        prlcNextSymbol(self.store!, cstring)
       }
       let data = {
-        (cstring : CStringRef) in
+        (cstring: CStringRef) in
         String(validatingUTF8:cstring)
       }
 
@@ -135,14 +132,14 @@ extension Tptp {
     }
 
     /// The sequence of stored tree nodes from first to last.
-    private var nodes : UtileSequence<TreeNodeRef,TreeNodeRef> {
+    private var nodes: UtileSequence<TreeNodeRef, TreeNodeRef> {
       let first = prlcFirstTreeNode(self.store!)
       let step = {
-        (treeNode : TreeNodeRef) in
+        (treeNode: TreeNodeRef) in
         prlcNextTreeNode(self.store!, treeNode)
       }
       let data = {
-        (treeNode : TreeNodeRef) in
+        (treeNode: TreeNodeRef) in
         treeNode
       }
       return UtileSequence(first:first, step:step, data: data)
@@ -150,51 +147,51 @@ extension Tptp {
 
     /// The sequence of parsed <include> nodes.
     /// includes.count <= inputs.count
-    private var includes : UtileSequence<TreeNodeRef,TreeNodeRef>{
+    private var includes: UtileSequence<TreeNodeRef, TreeNodeRef> {
       return root!.children(where: { $0.type == PRLC_INCLUDE }) { $0 }
     }
 
     /// The sequence of parsed <cnf_annotated> nodes.
     /// cnfs.count <= inputs.count
-    // private 
-    var cnfs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+    // private
+    var cnfs: UtileSequence<TreeNodeRef, TreeNodeRef> {
       return root!.children(where: { $0.type == PRLC_CNF }) { $0 }
     }
 
     /// The sequence of parsed <fof_annotated> nodes.
     /// fofs.count <= inputs.count
-    private var fofs : UtileSequence<TreeNodeRef,TreeNodeRef>{
+    private var fofs: UtileSequence<TreeNodeRef, TreeNodeRef> {
       return root!.children(where: { $0.type == PRLC_FOF }) { $0 }
     }
-    
-    func nameRoleClauseTriples<N:Node>(predicate:(String,Tptp.Role) -> Bool = { _,_ in true }) 
-    -> [(String,Tptp.Role,N)] 
+
+    func nameRoleClauseTriples<N: Node>(predicate: (String, Tptp.Role) -> Bool = { _, _ in true })
+    -> [(String, Tptp.Role, N)]
     where N:SymbolStringTyped {
         return self.cnfs.flatMap {
             guard let name = $0.symbol,
-            let child = $0.child, 
+            let child = $0.child,
             let string = child.symbol,
             let role = Tptp.Role(rawValue:string),
             let cnf = child.sibling else {
                 let symbol = $0.symbol ?? "n/a"
                 Syslog.error { "Invalid cnf \(symbol) in \(self.path)"}
-                assert(false,"Invalid cnf in \(symbol) in \(self.path)")
+                assert(false, "Invalid cnf in \(symbol) in \(self.path)")
                 return nil
             }
-            guard predicate(name,role) else {
+            guard predicate(name, role) else {
                 // name and role did not pass the test
                 return nil
             }
             let tree = N(tree:cnf)
-            Syslog.info{ "\(tree)"}
-            return (name,role, tree)
+            Syslog.info { "\(tree)" }
+            return (name, role, tree)
         }
     }
-    
-    func includeSelectionURLTriples(url:URL) -> [(String,[String],URL)] {
+
+    func includeSelectionURLTriples(url: URL) -> [(String, [String], URL)] {
       return self.includes.flatMap {
         guard let name = $0.symbol,
-        let axiomURL = URL(fileURLWithAxiom:name,problemURL:url) else {
+        let axiomURL = URL(fileURLWithAxiom:name, problemURL:url) else {
           let symbol = $0.symbol ?? "'n/a'"
           Syslog.error { "Include file \(symbol) was not found."}
           assert(false, "Include file \(symbol) was not found.")
@@ -203,7 +200,7 @@ extension Tptp {
         let selection = $0.children.flatMap {
           $0.symbol
         }
-        return (name,selection,axiomURL)
+        return (name, selection, axiomURL)
       }
     }
   }
