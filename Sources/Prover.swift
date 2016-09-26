@@ -11,7 +11,7 @@ protocol Prover {
     /// returns nil if timeout was reached before an a proof was found
     /// returns true if problem is a theorem, e.g. negated conjecture is unsatisfiable (with proof)
     /// returns false if problem is not a theorem, e.g. set of clause is saturated and satisfiable
-    func run(timeout: AbsoluteTime) -> Bool?
+    func run(timeout: TimeInterval) -> Bool?
 }
 
 protocol YicesProver: Prover {

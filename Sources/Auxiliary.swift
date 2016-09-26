@@ -129,6 +129,7 @@ struct UtileSequence<S, T> : Sequence {
 
 /// Substitute for CFAbsoluteTime which does not seem to be available on Linux.
 public typealias AbsoluteTime = Double
+public typealias TimeInterval = Double
 
 /// Substitute for CFAbsoluteTimeGetCurrent() which does not seem to be available on Linux.
 func AbsoluteTimeGetCurrent() -> AbsoluteTime {
