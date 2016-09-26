@@ -188,7 +188,7 @@ extension Yices {
 
     static func getValue(_ t: term_t, mdl: OpaquePointer) -> Bool? {
         var val: Int32 = 0
-        if Yices.check (yices_get_int32_value(mdl, t, &val), label:"\(#function) : Bool") {
+        if Yices.check (code:yices_get_int32_value(mdl, t, &val), label:"\(#function) : Bool") {
             return val == 0 ? false : true
         } else {
             return nil
@@ -197,7 +197,7 @@ extension Yices {
 
     static func getValue(_ t: term_t, mdl: OpaquePointer) -> Int32? {
         var val: Int32 = 0
-        if Yices.check (yices_get_int32_value(mdl, t, &val), label:"\(#function) : Int32") {
+        if Yices.check (code:yices_get_int32_value(mdl, t, &val), label:"\(#function) : Int32") {
             return val
         } else {
             return nil

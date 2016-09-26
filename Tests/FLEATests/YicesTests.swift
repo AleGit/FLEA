@@ -3,11 +3,12 @@ import XCTest
 import Foundation
 @testable import FLEA
 
-public class YicesTests : YicesTestCase {
+public class YicesTests: YicesTestCase {
 
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (YicesTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (YicesTests) -> () throws -> Void)] {
     return [
+      ("testVersionString", testVersionString),
       ("testPUZ001c1", testPUZ001c1),
       ("testTop", testTop),
       ("testBottom", testBottom),
@@ -16,6 +17,10 @@ public class YicesTests : YicesTestCase {
   }
 
   typealias N = FLEA.Tptp.KinIntNode
+
+  func testVersionString() {
+    XCTAssertEqual("2.4.2", Yices.versionString, nok)
+  }
 
   func testPUZ001c1() {
     let problem = "PUZ001-1"
@@ -59,22 +64,22 @@ public class YicesTests : YicesTestCase {
   }
 
   func testBottom() {
-    
+
     let np = "~p(X)" as FLEA.Tptp.SimpleNode
     let p = "@cnf p(Y)" as FLEA.Tptp.SimpleNode
 
-    
+
     let context = Yices.Context()
     let _ = context.insure(clause:p)
     let _ = context.insure(clause:np)
     XCTAssertFalse(context.isSatisfiable)
-    
+
   }
 
   func testEmptyClause() {
     let symbol = Tptp.SimpleNode.symbolize(string:"|", type:.disjunction)
     let empty = Tptp.SimpleNode(symbol:symbol, nodes: Array<Tptp.SimpleNode>())
-    
+
     let context = Yices.Context()
     let _ = context.insure(clause:empty)
     XCTAssertFalse(context.isSatisfiable)
