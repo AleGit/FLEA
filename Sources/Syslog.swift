@@ -11,7 +11,7 @@ import Foundation
 /// see [man 3 syslog]http://www.unix.com/man-page/POSIX/3posix/syslog/
 struct Syslog {
 
-  enum Priority : Comparable {
+  enum Priority: Comparable {
     case emergency
     case alert
     case critical
@@ -29,7 +29,7 @@ struct Syslog {
     // LOG_NOTICE     normal, but significant, condition
     // LOG_INFO       informational message
     // LOG_DEBUG      debug-level message
-    fileprivate var priority : Int32 {
+    fileprivate var priority: Int32 {
       switch self {
         case .emergency: return LOG_EMERG
         case .alert: return LOG_ALERT
@@ -42,13 +42,13 @@ struct Syslog {
       }
     }
 
-    /// Since `Syslog.Priority` is allready `Equatable` 
+    /// Since `Syslog.Priority` is allready `Equatable`
     /// it is sufficient to implement < to adopt `Comparable`
-    static func <(_ lhs:Priority, rhs:Priority) -> Bool {
+    static func<(_ lhs: Priority, rhs: Priority) -> Bool {
       return lhs.priority < rhs.priority
     }
 
-    fileprivate init?(string:String) {
+    fileprivate init?(string: String) {
       switch string {
         case "emergency":
         self = .emergency
@@ -72,7 +72,16 @@ struct Syslog {
       }
     }
 
-    static var all = [Priority.emergency, Priority.alert, Priority.critical, Priority.error, Priority.warning, Priority.notice, Priority.info, Priority.debug]
+    static var all = [
+      Priority.emergency,
+      Priority.alert,
+      Priority.critical,
+      Priority.error,
+      Priority.warning,
+      Priority.notice,
+      Priority.info,
+      Priority.debug
+      ]
   }
 
   enum Option {
@@ -114,29 +123,28 @@ struct Syslog {
     }
   }
 
-  /// 
+  ///
   fileprivate static var activePriorities = Syslog.maskedPriorities
 
   /// Syslog is active _after_ reading the configuration.
   fileprivate static var active = false
-  
+
   /// read in the logging configuration (from file)
   /// TODO: provide a cleaner/better implementation
-  static let configuration : [String:Priority]? = {
-    defer { 
-      Syslog.active = true
-    }
-    print(#function,#line,"reading configuration started")
-    defer { print(#function,#line,"reading configuration finished")}
-    
-    
+  static let configuration: [String:Priority]? = {
+    /// after the configuration is read the logging is active
+    defer { Syslog.active = true }
 
-    // ignore comments (#...) and empty (whitespace only) lines
+    // reminder: the logging is not active
+    print(#function, #line, "reading CONFIGURATION started")
+    defer { print(#function, #line, "reading CONFIGURATION finished")}
 
-
-     guard let entries = URL.loggingConfigurationURL?.path.lines(predicate: {
-       !($0.hasPrefix("#") || $0.isEmpty)
-     }), entries.count > 0 else {
+    // read configuration file line by line, but
+    // ignore comments (#...) and empty lines (whitespace only)
+    guard let entries = URL.loggingConfigurationURL?.path.lines(predicate: {
+      !($0.hasPrefix("#") || $0.isEmpty)
+      }), entries.count > 0 else {
+        print("CONFIGURATION file has NO entries (comments and whitespace only)")
        return nil
      }
 
@@ -145,7 +153,7 @@ struct Syslog {
 
      for entry in entries {
        guard let colonIndex = entry.characters.index(of:(":")) else {
-         print(#function,#line,">>> invalid configuration entry : \(entry) <<<")
+         print(#function, #line, ">>> invalid CONFIGURATION entry : \(entry) <<<")
          continue
        }
        let after = entry.characters.index(after:colonIndex)
@@ -172,15 +180,16 @@ struct Syslog {
     return cnfg
   }()
 
-  static var maximalLogLevel : Priority { return Syslog.configuration?["+++"] ?? Priority.error }
-  static var minimalLogLevel : Priority { return Syslog.configuration?["---"] ?? Priority.error }
-  static var defaultLogLevel : Priority { return Syslog.configuration?["***"] ?? Priority.error }
+  static var maximalLogLevel: Priority { return Syslog.configuration?["+++"] ?? Priority.error }
+  static var minimalLogLevel: Priority { return Syslog.configuration?["---"] ?? Priority.error }
+  static var defaultLogLevel: Priority { return Syslog.configuration?["***"] ?? Priority.error }
 
-  fileprivate static func loggable(_ priority:Priority, _ file:String, _ function:String, _ line:Int) -> Bool {
+  fileprivate static func loggable(
+    _ priority: Priority, _ file: String, _ function: String, _ line: Int) -> Bool {
 
-    guard Syslog.active, 
-    Syslog.activePriorities.contains(priority) else { 
-      return false 
+    guard Syslog.active,
+    Syslog.activePriorities.contains(priority) else {
+      return false
     }
 
     // the configuration is active, i.e. it was read in completely
@@ -195,35 +204,36 @@ struct Syslog {
     , priority > Syslog.minimalLogLevel    // is the priority > minimal logging priority
     else { return true }
 
-    // at this point a configuration is available and the minimal logging priority < message »priority«.
+    // at this point a configuration is available
+    // and the minimal logging priority < message »priority«.
 
     // extract »file« key
 
-    let fileName = URL(fileURLWithPath:file).lastPathComponent 
+    let fileName = URL(fileURLWithPath:file).lastPathComponent
     if fileName.isEmpty {
       Syslog.debug { "Last path element of \(file) could not be extracted." }
     }
-    
-    // check for "»file«/»function«" priority 
+
+    // check for "»file«/»function«" priority
     if let ps = configuration["\(fileName)/\(function)"] {
       return priority <= ps
     }
 
     // "»file«/»function«" priority does not exist
-    // check for "»file«" priority  
+    // check for "»file«" priority
     if let ps = configuration["\(fileName)"] {
       return priority <= ps
     }
 
     // "»file«" priority does not exist
     // check for default priority
-    
+
     return priority <= Syslog.defaultLogLevel
   }
 }
 
 extension Syslog {
-  fileprivate static var maskedPriorities : Set<Priority> {
+  fileprivate static var maskedPriorities: Set<Priority> {
     let mask = setlogmask(255)
 
     let _ = setlogmask(mask)
@@ -233,7 +243,7 @@ extension Syslog {
     return Set(array)
   }
 
-  static var configured : [Priority] {
+  static var configured: [Priority] {
     return Syslog.activePriorities.sorted { $0.priority < $1.priority }
   }
 }
@@ -248,7 +258,7 @@ extension Syslog {
 
   /* void openlog(const char *ident, int logopt, int facility); */
 
-  static func openLog(ident:String?=nil, options:Syslog.Option..., facility:Int32 = LOG_USER) {
+  static func openLog(ident: String?=nil, options: Syslog.Option..., facility: Int32 = LOG_USER) {
     let option = options.reduce(0) { $0 | $1.option }
     openlog(ident, option, facility);
     // ident == nil => use process name
@@ -262,14 +272,14 @@ extension Syslog {
     return setlogmask(mask)
   }
 
-  static func setLogMask(upTo:Syslog.Priority) -> Int32 {
+  static func setLogMask(upTo: Syslog.Priority) -> Int32 {
     Syslog.activePriorities = Set(
       Syslog.Priority.all.filter { $0.priority <= upTo.priority }
     )
     return setLogMask()
   }
 
-  static func setLogMask(priorities:Syslog.Priority...) -> Int32 {
+  static func setLogMask(priorities: Syslog.Priority...) -> Int32 {
     Syslog.activePriorities = Set(priorities)
     return setLogMask()
   }
@@ -283,17 +293,17 @@ extension Syslog {
   /*  void vsyslog(int priority, const char *format, va_list ap); */
 
   fileprivate static func syslog(
-      priority : Int32,
-      message : String,
-      args : CVarArg...) {
+      priority: Int32,
+      message: String,
+      args: CVarArg...) {
         withVaList(args) {
           vsyslog(priority, message, $0)
         }
     }
 
   fileprivate static func sysLog(
-    priority : Priority,
-    args : CVarArg...,
+    priority: Priority,
+    args: CVarArg...,
     message : () -> String
   ) {
       withVaList(args) {
@@ -303,13 +313,14 @@ extension Syslog {
 
   fileprivate static func log(
     _ priority: Priority,
-    errcode : Int32 = 0,
-    file : String = #file,
-    function : String = #function,
-    line : Int = #line,
-    column : Int = #column,
-    message : () -> String
+    errcode: Int32 = 0,
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line,
+    column: Int = #column,
+    message: () -> String
   ) {
+    // swiftlint:disable line_length
     if errcode != 0 {
       Syslog.sysLog(priority:priority,
         args: line, column) {
@@ -317,6 +328,9 @@ extension Syslog {
           return "\(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) '%m' \(message())"
           #elseif os(Linux)
           return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) '%m' \(message())"
+          #else
+          assert(false, "unknown os")
+          return "unknown os"
           #endif
         }
     }
@@ -327,21 +341,26 @@ extension Syslog {
           return "\(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) \(message())"
           #elseif os(Linux)
           return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath:file).lastPathComponent)[%d:%d] \(function) \(message())"
+          #else
+          assert(false, "unknown os")
+          return "unknown os"
           #endif
         }
     }
+    // swiftlint:enable line_length
   }
 
   static func multiple (
-    errcode : Int32 = 0,
-    file : String = #file,
-    function : String = #function,
-    line : Int = #line,
-    column : Int = #column,
-    message : () -> String
+    errcode: Int32 = 0,
+    condition: () -> Bool = { true },
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line,
+    column: Int = #column,
+    message: () -> String
   ) {
     for p in Syslog.Priority.all {
-      guard Syslog.loggable(p,file,function,line) else { continue }
+      guard Syslog.loggable(p, file, function, line), condition() else { continue }
       Syslog.log (p, errcode:errcode, file:file, function:function, line:line, column:column) {
         "\(message())"
       }
@@ -349,65 +368,73 @@ extension Syslog {
   }
 
   static func error(
-    errcode : Int32 = 0,
-    file : String = #file,
-    function : String = #function,
-    line : Int = #line,
-    column : Int = #column,
-    message : () -> String
+    errcode: Int32 = 0,
+    condition: () -> Bool = { true },
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line,
+    column: Int = #column,
+    message: () -> String
   ) {
-    guard Syslog.loggable(.error, file, function, line) else { return }
-    log (.error, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    guard Syslog.loggable(.error, file, function, line), condition() else { return }
+    log (.error, errcode:errcode,
+    file:file, function:function, line:line, column:column, message:message)
   }
 
   static func warning(
-    errcode : Int32 = 0,
-    file : String = #file,
-    function : String = #function,
-    line : Int = #line,
-    column : Int = #column,
-    message : () -> String
+    errcode: Int32 = 0,
+    condition: () -> Bool = { true },
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line,
+    column: Int = #column,
+    message: () -> String
   ) {
-    guard Syslog.loggable(.warning, file, function, line) else { return }
-    log (.warning, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    guard Syslog.loggable(.warning, file, function, line), condition() else { return }
+    log (.warning, errcode:errcode,
+    file:file, function:function, line:line, column:column, message:message)
   }
 
   static func notice(
-    errcode : Int32 = 0,
-    file : String = #file,
-    function : String = #function,
-    line : Int = #line,
-    column : Int = #column,
-    message : () -> String
+    errcode: Int32 = 0,
+    condition: () -> Bool = { true },
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line,
+    column: Int = #column,
+    message: () -> String
   ) {
-    guard Syslog.loggable(.notice, file, function, line) else { return }
-    log (.notice, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    guard Syslog.loggable(.notice, file, function, line), condition() else { return }
+    log (.notice, errcode:errcode,
+    file:file, function:function, line:line, column:column, message:message)
   }
 
   static func info(
-    errcode : Int32 = 0,
-    file : String = #file,
-    function : String = #function,
-    line : Int = #line,
-    column : Int = #column,
-    message : () -> String
+    errcode: Int32 = 0,
+    condition: () -> Bool = { true },
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line,
+    column: Int = #column,
+    message: () -> String
   ) {
-    guard Syslog.loggable(.info, file, function, line) else { return }
-    log (.info, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
+    guard Syslog.loggable(.info, file, function, line), condition() else { return }
+    log (.info, errcode:errcode,
+    file:file, function:function, line:line, column:column, message:message)
   }
 
   static func debug(
-    errcode : Int32 = 0,
-    file : String = #file,
-    function : String = #function,
-    line : Int = #line,
-    column : Int = #column,
+    errcode: Int32 = 0,
+    condition: () -> Bool = { true },
+    file: String = #file,
+    function: String = #function,
+    line: Int = #line,
+    column: Int = #column,
     message : () -> String
   ) {
-    guard Syslog.loggable(.debug, file, function, line) else { return }
-    //#if DEBUG
-    log (.debug, errcode:errcode, file:file, function:function, line:line, column:column, message:message)
-    //#endif
+    guard Syslog.loggable(.debug, file, function, line), condition() else { return }
+    log (.debug, errcode:errcode,
+    file:file, function:function, line:line, column:column, message:message)
   }
 }
 

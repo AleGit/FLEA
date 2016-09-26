@@ -1,10 +1,4 @@
-//
-//  Yices+Node.swift
-//  NyTerms
-//
-//  Created by Alexander Maringele on 11.04.16.
 //  Copyright © 2016 Alexander Maringele. All rights reserved.
-//
 
 import CYices
 
@@ -12,24 +6,24 @@ import Foundation
 
 extension Yices {
   typealias Tuple = (
-    clause: term_t
-    , literals: [term_t]
-    , yicesLiterals : [term_t]
+    clause: term_t,
+    literals: [term_t],
+    yicesLiterals: [term_t]
   )
 
   /// Return a yices clause and yices literals from a node clause.
   /// The children of `yicesClause` may be different from `yicesLiterals`
-  static func clause<N:Node>(_ clause:N) -> Tuple 
+  static func clause<N: Node>(_ clause:N) -> Tuple
   where N:SymbolStringTyped {
-    /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
-    // assert(clause.isClause,"'\(#function)(\(clause))' Argument must be a clause, but it is not.")
 
-    let (_,type) = clause.symbolStringType
+    let (_, type) = clause.symbolStringType
 
     switch type {
       case .disjunction:
         guard let literals = clause.nodes, literals.count > 0 else {
-          return (Yices.bot, [Yices.bot],[Yices.bot])
+          Syslog.error(condition: { clause.nodes == nil}) { "clause.nodes == nil"}
+          Syslog.info(condition: { clause.nodes != nil}) { "emtpy clause" }
+          return (Yices.bot, [Yices.bot], [Yices.bot])
         }
 
         return Yices.clause(literals)
@@ -38,7 +32,7 @@ extension Yices {
       case .predicate, .negation, .equation, .inequation:
         Syslog.warning { "'\(clause)' was not a clause, but a literal." }
         let yicesLiteral = literal(clause)
-          return (yicesLiteral,[yicesLiteral],[yicesLiteral])
+          return (yicesLiteral, [yicesLiteral], [yicesLiteral])
 
           // not a clause at all
       default:
@@ -60,20 +54,27 @@ extension Yices {
         /// * `p ≡ [ p, p ]`
         /// * `p ≡ [ ⊥ ~= ⊥, p ]`
         /// * `[p,q,q,q,q] ≡ [ p, q, ⊥ ~= ⊥, p,q ]`
-  static func clause<N:Node>(_ literals:[N]) -> Tuple 
+  static func clause<N:Node>(_ literals:[N]) -> Tuple
   where N:SymbolStringTyped {
           /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
 
-          let literals = literals.map { self.literal($0) }
-          var copy = literals
+          let yicesLiterals = literals.map { self.literal($0) }
+          var copy = yicesLiterals
 
           // `yices_or` might change the order and content of the array
 
           let yicesClause = yices_or( UInt32(copy.count), &copy)
 
+          Syslog.info(condition: { yicesLiterals != copy}) {
+            "yices literals reorderd"
+            }
+          Syslog.info(condition: { yicesLiterals.contains(yicesClause)}) {
+            "yices literals contain clause"
+            }
+
           return (
             yicesClause,
-            literals,
+            yicesLiterals,
             copy
           )
         }
@@ -83,7 +84,7 @@ extension Yices {
         /// - an equation
         /// - an inequation
         /// - a predicatate term or a proposition constant
-  static func literal<N:Node>(_ literal:N) -> term_t 
+  static func literal<N:Node>(_ literal:N) -> term_t
   where N:SymbolStringTyped {
     // assert(literal.isLiteral,"'\(#function)(\(literal))' Argument must be a literal, but it is not.")
 
@@ -133,7 +134,7 @@ extension Yices {
   }
 
                   /// Build uninterpreted function term from term.
-  static func term<N:Node>(_ term:N) -> term_t 
+  static func term<N:Node>(_ term:N) -> term_t
   where N:SymbolStringTyped{
   // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
@@ -151,7 +152,7 @@ extension Yices {
   }
 
   /// Build (constant) predicate or function.
-  static func application<N:Node>(_ symbolString:String, nodes:[N], term_tau:type_t) -> term_t 
+  static func application<N:Node>(_ symbolString:String, nodes:[N], term_tau:type_t) -> term_t
   where N:SymbolStringTyped {
 
     guard nodes.count > 0 else {

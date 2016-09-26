@@ -45,7 +45,7 @@ extension Yices {
 extension Yices {
 
 	final class Context {
-		fileprivate var context : OpaquePointer
+		fileprivate var context: OpaquePointer
 
 		init() {
 			context = yices_new_context(nil)
@@ -55,23 +55,21 @@ extension Yices {
 			yices_free_context(context)
 		}
 
-		func insure<N:Node>(clause:N) -> Yices.Tuple
+		func insure<N: Node>(clause:N) -> Yices.Tuple
 		where N:SymbolStringTyped {
 			let triple = Yices.clause(clause)
-
-
-			yices_assert_formula(context,triple.0)
+			yices_assert_formula(context, triple.0)
 			return triple
 		}
 
-		func insure(clause:term_t) -> Bool {
-			yices_assert_formula(context,clause)
+		func insure(clause: term_t) -> Bool {
+			yices_assert_formula(context, clause)
 			return isSatisfiable
 
 		}
 
-		var isSatisfiable : Bool {
-			switch yices_check_context(context,nil) {
+		var isSatisfiable: Bool {
+			switch yices_check_context(context, nil) {
 				case STATUS_SAT:
 				return true
 				case STATUS_UNSAT:
