@@ -121,7 +121,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
 
     func selectLiteral(with model: Yices.Model, yicesLiterals: [term_t]) -> Int {
         for (literalIndex, yicesLiteral) in yicesLiterals.enumerated() {
-            if model.implies(t:yicesLiteral) {
+            if model.implies(formula:yicesLiteral) {
                 return literalIndex
             }
         }
@@ -134,7 +134,7 @@ where N:SymbolStringTyped, N.Symbol == Int {
             let (_, _, tptpClause) = clauses[clauseIndex]
             let (_, yicesLiterals, selectedLiteralIndex) = triple
 
-            if !model.implies(t:yicesLiterals[selectedLiteralIndex]) {
+            if !model.implies(formula:yicesLiterals[selectedLiteralIndex]) {
 
                 let tptpLiterals = tptpClause.nodes!
 

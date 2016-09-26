@@ -83,10 +83,10 @@ extension Yices {
 	}
 
 	final class Model {
-		private var model : OpaquePointer
+		private var model: OpaquePointer
 
-		init?(context:Context) {
-			guard let m = yices_get_model(context.context,1) else {
+		init?(context: Context) {
+			guard let m = yices_get_model(context.context, 1) else {
 				return nil
 			}
 			model = m
@@ -95,8 +95,17 @@ extension Yices {
 			yices_free_model(model)
 		}
 
-		func implies(t:term_t) -> Bool {
-			return yices_formula_true_in_model(model, t) > 0
+		func implies(formula: term_t) -> Bool {
+			let tau = yices_type_of_term(formula)
+
+			Syslog.error(condition: { yices_type_is_bool(tau)==0 }) {
+				_ in
+				let s = String(term: formula) ?? "\(formula) n/a"
+				let t = String(tau: tau) ?? "\(tau) n/a"
+
+				return "Formula '\(s)' is not Boolean, but '\(t)'"
+			}
+			return yices_formula_true_in_model(model, formula) > 0
 		}
 
 	}

@@ -3,9 +3,9 @@ import CYices
 public extension String {
 
     /// Creates a String representation of a yices type
-    public init?(tau: type_t, width:UInt32, height:UInt32, offset:UInt32) {
+    public init?(tau: type_t, width: UInt32, height: UInt32, offset: UInt32) {
         guard let cstring = yices_type_to_string(tau, width, height, offset) else {
-            yices_print_error(stdout);
+            yices_print_error(stdout)
             return nil
         }
         defer {
@@ -21,9 +21,9 @@ public extension String {
     }
 
     /// Creates a String representation of a yices term
-    public init?(term: term_t, width:UInt32, height:UInt32, offset:UInt32) {
+    public init?(term: term_t, width: UInt32, height: UInt32, offset: UInt32) {
         guard let cstring = yices_term_to_string(term, width, height, offset) else {
-            yices_print_error(stdout);
+            yices_print_error(stdout)
             return nil
         }
         defer {

@@ -84,10 +84,8 @@ extension Yices {
         /// - an equation
         /// - an inequation
         /// - a predicatate term or a proposition constant
-  static func literal<N:Node>(_ literal:N) -> term_t
+  static func literal<N: Node>(_ literal:N) -> term_t
   where N:SymbolStringTyped {
-    // assert(literal.isLiteral,"'\(#function)(\(literal))' Argument must be a literal, but it is not.")
-
 
     guard let nodes = literal.nodes
     else {
@@ -96,7 +94,7 @@ extension Yices {
 
     // By default a symbol is a predicate symbol
     // if it is not predefined or registered.
-    let (literalSymbolString,type) = literal.symbolStringType
+    let (literalSymbolString, type) = literal.symbolStringType
 
     switch type {
       case .negation:
@@ -135,10 +133,10 @@ extension Yices {
 
                   /// Build uninterpreted function term from term.
   static func term<N:Node>(_ term:N) -> term_t
-  where N:SymbolStringTyped{
+  where N:SymbolStringTyped {
   // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
-    let (termSymbolString,_) = term.symbolStringType
+    let (termSymbolString, _) = term.symbolStringType
 
     guard let nodes = term.nodes else {
       return Yices.🚧 // substitute all variables with global constant '⊥'
@@ -162,8 +160,10 @@ extension Yices {
     return application(symbolString, args: nodes.map { Yices.term($0) }, term_tau: term_tau)
   }
 
-                  /// Uninterpreted global constant (i.e. variable) of uninterpreted type.
+  /// Uninterpreted global constant (i.e. variable) of uninterpreted type.
+  // swiftlint:disable variable_name
   static var 🚧 : term_t {
     return Yices.constant("⊥", term_tau: free_tau)
   }
+  // swiftlint:enable variable_name
 }
