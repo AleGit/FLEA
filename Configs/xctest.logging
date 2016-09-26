@@ -7,14 +7,15 @@
 "+++"                           : "debug"   # global maximal log priority
 "***"                           : "error" # global default log priority
 
-# evaluationn for for logging active 
+# evaluationn for for logging active
 # priority of origin »file«/»function»:
 # »file«/»function»:»value«
 # »file : »value«
-# »***» : »value« 
+# »***» : »value«
 
 # "Tptp.File.swift"               : "info"
 # "URL+FilePath.swift"            : "info"
 "Prover.swift" : "debug"
+"ProverY.swift" : "info"
 
- 
+

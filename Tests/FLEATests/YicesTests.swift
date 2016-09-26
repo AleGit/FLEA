@@ -34,7 +34,7 @@ public class YicesTests: YicesTestCase {
       return
     }
 
-    XCTAssertEqual(url.relativePath,file.path,nok)
+    XCTAssertEqual(url.relativePath, file.path, nok)
 
     /// cnf(name)->input->input->
     ///  |
@@ -42,7 +42,7 @@ public class YicesTests: YicesTestCase {
 
 
     let cnfs = file.cnfs.map { N(tree:$0.child!.sibling!) }
-    XCTAssertEqual(12,cnfs.count,nok)
+    XCTAssertEqual(12, cnfs.count, nok)
 
     print(cnfs.first?.description)
     print("\(cnfs.last!)")

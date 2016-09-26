@@ -9,7 +9,9 @@ where N:SymbolStringTyped {
     /// all clauses from all read files
     var clauses: Array<(String, Tptp.Role, N)>
 
-    var insuredClauses: Set<Int>
+    fileprivate var insuredClauses: Set<Int>
+    fileprivate var deadline: AbsoluteTime = 0.0
+    fileprivate var context = Yices.Context()
 
     /// Initialize a prover with a problem, read the problem file and axiom files.
     init?(problem name: String) {
@@ -46,29 +48,44 @@ where N:SymbolStringTyped {
 
 extension ProverY {
     func run(timeout: TimeInterval) -> Bool? {
-        let deadline = AbsoluteTimeGetCurrent() + timeout
+        deadline = AbsoluteTimeGetCurrent() + timeout
 
         guard let name = files.first?.0 else {
             Syslog.error { "Problem is empty" }
-            // an empty problem is a theorem
-            return true
+            return true // an empty problem is a theorem
         }
-        Syslog.info { "\(name) timeout = \(timeout) s" }
+        Syslog.info { "\(timeout) s. '\(name)'" }
 
-        while let clauseIndex = selectClauseIndex() {
+        while processNextClause(), context.isSatisfiable {
             let time = AbsoluteTimeGetCurrent()
-            guard deadline < time else {
-                Syslog.info { "\(name) timeout of \(timeout) s worn down by \(time-deadline) s" }
+            guard time < deadline else {
+                Syslog.info { "\(timeout) s, expired by \(time - deadline) s. '\(name)'" }
                 return nil
             }
         }
 
-        guard deadline <= AbsoluteTimeGetCurrent() else {
-            Syslog.warning { "last round took too long."  }
-            return nil
+        Syslog.info { "\(deadline - AbsoluteTimeGetCurrent()) s remaining. '\(name)'" }
+
+        // the loop has saturated
+        return !context.isSatisfiable
+    }
+
+
+    func processNextClause() -> Bool {
+        guard let clauseIndex = selectClauseIndex(), clauseIndex < clauses.count else {
+            return false
         }
 
-        // the loop has saturated, but instances are satisfiable
+        let clause = clauses[clauseIndex]
+        print(clause)
+
+        // TODO: add clause to context
+
+        insuredClauses.insert(clauseIndex)
+
         return true
     }
+}
+
+extension ProverY {
 }

@@ -132,13 +132,17 @@ private typealias Prover = ΠρῶτοςProver<TestNode>
       XCTAssertEqual(28, prover.clauses.count, nok) // 12 + 16
       XCTAssertEqual(2, prover.files.count, nok)    // PUZ007-1.p, PUZ0001-0.ax
 
+/*
       for f in prover.files {
           print(ok, f)
       }
 
       for (idx, c) in prover.clauses.enumerated() {
-          print( c, "  FROM:", idx < prover.files.first!.2 ? prover.files.first!.0 : prover.files.last!.0)
+          print(c, "  FROM:", idx < prover.files.first!.2 ?
+          prover.files.first!.0 : prover.files.last!.0)
       }
+*/
+      prover.run(timeout: 0.01)
 
   }
 }

@@ -12,33 +12,25 @@ import Foundation
 struct Syslog {
 
   enum Priority: Comparable {
-    case emergency
-    case alert
-    case critical
-    case error
-    case warning
-    case notice
-    case info
-    case debug
+    case emergency  // LOG_EMERG      system is unusable
+    case alert      // LOG_ALERT      action must be taken immediately
+    case critical   // LOG_CRIT       critical conditions
+    case error      // LOG_ERR        error conditions
+    case warning    // LOG_WARNING    warning conditions
+    case notice     // LOG_NOTICE     normal, but significant, condition
+    case info       // LOG_INFO       informational message
+    case debug      // LOG_DEBUG      debug-level message
 
-    // LOG_EMERG      system is unusable
-    // LOG_ALERT      action must be taken immediately
-    // LOG_CRIT       critical conditions
-    // LOG_ERR        error conditions
-    // LOG_WARNING    warning conditions
-    // LOG_NOTICE     normal, but significant, condition
-    // LOG_INFO       informational message
-    // LOG_DEBUG      debug-level message
     fileprivate var priority: Int32 {
       switch self {
-        case .emergency: return LOG_EMERG
-        case .alert: return LOG_ALERT
-        case .critical: return LOG_CRIT
-        case .error: return LOG_ERR
-        case .warning: return LOG_WARNING
-        case .notice: return LOG_NOTICE
-        case .info: return LOG_INFO
-        case .debug: return LOG_DEBUG
+        case .emergency:  return LOG_EMERG
+        case .alert:      return LOG_ALERT
+        case .critical:   return LOG_CRIT
+        case .error:      return LOG_ERR
+        case .warning:    return LOG_WARNING
+        case .notice:     return LOG_NOTICE
+        case .info:       return LOG_INFO
+        case .debug:      return LOG_DEBUG
       }
     }
 
@@ -50,37 +42,22 @@ struct Syslog {
 
     fileprivate init?(string: String) {
       switch string {
-        case "emergency":
-        self = .emergency
-        case "alert":
-        self = .alert
-        case "critical":
-        self = .critical
-        case "error":
-        self = .error
-        case "warning":
-        self = .warning
-        case "notice":
-        self = .notice
-        case "info":
-        self = .info
-        case "debug":
-        self = .debug
-        default:
-        return nil
+        case "emergency":   self = .emergency
+        case "alert":       self = .alert
+        case "critical":    self = .critical
+        case "error":       self = .error
+        case "warning":     self = .warning
+        case "notice":      self = .notice
+        case "info":        self = .info
+        case "debug":       self = .debug
+        default: return nil
 
       }
     }
 
     static var all = [
-      Priority.emergency,
-      Priority.alert,
-      Priority.critical,
-      Priority.error,
-      Priority.warning,
-      Priority.notice,
-      Priority.info,
-      Priority.debug
+      Priority.emergency, Priority.alert, Priority.critical, Priority.error,
+      Priority.warning, Priority.notice, Priority.info, Priority.debug
       ]
   }
 
@@ -113,12 +90,12 @@ struct Syslog {
     // LOG_PID        Include PID with each message.
     fileprivate var option: Int32 {
       switch self {
-        case .console: return LOG_CONS
+        case .console:     return LOG_CONS
         case .immediately: return LOG_NDELAY
-        case .nowait:return LOG_NOWAIT
-        case .delayed:return LOG_ODELAY
-        case .perror:return LOG_PERROR
-        case .pid:return LOG_PID
+        case .nowait:      return LOG_NOWAIT
+        case .delayed:     return LOG_ODELAY
+        case .perror:      return LOG_PERROR
+        case .pid:         return LOG_PID
       }
     }
   }
@@ -163,18 +140,13 @@ struct Syslog {
        if let dashIndex = entry.characters.index(of:("#")) {
          value = String(entry.characters[after..<dashIndex]).trimmingWhitespace.pealing
          comment = String(entry.characters.suffix(from:dashIndex)).trimmingWhitespace
-       }
-       else {
+       } else {
          value = String(entry.characters.suffix(from:after)).trimmingWhitespace.pealing
        }
-
-
        guard let p = Priority(string:value) else {
          continue
        }
-
        cnfg[key] = p
-
      }
 
     return cnfg
@@ -293,8 +265,7 @@ extension Syslog {
   /*  void vsyslog(int priority, const char *format, va_list ap); */
 
   fileprivate static func syslog(
-      priority: Int32,
-      message: String,
+      priority: Int32, message: String,
       args: CVarArg...) {
         withVaList(args) {
           vsyslog(priority, message, $0)
@@ -302,8 +273,7 @@ extension Syslog {
     }
 
   fileprivate static func sysLog(
-    priority: Priority,
-    args: CVarArg...,
+    priority: Priority, args: CVarArg...,
     message : () -> String
   ) {
       withVaList(args) {
@@ -312,12 +282,8 @@ extension Syslog {
   }
 
   fileprivate static func log(
-    _ priority: Priority,
-    errcode: Int32 = 0,
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line,
-    column: Int = #column,
+    _ priority: Priority, errcode: Int32 = 0,
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
     // swiftlint:disable line_length
@@ -350,13 +316,8 @@ extension Syslog {
     // swiftlint:enable line_length
   }
 
-  static func multiple (
-    errcode: Int32 = 0,
-    condition: () -> Bool = { true },
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line,
-    column: Int = #column,
+  static func multiple(errcode: Int32 = 0, condition: () -> Bool = { true },
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
     for p in Syslog.Priority.all {
@@ -367,13 +328,8 @@ extension Syslog {
     }
   }
 
-  static func error(
-    errcode: Int32 = 0,
-    condition: () -> Bool = { true },
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line,
-    column: Int = #column,
+  static func error(errcode: Int32 = 0, condition: () -> Bool = { true },
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
     guard Syslog.loggable(.error, file, function, line), condition() else { return }
@@ -381,13 +337,8 @@ extension Syslog {
     file:file, function:function, line:line, column:column, message:message)
   }
 
-  static func warning(
-    errcode: Int32 = 0,
-    condition: () -> Bool = { true },
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line,
-    column: Int = #column,
+  static func warning(errcode: Int32 = 0, condition: () -> Bool = { true },
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
     guard Syslog.loggable(.warning, file, function, line), condition() else { return }
@@ -395,13 +346,8 @@ extension Syslog {
     file:file, function:function, line:line, column:column, message:message)
   }
 
-  static func notice(
-    errcode: Int32 = 0,
-    condition: () -> Bool = { true },
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line,
-    column: Int = #column,
+  static func notice(errcode: Int32 = 0, condition: () -> Bool = { true },
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
     guard Syslog.loggable(.notice, file, function, line), condition() else { return }
@@ -409,13 +355,8 @@ extension Syslog {
     file:file, function:function, line:line, column:column, message:message)
   }
 
-  static func info(
-    errcode: Int32 = 0,
-    condition: () -> Bool = { true },
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line,
-    column: Int = #column,
+  static func info(errcode: Int32 = 0, condition: () -> Bool = { true },
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
     guard Syslog.loggable(.info, file, function, line), condition() else { return }
@@ -423,35 +364,12 @@ extension Syslog {
     file:file, function:function, line:line, column:column, message:message)
   }
 
-  static func debug(
-    errcode: Int32 = 0,
-    condition: () -> Bool = { true },
-    file: String = #file,
-    function: String = #function,
-    line: Int = #line,
-    column: Int = #column,
+  static func debug(errcode: Int32 = 0, condition: () -> Bool = { true },
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message : () -> String
   ) {
     guard Syslog.loggable(.debug, file, function, line), condition() else { return }
     log (.debug, errcode:errcode,
     file:file, function:function, line:line, column:column, message:message)
-  }
-}
-
-extension Syslog {
-  struct Tags {
-    static var system : () -> String = {
-      #if os(OSX)
-      return "#OSX"
-      #elseif os(Linux)
-      return "#Linux"
-      #else
-      return "#aOS"
-      #endif
-    }
-
-    static var workaround: () -> String = {
-      return "#Workaround"
-    }
   }
 }
