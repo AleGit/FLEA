@@ -10,6 +10,8 @@ where N:SymbolStringTyped {
     var clauses: Array<(String, Tptp.Role, N)>
 
     fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
+    fileprivate var selectedLiteralIndices: Dictionary<Int, Int>
+
     fileprivate var deadline: AbsoluteTime = 0.0
     fileprivate var context = Yices.Context()
 
@@ -36,7 +38,9 @@ where N:SymbolStringTyped {
             files.append((name, url, axioms.count, 0))
         }
 
-        insuredClauses = Dictionary<Int, Yices.Tuple>(minimumCapacity: clauses.count)
+        insuredClauses = Dictionary<Int, Yices.Tuple>(minimumCapacity: clauses.count * 4)
+        selectedLiteralIndices = Dictionary<Int, Int>(minimumCapacity: clauses.count * 4)
+
     }
 
     // simplest selection funciton
@@ -87,17 +91,55 @@ extension ProverY {
             return false
         }
 
-        assert(insuredClauses[clauseIndex] == nil)
+        Syslog.error(condition: { insuredClauses[clauseIndex] != nil }) {
+            "clause #\(clauseIndex) \(insuredClauses[clauseIndex])! already insured." }
+
         insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
 
-        guard context.isSatisfiable else {
-            return false
-        }
+        guard context.isSatisfiable else { return false }
+
+        updateSelectedLiteralIndices(currentClauseIndex: clauseIndex)
+
+
+
+
 
         // TODO: derive new clauses
 
 
         return true
+    }
+
+
+
+    private func updateSelectedLiteralIndices(currentClauseIndex: Int) {
+
+        guard let model = Yices.Model(context: context) else {
+            Syslog.error { "No model!?"}
+            return
+        }
+
+        for (clauseIndex, yicesTuple) in insuredClauses {
+            let (_, yicesLiterals, _) = yicesTuple
+            guard let selectedLiteralIndex = selectedLiteralIndices[clauseIndex] else {
+                let literalIndex = model.selectIndex(literals: yicesLiterals)
+                selectedLiteralIndices[clauseIndex] = literalIndex
+
+                // add selected literal to index
+
+                continue
+            }
+
+            if model.implies(formula: yicesLiterals[selectedLiteralIndex]) { continue }
+
+            // remove deprecated selected literal from index
+
+            let literalIndex = model.selectIndex(literals: yicesLiterals)
+            selectedLiteralIndices[clauseIndex] = literalIndex
+
+            // add selected literal to index
+        }
+
     }
 
 

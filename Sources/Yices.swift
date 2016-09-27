@@ -108,5 +108,17 @@ extension Yices {
 			return yices_formula_true_in_model(model, formula) > 0
 		}
 
+		func selectIndex<C: Collection>(literals: C) -> Int?
+		where C.Iterator.Element == term_t {
+			for (index, literal) in literals.enumerated() {
+				if self.implies(formula: literal) {
+					return index
+				}
+			}
+			return nil
+		}
+
+
+
 	}
 }

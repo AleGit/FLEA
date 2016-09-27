@@ -335,6 +335,7 @@ extension Syslog {
     guard Syslog.loggable(.error, file, function, line), condition() else { return }
     log (.error, errcode:errcode,
     file:file, function:function, line:line, column:column, message:message)
+    assert(false, "\(file)/\(function).\(line):\(column) \(message())")
   }
 
   static func warning(errcode: Int32 = 0, condition: () -> Bool = { true },
