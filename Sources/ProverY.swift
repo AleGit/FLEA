@@ -98,7 +98,7 @@ extension ProverY {
 
         guard context.isSatisfiable else { return false }
 
-        updateSelectedLiteralIndices(currentClauseIndex: clauseIndex)
+        updateSelectedLiteralIndices()
 
 
 
@@ -112,7 +112,7 @@ extension ProverY {
 
 
 
-    private func updateSelectedLiteralIndices(currentClauseIndex: Int) {
+    private func updateSelectedLiteralIndices() {
 
         guard let model = Yices.Model(context: context) else {
             Syslog.error { "No model!?"}
@@ -125,24 +125,44 @@ extension ProverY {
                 let literalIndex = model.selectIndex(literals: yicesLiterals)
                 selectedLiteralIndices[clauseIndex] = literalIndex
 
-                // add selected literal to index
+                updateSelectedLiteralClauses(clauseIndex: clauseIndex)
 
                 continue
             }
 
             if model.implies(formula: yicesLiterals[selectedLiteralIndex]) { continue }
 
-            // remove deprecated selected literal from index
+            // unmap selected literal to clause index
 
             let literalIndex = model.selectIndex(literals: yicesLiterals)
             selectedLiteralIndices[clauseIndex] = literalIndex
 
-            // add selected literal to index
+            updateSelectedLiteralClauses(clauseIndex: clauseIndex,
+            previousLiteralIndex: selectedLiteralIndex)
         }
 
     }
 
+    private func updateSelectedLiteralClauses(clauseIndex: Int, previousLiteralIndex: Int? = nil) {
 
+        if let literalIndex = previousLiteralIndex {
+            print("### remove", clauseIndex, literalIndex)
+        }
+
+        guard let literalIndex = selectedLiteralIndices[clauseIndex] else {
+            assert(false)
+        }
+
+        print("+++ add", clauseIndex, literalIndex)
+
+
+
+
+
+
+
+
+    }
 }
 
 extension ProverY {
