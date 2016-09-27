@@ -54,7 +54,7 @@ extension Yices {
         /// * `p ≡ [ p, p ]`
         /// * `p ≡ [ ⊥ ~= ⊥, p ]`
         /// * `[p,q,q,q,q] ≡ [ p, q, ⊥ ~= ⊥, p,q ]`
-  static func clause<N:Node>(_ literals:[N]) -> Tuple
+  static func clause<N: Node>(_ literals:[N]) -> Tuple
   where N:SymbolStringTyped {
           /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
 
@@ -84,7 +84,7 @@ extension Yices {
         /// - an equation
         /// - an inequation
         /// - a predicatate term or a proposition constant
-  static func literal<N: Node>(_ literal:N) -> term_t
+  private static func literal<N: Node>(_ literal:N) -> term_t
   where N:SymbolStringTyped {
 
     guard let nodes = literal.nodes
@@ -100,13 +100,11 @@ extension Yices {
       case .negation:
         assert(nodes.count == 1, "A negation must have exactly one child.")
         // no need to register negations
-        // literal.register(.negation, category: .Functor, notation:.Prefix, arity:.Fixed(1))
         return yices_not( Yices.literal(nodes.first! ))
 
       case .inequation:
         assert(nodes.count == 2, "An inequation must have exactly two children.")
         // inequations must be registered to check if equality axioms are needed
-        //literal.register(.inequation, category: .equational, notation:.infix, arity:.fixed(2))
 
         let args = nodes.map { Yices.term($0) }
         return yices_neq(args.first!, args.last!)
@@ -114,13 +112,11 @@ extension Yices {
       case .equation:
         assert(nodes.count == 2, "An equation must have exactly two children.")
         // equations must be registered to check if equality axioms are needed
-        // literal.register(.equation, category: .equational, notation:.infix, arity:.fixed(2))
         let args = nodes.map { Yices.term($0) }
         return yices_eq(args.first!, args.last!)
 
       case .predicate:
         // predicates must be registered to derive congruence axioms
-        // literal.register(.predicate, category:.functor, notation:.prefix, arity:.fixed(nodes.count))
 
         // proposition or predicate term (an application of Boolean type)
         return Yices.application(literalSymbolString, nodes:nodes, term_tau: Yices.bool_tau)
@@ -132,7 +128,7 @@ extension Yices {
   }
 
                   /// Build uninterpreted function term from term.
-  static func term<N:Node>(_ term:N) -> term_t
+  private static func term<N: Node>(_ term:N) -> term_t
   where N:SymbolStringTyped {
   // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
@@ -152,7 +148,8 @@ extension Yices {
   // swiftlint:disable variable_name (term_tau, 🚧)
 
   /// Build (constant) predicate or function.
-  static func application<N: Node>(_ symbolString:String, nodes:[N], term_tau: type_t) -> term_t
+  private static func application<N: Node>(_ symbolString:String,
+  nodes:[N], term_tau: type_t) -> term_t
   where N:SymbolStringTyped {
 
     guard nodes.count > 0 else {
@@ -163,7 +160,7 @@ extension Yices {
   }
 
   /// Uninterpreted global constant (i.e. variable) of uninterpreted type.
-  static var 🚧 : term_t {
+  private static var 🚧 : term_t {
     return Yices.constant("⊥", term_tau: free_tau)
   }
   // swiftlint:enable variable_name

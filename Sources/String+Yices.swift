@@ -1,3 +1,5 @@
+//  Copyright © 2016 Alexander Maringele. All rights reserved.
+
 import CYices
 
 public extension String {
@@ -40,9 +42,9 @@ public extension String {
     }
 
     /// Creates a String representaion of yices model
-    public init?(model: OpaquePointer, width:UInt32, height:UInt32, offset:UInt32) {
+    public init?(model: OpaquePointer, width: UInt32, height: UInt32, offset: UInt32) {
         guard let cstring = yices_model_to_string(model, width, height, offset) else {
-            yices_print_error(stdout);
+            yices_print_error(stdout)
             return nil
         }
         defer {

@@ -1,3 +1,4 @@
+//  Copyright © 2016 Alexander Maringele. All rights reserved.
 
 #if os(OSX)
 import Darwin
@@ -232,7 +233,7 @@ extension Syslog {
 
   static func openLog(ident: String?=nil, options: Syslog.Option..., facility: Int32 = LOG_USER) {
     let option = options.reduce(0) { $0 | $1.option }
-    openlog(ident, option, facility);
+    openlog(ident, option, facility)
     // ident == nil => use process name
     // idetn != nil => does not work on Linux
   }
@@ -299,8 +300,7 @@ extension Syslog {
           return "unknown os"
           #endif
         }
-    }
-    else {
+    } else {
       Syslog.sysLog(priority:priority,
         args: line, column) {
           #if os(OSX)
