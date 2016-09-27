@@ -9,7 +9,7 @@ where N:SymbolStringTyped {
     /// all clauses from all read files
     var clauses: Array<(String, Tptp.Role, N)>
 
-    fileprivate var insuredClauses: Set<Int>
+    fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
     fileprivate var deadline: AbsoluteTime = 0.0
     fileprivate var context = Yices.Context()
 
@@ -36,7 +36,7 @@ where N:SymbolStringTyped {
             files.append((name, url, axioms.count, 0))
         }
 
-        insuredClauses = Set<Int>(minimumCapacity: clauses.count)
+        insuredClauses = Dictionary<Int, Yices.Tuple>(minimumCapacity: clauses.count)
     }
 
     // simplest selection funciton
@@ -56,7 +56,7 @@ extension ProverY {
         }
         Syslog.info { "\(timeout) s. '\(name)'" }
 
-        while processNextClause(), context.isSatisfiable {
+        while processNextClause() {
             let time = AbsoluteTimeGetCurrent()
             guard time < deadline else {
                 Syslog.info { "\(timeout) s, expired by \(time - deadline) s. '\(name)'" }
@@ -72,9 +72,11 @@ extension ProverY {
 
 
     /// Process clause, i.e. encode and assert clause with Yices
-    /// - returns false if no unprocessed clause is available
-    /// - returns true after processing
-    func processNextClause() -> Bool {
+    /// - returns false if
+    ///     - no unprocessed clause is available
+    ///     - context is not satifaible anymore
+    /// - returns true otherwise
+    private func processNextClause() -> Bool {
         guard let clauseIndex = selectClauseIndex(), clauseIndex < clauses.count else {
             Syslog.error(condition: { insuredClauses.count != clauses.count }) {
                 "Just \(insuredClauses.count) of \(clauses.count) clauses were processed." }
@@ -85,14 +87,20 @@ extension ProverY {
             return false
         }
 
-        let clause = clauses[clauseIndex]
+        assert(insuredClauses[clauseIndex] == nil)
+        insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
 
-        // TODO: add clause to context
+        guard context.isSatisfiable else {
+            return false
+        }
 
-        insuredClauses.insert(clauseIndex)
+        // TODO: derive new clauses
+
 
         return true
     }
+
+
 }
 
 extension ProverY {

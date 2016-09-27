@@ -8,7 +8,7 @@ extension Yices {
   typealias Tuple = (
     clause: term_t,
     literals: [term_t],
-    yicesLiterals: [term_t]
+    shuffled: [term_t]
   )
 
   /// Return a yices clause and yices literals from a node clause.
@@ -149,8 +149,10 @@ extension Yices {
     return Yices.application(termSymbolString, nodes:nodes, term_tau:Yices.free_tau)
   }
 
+  // swiftlint:disable variable_name (term_tau, 🚧)
+
   /// Build (constant) predicate or function.
-  static func application<N:Node>(_ symbolString:String, nodes:[N], term_tau:type_t) -> term_t
+  static func application<N: Node>(_ symbolString:String, nodes:[N], term_tau: type_t) -> term_t
   where N:SymbolStringTyped {
 
     guard nodes.count > 0 else {
@@ -161,7 +163,6 @@ extension Yices {
   }
 
   /// Uninterpreted global constant (i.e. variable) of uninterpreted type.
-  // swiftlint:disable variable_name
   static var 🚧 : term_t {
     return Yices.constant("⊥", term_tau: free_tau)
   }
