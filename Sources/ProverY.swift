@@ -71,13 +71,21 @@ extension ProverY {
     }
 
 
+    /// Process clause, i.e. encode and assert clause with Yices
+    /// - returns false if no unprocessed clause is available
+    /// - returns true after processing
     func processNextClause() -> Bool {
         guard let clauseIndex = selectClauseIndex(), clauseIndex < clauses.count else {
+            Syslog.error(condition: { insuredClauses.count != clauses.count }) {
+                "Just \(insuredClauses.count) of \(clauses.count) clauses were processed." }
+
+            Syslog.notice(condition: { insuredClauses.count == clauses.count }) {
+                "All \(clauses.count) clauses were processed." }
+
             return false
         }
 
         let clause = clauses[clauseIndex]
-        print(clause)
 
         // TODO: add clause to context
 
