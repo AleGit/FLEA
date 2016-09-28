@@ -192,7 +192,7 @@ extension TrieStore {
 
 extension TrieStore {
   /// `wildcard` must be distinct from all other leap values,
-  /// e.g. Int == Leap => asterisk must not conflict with positions, i.e. asterisk < 0
+  /// e.g. Leap == Int => asterisk must not conflict with positions, i.e. asterisk < 0
   private func values<C: Collection>(prefix path: C, wildcard: Leap) -> Set<Value>?
   where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
   C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {
