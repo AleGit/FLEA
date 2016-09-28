@@ -122,43 +122,55 @@ extension ProverY {
         for (clauseIndex, yicesTuple) in insuredClauses {
             let (_, yicesLiterals, _) = yicesTuple
             guard let selectedLiteralIndex = selectedLiteralIndices[clauseIndex] else {
-                let literalIndex = model.selectIndex(literals: yicesLiterals)
-                selectedLiteralIndices[clauseIndex] = literalIndex
+                // no previously selected literal
 
-                updateSelectedLiteralClauses(clauseIndex: clauseIndex)
+                selectedLiteralIndices[clauseIndex] = model.selectIndex(literals: yicesLiterals)
+
+                updateSelectedLiteralTrie(clauseIndex: clauseIndex)
 
                 continue
             }
 
-            if model.implies(formula: yicesLiterals[selectedLiteralIndex]) { continue }
+            if model.implies(formula: yicesLiterals[selectedLiteralIndex]) {
+                // literal still holds, no need to update selected literal trie
+                continue
+            }
 
-            // unmap selected literal to clause index
+            // literal does not hold anymore
 
-            let literalIndex = model.selectIndex(literals: yicesLiterals)
-            selectedLiteralIndices[clauseIndex] = literalIndex
+            selectedLiteralIndices[clauseIndex] = model.selectIndex(literals: yicesLiterals)
 
-            updateSelectedLiteralClauses(clauseIndex: clauseIndex,
-            previousLiteralIndex: selectedLiteralIndex)
+            updateSelectedLiteralTrie(clauseIndex: clauseIndex,
+             previousLiteralIndex: selectedLiteralIndex)
         }
 
     }
 
-    private func updateSelectedLiteralClauses(clauseIndex: Int, previousLiteralIndex: Int? = nil) {
+    private func updateSelectedLiteralTrie(clauseIndex: Int, previousLiteralIndex: Int? = nil) {
+        guard clauseIndex < clauses.count,
+        let nodes = clauses[clauseIndex].2.nodes else {
+            Syslog.error { "Clause #\(clauseIndex) does not exist or has no nodes."}
+            return
+        }
 
         if let literalIndex = previousLiteralIndex {
-            print("### remove", clauseIndex, literalIndex)
+            // remove literal paths from trie
+            for path in nodes[literalIndex].leafPaths {
+                print(path, clauseIndex, nodes[literalIndex])
+            }
         }
 
         guard let literalIndex = selectedLiteralIndices[clauseIndex] else {
-            assert(false)
+            Syslog.error { "No literal could be selected" }
+            return
         }
 
-        print("+++ add", clauseIndex, literalIndex)
 
+        for path in nodes[literalIndex].leafPaths {
+                print(path, clauseIndex, nodes[literalIndex])
+            }
 
-
-
-
+        // add literal paths to index
 
 
 
