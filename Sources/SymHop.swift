@@ -21,7 +21,7 @@ extension SymHop: Hashable {
 
 extension SymHop : CustomStringConvertible {
   /// Enable pretty printing
-  var description : String {
+  var description: String {
     switch self {
       case let .symbol(symbol):
         return "\(symbol)"
@@ -32,8 +32,8 @@ extension SymHop : CustomStringConvertible {
 }
 
 /// Make SymHop equatable.
-func ==<S:Hashable>(lhs:SymHop<S>, rhs:SymHop<S>) -> Bool {
-  switch(lhs,rhs) {
+func ==<S: Hashable>(lhs: SymHop<S>, rhs: SymHop<S>) -> Bool {
+  switch(lhs, rhs) {
     case let (.symbol(lsymbol), .symbol(rsymbol)):
       return lsymbol == rsymbol
     case let (.hop(lhop), .hop(rhop)):

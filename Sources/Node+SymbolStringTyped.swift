@@ -32,6 +32,3 @@ where N:SymbolStringTyped {
 
     return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
 }
-
-
-
