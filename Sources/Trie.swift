@@ -191,8 +191,9 @@ extension TrieStore {
 }
 
 extension TrieStore {
-  /// `wildcard` must be distinct from all other leap values,
-  /// e.g. Leap == Int => asterisk must not conflict with positions, i.e. asterisk < 0
+  /// `wildcard` must be distinct from all other leap values, e.g.
+  /// Leap == Int => wildcard must not conflict with positions, i.e. wildcard < 0
+  /// Leap == SymHop<String> => wildcard = SymHop.symbol("*")
   private func values<C: Collection>(prefix path: C, wildcard: Leap) -> Set<Value>?
   where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
   C.SubSequence:Collection, C.SubSequence.SubSequence == C.SubSequence {

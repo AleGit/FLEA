@@ -11,9 +11,12 @@ where N:SymbolStringTyped {
 
     fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
     fileprivate var selectedLiteralIndices: Dictionary<Int, Int>
+    fileprivate var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, Int>()
 
     fileprivate var deadline: AbsoluteTime = 0.0
     fileprivate var context = Yices.Context()
+
+
 
     /// Initialize a prover with a problem, read the problem file and axiom files.
     init?(problem name: String) {
@@ -99,13 +102,9 @@ extension ProverY {
 
         guard context.isSatisfiable else { return false }
 
-        updateSelectedLiteralIndices()
+        updateSelectedLiterals()
 
-
-
-
-
-        // TODO: derive new clauses
+        // findConflicts(clauseIndex: clauseIndex)
 
 
         return true
@@ -113,7 +112,7 @@ extension ProverY {
 
 
 
-    private func updateSelectedLiteralIndices() {
+    private func updateSelectedLiterals() {
 
         guard let model = Yices.Model(context: context) else {
             Syslog.error { "No model!?"}
@@ -142,7 +141,7 @@ extension ProverY {
             selectedLiteralIndices[clauseIndex] = model.selectIndex(literals: yicesLiterals)
 
             updateSelectedLiteralTrie(clauseIndex: clauseIndex,
-             previousLiteralIndex: selectedLiteralIndex)
+            previousLiteralIndex: selectedLiteralIndex)
         }
 
     }
@@ -156,27 +155,26 @@ extension ProverY {
 
         if let literalIndex = previousLiteralIndex {
             // remove literal paths from trie
+
             for path in nodes[literalIndex].leafPaths {
-                print(path, clauseIndex, nodes[literalIndex])
+                guard let removedClauseIndex = selectedLiteralsTrie.remove(clauseIndex, at:path),
+                removedClauseIndex == clauseIndex else {
+                    Syslog.error { "\(literalIndex) was not removed at \(path)." }
+                    continue
+                }
             }
         }
 
         guard let literalIndex = selectedLiteralIndices[clauseIndex] else {
-            Syslog.error { "No literal could be selected" }
+            Syslog.error { "No literal could be selected." }
             return
         }
 
+        // insert literal paths into trie
 
         for path in nodes[literalIndex].leafPaths {
-                print(path, clauseIndex, nodes[literalIndex])
-            }
-
-        // add literal paths to index
-
-
-
-
-
+            selectedLiteralsTrie.insert(clauseIndex, at: path)
+        }
     }
 }
 
