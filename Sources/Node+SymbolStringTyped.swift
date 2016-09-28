@@ -33,12 +33,5 @@ where N:SymbolStringTyped {
     return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
 }
 
-extension Node where Symbol == Int {
-  static var joker: Symbol { return -1 }
-}
-
-extension Node where Symbol == String {
-  static var joker: Symbol { return "*" }
-}
 
 

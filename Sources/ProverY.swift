@@ -52,6 +52,7 @@ where N:SymbolStringTyped {
 
 extension ProverY {
     func run(timeout: TimeInterval) -> Bool? {
+
         deadline = AbsoluteTimeGetCurrent() + timeout
 
         guard let name = files.first?.0 else {
@@ -171,6 +172,8 @@ extension ProverY {
             }
 
         // add literal paths to index
+
+
 
 
 

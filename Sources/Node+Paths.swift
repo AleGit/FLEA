@@ -1,6 +1,6 @@
 extension Node where Self:SymbolStringTyped {
-  var joker: SymHop<Symbol> {
-    return .symbol(Self.symbolize(string:Tptp.wildcard, type:.variable))
+  var joker: Symbol {
+    return Self.symbolize(string:Tptp.wildcard, type:.variable)
   }
 
   /// Prefix paths from root to leaves.
@@ -8,7 +8,7 @@ extension Node where Self:SymbolStringTyped {
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths: [[SymHop<Symbol>]] {
     guard let nodes = self.nodes else {
-      return [[self.joker]]
+      return [[.symbol(self.joker)]]
     }
     guard nodes.count > 0 else {
       return [[.symbol(self.symbol)]]
@@ -29,6 +29,10 @@ extension Node where Self:SymbolStringTyped {
 }
 
 extension Node where Symbol == Int, Self:SymbolStringTyped {
+  var joker: Symbol {
+    return -1
+  }
+
   /// Prefix paths from root to leaves.
   /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
@@ -47,10 +51,6 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
       }
     }
     return ps
-  }
-
-  var joker: Symbol {
-    return -1
   }
 
 
