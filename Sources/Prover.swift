@@ -47,7 +47,7 @@ extension Prover {
 
         guard let file = Tptp.File(url:url) else {
             Syslog.error {
-                "Axiom \(name) at \(url.path) could not be read and parsed."
+                "Axiom \(name) at \(url.path) could not be read or parsed."
                 }
             return nil
         }

@@ -16,6 +16,8 @@ where N:SymbolStringTyped {
     fileprivate var deadline: AbsoluteTime = 0.0
     fileprivate var context = Yices.Context()
 
+    fileprivate let wildcardSymbol = N.symbolize(string:"*", type:.variable)
+
 
 
     /// Initialize a prover with a problem, read the problem file and axiom files.
@@ -102,15 +104,42 @@ extension ProverY {
 
         guard context.isSatisfiable else { return false }
 
-        updateSelectedLiterals()
+        updateSelectedLiteralIndices()
 
-        // findConflicts(clauseIndex: clauseIndex)
+        findConflicts(clauseIndex: clauseIndex)
 
 
         return true
     }
 
-    private func updateSelectedLiterals() {
+    private func findConflicts(clauseIndex: Int) {
+        let clause = clauses[clauseIndex].2.appending(suffix:clauseIndex)
+
+        guard let nodes = clause.nodes, let selectedLiteralIndex = selectedLiteralIndices[clauseIndex],
+        (selectedLiteralIndex < nodes.count) else {
+            Syslog.error { "Clause #\(clauseIndex) does not exist or has no valid selected literal."}
+            return
+        }
+        
+        guard let negated = nodes[selectedLiteralIndex].negating else {
+            Syslog.error { "WTF" }
+            return
+        }
+
+
+
+        let clashings = selectedLiteralsTrie.unifiables(paths: negated.leafPaths, wildcard: SymHop.symbol(wildcardSymbol))
+
+
+
+        print(negated, selectedLiteralIndex, clause, clashings)
+
+
+
+
+    }
+
+    private func updateSelectedLiteralIndices() {
 
         guard let model = Yices.Model(context: context) else {
             Syslog.error { "No model!?"}
