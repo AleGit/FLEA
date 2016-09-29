@@ -65,7 +65,7 @@ public class UnificationTests: FleaTestCase {
   }
 
   func testSuffixing() {
-    let X1 = Q.X * 1
+    let X1 = Q.X.appending(suffix:1)
     XCTAssertEqual("X_1", "\(X1)", nok)
 
     guard let mgu = Q.X =?= X1 else {
@@ -94,10 +94,9 @@ public class UnificationTests: FleaTestCase {
   }
 
   func testNormalizing() {
-    let t = "p(f(X_1))|q(X_2)|r(X_1)" as Q.Node
+    let t0 = "p(f(X_1))|q(X_2)|r(X_1)" as Q.Node
 
-    let u = t.normalizing()
+    XCTAssertEqual("(p(f(X))|q(X_2)|r(X))", "\(t0.normalizing())", nok)
 
-    XCTAssertEqual("(p(f(X))|q(X_2)|r(X))", "\(u)", nok)
   }
 }
