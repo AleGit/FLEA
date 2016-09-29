@@ -79,11 +79,11 @@ extension ProverY {
     }
 
 
-    /// Process clause, i.e. encode and assert clause with Yices
-    /// - returns false if
-    ///     - no unprocessed clause is available
+    /// Process next clause, i.e. encode and assert clause with Yices, returns
+    /// - false if
+    ///     - no unprocessed clause was available, or
     ///     - context is not satifaible anymore
-    /// - returns true otherwise
+    /// - true otherwise
     private func processNextClause() -> Bool {
         guard let clauseIndex = selectClauseIndex(), clauseIndex < clauses.count else {
             Syslog.error(condition: { insuredClauses.count != clauses.count }) {
@@ -109,8 +109,6 @@ extension ProverY {
 
         return true
     }
-
-
 
     private func updateSelectedLiterals() {
 
@@ -176,7 +174,4 @@ extension ProverY {
             selectedLiteralsTrie.insert(clauseIndex, at: path)
         }
     }
-}
-
-extension ProverY {
 }
