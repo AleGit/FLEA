@@ -3,7 +3,7 @@
 /// 'lhs =?= rhs' constructs most common unifier mgu(lhs,rhs)
 /// iff terms lhs and rhs are unifiable.
 /// Otherwise it returns *nil*. (specialized for Dictionary)
-func =?=<N:Node>(lhs:N, rhs:N) -> [N:N]? {
+func =?=<N:Node>(lhs: N, rhs: N) -> [N:N]? {
   // delete
   if lhs == rhs {
     return [N:N]() // trivially unifiable, empty unifier
@@ -52,9 +52,9 @@ func =?=<N:Node>(lhs:N, rhs:N) -> [N:N]? {
 }
 
 extension Node where Self:SymbolStringTyped {
-  
-  var unnegating : Self {
-    let (_,type) = self.symbolStringType 
+
+  var unnegating: Self {
+    let (_, type) = self.symbolStringType
     switch type {
 
       case .negation:
@@ -64,7 +64,7 @@ extension Node where Self:SymbolStringTyped {
       case .equation:
         assert(self.nodes?.count == 2)
         return self
-          
+
       case .inequation:
         assert(self.nodes?.count == 2)
         return Self(

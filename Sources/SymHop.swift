@@ -9,7 +9,7 @@ enum SymHop<S:Hashable> {
 
 extension SymHop: Hashable {
   /// Enable SymHop as element of sets.
-  var hashValue : Int {
+  var hashValue: Int {
     switch self {
       case let .symbol(symbol):
         return symbol.hashValue
