@@ -1,18 +1,24 @@
 /*
   ### Tasks: find better names for (some) protocols and typealias
-  1. _protocol_ `SymbolStringTyped`, i.e. a type with a symbol and a `Self.Symbol` <-> `(String,SymbolType)` conversion,
+  1. _protocol_ `SymbolStringTyped`, i.e. a type with a symbol
+      and a `Self.Symbol` <-> `(String,SymbolType)` conversion,
      default implementations are provided for types that
      - either adopt `SymbolTabulating`
      - or use Self.Symbol : StringSymbolable
-  2. _protocol_ `StringSymbolable`, i.e. a _symbol_ (type) with a `Self` <-> (String,SymbolType)` conversion.
+  2. _protocol_ `StringSymbolable`, i.e. a _symbol_ (type)
+      with a `Self` <-> (String,SymbolType)` conversion.
   3. _typealias_ `StringType = (String,SymbolType)`
-  4. _protocol_ `SymbolTable`, i.e. a type with a 'Key' -> 'Symbol' mapping. (Key type is usually `String`)
-  5. _protocol_ `SymbolTabulating`, i.e. a type that stores symbols (strings, types) in a symbol table.
+  4. _protocol_ `SymbolTable`, i.e. a type
+      with a 'Key' -> 'Symbol' mapping. (Key type is usually `String`)
+  5. _protocol_ `SymbolTabulating`, i.e. a type that stores symbols
+      (strings, types) in a symbol table.
 
   ### Proposals
   1. Rename `SymbolStringTyped` to
-  2. Rename `StringSymbolable` to `StringTyped`, since `where Self.Symbol : StringTyped` is nice to read.
-  3. Rename `StringType` to `StringTypePair`, `StringSymbolType`, `StringSymbolTypePair` for more clarity.
+  2. Rename `StringSymbolable` to `StringTyped`,
+    since `where Self.Symbol : StringTyped` is nice to read.
+  3. Rename `StringType` to `StringTypePair`,
+    `StringSymbolType`, `StringSymbolTypePair` for more clarity.
   4.
   5.
 */
@@ -125,8 +131,8 @@ struct StringStringTable: SymbolTable {
     return string
   }
 
-  subscript(value:String) -> StringType? {
+  subscript(value: String) -> StringType? {
     guard let type = types[value] else { return nil }
-    return (value,type)
+    return (value, type)
   }
 }
