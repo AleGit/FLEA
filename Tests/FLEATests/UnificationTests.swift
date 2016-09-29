@@ -7,7 +7,8 @@ public class UnificationTests: FleaTestCase {
     return [
     ("testUnifiable", testUnifiable),
     ("testNotUnifiable", testNotUnifiable),
-    ("testSuffixing", testSuffixing)
+    ("testSuffixing", testSuffixing),
+    ("testSuffixing", testNormalizing)
     ]
   }
 
