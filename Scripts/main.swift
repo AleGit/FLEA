@@ -54,7 +54,6 @@ if let problems = options["--problem"] {
     for problem in problems {
         print("Problem:\(problem)")
         process(problem:problem)
-
     }
 }
 

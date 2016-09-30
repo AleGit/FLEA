@@ -103,8 +103,6 @@ extension ProverY {
         Syslog.error(condition: { insuredClauses[clauseIndex] != nil }) {
             "clause #\(clauseIndex) \(insuredClauses[clauseIndex])! already insured." }
 
-        let insuredClause = context.insure(clause: clauses[clauseIndex].2)
-
         insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
 
         guard context.isSatisfiable else { return false }
