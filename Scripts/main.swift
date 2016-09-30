@@ -7,46 +7,49 @@ defer {
     Syslog.closeLog()
 }
 
+private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+  ExpressibleByStringLiteral {
+    typealias S = Int
+    typealias N = TheNode
+    static var symbols = StringIntegerTable<S>()
+    static var pool = WeakSet<N>()
+    var folks = WeakSet<N>()
+
+    var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
+    var nodes: [N]? = nil
+
+    var description: String { return defaultDescription }
+  }
 
 
 
 // MARK: functions
 func process(problem:String) {
-    
-    let name = problem
-//     let options = CommandLine.options
-// if let problems = options["--problem"] {
-//     for name in problems {
 
-        print("xProblem:\(name)")
-    guard let url = URL(fileURLWithProblem:name) else {
-        Syslog.error { "Problem \(name) could not be found." }
-        return
-    }
-    guard let file = Tptp.File(url:url) else {
-        Syslog.error { "Problem \(name) at \(url.path) could not be read and parsed." }
-        return
-    }
+    Syslog.debug { "Hello, \(problem)" }
 
-    let array = file.cnfs.map {
-        Tptp.KinIntNode(tree:$0)
-        }
+    guard let theProver = FLEA.ProverY<TheNode>(problem:problem) else {
+        Syslog.warning { "Could not create prover with problem \(problem)" }
+          return
+      }
 
-    let includes = file.includeSelectionURLTriples(url:url)
-    let clauses : [(String,Tptp.Role,Tptp.KinIntNode)] = file.nameRoleClauseTriples()
+    let (result, runtime) = utileMeasure {
+        theProver.run(timeout:30.0)
+    } 
 
-    print(array.count,clauses.count,includes.count)
+    print(result, runtime)
 
-    print(file.path)
-
-//     }
-// }
 }
+let _ = Demo.demo()
 
 // ============================================================/
 
 let options = CommandLine.options
 if let problems = options["--problem"] {
+
+    Yices.setUp()
+    defer { Yices.tearDown() }
+    
     for problem in problems {
         print("Problem:\(problem)")
         process(problem:problem)
@@ -54,6 +57,6 @@ if let problems = options["--problem"] {
     }
 }
 
-let _ = Demo.demo()
+
 
 // ============================================================/

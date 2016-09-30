@@ -153,6 +153,8 @@ struct Syslog {
 
      }
 
+     print(cnfg)
+
     return cnfg
   }()
 
