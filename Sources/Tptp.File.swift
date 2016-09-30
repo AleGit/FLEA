@@ -11,7 +11,7 @@ extension Tptp {
     private(set) var root: TreeNodeRef?
 
     private init?(path: FilePath) {
-      Syslog.info { path }
+      Syslog.notice { "TptpFile(path:\(path))" }
       guard let size = path.fileSize, size > 0 else {
         return nil
       }
@@ -38,7 +38,7 @@ extension Tptp {
     }
 
     init?(string: String, type: Tptp.SymbolType) {
-      Syslog.info { string }
+      Syslog.notice { "Tptp.File(string:\(string), type:\(type))" }
 
       let code: Int32
 
@@ -89,7 +89,7 @@ extension Tptp {
 
 
     deinit {
-      Syslog.info { self.path }
+      Syslog.notice { self.path }
       if let store = store {
         prlcDestroyStore(store)
       }
@@ -175,7 +175,6 @@ extension Tptp {
             let cnf = child.sibling else {
                 let symbol = $0.symbol ?? "n/a"
                 Syslog.error { "Invalid cnf \(symbol) in \(self.path)"}
-                assert(false, "Invalid cnf in \(symbol) in \(self.path)")
                 return nil
             }
             guard predicate(name, role) else {
@@ -183,7 +182,7 @@ extension Tptp {
                 return nil
             }
             let tree = N(tree:cnf)
-            Syslog.info { "\(tree)" }
+            Syslog.debug { "\(tree)" }
             return (name, role, tree)
         }
     }

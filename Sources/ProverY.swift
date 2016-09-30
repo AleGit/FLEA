@@ -115,27 +115,36 @@ extension ProverY {
     private func findConflicts(clauseIndex: Int) {
         let clause = clauses[clauseIndex].2.appending(suffix:clauseIndex)
 
-        guard let nodes = clause.nodes, let selectedLiteralIndex = selectedLiteralIndices[clauseIndex],
-        (selectedLiteralIndex < nodes.count) else {
-            Syslog.error { "Clause #\(clauseIndex) does not exist or has no valid selected literal."}
+        guard let nodes = clause.nodes,
+        let literalIndex = selectedLiteralIndices[clauseIndex],
+        (literalIndex < nodes.count) else {
+            Syslog.error {
+                "Clause #\(clauseIndex) does not exist or has no valid selected literal."
+            }
             return
         }
-        
-        guard let negated = nodes[selectedLiteralIndex].negating else {
-            Syslog.error { "WTF" }
+
+        guard let negated = nodes[literalIndex].negating else {
+            Syslog.error { "Literal \(clauseIndex).\(literalIndex) could not be negated." }
             return
         }
 
+        guard let clashings = selectedLiteralsTrie.unifiables(paths: negated.leafPaths,
+        wildcard: SymHop.symbol(wildcardSymbol)) else {
+            Syslog.debug {
+                "No clashings for clause \(clauseIndex).\(literalIndex) \(clause)"
+            }
+            return
+        }
 
+        Syslog.error(condition: { clashings.contains(clauseIndex)}) {
+            "Clause \(clauseIndex).\(literalIndex) \(clause) MUST NOT clash with itself."
+        }
 
-        let clashings = selectedLiteralsTrie.unifiables(paths: negated.leafPaths, wildcard: SymHop.symbol(wildcardSymbol))
-
-
-
-        print(negated, selectedLiteralIndex, clause, clashings)
-
-
-
+        Syslog.debug {
+            "Clashings for clause \(clauseIndex).\(literalIndex) \(clause): ".appending(
+            "\(clashings.map { ($0,selectedLiteralIndices[$0]!)})")
+        }
 
     }
 
