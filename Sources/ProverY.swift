@@ -112,35 +112,42 @@ extension ProverY {
         return true
     }
 
+    // expensive
     private func checkConflictsLinearily(negatedLiteral: N, clashings: Set<Int>? = nil) {
-        Syslog.debug { "START CHECKING \(negatedLiteral) \(clashings)" }
 
+        var clauseIndices = clashings ?? Set<Int>()
+        var message = "## ?!? ##"
 
         Syslog.debug(condition: {
 
-        guard var clashings = clashings else {
-            // find one clashing
-
             for (clauseIndex, literalIndex) in selectedLiteralIndices {
                 let literal = clauses[clauseIndex].2.nodes![literalIndex]
-                if let mgu = (negatedLiteral =?= literal) {
-                    print(mgu)
-                    return true
+                if (negatedLiteral =?= literal) != nil {
+                    guard let _ = clauseIndices.remove(clauseIndex) else {
+                        message = "Candidates do not contain clashing clause \(clauseIndex)"
+                        assert(false, message)
+                        return true
+                    }
                 }
             }
 
-            return true
-        }
+            if clauseIndices.count > 0 {
+                for clauseIndex in clauseIndices {
+                    guard let literalIndex = selectedLiteralIndices[clauseIndex],
+                    let literal = clauses[clauseIndex].2.nodes?[literalIndex] else {
+                        assert(false, "Candidates contain missing invalid clause \(clauseIndex)")
+                        return true
+                    }
 
-        // compare alle clashings
-
-        var conflicts = Set<Int>()
-
-
-
-        return true
-        }) {
-            "Clashings do not match"
+                    if (literal =?= negatedLiteral) != nil {
+                        assert(false, "Clasuse \(clauseIndex) should have been found linearily.")
+                    }
+                }
+            }
+            return false
+            }
+        ) {
+            "Clashings do not match \(message)"
         }
     }
 

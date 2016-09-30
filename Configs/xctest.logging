@@ -15,8 +15,8 @@
 
 "Tptp.File.swift"               :: "info"
 # "URL+FilePath.swift"          :: "info"
-"Prover.swift"                  :: "debug"
-"ProverY.swift"                 :: "debug"          # comment
+"Prover.swift"                  :: "error"
+"ProverY.swift"                 :: "error"          # comment
 "ProverY.swift/checkConflictsLinearily(negatedLiteral:clashings:)"  :: "debug"
 
 
