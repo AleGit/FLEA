@@ -202,6 +202,7 @@ extension ProverY {
             guard let literalIndex = selectedLiteralIndices[clauseIndex],
             let literal = otherClause.nodes?[literalIndex] else {
                 assert(false, "WTF")
+                continue
             }
 
             guard let mgu = negatedLiteral =?= literal else {

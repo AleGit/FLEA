@@ -1,7 +1,7 @@
 #!/bin/bash
 
 swift build --clean
-Scripts/build.sh -c release
+Scripts/build.sh -c release -Xlinker -L/usr/local/lib
 
 .build/release/FLEA --demo mgu
-.build/release/FLEA --problem PUZ001-1 PUZ002-1cho 
+.build/release/FLEA --problem PUZ007-1
