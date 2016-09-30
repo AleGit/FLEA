@@ -19,6 +19,9 @@ where N:SymbolStringTyped {
     fileprivate let wildcardSymbol = N.symbolize(string:"*", type:.variable)
 
 
+    var insuredClausesCount : Int {
+        return insuredClauses.count
+    }
 
     /// Initialize a prover with a problem, read the problem file and axiom files.
     init?(problem name: String) {
@@ -99,6 +102,8 @@ extension ProverY {
 
         Syslog.error(condition: { insuredClauses[clauseIndex] != nil }) {
             "clause #\(clauseIndex) \(insuredClauses[clauseIndex])! already insured." }
+
+        let insuredClause = context.insure(clause: clauses[clauseIndex].2)
 
         insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
 

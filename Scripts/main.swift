@@ -32,12 +32,13 @@ func process(problem:String) {
         Syslog.warning { "Could not create prover with problem \(problem)" }
           return
       }
+      print(problem, theProver.clauses.count, theProver.insuredClausesCount)
 
     let (result, runtime) = utileMeasure {
-        theProver.run(timeout:30.0)
+        theProver.run(timeout:60.0)
     } 
 
-    print(result, runtime)
+    print(result, runtime, theProver.clauses.count, theProver.insuredClausesCount)
 
 }
 let _ = Demo.demo()
@@ -49,7 +50,7 @@ if let problems = options["--problem"] {
 
     Yices.setUp()
     defer { Yices.tearDown() }
-    
+
     for problem in problems {
         print("Problem:\(problem)")
         process(problem:problem)
