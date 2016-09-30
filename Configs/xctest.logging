@@ -3,9 +3,9 @@
 # emergency < alert < critical < error < warning < notice < info < debug
 # for details see Project/Configs.
 
-"---"                           : "error"   # global minimum log priority
-"+++"                           : "debug"   # global maximal log priority
-"***"                           : "error" # global default log priority
+"---"                           :: "error"   # global minimum log priority
+"+++"                           :: "debug"   # global maximal log priority
+"***"                           :: "error"   # global default log priority
 
 # evaluationn for for logging active
 # priority of origin »file«/»function»:
@@ -13,9 +13,10 @@
 # »file : »value«
 # »***» : »value«
 
-# "Tptp.File.swift"               : "info"
-# "URL+FilePath.swift"            : "info"
-"Prover.swift" : "debug"
-"ProverY.swift" : "info"
+"Tptp.File.swift"               :: "info"
+# "URL+FilePath.swift"          :: "info"
+"Prover.swift"                  :: "debug"
+"ProverY.swift"                 :: "debug"          # comment
+"ProverY.swift/checkConflictsLinearily(negatedLiteral:clashings:)"  :: "debug"
 
 

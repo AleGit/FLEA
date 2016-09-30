@@ -112,6 +112,38 @@ extension ProverY {
         return true
     }
 
+    private func checkConflictsLinearily(negatedLiteral: N, clashings: Set<Int>? = nil) {
+        Syslog.debug { "START CHECKING \(negatedLiteral) \(clashings)" }
+
+
+        Syslog.debug(condition: {
+
+        guard var clashings = clashings else {
+            // find one clashing
+
+            for (clauseIndex, literalIndex) in selectedLiteralIndices {
+                let literal = clauses[clauseIndex].2.nodes![literalIndex]
+                if let mgu = (negatedLiteral =?= literal) {
+                    print(mgu)
+                    return true
+                }
+            }
+
+            return true
+        }
+
+        // compare alle clashings
+
+        var conflicts = Set<Int>()
+
+
+
+        return true
+        }) {
+            "Clashings do not match"
+        }
+    }
+
     private func findConflicts(clauseIndex: Int) {
         let clause = clauses[clauseIndex].2.appending(suffix:clauseIndex)
 
@@ -134,8 +166,13 @@ extension ProverY {
             Syslog.debug {
                 "No clashings for clause \(clauseIndex).\(literalIndex) \(clause)"
             }
+
+            checkConflictsLinearily(negatedLiteral:negated)
+
             return
         }
+
+        checkConflictsLinearily(negatedLiteral:negated, clashings:clashings)
 
         Syslog.error(condition: { clashings.contains(clauseIndex)}) {
             "Clause \(clauseIndex).\(literalIndex) \(clause) MUST NOT clash with itself."

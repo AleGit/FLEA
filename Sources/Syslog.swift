@@ -130,24 +130,27 @@ struct Syslog {
      var cnfg = [String:Priority]()
 
      for entry in entries {
-       guard let colonIndex = entry.characters.index(of:(":")) else {
-         print(#function, #line, ">>> invalid CONFIGURATION entry : \(entry) <<<")
+       let components = entry.components(separatedBy: "::")
+
+       guard components.count == 2,
+       let key = components.first?.trimmingWhitespace.pealing,
+       let last = components.last else {
+         print(#function, #line, ">>> invalid CONFIGURATION entry ! \(entry) \(components) <<<")
          continue
        }
-       let after = entry.characters.index(after:colonIndex)
-       let key = String(entry.characters.prefix(upTo:colonIndex)).trimmingWhitespace.pealing
-       var value = ""
-       var comment = ""
-       if let dashIndex = entry.characters.index(of:("#")) {
-         value = String(entry.characters[after..<dashIndex]).trimmingWhitespace.pealing
-         comment = String(entry.characters.suffix(from:dashIndex)).trimmingWhitespace
-       } else {
-         value = String(entry.characters.suffix(from:after)).trimmingWhitespace.pealing
-       }
+
+       let lastIndex = last.characters.index(of:("#")) ?? last.characters.endIndex
+       let value = String(last.characters.prefix(upTo:lastIndex)).trimmingWhitespace.pealing
        guard let p = Priority(string:value) else {
          continue
        }
        cnfg[key] = p
+
+       print(entry, key, p)
+
+
+
+
      }
 
     return cnfg
