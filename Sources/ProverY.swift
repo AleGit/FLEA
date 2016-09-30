@@ -190,9 +190,34 @@ extension ProverY {
 
         Syslog.debug {
             "Clashings for clause \(clauseIndex).\(literalIndex) \(clause): ".appending(
-            "\(clashings.map { ($0,selectedLiteralIndices[$0]!)})")
+            "\(clashings.map { ($0, selectedLiteralIndices[$0]!)})")
         }
 
+        deriveClauses(clause:clause, negatedLiteral:negated, clashings:clashings)
+    }
+
+    private func deriveClauses(clause: N, negatedLiteral: N, clashings: Set<Int>) {
+        for clauseIndex in clashings {
+            let otherClause = clauses[clauseIndex].2
+            guard let literalIndex = selectedLiteralIndices[clauseIndex],
+            let literal = otherClause.nodes?[literalIndex] else {
+                assert(false, "WTF")
+            }
+
+            guard let mgu = negatedLiteral =?= literal else {
+                continue
+            }
+
+
+
+            clauses.append(("", .unknown, clause * mgu))
+            clauses.append(("", .unknown, otherClause * mgu))
+
+
+
+
+
+        }
     }
 
     private func updateSelectedLiteralIndices() {
