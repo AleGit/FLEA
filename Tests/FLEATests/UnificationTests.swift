@@ -63,6 +63,11 @@ public class UnificationTests: FleaTestCase {
     check( Q.X, Q.fXY, nil as Instantiator?)
     check( Q.Y, Q.fXY, nil as Instantiator?)
 
+    let a = "f(X,X)" as Q.Node
+    let b = "f(a,b)" as Q.Node
+
+    check( a, b, nil as Instantiator?)
+
   }
 
   func testSuffixing() {

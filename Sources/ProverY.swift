@@ -112,10 +112,10 @@ extension ProverY {
         return true
     }
 
-    // expensive
-    private func checkConflictsLinearily(negatedLiteral: N, clashings: Set<Int>? = nil) {
-
-        var clauseIndices = clashings ?? Set<Int>()
+    // expensive, activate evaluation with
+    // "ProverY.swift/checkConflictsLinearily(negatedLiteral:clashings:)" :: "debug"
+    private func checkConflictsLinearily(negatedLiteral: N, clashings: Set<Int> = Set<Int>()) {
+        var clauseIndices = clashings
         var message = "## ?!? ##"
 
         Syslog.debug(condition: {
@@ -123,8 +123,8 @@ extension ProverY {
             for (clauseIndex, literalIndex) in selectedLiteralIndices {
                 let literal = clauses[clauseIndex].2.nodes![literalIndex]
                 if (negatedLiteral =?= literal) != nil {
-                    guard let _ = clauseIndices.remove(clauseIndex) else {
-                        message = "Candidates do not contain clashing clause \(clauseIndex)"
+                    guard clauseIndices.remove(clauseIndex) != nil else {
+                        message = "Clahing candidates do not contain clashing clause \(clauseIndex)"
                         assert(false, message)
                         return true
                     }
@@ -132,10 +132,13 @@ extension ProverY {
             }
 
             if clauseIndices.count > 0 {
+                // p(X,X) =?= p(a,b) would be found, but is not unifiable
+
                 for clauseIndex in clauseIndices {
                     guard let literalIndex = selectedLiteralIndices[clauseIndex],
                     let literal = clauses[clauseIndex].2.nodes?[literalIndex] else {
-                        assert(false, "Candidates contain missing invalid clause \(clauseIndex)")
+                        assert(false,
+                        "Clashing candidates contain missing or invalid clause \(clauseIndex)")
                         return true
                     }
 
