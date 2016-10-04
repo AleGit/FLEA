@@ -129,13 +129,13 @@ extension ProverY {
 
         insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
 
+        print("+", clauseIndex, clauses[clauseIndex].2)
+
         guard context.isSatisfiable else { return false }
 
         updateSelectedLiteralIndices()
 
         findConflicts(clauseIndex: clauseIndex)
-
-
 
         return true
     }
@@ -185,6 +185,21 @@ extension ProverY {
     private func findConflicts(clauseIndex: Int) {
         // get ith clause and append suffix to variable names
         let clause = clauses[clauseIndex].2.appending(suffix:clauseIndex)
+
+       let preordering = clause.preordering
+
+       if let variants = variantsTrie.retrieve(from: preordering), variants.count > 0 {
+           // if variants where found, then the clause should be ignorable
+           /*
+           for variant in variants {
+               print(clauseIndex, clause, preordering)
+               print(variant, clauses[variant].2, clauses[variant].2.preordering)
+               }
+            return
+            */
+       }
+
+       variantsTrie.insert(clauseIndex, at: preordering)
 
         guard let nodes = clause.nodes,
         let literalIndex = selectedLiteralIndices[clauseIndex],
@@ -241,8 +256,16 @@ extension ProverY {
             // mgu is a proper instantiator, i.e. not a variable renaming.
             // Otherwise literals would clash on ground level.
 
-            clauses.append(("", .unknown, clause * mgu))
-            clauses.append(("", .unknown, otherClause * mgu))
+            for newClause in [clause * mgu, otherClause * mgu] {
+                // if variants where found there should be no need to append the new clause
+                /*
+                if let variants = variantsTrie.retrieve(from: newClause.preordering), variants.count > 0 {
+                    // should be ignorable
+                    // continue
+                }
+                */
+                clauses.append(("", .unknown, newClause))
+            }
 
 
 

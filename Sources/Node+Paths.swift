@@ -25,7 +25,6 @@ extension Node where Self:SymbolStringTyped {
     }
     return ps
   }
-
 }
 
 extension Node where Symbol == Int, Self:SymbolStringTyped {
@@ -87,21 +86,6 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
     Syslog.debug { "\(self), \(paths), \(negated)" }
 
     return (paths, negated)
-
-  }
-
-  var preordering: [Int] {
-    guard let nodes = self.nodes else {
-      // a variable leaf
-      return [Self.symbolize(string:Tptp.wildcard, type:.variable)]
-    }
-    guard nodes.count > 0 else {
-      // a constant (function) leaf
-      return [self.symbol]
-    }
-
-    // an intermediate node
-    return nodes.reduce([self.symbol]) { $0 + $1.preordering }
 
   }
 }

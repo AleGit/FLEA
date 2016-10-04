@@ -39,7 +39,8 @@ private typealias Prover = ProverY<TestNode>
 
   func testPUZs () {
       for (problem, noc, nof, equational) in [
-          ("PUZ001-1", 12, 1, false), ("PUZ007-1", 28, 2, true)
+          ("PUZ001-1", 12, 1, false),
+          // ("PUZ007-1", 28, 2, true)
           ] {
       guard let theProver = FLEA.ProverY<TestNode>(problem:problem) else {
           XCTFail(nok)
@@ -51,7 +52,7 @@ private typealias Prover = ProverY<TestNode>
       XCTAssertEqual(equational, theProver.isEquational, "\(nok) \(problem)")
 
       let (result, runtime) = utileMeasure {
-          theProver.run(timeout: 10.0)
+          theProver.run(timeout: 100.0)
       }
       XCTAssertEqual(true, result, "\(nok) \(problem)")
       print("problem:", problem, result, runtime,
