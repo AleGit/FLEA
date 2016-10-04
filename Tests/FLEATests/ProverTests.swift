@@ -41,6 +41,7 @@ private typealias Prover = ProverY<TestNode>
       for (problem, noc, nof, equational) in [
           ("PUZ001-1", 12, 1, false),
           // ("PUZ007-1", 28, 2, true)
+          // ("PUZ001-1y", 12, 1, false),
           ] {
       guard let theProver = FLEA.ProverY<TestNode>(problem:problem) else {
           XCTFail(nok)

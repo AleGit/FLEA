@@ -75,6 +75,7 @@ extension Yices {
 				case STATUS_UNSAT:
 				return false
 				default:
+				print("-------------------------------------------------------")
 				assert(false)
 				return true
 			}

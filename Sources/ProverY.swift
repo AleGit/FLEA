@@ -18,6 +18,8 @@ where N:SymbolStringTyped {
     fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
 
     fileprivate var selectedLiteralIndices: Dictionary<Int, Int>
+
+    /// maps selected literals to clause indices
     fileprivate var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, Int>()
 
     // maps literals to clause indices
@@ -129,7 +131,7 @@ extension ProverY {
 
         insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
 
-        print("+", clauseIndex, clauses[clauseIndex].2)
+        // print("+", clauseIndex, clauses[clauseIndex].2)
 
         guard context.isSatisfiable else { return false }
 
@@ -189,6 +191,7 @@ extension ProverY {
        let preordering = clause.preordering
 
        if let variants = variantsTrie.retrieve(from: preordering), variants.count > 0 {
+           // print(clauseIndex, variants)
            // if variants where found, then the clause should be ignorable
            /*
            for variant in variants {
@@ -197,9 +200,10 @@ extension ProverY {
                }
             return
             */
+            // return
        }
 
-       variantsTrie.insert(clauseIndex, at: preordering)
+       
 
         guard let nodes = clause.nodes,
         let literalIndex = selectedLiteralIndices[clauseIndex],
@@ -238,6 +242,8 @@ extension ProverY {
         }
 
         deriveClauses(clause:clause, negatedLiteral:negated, clashings:clashings)
+
+        variantsTrie.insert(clauseIndex, at: preordering)
     }
 
     private func deriveClauses(clause: N, negatedLiteral: N, clashings: Set<Int>) {
@@ -256,14 +262,28 @@ extension ProverY {
             // mgu is a proper instantiator, i.e. not a variable renaming.
             // Otherwise literals would clash on ground level.
 
+            outer:
             for newClause in [clause * mgu, otherClause * mgu] {
                 // if variants where found there should be no need to append the new clause
-                /*
-                if let variants = variantsTrie.retrieve(from: newClause.preordering), variants.count > 0 {
+                
+                if let variants = variantsTrie.retrieve(from: newClause.preordering), 
+                variants.count > 0 {
+                    // print(clause, variants.map { clauses[$0].2 == clause ? 1 : 0})
+
+                    /*
+                    inner:
+                    for variant in variants {
+                        if variant < clauses.count && clauses[variant].2 == newClause {
+                            continue outer
+                        }
+                        
+                    }
+                    */
                     // should be ignorable
                     // continue
                 }
-                */
+                
+                // print("...", clauses.count, newClause)
                 clauses.append(("", .unknown, newClause))
             }
 
