@@ -1,6 +1,8 @@
 #!/bin/bash
 
-swift build --clean
+# build an run FLEA
+
+# swift build --clean
 Scripts/build.sh -c release -Xlinker -L/usr/local/lib
 
 .build/release/FLEA --demo mgu

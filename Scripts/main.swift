@@ -1,6 +1,6 @@
 import Foundation
 
-Syslog.openLog(options:.console,.pid,.perror)
+Syslog.openLog(options:.console, .pid, .perror)
 let logLevel = Syslog.maximalLogLevel
 let _ = Syslog.setLogMask(upTo:logLevel)
 defer {
@@ -19,12 +19,14 @@ private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, 
     var nodes: [N]? = nil
 
     var description: String { return defaultDescription }
+
+    lazy var hashValue: Int = self.defaultHashValue
   }
 
 
 
 // MARK: functions
-func process(problem:String) {
+func process(problem: String) {
 
     Syslog.debug { "Hello, \(problem)" }
 
@@ -36,7 +38,7 @@ func process(problem:String) {
 
     let (result, runtime) = utileMeasure {
         theProver.run(timeout:60.0)
-    } 
+    }
 
     print(result, runtime, theProver.clauses.count, theProver.insuredClausesCount)
 
@@ -56,7 +58,3 @@ if let problems = options["--problem"] {
         process(problem:problem)
     }
 }
-
-
-
-// ============================================================/
