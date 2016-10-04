@@ -12,6 +12,9 @@ protocol Prover {
     /// returns true if problem is a theorem, e.g. negated conjecture is unsatisfiable (with proof)
     /// returns false if problem is not a theorem, e.g. set of clause is saturated and satisfiable
     func run(timeout: TimeInterval) -> Bool?
+
+    var fileCount: Int { get }
+    var clauseCount: Int { get }
 }
 
 protocol YicesProver: Prover {

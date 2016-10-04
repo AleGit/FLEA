@@ -1,13 +1,15 @@
 import Foundation
 import CYices
 
+/// A instantiation-based prover that uses yices as satisfiablity checker modulo QF_EUF
+/// quantifier free, equalitiy, uninterpreted functions
 final class ProverY<N:Node>: Prover
 where N:SymbolStringTyped {
     /// keep a history of read files
-    var files = Array<(String, URL, Int, Int)>()
+    fileprivate var files = Array<(String, URL, Int, Int)>()
 
     /// all clauses from all read files
-    var clauses: Array<(String, Tptp.Role, N)>
+    fileprivate var clauses: Array<(String, Tptp.Role, N)>
 
     fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
     fileprivate var selectedLiteralIndices: Dictionary<Int, Int>
@@ -18,6 +20,8 @@ where N:SymbolStringTyped {
 
     fileprivate let wildcardSymbol = N.symbolize(string:"*", type:.variable)
 
+    var fileCount: Int { return files.count }
+    var clauseCount: Int { return clauses.count }
 
     var insuredClausesCount: Int {
         return insuredClauses.count

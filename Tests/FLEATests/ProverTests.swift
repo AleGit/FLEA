@@ -16,18 +16,19 @@ public class ProverTests: YicesTestCase {
   }
 
   // local private adoption of protocol to avoid any side affects
-  private final class TestNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+  private final class TestNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias S = Int
     typealias N = TestNode
     static var symbols = StringIntegerTable<S>()
     static var pool = WeakSet<N>()
-    var folks = WeakSet<N>()
+    // var folks = WeakSet<N>() // protocol Kin
 
     var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
     var nodes: [N]? = nil
 
     var description: String { return defaultDescription }
+    lazy var hashValue: Int = self.defaultHashValue
   }
 
 
@@ -43,15 +44,15 @@ private typealias Prover = ProverY<TestNode>
           return
       }
 
-      XCTAssertEqual(noc, theProver.clauses.count, nok)
-      XCTAssertEqual(nof, theProver.files.count, nok)
+      XCTAssertEqual(noc, theProver.clauseCount, nok)
+      XCTAssertEqual(nof, theProver.fileCount, nok)
 
       let (result, runtime) = utileMeasure {
           theProver.run(timeout: 10.0)
       }
       XCTAssertEqual(true, result, "\(nok) \(problem)")
       print("problem:", problem, result, runtime,
-      "clauses:", theProver.clauses.count, "ensured:", theProver.insuredClausesCount)
+      "clauses:", theProver.clauseCount, "ensured:", theProver.insuredClausesCount)
       }
 
   }

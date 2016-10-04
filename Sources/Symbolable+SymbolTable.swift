@@ -55,6 +55,10 @@ protocol SymbolTable {
 
   mutating func insert(_ key: Key, _ type: Tptp.SymbolType) -> Symbol
   subscript(symbol: Symbol) -> (Key, Tptp.SymbolType)? { get }
+
+  var isEquational: Bool { get }
+
+
 }
 
 /// A symbol table users type holds a symbol table.
@@ -85,6 +89,11 @@ typealias StringType = (String, Tptp.SymbolType)
 
 /// A string symbol tabple that maps (string,type) to an integer symbol.
 struct StringIntegerTable<I:GenericInteger> : SymbolTable {
+  // Key == String
+  // Symbol == I
+
+  private(set) var isEquational: Bool = false
+
   private var symbols = [String : I]()
   private var strings = [I : StringType] ()
 
@@ -95,6 +104,13 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
       assert(strings[symbol]?.1 == type, "\(strings[symbol]?.1) != \(type) \(string)")
 
       return symbol
+    }
+
+    switch type {
+      case .equation, .inequation:
+      isEquational = true
+      default:
+      break
     }
 
     let ivalue: I = I(1+symbols.count)
@@ -113,6 +129,11 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
 /// A string symbol table that maps (string,type) to the same string symbol:
 /// Only the symbol type needs to be stored.
 struct StringStringTable: SymbolTable {
+  // Key == String
+  // Symbol == String
+
+  private(set) var isEquational: Bool = false
+
   // private var types = [String : Tptp.SymbolType]()
   // error: type of expression is ambiguous without more context
   // private var types = [String : Tptp.SymbolType]()
@@ -126,6 +147,13 @@ struct StringStringTable: SymbolTable {
       assert(t==type)
     } else {
       types[string] = type
+    }
+
+    switch type {
+      case .equation, .inequation:
+      isEquational = true
+      default:
+      break
     }
 
     return string

@@ -7,20 +7,22 @@ defer {
     Syslog.closeLog()
 }
 
-private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias S = Int
     typealias N = TheNode
-    static var symbols = StringIntegerTable<S>()
-    static var pool = WeakSet<N>()
-    var folks = WeakSet<N>()
+    static var symbols = StringIntegerTable<S>()    // protocol SymbolTabulating
+    static var pool = WeakSet<N>()                  // protocol Sharing
+    // var folks = WeakSet<N>()                     // protocol Kin
 
     var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]? = nil                           // protocol Node
 
-    var description: String { return defaultDescription }
+    var description: String {                       // protocol Node : CustomStringConvertible
+        return defaultDescription
+    }
 
-    lazy var hashValue: Int = self.defaultHashValue
+    lazy var hashValue: Int = self.defaultHashValue // protocol Node : Hashable
   }
 
 
@@ -40,7 +42,7 @@ func process(problem: String) {
         theProver.run(timeout:60.0)
     }
 
-    print(result, runtime, "clauses:", theProver.clauses.count,
+    print(result, runtime, "clauses:", theProver.clauseCount,
     "ensured:", theProver.insuredClausesCount)
 
 }
