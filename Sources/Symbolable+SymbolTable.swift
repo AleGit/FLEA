@@ -100,13 +100,11 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
   mutating func insert(_ string: String, _ type: Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
-      // symbol is allready in the table
-      assert(strings[symbol]?.1 == type, "\(strings[symbol]?.1) != \(type) \(string)")
+      // the symbol is allready in the table, check the type
+      assert(strings[symbol]?.1 == type, "\(strings[symbol]) != (\(string),\(type)")
 
       return symbol
     }
-
-
 
     switch type {
       case .equation, .inequation:
@@ -146,7 +144,7 @@ struct StringStringTable: SymbolTable {
   mutating func insert(_ string: String, _ type: Tptp.SymbolType) -> String {
 
     if let t = types[string] {
-      assert(t==type)
+      assert(t==type, "\(string), \(t) != \(type)")
     } else {
       types[string] = type
     }

@@ -11,7 +11,9 @@ where N:SymbolStringTyped {
     /// all clauses from all read files
     fileprivate var clauses: Array<(String, Tptp.Role, N)>
 
+    /// [ Int : (term_t, [term_t], [term_t]) ]
     fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
+
     fileprivate var selectedLiteralIndices: Dictionary<Int, Int>
     fileprivate var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, Int>()
 
@@ -63,9 +65,7 @@ where N:SymbolStringTyped {
 }
 
 extension ProverY where N:SymbolTabulating {
-    var isEquational: Bool {
-        return N.symbols.isEquational
-    }
+    var isEquational: Bool { return N.symbols.isEquational }
 }
 
 extension ProverY {
@@ -168,6 +168,7 @@ extension ProverY {
     }
 
     private func findConflicts(clauseIndex: Int) {
+        // get ith clause and append suffix to variable names
         let clause = clauses[clauseIndex].2.appending(suffix:clauseIndex)
 
         guard let nodes = clause.nodes,
