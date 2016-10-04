@@ -11,6 +11,9 @@ where N:SymbolStringTyped {
     /// all clauses from all read files
     fileprivate var clauses: Array<(String, Tptp.Role, N)>
 
+    fileprivate var processedClauseIndices: Set<Int>
+    fileprivate let initialClauseCount: Int
+
     /// [ Int : (term_t, [term_t], [term_t]) ]
     fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
 
@@ -52,15 +55,20 @@ where N:SymbolStringTyped {
             files.append((name, url, axioms.count, 0))
         }
 
-        insuredClauses = Dictionary<Int, Yices.Tuple>(minimumCapacity: clauses.count * 4)
-        selectedLiteralIndices = Dictionary<Int, Int>(minimumCapacity: clauses.count * 4)
+        let capacity = clauses.count * 4
+        processedClauseIndices = Set<Int>(minimumCapacity: capacity)
+        initialClauseCount = clauses.count
+
+        insuredClauses = Dictionary<Int, Yices.Tuple>(minimumCapacity: capacity)
+        selectedLiteralIndices = Dictionary<Int, Int>(minimumCapacity: capacity)
+
 
     }
 
     // simplest selection funciton
     func selectClauseIndex () -> Int? {
-        guard insuredClauses.count <= clauses.count else { return nil }
-        return insuredClauses.count
+        guard processedClauseIndices.count <= clauses.count else { return nil }
+        return processedClauseIndices.count
     }
 }
 
@@ -110,6 +118,9 @@ extension ProverY {
             return false
         }
 
+        /// mark a clause after processing
+        defer { processedClauseIndices.insert(clauseIndex) }
+
         Syslog.error(condition: { insuredClauses[clauseIndex] != nil }) {
             "clause #\(clauseIndex) \(insuredClauses[clauseIndex])! already insured." }
 
@@ -120,6 +131,7 @@ extension ProverY {
         updateSelectedLiteralIndices()
 
         findConflicts(clauseIndex: clauseIndex)
+
 
 
         return true
@@ -223,7 +235,8 @@ extension ProverY {
                 continue
             }
 
-
+            // mgu is a proper instantiator, i.e. not a variable renaming.
+            // Otherwise literals would clash on ground level.
 
             clauses.append(("", .unknown, clause * mgu))
             clauses.append(("", .unknown, otherClause * mgu))

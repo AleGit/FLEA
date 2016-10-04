@@ -3,8 +3,8 @@
 /// 'lhs =?= rhs' constructs most common unifier mgu(lhs,rhs)
 /// iff terms lhs and rhs are unifiable.
 /// Otherwise it returns *nil*.
-func =?=<N:Node,S:Substitution>(lhs:N,rhs:N) -> S? 
-where S.K == N, S.V == N, S.Iterator==DictionaryIterator<N,N>{
+func =?= <N: Node, S: Substitution>(lhs:N, rhs:N) -> S?
+where S.K == N, S.V == N, S.Iterator==DictionaryIterator<N, N> {
   Syslog.debug { "\(S.self) as unifier" }
   // delete
   if lhs == rhs {
@@ -38,7 +38,7 @@ where S.K == N, S.V == N, S.Iterator==DictionaryIterator<N,N>{
   var mgu = S()
 
   while lnodes.count > 0 {
-    guard let unifier : S = (lnodes[0] =?= rnodes[0]) else { return nil }
+    guard let unifier: S = (lnodes[0] =?= rnodes[0]) else { return nil }
 
     lnodes.removeFirst()
     rnodes.removeFirst()
