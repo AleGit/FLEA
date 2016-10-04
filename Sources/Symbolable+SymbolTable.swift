@@ -106,6 +106,8 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
       return symbol
     }
 
+
+
     switch type {
       case .equation, .inequation:
       isEquational = true

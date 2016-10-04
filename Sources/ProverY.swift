@@ -62,6 +62,12 @@ where N:SymbolStringTyped {
     }
 }
 
+extension ProverY where N:SymbolTabulating {
+    var isEquational: Bool {
+        return N.symbols.isEquational
+    }
+}
+
 extension ProverY {
     func run(timeout: TimeInterval) -> Bool? {
 
