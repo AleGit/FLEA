@@ -1,4 +1,4 @@
-
+//  Copyright © 2016 Alexander Maringele. All rights reserved.
 
 struct Tptp {
   static let wildcard = "*"
@@ -9,7 +9,8 @@ struct Tptp {
 
   /// equal nodes are not always the same object
   /// depending on the method to build composite nodes
-  final class SimpleNode: SymbolStringTyped, Node, ExpressibleByStringLiteral {
+  final class SimpleNode: SymbolStringTyped, Node,
+  ExpressibleByStringLiteral {
     var symbol = S(wildcard, .variable)
     var nodes: [Tptp.SimpleNode]? = nil
 
@@ -20,7 +21,8 @@ struct Tptp {
   /// equal nodes are the same objects
   /// pool holds string references to all created nodes,
   /// i.e. all nodes are permanent
-  final class SharingNode: SymbolStringTyped, Sharing, Node, ExpressibleByStringLiteral {
+  final class SharingNode: SymbolStringTyped, Sharing, Node,
+  ExpressibleByStringLiteral {
     static var pool = Set<Tptp.SharingNode>()
 
     var symbol = S(wildcard, .variable)
@@ -32,7 +34,8 @@ struct Tptp {
 
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes.
-  final class SmartNode: SymbolStringTyped, Sharing, Node, ExpressibleByStringLiteral {
+  final class SmartNode: SymbolStringTyped, Sharing, Node,
+  ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.SmartNode>()
 
     var symbol = S(wildcard, .variable)
@@ -42,8 +45,8 @@ struct Tptp {
     lazy var description: String = self.defaultDescription
   }
 
-  final class SmartIntNode: SymbolStringTyped, SymbolTabulating, Sharing,
-  Node, ExpressibleByStringLiteral {
+  final class SmartIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+  ExpressibleByStringLiteral {
     static var symbols = StringIntegerTable<Int>()
     static var pool = WeakSet<KinIntNode>()
 
@@ -57,26 +60,27 @@ struct Tptp {
   /// equal nodes are the same objects
   /// `pool` holds weak references to all created nodes,
   /// `folks` holds weak references to node's predecessors
-  final class KinNode : SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
+  final class KinNode: SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
     static var pool = WeakSet<Tptp.KinNode>()
     var folks =  WeakSet<Tptp.KinNode>()
 
-    var symbol = S(wildcard,.variable)
-    var nodes : [Tptp.KinNode]? = nil
+    var symbol = S(wildcard, .variable)
+    var nodes: [Tptp.KinNode]? = nil
 
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.defaultDescription
+    lazy var hashValue: Int = self.defaultHashValue
+    lazy var description: String = self.defaultDescription
   }
 
-  final class KinIntNode : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node, ExpressibleByStringLiteral {
+  final class KinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+  ExpressibleByStringLiteral {
     static var symbols = StringIntegerTable<Int>()
     static var pool = WeakSet<KinIntNode>()
     var folks = WeakSet<KinIntNode>()
 
-    var symbol : Int = KinIntNode.symbolize(string:wildcard,type:.variable)
-    var nodes : [KinIntNode]? = nil
+    var symbol: Int = KinIntNode.symbolize(string:wildcard, type:.variable)
+    var nodes: [KinIntNode]? = nil
 
-    lazy var hashValue : Int = self.defaultHashValue
-    lazy var description : String = self.defaultDescription
+    lazy var hashValue: Int = self.defaultHashValue
+    lazy var description: String = self.defaultDescription
   }
 }

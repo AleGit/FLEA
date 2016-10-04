@@ -19,7 +19,7 @@ where N:SymbolStringTyped {
     fileprivate let wildcardSymbol = N.symbolize(string:"*", type:.variable)
 
 
-    var insuredClausesCount : Int {
+    var insuredClausesCount: Int {
         return insuredClauses.count
     }
 

@@ -3,9 +3,9 @@ import CTptpParsing
 // MARK: - Tptp.Symbol
 
 extension Tptp {
-  struct Symbol : StringSymbolable {
-    let string : String
-    let type : SymbolType
+  struct Symbol: StringSymbolable {
+    let string: String
+    let type: SymbolType
 
     init(_ string: String, _ type: SymbolType ) {
       self.string = string
@@ -14,31 +14,33 @@ extension Tptp {
   }
 }
 
+// swiftlint:disable variable_name
 extension Node where Self:SymbolStringTyped {
-  init(v:String) {
+  init(v: String) {
     let s = Self.symbolize(string:v, type:.variable)
     self.init(variable:s)
   }
 
-  init(c:String) {
+  init(c: String) {
     let s = Self.symbolize(string:c, type:.function(0))
     self.init(constant:s)
   }
 
-  init(f:String, _ nodes:[Self]) {
+  init(f: String, _ nodes: [Self]) {
     let s = Self.symbolize(string:f, type:.function(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }
 
 
-  init(p:String, _ nodes:[Self]) {
+  init(p: String, _ nodes: [Self]) {
     let s = Self.symbolize(string:p, type:.predicate(nodes.count))
     self.init(symbol:s, nodes:nodes)
   }
 }
+// swiftlint:enable variable_name
 
 extension Tptp {
-  enum Role : String {
+  enum Role: String {
      case axiom, hypothesis, definition, assumption
      case lemma, theorem, corollary, conjecture
      case negated_conjecture
@@ -95,35 +97,35 @@ extension Tptp {
   }
 }
 
-func ==(lhs:Tptp.SymbolType, rhs:Tptp.SymbolType) -> Bool {
-  switch (lhs,rhs) {
-    case (.file,.file),
-      (.fof,.fof),
-      (.cnf,.cnf),
-      (.include,.include),
-      (.name,.name),
-      (.role,.role),
-      (.annotation,.annotation),
-      (.universal,.universal),
-      (.existential,.existential),
-      (.negation,.negation),
-      (.disjunction,.disjunction),
-      (.conjunction,.conjunction),
-      (.implication,.implication),
-      (.reverseimpl,.reverseimpl),
-      (.bicondition,.bicondition),
-      (.xor,.xor),
-      (.nand,.nand),
-      (.nor,.nor),
-      (.equation,.equation),
-      (.inequation,.inequation),
-      (.variable,.variable),
+func == (lhs: Tptp.SymbolType, rhs: Tptp.SymbolType) -> Bool {
+  switch (lhs, rhs) {
+    case (.file, .file),
+      (.fof, .fof),
+      (.cnf, .cnf),
+      (.include, .include),
+      (.name, .name),
+      (.role, .role),
+      (.annotation, .annotation),
+      (.universal, .universal),
+      (.existential, .existential),
+      (.negation, .negation),
+      (.disjunction, .disjunction),
+      (.conjunction, .conjunction),
+      (.implication, .implication),
+      (.reverseimpl, .reverseimpl),
+      (.bicondition, .bicondition),
+      (.xor, .xor),
+      (.nand, .nand),
+      (.nor, .nor),
+      (.equation, .equation),
+      (.inequation, .inequation),
+      (.variable, .variable),
 
-      (.undefined,.undefined):
+      (.undefined, .undefined):
       return true
-    case (.predicate(let larity),.predicate(let rarity)):
+    case (.predicate(let larity), .predicate(let rarity)):
       return larity == rarity
-    case (.function(let larity),.function(let rarity)):
+    case (.function(let larity), .function(let rarity)):
       return larity == rarity
     default:
       return false
@@ -133,7 +135,9 @@ func ==(lhs:Tptp.SymbolType, rhs:Tptp.SymbolType) -> Bool {
 
 extension Tptp.SymbolType {
 
-  init(of node:TreeNodeRef) {
+// swiftlint:disable cyclomatic_complexity
+// swiftlint:disable function_body_length
+  init(of node: TreeNodeRef) {
 
     guard let string = node.symbol else {
       self =  .undefined
@@ -202,7 +206,7 @@ extension Tptp.SymbolType {
 
       /* error */
       case (_, PRLC_CONNECTIVE):
-        assert(false,"Unknown connective '\(string)'")
+        assert(false, "Unknown connective '\(string)'")
         self = .undefined
 
       case ("=", _):
@@ -251,29 +255,31 @@ extension Tptp.SymbolType {
         self = .undefined
       }
   }
+// swiftlint:enable cyclomatic_complexity
+// swiftlint:enable function_body_length
 }
 
 extension Tptp.Symbol : Hashable {
   /// Hashable
-  var hashValue : Int {
+  var hashValue: Int {
     return self.string.hashValue
   }
 }
 
 /// Tptp.Symbol : Hashable : Equatable
-func ==(lhs:Tptp.Symbol, rhs:Tptp.Symbol) -> Bool {
+func == (lhs: Tptp.Symbol, rhs: Tptp.Symbol) -> Bool {
   return lhs.string == rhs.string && lhs.type == rhs.type
 }
 
 extension Tptp.Symbol : CustomStringConvertible {
   /// CustomStringConvertible
-  var description:String {
+  var description: String {
     return self.string
   }
 }
 
 extension Tptp.Symbol : CustomDebugStringConvertible {
-  var debugDescription:String {
+  var debugDescription: String {
     return "\(self.string)-\(self.type)"
   }
 }
