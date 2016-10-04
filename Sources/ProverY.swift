@@ -20,6 +20,9 @@ where N:SymbolStringTyped {
     fileprivate var selectedLiteralIndices: Dictionary<Int, Int>
     fileprivate var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, Int>()
 
+    // maps literals to clause indices
+    fileprivate var variantsTrie = TrieClass<N.Symbol, Int>()
+
     fileprivate var deadline: AbsoluteTime = 0.0
     fileprivate var context = Yices.Context()
 
