@@ -48,7 +48,7 @@ extension Node where Self:SymbolStringTyped {
     guard let file = Tptp.File(string:string, type:type) else {
       self = Self(c:"\(value) ❌ .parse error")
       return
-    }eps
+    }
 
     let a: Self? = file.ast()
 
