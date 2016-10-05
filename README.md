@@ -14,6 +14,11 @@
 $ yices -V
 Yices 2.4.2
 ```
+
+- Install [Z3](https://github.com/Z3Prover/z3) and check:
+```
+$ z3 ?
+```
 - Install [Swift 3 Release](https://swift.org/download/) (15.10 binary on Ubuntu 16.04) and check:
 ```
 $ swift -version                  
