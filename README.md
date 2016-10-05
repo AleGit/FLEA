@@ -24,6 +24,7 @@ On Linux the z3 header files in `/usr/include` have to be linked into `/usr/loca
 
 ```
 $ Scripts/workaround.sh
+```
 
 
 - Install [Swift 3 Release](https://swift.org/download/) and check:
