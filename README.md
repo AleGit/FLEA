@@ -20,17 +20,13 @@ Yices 2.4.2
 $ z3  --version
 Z3 version 4.4.2 - 64 bit
 ```
-
-**Workaround** On Linux the z3 header files in `/usr/include` have to be linked into `/usr/local/include`.
+On Linux the z3 header files in `/usr/include` have to be linked into `/usr/local/include`.
 
 ```
 $ Scripts/workaround.sh
 
 
-
-
-
-- Install [Swift 3 Release](https://swift.org/download/) (15.10 binary on Ubuntu 16.04) and check:
+- Install [Swift 3 Release](https://swift.org/download/) and check:
 ```
 $ swift -version                  
 Apple Swift version 3.0 (swiftlang-800.0.41.2 clang-800.0.36) # Mac
