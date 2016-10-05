@@ -114,15 +114,19 @@ struct Syslog {
     defer { Syslog.active = true }
 
     // reminder: the logging is not active
+    #if DEBUG
     print(#function, #line, "reading CONFIGURATION started")
     defer { print(#function, #line, "reading CONFIGURATION finished")}
+    #endif
 
     // read configuration file line by line, but
     // ignore comments (#...) and empty lines (whitespace only)
     guard let entries = URL.loggingConfigurationURL?.path.lines(predicate: {
       !($0.hasPrefix("#") || $0.isEmpty)
       }), entries.count > 0 else {
+        #if DEBUG
         print("CONFIGURATION file has NO entries (comments and whitespace only)")
+        #endif
        return nil
      }
 
@@ -135,7 +139,9 @@ struct Syslog {
        guard components.count == 2,
        let key = components.first?.trimmingWhitespace.pealing,
        let last = components.last else {
+         #if DEBUG
          print(#function, #line, ">>> invalid CONFIGURATION entry ! \(entry) \(components) <<<")
+         #endif
          continue
        }
 
@@ -146,14 +152,18 @@ struct Syslog {
        }
        cnfg[key] = p
 
+       #if DEGUB
        print(entry, key, p)
+       #endif
 
 
 
 
      }
 
+     #if DEBUG
      print(cnfg)
+     #endif
 
     return cnfg
   }()

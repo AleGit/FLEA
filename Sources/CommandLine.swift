@@ -37,7 +37,6 @@ public extension CommandLine {
   }
 
   static var options: [String : [String]] = {
-    print("options")
     var dictionary = ["" : [String]()]
     var name = ""
     for parameter in CommandLine.parameters {
@@ -55,7 +54,9 @@ public extension CommandLine {
         dictionary[name]?.append(parameter)
        }
      }
+     #if DEBUG
      print("options", dictionary)
+     #endif
       return dictionary
     }()
 

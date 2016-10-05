@@ -14,11 +14,11 @@
 
 # setLogMask(upTo:minimal)
 
-"---"                        : "error"  # minimal log level
-"+++"                        : "error"  # maximal log level 
-"***"                        : "error"  # default log level
-"String+Path.swift"          : "debug"  # specific file log level
-"Demo.swift"                 : "error"  # specific file log level
-"Node.swift/init"            : "info"   # specific file function log level
+"---"                        :: "error"  # minimal log level
+"+++"                        :: "error"  # maximal log level 
+"***"                        :: "error"  # default log level
+"String+Path.swift"          :: "debug"  # specific file log level
+"Demo.swift"                 :: "error"  # specific file log level
+"Node.swift/init"            :: "info"   # specific file function log level
 
 
