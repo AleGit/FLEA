@@ -30,7 +30,7 @@ extension Node where Self:SymbolStringTyped {
   /// - "@cnf a&b" -> undefined
   /// - "a&b" -> first order formula, a conjunction of two propositions.
   ///
-  /// In many cases there is no need for annotations.
+  /// In many cases there is no need for annotations:
   ///
   /// - first order formula if string contains logical symbols
   /// - _term_ otherwise
@@ -38,19 +38,19 @@ extension Node where Self:SymbolStringTyped {
     // let fof = "fof(name,role,predicate(\(value))."
     self.init()
 
-    let (string,type) = value.tptpStringLiteralType
+    let (string, type) = value.tptpStringLiteralType
 
     guard !string.isEmpty else {
-      self = Self(c:"")
+      self = Self(c:"ε")
       return
     }
 
     guard let file = Tptp.File(string:string, type:type) else {
       self = Self(c:"\(value) ❌ .parse error")
       return
-    }
+    }eps
 
-    let a : Self? = file.ast()
+    let a: Self? = file.ast()
 
     guard var ast = a else {
       self = Self(c:"\(value).❌ .❌ .no ast")
