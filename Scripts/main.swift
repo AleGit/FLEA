@@ -13,7 +13,7 @@ private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
     typealias N = TheNode
     static var symbols = StringIntegerTable<S>()    // protocol SymbolTabulating
     static var pool = WeakSet<N>()                  // protocol Sharing
-    // var folks = WeakSet<N>()                     // protocol Kin
+    // var folks = WeakSet<N>()                  // protocol Kin
 
     var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
     var nodes: [N]? = nil                           // protocol Node
@@ -36,7 +36,7 @@ func process(problem: String) {
         Syslog.warning { "Could not create prover with problem \(problem)" }
           return
       }
-      print(problem, theProver.clauses.count, theProver.insuredClausesCount)
+      print(problem, theProver.clauseCount, theProver.insuredClausesCount)
 
     let (result, runtime) = utileMeasure {
         theProver.run(timeout:60.0)
