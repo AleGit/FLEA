@@ -1,3 +1,7 @@
 struct KBO {
 
 }
+
+struct LPO {
+
+}
