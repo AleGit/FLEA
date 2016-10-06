@@ -59,7 +59,7 @@ public class NodePathsTests : FleaTestCase {
     let actual = ggfXfaX.leafPaths
     XCTAssertEqual(
         expected.count,
-        actual.count, 
+        actual.count,
         nok
       )
     XCTAssertEqual(
@@ -71,7 +71,7 @@ public class NodePathsTests : FleaTestCase {
 // #endif
     XCTAssertEqual(
       [g$,g$,f$,_$,f$,a$,_$],
-      ggfXfaX.preordering, nok
+      ggfXfaX.preorderTraversalSymbols, nok
     )
   }
 
@@ -84,7 +84,7 @@ public class NodePathsTests : FleaTestCase {
     var expected = pfx.leafPathsPair.0
     var actual = npfx.leafPathsPair.1
 
-    
+
 
     XCTAssertEqual(
       Array(expected.joined()),
@@ -99,7 +99,7 @@ public class NodePathsTests : FleaTestCase {
       Array(actual.joined())
     )
 
-     
+
 
     expected = a_X.leafPathsPair.0
     actual = a_n_X.leafPathsPair.1

@@ -188,22 +188,22 @@ extension ProverY {
         // get ith clause and append suffix to variable names
         let clause = clauses[clauseIndex].2.appending(suffix:clauseIndex)
 
-       let preordering = clause.preordering
+       let preorderTraversalSymbols = clause.preorderTraversalSymbols
 
-       if let variants = variantsTrie.retrieve(from: preordering), variants.count > 0 {
+       if let variants = variantsTrie.retrieve(from: preorderTraversalSymbols), variants.count > 0 {
            // print(clauseIndex, variants)
            // if variants where found, then the clause should be ignorable
            /*
            for variant in variants {
-               print(clauseIndex, clause, preordering)
-               print(variant, clauses[variant].2, clauses[variant].2.preordering)
+               print(clauseIndex, clause, preorderTraversalSymbols)
+               print(variant, clauses[variant].2, clauses[variant].2.preorderTraversalSymbols)
                }
             return
             */
             // return
        }
 
-       
+
 
         guard let nodes = clause.nodes,
         let literalIndex = selectedLiteralIndices[clauseIndex],
@@ -243,7 +243,7 @@ extension ProverY {
 
         deriveClauses(clause:clause, negatedLiteral:negated, clashings:clashings)
 
-        variantsTrie.insert(clauseIndex, at: preordering)
+        variantsTrie.insert(clauseIndex, at: preorderTraversalSymbols)
     }
 
     private func deriveClauses(clause: N, negatedLiteral: N, clashings: Set<Int>) {
@@ -265,8 +265,8 @@ extension ProverY {
             outer:
             for newClause in [clause * mgu, otherClause * mgu] {
                 // if variants where found there should be no need to append the new clause
-                
-                if let variants = variantsTrie.retrieve(from: newClause.preordering), 
+
+                if let variants = variantsTrie.retrieve(from: newClause.preorderTraversalSymbols),
                 variants.count > 0 {
                     // print(clause, variants.map { clauses[$0].2 == clause ? 1 : 0})
 
@@ -276,13 +276,13 @@ extension ProverY {
                         if variant < clauses.count && clauses[variant].2 == newClause {
                             continue outer
                         }
-                        
+
                     }
                     */
                     // should be ignorable
                     // continue
                 }
-                
+
                 // print("...", clauses.count, newClause)
                 clauses.append(("", .unknown, newClause))
             }

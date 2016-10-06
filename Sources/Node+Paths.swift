@@ -135,7 +135,7 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
 
 extension Node where Self:SymbolStringTyped {
   /// The list of symbols in the node tree in depth-first tree traversal.
-  var preordering: [Symbol] {
+  var preorderTraversalSymbols: [Symbol] {
     guard let nodes = self.nodes else {
       // a variable leaf
       return [Self.symbolize(string:Tptp.wildcard, type:.variable)]
@@ -146,7 +146,7 @@ extension Node where Self:SymbolStringTyped {
     }
 
     // an intermediate node
-    return nodes.reduce([self.symbol]) { $0 + $1.preordering }
+    return nodes.reduce([self.symbol]) { $0 + $1.preorderTraversalSymbols }
 
   }
 }
