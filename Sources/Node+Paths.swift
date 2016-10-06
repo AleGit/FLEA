@@ -4,8 +4,9 @@ extension Node where Self:SymbolStringTyped {
   }
 
   /// Prefix paths from root to leaves.
-  /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
-  /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
+  /// p(x,g(a,y)) -> { p.1.*, p.2.g.1.a, p.2.g.2.* }
+  /// ~q(f(x,y),b) -> { ~.0.q.1.f.1.*, ~.0.q.1.f.2.*, ~.0.q.2.b}
+  /// a=f(x,b) -> { =.0.a, =.1.f.0.*, =.1.f.1.b}
   var leafPaths: [[SymHop<Symbol>]] {
     guard let nodes = self.nodes else {
       return [[.symbol(self.joker)]]
@@ -25,7 +26,47 @@ extension Node where Self:SymbolStringTyped {
     }
     return ps
   }
+
+  /// Prefix paths from root to leaves and negated root to leaves.
+  /// p(x,g(a,y)) -> { p.1.*, p.2.g.1.a, p.2.g.2.* }, { ~.0.p.1.*, ~.0.p.2.g.1.a, ~.0.p.2.g.2.* }
+  /// ~q(f(x,y),b) -> { ~.0.q.1.f.1.*, ~.0.q.1.f.2.*, ~.0.q.2.b}, { q.1.f.1.*, q.1.f.2.*, q.2.b}
+  /// a=f(x,b) -> { =.0.a, =.1.f.0.*, =.1.f.1.b}, { !=.0.a, !=.1.f.0.*, !=.1.f.1.b}
+  var leafPathsPair: ([[SymHop<Symbol>]], [[SymHop<Symbol>]]) {
+    let paths = leafPaths
+
+    let negated: [[SymHop<Symbol>]]
+    let (_, type) = self.symbolStringType
+
+    switch type {
+
+      case .negation:
+        assert(self.nodes?.count == 1)
+        negated = paths.map { Array($0.suffix(from:2)) }
+
+      case .equation:
+        let symbol = Self.symbolize(string:"!=", type:.inequation)
+        negated = paths.map { [.symbol(symbol)] + $0.suffix(from:1) }
+
+      case .inequation:
+        let symbol = Self.symbolize(string:"=", type:.equation)
+        negated = leafPaths.map { [.symbol(symbol)] + $0.suffix(from:1)}
+
+      case .predicate:
+        let symbol = Self.symbolize(string:"~", type:.negation)
+        negated = paths.map { [.symbol(symbol), .hop(0)] + $0 }
+
+      default:
+        Syslog.error { "\(self) with root type \(type) cannot be negated."}
+        negated = [[SymHop<Symbol>]]()
+    }
+
+    Syslog.debug { "\(self), \(paths), \(negated)" }
+
+    return (paths, negated)
+
+  }
 }
+
 
 extension Node where Symbol == Int, Self:SymbolStringTyped {
   var joker: Symbol {
@@ -88,12 +129,12 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
     return (paths, negated)
 
   }
+
 }
 
 
-
 extension Node where Self:SymbolStringTyped {
-  /// The list of symbols in the node tree in depth-first traversal.
+  /// The list of symbols in the node tree in depth-first tree traversal.
   var preordering: [Symbol] {
     guard let nodes = self.nodes else {
       // a variable leaf
