@@ -19,7 +19,10 @@ public class Z3BasicsTests: FleaTestCase {
     XCTAssertTrue(versionString.hasPrefix("4."), nok)
     Syslog.debug(condition: { versionString != expected }) {
       "\(nok) actual z3 version is \(versionString) is not \(expected)"
-
     }
+  }
+
+  func testVersion() {
+    XCTAssertEqual(4 as UInt32, Z3Basics.version[0])
   }
 }

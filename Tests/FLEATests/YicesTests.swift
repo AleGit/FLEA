@@ -24,8 +24,11 @@ public class YicesTests: YicesTestCase {
     XCTAssertTrue(versionString.hasPrefix("2."), nok)
     Syslog.debug(condition: { versionString != expected }) {
       "\(nok) actual yices version is \(versionString) is not \(expected)"
-
     }
+  }
+
+    func testVersion() {
+      XCTAssertEqual(2 as UInt32, Yices.version[0])
   }
 
   func testPUZ001c1() {
