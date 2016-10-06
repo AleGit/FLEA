@@ -29,6 +29,10 @@ extension Node {
     }
     return Set(nodes.flatMap { $0.variables })
   }
+
+  func isSubnode(of s: Self) -> Bool {
+    return s.defaultSubnodes.contains(self)
+  }
 }
 
 extension Node {
