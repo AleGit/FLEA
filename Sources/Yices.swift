@@ -5,6 +5,12 @@ struct Yices {
 	static var versionString: String {
 		return String(validatingUTF8:yices_version) ?? "n/a"
 	}
+
+	static var version: [UInt32] {
+		return versionString.components(separatedBy:".").map {
+			UInt32($0) ?? UInt32()
+		}
+	}
 }
 
 extension Yices {
