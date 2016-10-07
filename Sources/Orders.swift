@@ -22,31 +22,31 @@ extension Node {
 }
 
 
-struct Precedence<L: Logic, N: Node>
+struct Precedence<C: LogicContext, N: Node>
 where N.Symbol == String {
 
-  var logic: L
-  var vars : [String: L.Term] // precedence variables
+  var context: C
+  var vars : [String: C.Expr] // precedence variables
 
-  init(l: L) {
-    logic = l
+  init(_ c: C) {
+    context = c
     vars = [:]
   }
 
-  mutating func get(_ sym: N.Symbol) -> L.Term {
+  mutating func get(_ sym: N.Symbol) -> C.Expr {
     if let prec_var = vars[sym] {
       return prec_var
     } else {
-      let prec_var = logic.freshIntVar(sym)
+      let prec_var = context.mkIntVar(sym)
       vars[sym] = prec_var
       return prec_var
     }
   }
 
-  func printEval(_ model: L.Model) {
+  func printEval(_ model: C.Model) {
     let var_vals : [(String, Int)] = vars.map {
-      (f: String, pvar: L.Term) -> (String, Int) in
-      return (f, logic.evalInt(model, pvar))
+      (f: String, pvar: C.Expr) -> (String, Int) in
+      return (f, context.evalInt(model, pvar))
     }
     let fs = var_vals.sorted(by: { $0.1 > $1.1 })
     guard (fs.count > 1) else { return }
@@ -59,88 +59,88 @@ where N.Symbol == String {
 }
 
 
-struct LPO<L: Logic, N: Node>
+struct LPO<C: LogicContext, N: Node>
 where N.Symbol == String {
-  var logic: L
-  var prec: Precedence<L, N>
+  var context: C
+  var prec: Precedence<C, N>
 
-  init(l : L) {
-    prec = Precedence<L, N>(l: l)
-    logic = l
+  init(ctx : C) {
+    prec = Precedence<C, N>(ctx)
+    context = ctx
   }
 
-  mutating func lex(_ ls:[N], _ rs:[N]) -> L.Term {
+  mutating func lex(_ ls:[N], _ rs:[N]) -> C.Expr {
     for (li, ri) in zip(ls, rs) {
       if !li.isEqual(to:ri) {
         return gt(li, ri)
       }
     }
-    return logic.bot
+    return context.mkBot
   }
 
-  mutating func gt(_ l:N, _ r:N) -> L.Term {
-    guard !l.isVar else { return logic.bot }
-      guard !r.isSubnode(of:l) else { return logic.top }
-      guard !r.isVar else { return logic.bot } // subterm case already handled
+  mutating func gt(_ l:N, _ r:N) -> C.Expr {
+    guard !l.isVar else { return context.mkBot }
+      guard !r.isSubnode(of:l) else { return context.mkTop }
+      guard !r.isVar else { return context.mkBot } // subterm case already handled
 
-      let case1 = logic.or(l.defaultSubnodes.map({ gt($0, r) }))
+      let case1 = context.mkOr(l.defaultSubnodes.map({ gt($0, r) }))
       if l.symbol != r.symbol {
         let case2 =
-          logic.and(logic.ge(prec.get(l.symbol), prec.get(r.symbol)),
-                    logic.and(r.defaultSubnodes.map { gt(l, $0) } ))
-        return logic.or(case1, case2)
+          prec.get(l.symbol).ge(prec.get(r.symbol)).and(
+                    context.mkAnd(r.defaultSubnodes.map { gt(l, $0) } ))
+        return case1.or(case2)
       } else {
         let case3 = lex(l.nodes!, r.nodes!)
-        return logic.or(case1, case3)
+        return case1.or(case3)
       }
     }
 
-  func printEval(_ model: L.Model) {
+  func printEval(_ model: C.Model) {
     print("LPO")
     prec.printEval(model)
   }
 }
 
 
-struct KBO<L: Logic, N: Node>
+struct KBO<C: LogicContext, N: Node>
 where N.Symbol == String {
 
-  var logic: L
-  var prec: Precedence<L, N>
-  var fun_weights: [String: L.Term] = [:]
-  var w0: L.Term
+  var context: C
+  var prec: Precedence<C, N>
+  var fun_weights: [String: C.Expr] = [:]
+  var w0: C.Expr
 
-  init(l : L) {
-    prec = Precedence<L, N>(l: l)
-    logic = l
-    w0 = logic.freshIntVar("w0")
+  init(c : C) {
+    prec = Precedence<C, N>(c)
+    context = c
+    w0 = context.mkIntVar("w0")
   }
 
-  mutating func fun_weight(_ sym: String) -> L.Term {
+  mutating func fun_weight(_ sym: String) -> C.Expr {
     if let w_var = fun_weights[sym] {
       return w_var
     } else {
-      let w_var = logic.freshIntVar(sym)
+      let w_var = context.mkIntVar(sym)
       fun_weights[sym] = w_var
       return w_var
     }
   }
 
-  mutating func weight(_ t: N) -> L.Term {
+  mutating func weight(_ t: N) -> C.Expr {
     guard !t.isVar else { return w0 }
 
     let w_t_root = fun_weight(t.symbol)
-    return t.nodes!.reduce(w_t_root, { logic.add($0, weight($1)) })
+    return t.nodes!.reduce(w_t_root, { $0.add(weight($1)) })
   }
 
 
-  mutating func lex(_ ls:[N], _ rs:[N]) -> L.Term {
+  mutating func lex(_ ls:[N], _ rs:[N]) -> C.Expr {
     for (li, ri) in zip(ls, rs) {
       if !li.isEqual(to:ri) {
         return gt(li, ri)
       }
     }
-    return logic.bot
+    return context.mkBot
   }
 
   func nonduplicating(_ l:N, _ r:N) -> Bool {
@@ -154,32 +154,32 @@ where N.Symbol == String {
     return true
   }
 
-  mutating func gt(_ l:N, _ r:N) -> L.Term {
-    guard !l.isVar && nonduplicating(l, r) else { return logic.bot }
-    guard !r.isSubnode(of:l) else { return logic.top }
-    guard !r.isVar else { return logic.bot } // subterm case already handled
+  mutating func gt(_ l:N, _ r:N) -> C.Expr {
+    guard !l.isVar && nonduplicating(l, r) else { return context.mkBot }
+    guard !r.isSubnode(of:l) else { return context.mkTop }
+    guard !r.isVar else { return context.mkBot } // subterm case already handled
 
     let w_l = weight(l)
     let w_r = weight(r)
 
-    var dec: L.Term
+    var dec: C.Expr
     if l.symbol != r.symbol {
-      dec = logic.gt(prec.get(l.symbol), prec.get(r.symbol))
+      dec = prec.get(l.symbol).gt(prec.get(r.symbol))
     } else {
       dec = lex(l.nodes!, r.nodes!)
     }
-    return logic.or(logic.gt(w_l, w_r), logic.and(logic.ge(w_l, w_r), dec))
+    return w_l.gt(w_r).or( w_l.ge(w_r).and(dec))
   }
 
-  func printEval_weight(_ model: L.Model) {
-    print(" w0 = ", logic.evalInt(model, w0))
+  func printEval_weight(_ model: C.Model) {
+    print(" w0 = ", context.evalInt(model, w0))
 
     for (f, w_var) in fun_weights {
-      print(" w(", f, ") = ", logic.evalInt(model, w_var))
+      print(" w(", f, ") = ", context.evalInt(model, w_var))
     }
   }
 
-    func printEval(_ model: L.Model) {
+    func printEval(_ model: C.Model) {
         print("KBO")
         prec.printEval(model)
         printEval_weight(model)
