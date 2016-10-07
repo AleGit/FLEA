@@ -32,8 +32,6 @@ protocol LogicContext {
   associatedtype Model : LogicModel
   typealias Expr = Model.Expr
 
-  init()
-
 	static var versionString: String { get }
 
   // types
