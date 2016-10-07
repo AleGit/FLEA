@@ -50,3 +50,39 @@ protocol LogicContext {
   func evalBool(_ model: Model, _ term: Expr) -> Bool
   func evalInt(_ model: Model, _ term: Expr) -> Int
 }
+
+
+prefix operator !
+prefix func !<E:LogicExpr>(_ s : E) -> E {
+  return s.not()
+}
+
+infix operator ⋀: LogicalConjunctionPrecedence
+func ⋀<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.and(t)
+}
+
+infix operator ⋁: LogicalDisjunctionPrecedence
+func ⋁<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.or(t)
+}
+
+infix operator ==: ComparisonPrecedence
+func ==<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.eq(t)
+}
+
+infix operator !=: ComparisonPrecedence
+func !=<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.neq(t)
+}
+
+infix operator ≻: ComparisonPrecedence
+func ≻<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.gt(t)
+}
+
+infix operator ≽: ComparisonPrecedence
+func ≽<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.ge(t)
+}
