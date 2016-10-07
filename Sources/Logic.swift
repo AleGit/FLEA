@@ -4,6 +4,9 @@ protocol Logic {
   associatedtype Model
 
   init()
+
+	static var versionString: String { get }
+
   // types
   var bool_type : TType { get }
   var int_type : TType { get }
