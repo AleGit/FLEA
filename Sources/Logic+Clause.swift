@@ -87,20 +87,20 @@ extension LogicContext {
       case .negation:
         assert(nodes.count == 1, "A negation must have exactly one child.")
         // no need to register negations
-        return ( self.literal(nodes.first! )).not()
+        return !(self.literal(nodes.first! ))
 
       case .inequation:
         assert(nodes.count == 2, "An inequation must have exactly two children.")
         // inequations must be registered to check if equality axioms are needed
 
         let args = nodes.map { term($0) }
-        return args.first!.neq(args.last!)
+        return args.first! != args.last!
 
       case .equation:
         assert(nodes.count == 2, "An equation must have exactly two children.")
         // equations must be registered to check if equality axioms are needed
         let args = nodes.map { term($0) }
-        return args.first!.eq(args.last!)
+        return args.first! == args.last!
 
       case .predicate:
         // predicates must be registered to derive congruence axioms

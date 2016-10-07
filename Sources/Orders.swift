@@ -86,8 +86,8 @@ where N.Symbol == String {
       let case1 = context.mkOr(l.defaultSubnodes.map({ gt($0, r) }))
       if l.symbol != r.symbol {
         let case2 =
-          prec.get(l.symbol).ge(prec.get(r.symbol)).and(
-                    context.mkAnd(r.defaultSubnodes.map { gt(l, $0) } ))
+          (prec.get(l.symbol) ≻ prec.get(r.symbol)) ⋀
+                    context.mkAnd(r.defaultSubnodes.map { gt(l, $0) })
         return case1.or(case2)
       } else {
         let case3 = lex(l.nodes!, r.nodes!)
@@ -164,11 +164,11 @@ where N.Symbol == String {
 
     var dec: C.Expr
     if l.symbol != r.symbol {
-      dec = prec.get(l.symbol).gt(prec.get(r.symbol))
+      dec = prec.get(l.symbol) ≻ prec.get(r.symbol)
     } else {
       dec = lex(l.nodes!, r.nodes!)
     }
-    return w_l.gt(w_r).or( w_l.ge(w_r).and(dec))
+    return (w_l ≻ w_r) ⋁ ((w_l ≽ w_r) ⋀ dec)
   }
 
   func printEval_weight(_ model: C.Model) {
