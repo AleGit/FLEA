@@ -18,6 +18,10 @@ struct YicesLogic : Logic {
     ctx = yices_new_context(nil)
   }
 
+	static var versionString: String {
+		return String(validatingUTF8:yices_version) ?? "n/a"
+	}
+
   // logical operators
   var top = yices_true()
   var bot = yices_false()
