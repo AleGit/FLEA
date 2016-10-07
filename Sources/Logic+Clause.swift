@@ -2,11 +2,11 @@
 
 import Foundation
 
-extension Logic {
+extension LogicContext {
   typealias Tuple = (
-    clause: Term,
-    literals: [Term],
-    shuffled: [Term]
+    clause: Expr,
+    literals: [Expr],
+    shuffled: [Expr]
   )
 
   /// Return an SMT clause and SMT literals from a node clause.
@@ -21,7 +21,7 @@ extension Logic {
         guard let literals = clause.nodes, literals.count > 0 else {
           Syslog.error(condition: { clause.nodes == nil}) { "clause.nodes == nil"}
           Syslog.info(condition: { clause.nodes != nil}) { "emtpy clause" }
-          return (bot, [bot], [bot])
+          return (mkBot, [mkBot], [mkBot])
         }
 
         return self.clause(literals)
@@ -36,7 +36,7 @@ extension Logic {
       default:
         Syslog.error { "'\(clause)' is of type \(type)" }
         assert(false, "\(#function)(\(clause)) Argument is of type \(type)")
-        return (bot, [bot], [bot])
+        return (mkBot, [mkBot], [mkBot])
     }
   }
 
@@ -57,16 +57,16 @@ extension Logic {
 		let smtLiterals = literals.map { self.literal($0) }
 
 		// Logic.or might change the order and content of the array
-		let smtClause = or(smtLiterals)
+		let smtClause = mkOr(smtLiterals)
 
-		//Syslog.info(condition: { smtLiterals != children(smtClause)}) {
+		//Syslog.info(condition: { smtLiterals != smtClause.children}) {
 		//	"Logic.or reordered literals"
 		//}
 		//Syslog.info(condition: { smtLiterals.contains(smtClause)}) {
 		//	"SMT literals contain clause"
 		//}
 
-		return (smtClause, smtLiterals, children(smtClause))
+		return (smtClause, smtLiterals, smtClause.children)
 	}
 
 	/// Build boolean term from literal, i.e.
@@ -74,10 +74,10 @@ extension Logic {
 	/// - an equation
 	/// - an inequation
 	/// - a predicatate term or a proposition constant
-  private func literal<N: Node>(_ literal:N) -> Term
+  private func literal<N: Node>(_ literal:N) -> Expr
   where N:SymbolStringTyped {
 
-    guard let nodes = literal.nodes else { return bot }
+    guard let nodes = literal.nodes else { return mkBot }
 
     // By default a symbol is a predicate symbol
     // if it is not predefined or registered.
@@ -87,37 +87,37 @@ extension Logic {
       case .negation:
         assert(nodes.count == 1, "A negation must have exactly one child.")
         // no need to register negations
-        return not( self.literal(nodes.first! ))
+        return ( self.literal(nodes.first! )).not()
 
       case .inequation:
         assert(nodes.count == 2, "An inequation must have exactly two children.")
         // inequations must be registered to check if equality axioms are needed
 
         let args = nodes.map { term($0) }
-        return neq(args.first!, args.last!)
+        return args.first!.neq(args.last!)
 
       case .equation:
         assert(nodes.count == 2, "An equation must have exactly two children.")
         // equations must be registered to check if equality axioms are needed
         let args = nodes.map { term($0) }
-        return eq(args.first!, args.last!)
+        return args.first!.eq(args.last!)
 
       case .predicate:
         // predicates must be registered to derive congruence axioms
 
         // proposition or predicate term (an application of Boolean type)
-        return getApp(literalSymbolString, nodes.map(term), bool_type)
+        return app(literalSymbolString, nodes.map(term), bool_type)
 
       default:
         assert(false, "'\(#function)(\(literal))' Argument must not be a \(type).")
-        return bot
+        return mkBot
     }
   }
 
   /// Build uninterpreted function term from term.
-  private func term<N: Node>(_ term:N) -> Term
+  private func term<N: Node>(_ term:N) -> Expr
   where N:SymbolStringTyped {
-  // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
+  // assert(term.isExpr,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
     let (termSymbolString, _) = term.symbolStringType
 
@@ -129,6 +129,14 @@ extension Logic {
     // term.register(.function, category:.functor, notation:.prefix, arity:.fixed(nodes.count))
 
     // function or constant term (an application of uninterpreted type)
-    return getApp(termSymbolString, nodes.map(self.term), free_type)
+    return app(termSymbolString, nodes.map(self.term), free_type)
   }
+
+
+	func ensure<N: Node>(clause: N) -> Tuple
+	where N:SymbolStringTyped {
+		let triple = self.clause(clause)
+		ensure(triple.0)
+		return triple
+	}
 }
