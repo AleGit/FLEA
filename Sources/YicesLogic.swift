@@ -1,6 +1,6 @@
 import CYices
 
-struct YicesLogic : Logic {
+class YicesLogic : Logic {
   typealias Term = term_t
   typealias TType = type_t
   typealias Model = OpaquePointer
@@ -17,6 +17,10 @@ struct YicesLogic : Logic {
   init() {
     ctx = yices_new_context(nil)
   }
+
+	deinit {
+		yices_free_context(ctx)
+	}
 
 	static var versionString: String {
 		return String(validatingUTF8:yices_version) ?? "n/a"
