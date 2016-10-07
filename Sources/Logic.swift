@@ -3,8 +3,6 @@ protocol Logic {
   associatedtype TType
   associatedtype Model
 
-  init()
-
 	static var versionString: String { get }
 
   // types
