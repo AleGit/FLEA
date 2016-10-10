@@ -1,15 +1,34 @@
 import CYices
 
-extension Node {
+extension Node where Symbol : Hashable {
   var isVar :  Bool {
     return nodes == nil
+  }
+
+  var funs: Set<Symbol> {
+    var fs: Set<Symbol> = []
+    for p in self.positions {
+      let t_p = self[p]!
+      guard !t_p.isVar else { continue }
+
+      fs.insert(t_p.symbol)
+    }
+    return fs
+  }
+
+  static func trsFuns(_ trs: [(Self, Self)]) -> Set<Symbol> {
+    var fs: Set<Symbol> = []
+    for (l, r) in trs {
+      fs = fs.union(l.funs).union(r.funs)
+    }
+    return fs
   }
 
   func varCount() -> [Symbol : Int] {
     var map : [Symbol : Int] = [:]
     for p in self.positions {
       let t_p = self[p]!
-      guard !t_p.isVar else { continue }
+      guard t_p.isVar else { continue }
 
       guard let k = map[t_p.symbol] else {
         map[t_p.symbol] = 1
@@ -26,27 +45,20 @@ struct Precedence<C: LogicContext, N: Node>
 where N.Symbol == String {
 
   var context: C
-  var vars : [String: C.Expr] // precedence variables
+  private var vars : [String: C.Expr] // precedence variables
 
-  init(_ c: C) {
+  init(_ c: C, trs : [(N,N)]) {
     context = c
     vars = [:]
-  }
-
-  mutating func get(_ sym: N.Symbol) -> C.Expr {
-    if let prec_var = vars[sym] {
-      return prec_var
-    } else {
-      let prec_var = context.mkIntVar(sym)
-      vars[sym] = prec_var
-      return prec_var
+    for sym in N.trsFuns(trs) {
+      vars[sym] = context.mkIntVar(sym)
     }
   }
 
   func printEval(_ model: C.Model) {
     let var_vals : [(String, Int)] = vars.map {
       (f: String, pvar: C.Expr) -> (String, Int) in
-      return (f, context.evalInt(model, pvar))
+      return (f, model.evalInt(pvar))
     }
     let fs = var_vals.sorted(by: { $0.1 > $1.1 })
     guard (fs.count > 1) else { return }
@@ -64,12 +76,12 @@ where N.Symbol == String {
   var context: C
   var prec: Precedence<C, N>
 
-  init(ctx : C) {
-    prec = Precedence<C, N>(ctx)
+  init(ctx : C, trs: [(N, N)]) {
+    prec = Precedence<C, N>(ctx, trs: trs)
     context = ctx
   }
 
-  mutating func lex(_ ls:[N], _ rs:[N]) -> C.Expr {
+  private func lex(_ ls:[N], _ rs:[N]) -> C.Expr {
     for (li, ri) in zip(ls, rs) {
       if !li.isEqual(to:ri) {
         return gt(li, ri)
@@ -78,7 +90,7 @@ where N.Symbol == String {
     return context.mkBot
   }
 
-  mutating func gt(_ l:N, _ r:N) -> C.Expr {
+  func gt(_ l:N, _ r:N) -> C.Expr {
     guard !l.isVar else { return context.mkBot }
       guard !r.isSubnode(of:l) else { return context.mkTop }
       guard !r.isVar else { return context.mkBot } // subterm case already handled
@@ -86,7 +98,7 @@ where N.Symbol == String {
       let case1 = context.mkOr(l.defaultSubnodes.map({ gt($0, r) }))
       if l.symbol != r.symbol {
         let case2 =
-          (prec.get(l.symbol) ≻ prec.get(r.symbol)) ⋀
+          (prec.vars[l.symbol]! ≻ prec.vars[r.symbol]!) ⋀
                     context.mkAnd(r.defaultSubnodes.map { gt(l, $0) })
         return case1.or(case2)
       } else {
@@ -110,31 +122,24 @@ where N.Symbol == String {
   var fun_weights: [String: C.Expr] = [:]
   var w0: C.Expr
 
-  init(c : C) {
-    prec = Precedence<C, N>(c)
+  init(c : C, trs: [(N, N)]) {
+    prec = Precedence<C, N>(c, trs: trs)
     context = c
     w0 = context.mkIntVar("w0")
-  }
-
-  mutating func fun_weight(_ sym: String) -> C.Expr {
-    if let w_var = fun_weights[sym] {
-      return w_var
-    } else {
-      let w_var = context.mkIntVar(sym)
-      fun_weights[sym] = w_var
-      return w_var
+    for sym in N.trsFuns(trs) {
+      fun_weights[sym] = context.mkIntVar(sym)
     }
   }
 
-  mutating func weight(_ t: N) -> C.Expr {
+  func weight(_ t: N) -> C.Expr {
     guard !t.isVar else { return w0 }
 
-    let w_t_root = fun_weight(t.symbol)
+    let w_t_root = fun_weights[t.symbol]
     return t.nodes!.reduce(w_t_root, { $0.add(weight($1)) })
   }
 
 
-  mutating func lex(_ ls:[N], _ rs:[N]) -> C.Expr {
+  func lex(_ ls:[N], _ rs:[N]) -> C.Expr {
     for (li, ri) in zip(ls, rs) {
       if !li.isEqual(to:ri) {
         return gt(li, ri)
@@ -154,7 +159,7 @@ where N.Symbol == String {
     return true
   }
 
-  mutating func gt(_ l:N, _ r:N) -> C.Expr {
+  func gt(_ l:N, _ r:N) -> C.Expr {
     guard !l.isVar && nonduplicating(l, r) else { return context.mkBot }
     guard !r.isSubnode(of:l) else { return context.mkTop }
     guard !r.isVar else { return context.mkBot } // subterm case already handled
@@ -164,24 +169,24 @@ where N.Symbol == String {
 
     var dec: C.Expr
     if l.symbol != r.symbol {
-      dec = prec.get(l.symbol) ≻ prec.get(r.symbol)
+      dec = prec.vars[l.symbol]! ≻ prec.vars[r.symbol]!
     } else {
       dec = lex(l.nodes!, r.nodes!)
     }
     return (w_l ≻ w_r) ⋁ ((w_l ≽ w_r) ⋀ dec)
   }
 
-  func printEval_weight(_ model: C.Model) {
-    print(" w0 = ", context.evalInt(model, w0))
+  func printEvalWeight(_ model: C.Model) {
+    print(" w0 = ", model.evalInt(w0))
 
     for (f, w_var) in fun_weights {
-      print(" w(", f, ") = ", context.evalInt(model, w_var))
+      print(" w(", f, ") = ", model.evalInt(w_var))
     }
   }
 
-    func printEval(_ model: C.Model) {
-        print("KBO")
-        prec.printEval(model)
-        printEval_weight(model)
-    }
+  func printEval(_ model: C.Model) {
+    print("KBO")
+    prec.printEval(model)
+    printEvalWeight(model)
+  }
 }
