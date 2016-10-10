@@ -20,14 +20,14 @@ protocol Prover {
     var clauseCount: Int { get }
 }
 
-protocol YicesProver: Prover {
-    func yicesLiterals(clauseIndex: Int) -> Set<term_t>
+protocol SMTProver: Prover {
+    func smtLiterals(clauseIndex: Int) -> Set<term_t>
 
     /// returns nil, if none of the literals holds
-    func selectedYicesLiteral(clauseIndex: Int) -> term_t?
+    func selectedSMTLiteral(clauseIndex: Int) -> term_t?
 
     /// returns nil if yicesLiteral not in yicesLiterals(clauseIndex: clauseIndex)
-    func selectedLiteralIndex(clauseIndex: Int, yicesLiteral: term_t) -> Int?
+    func selectedLiteralIndex(clauseIndex: Int, literal: term_t) -> Int?
 }
 
 // MARK: - protocol extensions

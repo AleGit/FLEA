@@ -17,17 +17,29 @@ protocol LogicExpr {
   var children : [Self] { get }
 }
 
-protocol LogicContext {
+protocol LogicModel {
   associatedtype Expr : LogicExpr
-  associatedtype TType
-  associatedtype Model
+
+  func evalBool(_ term: Expr) -> Bool
+  func evalInt(_ term: Expr) -> Int
+	func implies(formula: Expr) -> Bool
+	func selectIndex<C: Collection>(literals: C) -> Int?
+    where C.Iterator.Element == Expr
+}
+
+protocol LogicContext {
+  associatedtype ExprType
+  associatedtype Model : LogicModel
+  typealias Expr = Model.Expr
+
+  init()
 
 	static var versionString: String { get }
 
   // types
-  var bool_type : TType { get }
-  var int_type : TType { get }
-  var free_type : TType { get }
+  var bool_type : ExprType { get }
+  var int_type : ExprType { get }
+  var free_type : ExprType { get }
 
   // create terms
   var mkTop : Expr { get }
@@ -36,19 +48,16 @@ protocol LogicContext {
   func mkOr(_ ts: [Expr]) -> Expr
   func mkBoolVar(_ name: String) -> Expr
   func mkIntVar(_ name: String) -> Expr
-  func constant(_ name: String, _ type: TType) -> Expr
-  func function(_ name: String, _ domain: [TType], _ range: TType) -> Expr
-  func app(_ symbol: String, _ args: [Expr], _ range: TType) -> Expr
+  func constant(_ name: String, _ type: ExprType) -> Expr
+  func function(_ name: String, _ domain: [ExprType], _ range: ExprType) -> Expr
+  func app(_ symbol: String, _ args: [Expr], _ range: ExprType) -> Expr
   var 🚧 : Expr { get }
 
   // assertion and checking
   func ensure(_ formula: Expr)
   func ensureCheck(formula: Expr) -> Bool
 	var isSatisfiable: Bool { get }
-
-  // evaluation
-  func evalBool(_ model: Model, _ term: Expr) -> Bool
-  func evalInt(_ model: Model, _ term: Expr) -> Int
+  var model: Model? { get }
 }
 
 
