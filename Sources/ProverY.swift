@@ -11,7 +11,7 @@ import Foundation
 ///     assert 3: -> 3:~p(a) - forces reselection in 1: and 2: - search for clashes in { 1:q(X), 2:~q(a) }, saturated
 ///     missing:
 
-/// A instantiation-based prover that uses yices as satisfiablity checker modulo QF_EUF
+/// A instantiation-based prover that uses a satisfiablity checker modulo QF_EUF
 /// quantifier free, equalitiy, uninterpreted functions
 final class ProverY<N:Node, C:LogicContext>: Prover
 where N:SymbolStringTyped {
