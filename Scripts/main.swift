@@ -27,12 +27,13 @@ private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
 
 
 
+fileprivate typealias TheProver = FLEA.ProverY<TheNode, YicesContext>
 // MARK: functions
 func process(problem: String) {
 
     Syslog.debug { "Hello, \(problem)" }
 
-    guard let theProver = FLEA.ProverY<TheNode>(problem:problem) else {
+    guard let theProver = TheProver(problem:problem) else {
         Syslog.warning { "Could not create prover with problem \(problem)" }
           return
       }

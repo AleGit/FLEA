@@ -1,9 +1,8 @@
 import Foundation
-import CYices
 
-/// A instantiation-based prover that uses yices as satisfiablity checker modulo QF_EUF
+/// A instantiation-based prover that uses a satisfiablity checker modulo QF_EUF
 /// quantifier free, equalitiy, uninterpreted functions
-final class ProverY<N:Node>: Prover
+final class ProverY<N:Node, C:LogicContext>: Prover
 where N:SymbolStringTyped {
     /// keep a history of read files
     fileprivate var files = Array<(String, URL, Int, Int)>()
@@ -15,7 +14,7 @@ where N:SymbolStringTyped {
     fileprivate let initialClauseCount: Int
 
     /// [ Int : (term_t, [term_t], [term_t]) ]
-    fileprivate var insuredClauses: Dictionary<Int, Yices.Tuple>
+    fileprivate var insuredClauses: Dictionary<Int, C.Tuple>
 
     fileprivate var selectedLiteralIndices: Dictionary<Int, Int>
 
@@ -26,7 +25,7 @@ where N:SymbolStringTyped {
     fileprivate var variantsTrie = TrieClass<N.Symbol, Int>()
 
     fileprivate var deadline: AbsoluteTime = 0.0
-    fileprivate var context = Yices.Context()
+    fileprivate var context = C()
 
     fileprivate let wildcardSymbol = N.symbolize(string:"*", type:.variable)
 
@@ -64,7 +63,7 @@ where N:SymbolStringTyped {
         processedClauseIndices = Set<Int>(minimumCapacity: capacity)
         initialClauseCount = clauses.count
 
-        insuredClauses = Dictionary<Int, Yices.Tuple>(minimumCapacity: capacity)
+        insuredClauses = Dictionary<Int, C.Tuple>(minimumCapacity: capacity)
         selectedLiteralIndices = Dictionary<Int, Int>(minimumCapacity: capacity)
 
 
@@ -107,7 +106,7 @@ extension ProverY {
     }
 
 
-    /// Process next clause, i.e. encode and assert clause with Yices, returns
+    /// Process next clause, i.e. encode and assert clause with SMT, returns
     /// - false if
     ///     - no unprocessed clause was available, or
     ///     - context is not satifaible anymore
@@ -129,7 +128,8 @@ extension ProverY {
         Syslog.error(condition: { insuredClauses[clauseIndex] != nil }) {
             "clause #\(clauseIndex) \(insuredClauses[clauseIndex])! already insured." }
 
-        insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
+        let clause = clauses[clauseIndex]
+        insuredClauses[clauseIndex] = context.ensure(clause: clause.2)
 
         // print("+", clauseIndex, clauses[clauseIndex].2)
 
@@ -296,31 +296,31 @@ extension ProverY {
 
     private func updateSelectedLiteralIndices() {
 
-        guard let model = Yices.Model(context: context) else {
+        guard let model = context.model else {
             Syslog.error { "No model!?"}
             return
         }
 
-        for (clauseIndex, yicesTuple) in insuredClauses {
-            let (_, yicesLiterals, _) = yicesTuple
+        for (clauseIndex, smtTuple) in insuredClauses {
+            let (_, smtLiterals, _) = smtTuple
             guard let selectedLiteralIndex = selectedLiteralIndices[clauseIndex] else {
                 // no previously selected literal
 
-                selectedLiteralIndices[clauseIndex] = model.selectIndex(literals: yicesLiterals)
+                selectedLiteralIndices[clauseIndex] = model.selectIndex(literals: smtLiterals)
 
                 updateSelectedLiteralTrie(clauseIndex: clauseIndex)
 
                 continue
             }
 
-            if model.implies(formula: yicesLiterals[selectedLiteralIndex]) {
+            if model.implies(formula: smtLiterals[selectedLiteralIndex]) {
                 // literal still holds, no need to update selected literal trie
                 continue
             }
 
             // literal does not hold anymore
 
-            selectedLiteralIndices[clauseIndex] = model.selectIndex(literals: yicesLiterals)
+            selectedLiteralIndices[clauseIndex] = model.selectIndex(literals: smtLiterals)
 
             updateSelectedLiteralTrie(clauseIndex: clauseIndex,
             previousLiteralIndex: selectedLiteralIndex)

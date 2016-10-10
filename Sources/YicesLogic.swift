@@ -56,36 +56,99 @@ final class YicesExpr : LogicExpr {
       YicesExpr(yices_term_child(self.expr, $0))
     }
   }
-
-  /*var subterms : Set<YicesExpr> {
-    var terms = Set(children().flatMap { subterms($0) })
-    terms.insert(self)
-    return terms
-  }*/
 }
 
-
-class YicesLogic : LogicContext {
+final class YicesModel : LogicModel {
   typealias Expr = YicesExpr
-  typealias TType = type_t
-  typealias Model = OpaquePointer
 
-  var ctx : OpaquePointer
+  let context : YicesContext
+  private var model: OpaquePointer
+
+  init?(context: YicesContext) {
+    guard let m = yices_get_model(context.context, 1) else {
+      return nil
+    }
+    model = m
+    self.context = context
+  }
+
+  deinit {
+    yices_free_model(model)
+  }
+    // evaluation
+  /// Evaluate a boolean term `t`
+  func evalBool(_ term: Expr) -> Bool {
+    assert (context.bool_type == yices_type_of_term(term.expr))
+
+		var p : Int32 = 0
+    let success = yices_get_bool_value(model, term.expr, &p)
+    // FIXME: rather throw exception
+    guard success == 0  else {
+      yices_print_error(stdout)
+      return false
+    }
+    return  (p != 0)
+  }
+
+  /// Evaluate a term `t` of integer type
+  func evalInt(_ term: Expr) -> Int {
+    assert (context.int_type == yices_type_of_term(term.expr))
+
+		var p : Int32 = -1
+    let success = yices_get_int32_value(model, term.expr, &p)
+    // FIXME: rather throw exception
+    guard success == 0  else {
+      yices_print_error(stdout)
+      return 0
+    }
+    return Int(p)
+  }
+
+  func implies(formula: Expr) -> Bool {
+    let tau = yices_type_of_term(formula.expr)
+
+    Syslog.error(condition: { yices_type_is_bool(tau)==0 }) {
+      _ in
+      let s = String(term: formula.expr) ?? "\(formula) n/a"
+      let t = String(tau: tau) ?? "\(tau) n/a"
+
+      return "Formula '\(s)' is not Boolean, but '\(t)'"
+    }
+    return yices_formula_true_in_model(model, formula.expr) > 0
+  }
+
+  func selectIndex<C: Collection>(literals: C) -> Int?
+  where C.Iterator.Element == Expr {
+    for (index, literal) in literals.enumerated() {
+      if self.implies(formula: literal) {
+        return index
+      }
+    }
+    return nil
+  }
+}
+
+final class YicesContext : LogicContext {
+  typealias ExprType = type_t
+  typealias Model = YicesModel
+  typealias Expr = Model.Expr
+
+  fileprivate var context : OpaquePointer
 	
   // types
   let bool_type = yices_bool_type()
   let int_type = yices_int_type()
-  let free_type = YicesLogic.namedType("𝛕")
+  let free_type = YicesContext.namedType("𝛕")
 
 	// special constants
-	var 🚧 : Expr = YicesLogic.typedSymbol("⊥", YicesLogic.namedType("𝛕"))
+	var 🚧 : Expr = YicesContext.typedSymbol("⊥", YicesContext.namedType("𝛕"))
 
   init() {
-    ctx = yices_new_context(nil)
+    context = yices_new_context(nil)
   }
 
 	deinit {
-	  yices_free_context(ctx)
+	  yices_free_context(context)
 	}
 
 	static var versionString: String {
@@ -132,7 +195,7 @@ class YicesLogic : LogicContext {
     return tau
   }
 
-  private static func typedSymbol(_ symbol: String, _ type: TType) -> Expr {
+  private static func typedSymbol(_ symbol: String, _ type: ExprType) -> Expr {
     assert(!symbol.isEmpty, "a symbol name must not be empty")
 
     var c = yices_get_term_by_name(symbol)
@@ -148,25 +211,25 @@ class YicesLogic : LogicContext {
   }
 
   /// Get or create a global constant `symbol` of type `term_tau`
-  func constant(_ symbol: String, _ type: TType) -> Expr {
-    return YicesLogic.typedSymbol(symbol, type)
+  func constant(_ symbol: String, _ type: ExprType) -> Expr {
+    return YicesContext.typedSymbol(symbol, type)
   }
 
   /// Create a homogenic domain tuple
-  func domain(_ count: Int, _ type: TType) -> [TType] {
-    return [TType](repeating: type, count: count)
+  func domain(_ count: Int, _ type: ExprType) -> [ExprType] {
+    return [ExprType](repeating: type, count: count)
   }
 
   /// Get or create a function symbol of type domain -> range
-  func function(_ symbol: String, _ domain: [TType], _ range: TType) -> Expr {
+  func function(_ symbol: String, _ domain: [ExprType], _ range: ExprType) -> Expr {
     let type_f = yices_function_type(UInt32(domain.count), domain, range)
-    return YicesLogic.typedSymbol(symbol, type_f)
+    return YicesContext.typedSymbol(symbol, type_f)
   }
 
   /// Create application of uninterpreted function or predicate named `symbol`
   /// with arguments `args` of implicit global type `free_type`
   /// and explicit return type `type`
-  func app(_ symbol: String, _ args: [Expr], _ range: TType) -> Expr {
+  func app(_ symbol: String, _ args: [Expr], _ range: ExprType) -> Expr {
     guard args.count > 0 else { return constant(symbol, range) }
 
     let f = function(symbol, domain(args.count, free_type), range)
@@ -177,7 +240,7 @@ class YicesLogic : LogicContext {
 
   // assertion and checking
   func ensure(_ formula: Expr) {
-		yices_assert_formula(ctx, formula.expr)
+		yices_assert_formula(context, formula.expr)
 	}
 
   func ensureCheck(formula: Expr) -> Bool {
@@ -186,7 +249,7 @@ class YicesLogic : LogicContext {
 	}
 
 	var isSatisfiable: Bool {
-		switch yices_check_context(ctx, nil) {
+		switch yices_check_context(context, nil) {
 			case STATUS_SAT:
 				return true
 			case STATUS_UNSAT:
@@ -198,32 +261,8 @@ class YicesLogic : LogicContext {
 		}
 	}
 
-  // evaluation
-  /// Evaluate a boolean term `t` in `model`
-  func evalBool(_ model: Model, _ t: Expr) -> Bool {
-    assert (bool_type == yices_type_of_term(t.expr))
-
-		var p : Int32 = 0
-    let success = yices_get_bool_value(model, t.expr, &p)
-    // FIXME: rather throw exception
-    guard success == 0  else {
-      yices_print_error(stdout)
-      return false
-    }
-    return  (p != 0)
-  }
-
-  /// Evaluate a term `t` of integer type in `model`
-  func evalInt(_ model: Model, _ t: Expr) -> Int {
-    assert (int_type == yices_type_of_term(t.expr))
-
-		var p : Int32 = -1
-    let success = yices_get_int32_value(model, t.expr, &p)
-    // FIXME: rather throw exception
-    guard success == 0  else {
-      yices_print_error(stdout)
-      return 0
-    }
-    return Int(p)
+  var model : Model? {
+    guard isSatisfiable else { return nil }
+    return Model(context: self)
   }
 }

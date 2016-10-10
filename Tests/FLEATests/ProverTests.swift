@@ -32,7 +32,7 @@ public class ProverTests: YicesTestCase {
   }
 
 
-private typealias Prover = ProverY<TestNode>
+private typealias Prover = ProverY<TestNode, YicesContext>
 
 
 
@@ -43,7 +43,7 @@ private typealias Prover = ProverY<TestNode>
           // ("PUZ007-1", 28, 2, true)
           // ("PUZ001-1y", 12, 1, false),
           ] {
-      guard let theProver = FLEA.ProverY<TestNode>(problem:problem) else {
+      guard let theProver = Prover(problem:problem) else {
           XCTFail(nok)
           return
       }
