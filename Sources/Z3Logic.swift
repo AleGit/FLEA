@@ -308,7 +308,8 @@ final class Z3Context : LogicContext {
 
     let nargs = UInt32(args.count)
     let dom = domain(args.count, free_type)
-    let decl = Z3_mk_fresh_func_decl(ctx, symbol, nargs, dom, range)
+    let sym = Z3_mk_string_symbol(ctx, symbol)
+    let decl = Z3_mk_func_decl(ctx, sym, nargs, dom, range)
     return Z3Expr(ctx, expr: Z3_mk_app(ctx, decl, nargs, args.map{ $0.expr }))
   }
 
