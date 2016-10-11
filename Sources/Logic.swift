@@ -49,7 +49,6 @@ protocol LogicContext {
   func mkBoolVar(_ name: String) -> Expr
   func mkIntVar(_ name: String) -> Expr
   func constant(_ name: String, _ type: ExprType) -> Expr
-  func function(_ name: String, _ domain: [ExprType], _ range: ExprType) -> Expr
   func app(_ symbol: String, _ args: [Expr], _ range: ExprType) -> Expr
   var 🚧 : Expr { get }
 
