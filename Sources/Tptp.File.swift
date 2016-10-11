@@ -3,6 +3,9 @@ import CTptpParsing
 import Foundation
 
 extension Tptp {
+  /// A parsed TPTP file where the abstract syntax tree is stored in an optimized
+  /// dynamically allocated heap memory which is only accessible by pointers.
+  /// (it uses TptpParsingLib with C-API)
   final class File {
 
     private var store: StoreRef?
@@ -10,6 +13,9 @@ extension Tptp {
     /// <TPTP_file> ::= <TPTP_input>*
     private(set) var root: TreeNodeRef?
 
+
+
+    /// intiialize with the content of a file referenced by file path
     private init?(path: FilePath) {
       Syslog.notice { "TptpFile(path:\(path))" }
       guard let size = path.fileSize, size > 0 else {
@@ -21,6 +27,7 @@ extension Tptp {
       }
     }
 
+    /// intiialize with the content of a file referenced by file url
     convenience init?(url: URL) {
       Syslog.info { "Tptp.File(url:\(url))" }
 
@@ -37,6 +44,7 @@ extension Tptp {
       }
     }
 
+    // initialize with the content of string
     init?(string: String, type: Tptp.SymbolType) {
       Syslog.notice { "Tptp.File(string:\(string), type:\(type))" }
 
@@ -88,8 +96,9 @@ extension Tptp {
     }
 
 
+    /// free dynammically allocated memory
     deinit {
-      Syslog.notice { self.path }
+      Syslog.notice { "'\(self.path)' memory freed." }
       if let store = store {
         prlcDestroyStore(store)
       }
@@ -115,8 +124,9 @@ extension Tptp {
       return root!.children { $0 }
     }
 
-    /// The sequence of stored symbols (paths, names, etc.)
-    /// from first to last.
+    /// The sequence of stored symbols (paths, names, etc.) from first to last.
+    /// Symbols (C-strings / UTF8) are uniquely stored in a single memory block,
+    /// i.e. the symbols are separated by exactly one `\0`
     private var symbols: UtileSequence<CStringRef, String?> {
       let first = prlcFirstSymbol(self.store!)
       let step = {
