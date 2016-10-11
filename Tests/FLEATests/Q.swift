@@ -45,6 +45,20 @@ public class YicesTestCase : FleaTestCase {
   }
 }
 
+public class Z3TestCase : FleaTestCase {
+  override public func setUp() {
+    super.setUp()
+    //Z3Context.setUp()
+    print("+++ Z3TestCase.\(#function) +++")
+  }
+
+  override public func tearDown() {
+    print("+++ Z3TestCase.\(#function) +++")
+    //Z3Context.tearDown()
+    super.tearDown()
+  }
+}
+
 struct Q {
   typealias Node = Tptp.SmartNode
 
