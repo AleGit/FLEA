@@ -1,55 +1,62 @@
 import CZ3Api
 
 
-final class Z3Expr : LogicExpr {
+public final class Z3Expr : LogicExpr {
   fileprivate var expr: Z3_ast
-  private var ctx: Z3_context
+  fileprivate var ctx: Z3_context? = nil
 
   init(_ c: Z3_context, expr: Z3_ast) {
     self.expr = expr
     self.ctx = c
-    Z3_inc_ref(c, expr)
+    Z3_inc_ref(self.ctx!, self.expr)
   }
 
   deinit {
-    Z3_dec_ref(self.ctx, self.expr)
+    if (self.ctx != nil) {
+      Z3_dec_ref(self.ctx!, self.expr)
+    }
+  }
+
+  func clear() {
+    Z3_dec_ref(self.ctx!, self.expr)
+    ctx = nil
   }
 
   func not() -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_not(ctx, expr))
+    return Z3Expr(ctx!, expr: Z3_mk_not(ctx!, expr))
   }
 
   func and(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_and(ctx, UInt32(2), [self.expr, t.expr]))
+    return Z3Expr(ctx!, expr: Z3_mk_and(ctx!, UInt32(2), [self.expr, t.expr]))
   }
 
   func or(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_or(ctx, 2, [self.expr, t.expr]))
+    return Z3Expr(ctx!, expr: Z3_mk_or(ctx!, 2, [self.expr, t.expr]))
   }
 
   func implies(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_implies(ctx, self.expr, t.expr))
+    return Z3Expr(ctx!, expr: Z3_mk_implies(ctx!, self.expr, t.expr))
   }
 
   func ite(_ t: Z3Expr, _ f: Z3Expr) -> Z3Expr {
-      return Z3Expr(ctx, expr: Z3_mk_ite(ctx, self.expr, t.expr, f.expr))
+      return Z3Expr(ctx!, expr: Z3_mk_ite(ctx!, self.expr, t.expr, f.expr))
   }
 
   // arithmetic operators
   func eq(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_iff(ctx, self.expr, t.expr))
+    return Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
   }
 
   func neq(_ t: Z3Expr) -> Z3Expr {
-    return !Z3Expr(ctx, expr: Z3_mk_iff(ctx, self.expr, t.expr))
+    return !Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
   }
 
   func gt(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_gt(ctx, self.expr, t.expr))
+    return Z3Expr(ctx!, expr: Z3_mk_gt(ctx!, self.expr, t.expr))
   }
 
   func ge(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_ge(ctx, self.expr, t.expr))
+    return Z3Expr(ctx!, expr: Z3_mk_ge(ctx!, self.expr, t.expr))
   }
 
   fileprivate static func toZ3Array(_ ts: [Z3Expr]) -> 
@@ -63,29 +70,29 @@ final class Z3Expr : LogicExpr {
   }
 
   func add(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx, expr: Z3_mk_add(ctx, 2, [self.expr, t.expr]))
+    return Z3Expr(ctx!, expr: Z3_mk_add(ctx!, 2, [self.expr, t.expr]))
   }
   
   
 	// term deconstruction
   /// Get children of a Z3 term.
   var children : [Z3Expr] {
-    guard (Z3_get_ast_kind(ctx, self.expr) == Z3_APP_AST) else {
+    guard (Z3_get_ast_kind(ctx!, self.expr) == Z3_APP_AST) else {
        return []
     }
-    let app = Z3_to_app(ctx, self.expr)
-    let numargs = Z3_get_app_num_args(ctx, app)
+    let app = Z3_to_app(ctx!, self.expr)
+    let numargs = Z3_get_app_num_args(ctx!, app)
     return (0..<numargs).map {
-      Z3Expr(ctx, expr: Z3_get_app_arg(ctx, app, $0))
+      Z3Expr(ctx!, expr: Z3_get_app_arg(ctx!, app, $0))
     }
   }
 }
 
-final class Z3Model : LogicModel {
+public final class Z3Model : LogicModel {
   typealias Expr = Z3Expr
 
-  let ctx : Z3Context
-  private var model: Z3_model
+  fileprivate let ctx : Z3Context
+  fileprivate var model: Z3_model
 
   init?(_ ctx: Z3Context, _ model: Z3_model) {
     self.model = model
@@ -207,11 +214,17 @@ final class Z3Context : LogicContext {
     bool_type = Z3_mk_bool_sort(ctx)
     int_type = Z3_mk_int_sort(ctx)
     free_type = bool_type // dummy
+
     free_type = namedType("𝛕")
-	  🚧 = typedSymbol("⊥", namedType("𝛕"))
+	  🚧 = typedSymbol("⊥", free_type)
   }
 
 	deinit {
+    // do cleanup manually, to avoid crash because of cyclic dependencies
+    mkTop.clear()
+    mkBot.clear()
+    🚧.clear()
+
     Z3_solver_dec_ref(ctx, solver)
 	  Z3_del_context(ctx)
 	}
