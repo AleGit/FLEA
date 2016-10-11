@@ -155,6 +155,30 @@ final class Z3Model : LogicModel {
   }
 }
 
+
+public extension String {
+  /// Creates a String representation of a Z3 expression
+  public init?(expr: Z3Expr) {
+    guard let cstring = Z3_ast_to_string(expr.ctx!, expr.expr) else {
+      print("could not create String from Z3 expression")
+      return nil
+    }
+    guard let string = String(validatingUTF8:cstring) else { return nil }
+    self = string
+  }
+
+  /// Creates a String representation of a Z3 model
+  public init?(model: Z3Model) {
+    guard let cstring = Z3_model_to_string(model.ctx.ctx, model.model) else {
+      print("could not create String from Z3 model")
+      return nil
+    }
+    guard let string = String(validatingUTF8:cstring) else { return nil }
+    self = string
+  }
+}
+
+
 final class Z3Context : LogicContext {
   typealias ExprType = Z3_sort
   typealias Model = Z3Model
