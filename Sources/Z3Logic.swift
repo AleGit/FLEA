@@ -192,7 +192,8 @@ final class Z3Context : LogicContext {
   typealias Expr = Model.Expr
 
   fileprivate var ctx : Z3_context
-	var solver: Z3_solver
+  private var solver: Z3_solver
+  private var optimize: Z3_optimize? = nil
 
   // types
   let bool_type : Z3_sort
@@ -202,7 +203,7 @@ final class Z3Context : LogicContext {
 	// special constants
 	var 🚧 : Expr
 
-  init() {
+  init(optimize: Bool) {
     ctx = Z3_mk_context(Z3_mk_config())
     solver = Z3_mk_solver(ctx)
     Z3_solver_inc_ref(ctx, solver)
@@ -217,6 +218,15 @@ final class Z3Context : LogicContext {
 
     free_type = namedType("𝛕")
 	  🚧 = typedSymbol("⊥", free_type)
+
+    if (optimize) {
+      self.optimize = Z3_mk_optimize(self.ctx)
+      Z3_inc_ref(self.ctx, self.optimize)
+    }
+  }
+
+  convenience init() {
+    self.init(optimize: false)
   }
 
 	deinit {
@@ -224,6 +234,10 @@ final class Z3Context : LogicContext {
     mkTop.clear()
     mkBot.clear()
     🚧.clear()
+
+    if (self.optimize != nil) {
+      Z3_dec_ref(self.ctx, self.optimize)
+    }
 
     Z3_solver_dec_ref(ctx, solver)
 	  Z3_del_context(ctx)
