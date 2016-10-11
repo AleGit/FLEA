@@ -192,7 +192,7 @@ final class Z3Context : LogicContext {
   typealias Expr = Model.Expr
 
   fileprivate var ctx : Z3_context
-  private var solver: Z3_solver
+  private var solver: Z3_solver? = nil
   private var optimize: Z3_optimize? = nil
 
   // types
@@ -205,8 +205,13 @@ final class Z3Context : LogicContext {
 
   init(optimize: Bool) {
     ctx = Z3_mk_context(Z3_mk_config())
-    solver = Z3_mk_solver(ctx)
-    Z3_solver_inc_ref(ctx, solver)
+    if (optimize) {
+      self.optimize = Z3_mk_optimize(self.ctx)
+      Z3_inc_ref(self.ctx, self.optimize!)
+    } else{
+      solver = Z3_mk_solver(ctx)
+      Z3_solver_inc_ref(ctx, solver!)
+    }
 
     mkTop = Z3Expr(ctx, expr: Z3_mk_true(ctx))
     mkBot = Z3Expr(ctx, expr: Z3_mk_false(ctx))
@@ -218,11 +223,6 @@ final class Z3Context : LogicContext {
 
     free_type = namedType("𝛕")
 	  🚧 = typedSymbol("⊥", free_type)
-
-    if (optimize) {
-      self.optimize = Z3_mk_optimize(self.ctx)
-      Z3_inc_ref(self.ctx, self.optimize)
-    }
   }
 
   convenience init() {
@@ -236,10 +236,10 @@ final class Z3Context : LogicContext {
     🚧.clear()
 
     if (self.optimize != nil) {
-      Z3_dec_ref(self.ctx, self.optimize)
+      Z3_dec_ref(self.ctx, self.optimize!)
+    } else {
+      Z3_solver_dec_ref(ctx, solver!)
     }
-
-    Z3_solver_dec_ref(ctx, solver)
 	  Z3_del_context(ctx)
 	}
 
@@ -330,7 +330,11 @@ final class Z3Context : LogicContext {
 
   // assertion and checking
   func ensure(_ formula: Expr) {
-		Z3_solver_assert(ctx, solver, formula.expr)
+    if (optimize == nil) {
+		  Z3_solver_assert(ctx, solver!, formula.expr)
+    } else {
+		  Z3_optimize_assert(ctx, optimize!, formula.expr)
+    }
 	}
 
   func ensureCheck(formula: Expr) -> Bool {
@@ -339,20 +343,23 @@ final class Z3Context : LogicContext {
 	}
 
 	var isSatisfiable: Bool {
-		switch Z3_solver_check(ctx, solver) {
-			case Z3_L_TRUE:
-				return true
-			case Z3_L_FALSE:
-				return false
-			default:
-				print("-------------------------------------------------------")
-				assert(false)
-				return true
-		}
+    let res = optimize == nil ? Z3_solver_check(ctx, solver!)
+                              : Z3_solver_check(ctx, optimize!)
+    switch res {
+      case Z3_L_TRUE:
+        return true
+      case Z3_L_FALSE:
+        return false
+      default:
+        print("-------------------------------------------------------")
+        assert(false)
+        return true
+      }
 	}
 
   var model : Model? {
     guard isSatisfiable else { return nil }
-    return Model(self, Z3_solver_get_model(ctx, solver))
+    return optimize == nil ? Model(self, Z3_solver_get_model(ctx, solver!))
+                           : Model(self, Z3_optimize_get_model(ctx, optimize!))
   }
 }
