@@ -44,11 +44,19 @@ public final class Z3Expr : LogicExpr {
 
   // arithmetic operators
   func eq(_ t: Z3Expr) -> Z3Expr {
+<<<<<<< HEAD
     return Z3Expr(ctx!, expr: Z3_mk_eq(ctx!, self.expr, t.expr))
   }
 
   func neq(_ t: Z3Expr) -> Z3Expr {
     return !Z3Expr(ctx!, expr: Z3_mk_eq(ctx!, self.expr, t.expr))
+=======
+    return Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
+  }
+
+  func neq(_ t: Z3Expr) -> Z3Expr {
+    return !Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
+>>>>>>> c1ae417b0f2e6c242df2ed99cbc5f096bb4238ae
   }
 
   func gt(_ t: Z3Expr) -> Z3Expr {
@@ -327,6 +335,7 @@ final class Z3Context : LogicContext {
     return Z3Expr(ctx, expr: Z3_mk_app(ctx, decl, nargs, args.map{ $0.expr }))
   }
 
+<<<<<<< HEAD
   func mkNum(_ n: Int) -> Expr {
     let e = MemoryLayout<Int>.size == 4 ? Z3_mk_int(ctx, Int32(n), int_type)
                                         : Z3_mk_int64(ctx, Int64(n), int_type)
@@ -336,6 +345,8 @@ final class Z3Context : LogicContext {
     }
     return Z3Expr(ctx, expr: e!)
   }
+=======
+>>>>>>> c1ae417b0f2e6c242df2ed99cbc5f096bb4238ae
 
   // assertion and checking
   func ensure(_ formula: Expr) {
