@@ -327,6 +327,15 @@ final class Z3Context : LogicContext {
     return Z3Expr(ctx, expr: Z3_mk_app(ctx, decl, nargs, args.map{ $0.expr }))
   }
 
+  func mkNum(_ n: Int) -> Expr {
+    let e = MemoryLayout<Int>.size == 4 ? Z3_mk_int(ctx, Int32(n), int_type)
+                                        : Z3_mk_int64(ctx, Int64(n), int_type)
+    guard e != nil else {
+      print("Z3 typedSymbol failed")
+      return mkBot
+    }
+    return Z3Expr(ctx, expr: e!)
+  }
 
   // assertion and checking
   func ensure(_ formula: Expr) {
