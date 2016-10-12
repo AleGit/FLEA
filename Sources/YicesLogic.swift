@@ -77,27 +77,23 @@ final class YicesModel : LogicModel {
   }
     // evaluation
   /// Evaluate a boolean term `t`
-  func evalBool(_ term: Expr) -> Bool {
+  func evalBool(_ term: Expr) -> Bool? {
     assert (context.bool_type == yices_type_of_term(term.expr))
 
 		var p : Int32 = 0
-    let success = yices_get_bool_value(model, term.expr, &p)
-    // FIXME: rather throw exception
-    guard success == 0  else {
+    guard yices_get_bool_value(model, term.expr, &p) == 0 else {
       yices_print_error(stdout)
-      return false
+      return nil
     }
-    return  (p != 0)
+    return (p != 0)
   }
 
   /// Evaluate a term `t` of integer type
-  func evalInt(_ term: Expr) -> Int {
+  func evalInt(_ term: Expr) -> Int? {
     assert (context.int_type == yices_type_of_term(term.expr))
 
 		var p : Int32 = -1
-    let success = yices_get_int32_value(model, term.expr, &p)
-    // FIXME: rather throw exception
-    guard success == 0  else {
+    guard yices_get_int32_value(model, term.expr, &p) == 0  else {
       yices_print_error(stdout)
       return 0
     }

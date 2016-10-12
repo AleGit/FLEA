@@ -120,18 +120,20 @@ public final class Z3Model : LogicModel {
   }
 
   /// Evaluate a boolean term `t`
-  func evalBool(_ term: Expr) -> Bool {
+  func evalBool(_ term: Expr) -> Bool? {
     assert (ctx.bool_type == Z3_get_sort(ctx.ctx, term.expr))
-    return Z3_get_bool_value(ctx.ctx, eval(term)!) == Z3_L_TRUE
+    guard let val = eval(term) else { return nil }
+    return Z3_get_bool_value(ctx.ctx, val) == Z3_L_TRUE
   }
 
   /// Evaluate a term `t` of integer type
-  func evalInt(_ term: Expr) -> Int {
+  func evalInt(_ term: Expr) -> Int? {
     assert (ctx.int_type == Z3_get_sort(ctx.ctx, term.expr))
     var num : Int32 = 0
-    guard Z3_get_numeral_int(ctx.ctx, eval(term)!, &num) == Z3_TRUE  else {
+    guard let val = eval(term) else { return nil }
+    guard Z3_get_numeral_int(ctx.ctx, val, &num) == Z3_TRUE  else {
       Syslog.error { "Z3 numeral conversion failed" }
-      return 0
+      return nil
     }
     return Int(num)
   }
@@ -141,12 +143,11 @@ public final class Z3Model : LogicModel {
 
     Syslog.error(condition: { ctx.bool_type != tau }) {
       _ in
-      let s = "some Z3 formula"//String(term: formula.expr) ?? "\(formula) n/a"
-      let t = "some Z3 type" //String(tau: tau) ?? "\(tau) n/a"
-
-      return "Formula '\(s)' is not Boolean, but '\(t)'"
+      let s = String(expr: formula) ?? "\(formula) n/a"
+      return "Formula '\(s)' is not Boolean"
     }
-    return evalBool(formula)
+    guard let val = evalBool(formula) else { return false }
+    return val
   }
 
   func selectIndex<C: Collection>(literals: C) -> Int?
