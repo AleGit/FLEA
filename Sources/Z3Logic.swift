@@ -44,11 +44,11 @@ public final class Z3Expr : LogicExpr {
 
   // arithmetic operators
   func eq(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
+    return Z3Expr(ctx!, expr: Z3_mk_eq(ctx!, self.expr, t.expr))
   }
 
   func neq(_ t: Z3Expr) -> Z3Expr {
-    return !Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
+    return !Z3Expr(ctx!, expr: Z3_mk_eq(ctx!, self.expr, t.expr))
   }
 
   func gt(_ t: Z3Expr) -> Z3Expr {
