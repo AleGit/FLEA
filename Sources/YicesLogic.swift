@@ -242,7 +242,6 @@ final class YicesContext : LogicContext {
                                        : YicesExpr(yices_int64(Int64(n)))
   }
 
-
   // assertion and checking
   func ensure(_ formula: Expr) {
 		yices_assert_formula(context, formula.expr)
