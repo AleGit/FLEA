@@ -48,6 +48,7 @@ protocol LogicContext {
   func mkIntVar(_ name: String) -> Expr
   func constant(_ name: String, _ type: ExprType) -> Expr
   func app(_ symbol: String, _ args: [Expr], _ range: ExprType) -> Expr
+  func mkNum(_ n: Int) -> Expr
   var 🚧 : Expr { get }
 
   // assertion and checking

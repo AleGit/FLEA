@@ -237,6 +237,11 @@ final class YicesContext : LogicContext {
     return YicesExpr(yices_application(f.expr, nargs, args.map{ $0.expr }))
   }
 
+  func mkNum(_ n: Int) -> Expr {
+    return MemoryLayout<Int>.size == 4 ? YicesExpr(yices_int32(Int32(n)))
+                                       : YicesExpr(yices_int64(Int64(n)))
+  }
+
 
   // assertion and checking
   func ensure(_ formula: Expr) {
