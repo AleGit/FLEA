@@ -342,6 +342,24 @@ final class Z3Context : LogicContext {
 		return isSatisfiable
 	}
 
+  func maximize(_ expr: Expr) {
+    guard optimize != nil else {
+      print("Z3 maximization is only available in optimization mode")
+      return
+    }
+
+    Z3_optimize_maximize(ctx, optimize, expr.expr)
+  }
+
+  func minimize(_ expr: Expr) {
+    guard optimize != nil else {
+      print("Z3 maximization is only available in optimization mode")
+      return
+    }
+
+    Z3_optimize_maximize(ctx, optimize, expr.expr)
+  }
+
 	var isSatisfiable: Bool {
     let res = optimize == nil ? Z3_solver_check(ctx, solver!)
                               : Z3_solver_check(ctx, optimize!)
