@@ -40,8 +40,7 @@ private typealias Prover = ProverY<TestNode, Z3Context>
   func testPUZs () {
       for (problem, noc, nof, equational) in [
           ("PUZ001-1", 12, 1, false),
-          // ("PUZ007-1", 28, 2, true)
-          // ("PUZ001-1y", 12, 1, false),
+          // ("PUZ007-1", 28, 2, true) // slow
           ] {
       guard let theProver = Prover(problem:problem) else {
           XCTFail(nok)
