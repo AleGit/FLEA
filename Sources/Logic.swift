@@ -20,8 +20,8 @@ protocol LogicExpr {
 protocol LogicModel {
   associatedtype Expr : LogicExpr
 
-  func evalBool(_ term: Expr) -> Bool
-  func evalInt(_ term: Expr) -> Int
+  func evalBool(_ term: Expr) -> Bool?
+  func evalInt(_ term: Expr) -> Int?
 	func implies(formula: Expr) -> Bool
 	func selectIndex<C: Collection>(literals: C) -> Int?
     where C.Iterator.Element == Expr
