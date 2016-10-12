@@ -76,6 +76,11 @@ func ⋁<E:LogicExpr>(_ s : E, _ t: E) -> E {
   return s.or(t)
 }
 
+infix operator ⟹: LogicalDisjunctionPrecedence
+func ⋁<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.implies(t)
+}
+
 infix operator ==: ComparisonPrecedence
 func ==<E:LogicExpr>(_ s : E, _ t: E) -> E {
   return s.eq(t)
