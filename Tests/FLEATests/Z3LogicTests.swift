@@ -18,6 +18,7 @@ public class Z3ContextTests: Z3TestCase {
       ("testBot1", testBot1),
       ("testBottom", testBottom),
       ("testUnsat0", testUnsat0),
+      ("testArith0", testArith0),
       ("testEmptyClause", testEmptyClause)
     ]
   }
@@ -115,6 +116,15 @@ public class Z3ContextTests: Z3TestCase {
     let _ = z3.ensure(clause: p)
     let _ = z3.ensure(clause: np)
     XCTAssertFalse(z3.isSatisfiable)
+  }
+
+  func testArith0() {
+    let z3 = Z3Context()
+    let three = z3.mkNum(3)
+    let x = z3.mkIntVar("x")
+    let y = z3.mkIntVar("y")
+    let _ = z3.ensure(x.add(y) == three)
+    XCTAssertTrue(z3.isSatisfiable)
   }
 
   func testEmptyClause() {
