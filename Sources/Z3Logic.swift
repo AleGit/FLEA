@@ -106,36 +106,34 @@ public final class Z3Model : LogicModel {
 
   // evaluation
   /// Evaluate a boolean term `t`
-  func eval(_ term: Expr) -> Int {
+  func eval(_ term: Expr) -> Z3_ast? {
     let cap = MemoryLayout<Int>.size
     let p = UnsafeMutablePointer<Z3_ast?>.allocate(capacity: cap)
-    p.pointee = nil
+    p.initialize(to: nil)
+
     // set model completion to true
-    var success = Z3_model_eval(ctx.ctx, model, term.expr, Z3_TRUE, p)
-    // FIXME: rather throw exception
-    guard success == Z3_TRUE  else {
-      print("Z3 evaluation failed")
-      return 0
+    guard Z3_model_eval(ctx.ctx, model, term.expr, Z3_TRUE,p) == Z3_TRUE  else {
+      Syslog.error { "Z3 evaluation failed" }
+      return nil
     }
-    var num : Int32 = 0
-    success = Z3_get_numeral_int(ctx.ctx, p.pointee, &num)
-    guard success == Z3_TRUE  else {
-      print("Z3 numeral conversion failed")
-      return 0
-    }
-    return Int(num)
+    return p.pointee
   }
 
   /// Evaluate a boolean term `t`
   func evalBool(_ term: Expr) -> Bool {
     assert (ctx.bool_type == Z3_get_sort(ctx.ctx, term.expr))
-    return eval(term) != 0
+    return Z3_get_bool_value(ctx.ctx, eval(term)!) == Z3_L_TRUE
   }
 
   /// Evaluate a term `t` of integer type
   func evalInt(_ term: Expr) -> Int {
     assert (ctx.int_type == Z3_get_sort(ctx.ctx, term.expr))
-    return eval(term)
+    var num : Int32 = 0
+    guard Z3_get_numeral_int(ctx.ctx, eval(term)!, &num) == Z3_TRUE  else {
+      Syslog.error { "Z3 numeral conversion failed" }
+      return 0
+    }
+    return Int(num)
   }
 
   func implies(formula: Expr) -> Bool {
@@ -167,7 +165,7 @@ public extension String {
   /// Creates a String representation of a Z3 expression
   public init?(expr: Z3Expr) {
     guard let cstring = Z3_ast_to_string(expr.ctx!, expr.expr) else {
-      print("could not create String from Z3 expression")
+      Syslog.error { "could not create String from Z3 expression" }
       return nil
     }
     guard let string = String(validatingUTF8:cstring) else { return nil }
@@ -177,7 +175,7 @@ public extension String {
   /// Creates a String representation of a Z3 model
   public init?(model: Z3Model) {
     guard let cstring = Z3_model_to_string(model.ctx.ctx, model.model) else {
-      print("could not create String from Z3 model")
+      Syslog.error { "could not create String from Z3 model" }
       return nil
     }
     guard let string = String(validatingUTF8:cstring) else { return nil }
@@ -269,7 +267,7 @@ final class Z3Context : LogicContext {
   func freshVar(_ name: String, _ type: ExprType) -> Expr  {
     let v = Z3_mk_const(ctx, Z3_mk_string_symbol(ctx, name), type)
     guard v != nil else {
-      print("Z3 fresh var failed")
+      Syslog.error { "Z3 fresh var failed" }
       return mkBot
     }
     return Z3Expr(ctx, expr: v!)
@@ -293,7 +291,7 @@ final class Z3Context : LogicContext {
     assert(!symbol.isEmpty, "a symbol name must not be empty")
     let c = Z3_mk_const(ctx, Z3_mk_string_symbol(ctx, symbol), type)
     guard c != nil else {
-      print("Z3 typedSymbol failed")
+      Syslog.error { "Z3 typedSymbol failed" }
       return mkBot
     }
     return Z3Expr(ctx, expr: c!)
@@ -331,7 +329,7 @@ final class Z3Context : LogicContext {
     let e = MemoryLayout<Int>.size == 4 ? Z3_mk_int(ctx, Int32(n), int_type)
                                         : Z3_mk_int64(ctx, Int64(n), int_type)
     guard e != nil else {
-      print("Z3 typedSymbol failed")
+      Syslog.error { "Z3 typedSymbol failed" }
       return mkBot
     }
     return Z3Expr(ctx, expr: e!)
@@ -353,7 +351,7 @@ final class Z3Context : LogicContext {
 
   func maximize(_ expr: Expr) {
     guard optimize != nil else {
-      print("Z3 maximization is only available in optimization mode")
+      Syslog.error { "Z3 maximization is only available in optimization mode" }
       return
     }
 
@@ -362,7 +360,7 @@ final class Z3Context : LogicContext {
 
   func minimize(_ expr: Expr) {
     guard optimize != nil else {
-      print("Z3 maximization is only available in optimization mode")
+      Syslog.error { "Z3 maximization is only available in optimization mode" }
       return
     }
 
