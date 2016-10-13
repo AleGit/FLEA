@@ -1,70 +1,78 @@
 import CZ3Api
 
+final class Z3RawContext{
+  fileprivate var raw: Z3_context
 
-public final class Z3Expr : LogicExpr {
-  fileprivate var expr: Z3_ast
-  fileprivate var ctx: Z3_context? = nil
-
-  init(_ c: Z3_context, expr: Z3_ast) {
-    self.expr = expr
-    self.ctx = c
-    Z3_inc_ref(self.ctx!, self.expr)
+  init() {
+    raw = Z3_mk_context(Z3_mk_config())
   }
 
   deinit {
-    if (self.ctx != nil) {
-      Z3_dec_ref(self.ctx!, self.expr)
-    }
+	  Z3_del_context(raw)
+  }
+}
+
+public final class Z3Expr : LogicExpr {
+  fileprivate var expr: Z3_ast
+  fileprivate var ctx: Z3RawContext
+
+  init(_ c: Z3RawContext, expr: Z3_ast) {
+    self.expr = expr
+    self.ctx = c
+    Z3_inc_ref(c.raw, self.expr)
+  }
+
+  deinit {
+    Z3_dec_ref(ctx.raw, self.expr)
   }
 
   func clear() {
-    Z3_dec_ref(self.ctx!, self.expr)
-    ctx = nil
+    Z3_dec_ref(ctx.raw, self.expr)
   }
 
   func not() -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_not(ctx!, expr))
+    return Z3Expr(ctx, expr: Z3_mk_not(ctx.raw, expr))
   }
 
   func and(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_and(ctx!, UInt32(2), [self.expr, t.expr]))
+    return Z3Expr(ctx, expr: Z3_mk_and(ctx.raw, UInt32(2), [expr, t.expr]))
   }
 
   func or(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_or(ctx!, 2, [self.expr, t.expr]))
+    return Z3Expr(ctx, expr: Z3_mk_or(ctx.raw, 2, [expr, t.expr]))
   }
 
   func implies(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_implies(ctx!, self.expr, t.expr))
+    return Z3Expr(ctx, expr: Z3_mk_implies(ctx.raw, expr, t.expr))
   }
 
   func iff(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
+    return Z3Expr(ctx, expr: Z3_mk_iff(ctx.raw, expr, t.expr))
   }
 
   func xor(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_xor(ctx!, self.expr, t.expr))
+    return Z3Expr(ctx, expr: Z3_mk_xor(ctx.raw, expr, t.expr))
   }
 
   func ite(_ t: Z3Expr, _ f: Z3Expr) -> Z3Expr {
-      return Z3Expr(ctx!, expr: Z3_mk_ite(ctx!, self.expr, t.expr, f.expr))
+      return Z3Expr(ctx, expr: Z3_mk_ite(ctx.raw, expr, t.expr, f.expr))
   }
 
   // arithmetic operators
   func eq(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_eq(ctx!, self.expr, t.expr))
+    return Z3Expr(ctx, expr: Z3_mk_eq(ctx.raw, expr, t.expr))
   }
 
   func neq(_ t: Z3Expr) -> Z3Expr {
-    return !Z3Expr(ctx!, expr: Z3_mk_eq(ctx!, self.expr, t.expr))
+    return !Z3Expr(ctx, expr: Z3_mk_eq(ctx.raw, expr, t.expr))
   }
 
   func gt(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_gt(ctx!, self.expr, t.expr))
+    return Z3Expr(ctx, expr: Z3_mk_gt(ctx.raw, expr, t.expr))
   }
 
   func ge(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_ge(ctx!, self.expr, t.expr))
+    return Z3Expr(ctx, expr: Z3_mk_ge(ctx.raw, expr, t.expr))
   }
 
   fileprivate static func toZ3Array(_ ts: [Z3Expr]) -> 
@@ -78,20 +86,20 @@ public final class Z3Expr : LogicExpr {
   }
 
   func add(_ t: Z3Expr) -> Z3Expr {
-    return Z3Expr(ctx!, expr: Z3_mk_add(ctx!, 2, [self.expr, t.expr]))
+    return Z3Expr(ctx, expr: Z3_mk_add(ctx.raw, 2, [expr, t.expr]))
   }
   
   
 	// term deconstruction
   /// Get children of a Z3 term.
   var children : [Z3Expr] {
-    guard (Z3_get_ast_kind(ctx!, self.expr) == Z3_APP_AST) else {
+    guard (Z3_get_ast_kind(ctx.raw, expr) == Z3_APP_AST) else {
        return []
     }
-    let app = Z3_to_app(ctx!, self.expr)
-    let numargs = Z3_get_app_num_args(ctx!, app)
+    let app = Z3_to_app(ctx.raw, self.expr)
+    let numargs = Z3_get_app_num_args(ctx.raw, app)
     return (0..<numargs).map {
-      Z3Expr(ctx!, expr: Z3_get_app_arg(ctx!, app, $0))
+      Z3Expr(ctx, expr: Z3_get_app_arg(ctx.raw, app, $0))
     }
   }
 }
@@ -99,21 +107,17 @@ public final class Z3Expr : LogicExpr {
 public final class Z3Model : LogicModel {
   typealias Expr = Z3Expr
 
-  fileprivate var ctx : Z3Context?
+  fileprivate var ctx : Z3RawContext
   fileprivate var model: Z3_model
 
-  init?(_ ctx: Z3Context, _ model: Z3_model) {
+  init?(_ ctx: Z3RawContext, _ model: Z3_model) {
     self.model = model
     self.ctx = ctx
-    Z3_model_inc_ref(ctx.ctx, model)
+    Z3_model_inc_ref(ctx.raw, model)
   }
 
   deinit {
-  }
-
-  func clear() {
-    Z3_model_dec_ref(ctx!.ctx, model)
-    ctx = nil
+    Z3_model_dec_ref(ctx.raw, model)
   }
 
   // evaluation
@@ -124,7 +128,7 @@ public final class Z3Model : LogicModel {
     p.initialize(to: nil)
 
     // set model completion to true
-    guard Z3_model_eval(ctx!.ctx, model, term.expr, Z3_TRUE,p) == Z3_TRUE  else {
+    guard Z3_model_eval(ctx.raw, model, term.expr, Z3_TRUE,p) == Z3_TRUE  else {
       Syslog.error { "Z3 evaluation failed" }
       return nil
     }
@@ -133,17 +137,17 @@ public final class Z3Model : LogicModel {
 
   /// Evaluate a boolean term `t`
   func evalBool(_ term: Expr) -> Bool? {
-    assert (ctx!.bool_type == Z3_get_sort(ctx!.ctx, term.expr))
+    assert (Z3_get_sort(ctx.raw, term.expr) == Z3_mk_bool_sort(ctx.raw))
     guard let val = eval(term) else { return nil }
-    return Z3_get_bool_value(ctx!.ctx, val) == Z3_L_TRUE
+    return Z3_get_bool_value(ctx.raw, val) == Z3_L_TRUE
   }
 
   /// Evaluate a term `t` of integer type
   func evalInt(_ term: Expr) -> Int? {
-    assert (ctx!.int_type == Z3_get_sort(ctx!.ctx, term.expr))
+    assert (Z3_get_sort(ctx.raw, term.expr) == Z3_mk_int_sort(ctx.raw))
     var num : Int32 = 0
     guard let val = eval(term) else { return nil }
-    guard Z3_get_numeral_int(ctx!.ctx, val, &num) == Z3_TRUE  else {
+    guard Z3_get_numeral_int(ctx.raw, val, &num) == Z3_TRUE  else {
       Syslog.error { "Z3 numeral conversion failed" }
       return nil
     }
@@ -151,15 +155,8 @@ public final class Z3Model : LogicModel {
   }
 
   func implies(formula: Expr) -> Bool {
-    let tau = Z3_get_sort(ctx!.ctx, formula.expr)
-
-    Syslog.error(condition: { ctx!.bool_type != tau }) {
-      _ in
-      let s = String(expr: formula) ?? "\(formula) n/a"
-      return "Formula '\(s)' is not Boolean"
-    }
-    guard let val = evalBool(formula) else { return false }
-    return val
+    guard let v = evalBool(formula) else { return false}
+    return v
   }
 
   func selectIndex<C: Collection>(literals: C) -> Int?
@@ -177,7 +174,7 @@ public final class Z3Model : LogicModel {
 public extension String {
   /// Creates a String representation of a Z3 expression
   public init?(expr: Z3Expr) {
-    guard let cstring = Z3_ast_to_string(expr.ctx!, expr.expr) else {
+    guard let cstring = Z3_ast_to_string(expr.ctx.raw, expr.expr) else {
       Syslog.error { "could not create String from Z3 expression" }
       return nil
     }
@@ -187,7 +184,7 @@ public extension String {
 
   /// Creates a String representation of a Z3 model
   public init?(model: Z3Model) {
-    guard let cstring = Z3_model_to_string(model.ctx!.ctx, model.model) else {
+    guard let cstring = Z3_model_to_string(model.ctx.raw, model.model) else {
       Syslog.error { "could not create String from Z3 model" }
       return nil
     }
@@ -202,7 +199,7 @@ final class Z3Context : LogicContext {
   typealias Model = Z3Model
   typealias Expr = Model.Expr
 
-  fileprivate var ctx : Z3_context
+  fileprivate var ctx : Z3RawContext
   private var solver: Z3_solver? = nil
   private var optimize: Z3_optimize? = nil
 
@@ -218,22 +215,22 @@ final class Z3Context : LogicContext {
 	// special constants
 	var 🚧 : Expr
 
-  init(optimize: Bool) {
-    ctx = Z3_mk_context(Z3_mk_config())
-    if (optimize) {
-      self.optimize = Z3_mk_optimize(self.ctx)
-      Z3_inc_ref(self.ctx, self.optimize!)
+  init(optimize opt: Bool) {
+    ctx = Z3RawContext()
+    if (opt) {
+      self.optimize = Z3_mk_optimize(ctx.raw)
+      Z3_optimize_inc_ref(ctx.raw, self.optimize!)
     } else{
-      solver = Z3_mk_solver(ctx)
-      Z3_solver_inc_ref(ctx, solver!)
+      solver = Z3_mk_solver(ctx.raw)
+      Z3_solver_inc_ref(ctx.raw, solver!)
     }
 
-    mkTop = Z3Expr(ctx, expr: Z3_mk_true(ctx))
-    mkBot = Z3Expr(ctx, expr: Z3_mk_false(ctx))
+    mkTop = Z3Expr(ctx, expr: Z3_mk_true(ctx.raw))
+    mkBot = Z3Expr(ctx, expr: Z3_mk_false(ctx.raw))
     🚧 = mkBot // dummy
 
-    bool_type = Z3_mk_bool_sort(ctx)
-    int_type = Z3_mk_int_sort(ctx)
+    bool_type = Z3_mk_bool_sort(ctx.raw)
+    int_type = Z3_mk_int_sort(ctx.raw)
     free_type = bool_type // dummy
 
     free_type = namedType("𝛕")
@@ -249,14 +246,13 @@ final class Z3Context : LogicContext {
     mkTop.clear()
     mkBot.clear()
     🚧.clear()
-    if last_model != nil { last_model!.clear() }
+    last_model = nil
 
-    if (self.optimize != nil) {
-      Z3_dec_ref(self.ctx, self.optimize!)
+    if (optimize != nil) {
+      Z3_optimize_dec_ref(ctx.raw, optimize!)
     } else {
-      Z3_solver_dec_ref(ctx, solver!)
+      Z3_solver_dec_ref(ctx.raw, solver!)
     }
-	  Z3_del_context(ctx)
 	}
 
 	static var versionString: String {
@@ -273,17 +269,17 @@ final class Z3Context : LogicContext {
   var mkBot : Expr
 
   func mkOr(_ ts: [Expr]) -> Expr {
-    return Z3Expr(ctx, expr: Z3_mk_or(ctx, UInt32(ts.count),
+    return Z3Expr(ctx, expr: Z3_mk_or(ctx.raw, UInt32(ts.count),
                   Expr.toZ3Array(ts)))
   }
 
   func mkAnd(_ ts: [Expr]) -> Expr {
-    return Z3Expr(ctx, expr: Z3_mk_and(ctx, UInt32(ts.count),
+    return Z3Expr(ctx, expr: Z3_mk_and(ctx.raw, UInt32(ts.count),
                   Expr.toZ3Array(ts)))
   }
   
   func freshVar(_ name: String, _ type: ExprType) -> Expr  {
-    let v = Z3_mk_const(ctx, Z3_mk_string_symbol(ctx, name), type)
+    let v = Z3_mk_const(ctx.raw, Z3_mk_string_symbol(ctx.raw, name), type)
     guard v != nil else {
       Syslog.error { "Z3 fresh var failed" }
       return mkBot
@@ -302,12 +298,12 @@ final class Z3Context : LogicContext {
   private func namedType(_ name: String) -> ExprType {
     assert(!name.isEmpty, "a type name must not be empty")
     // two types are considered the same if they have the same name
-    return Z3_mk_uninterpreted_sort(ctx, Z3_mk_string_symbol(ctx, name))
+    return Z3_mk_uninterpreted_sort(ctx.raw, Z3_mk_string_symbol(ctx.raw, name))
   }
 
   private func typedSymbol(_ symbol: String, _ type: ExprType) -> Expr {
     assert(!symbol.isEmpty, "a symbol name must not be empty")
-    let c = Z3_mk_const(ctx, Z3_mk_string_symbol(ctx, symbol), type)
+    let c = Z3_mk_const(ctx.raw, Z3_mk_string_symbol(ctx.raw, symbol), type)
     guard c != nil else {
       Syslog.error { "Z3 typedSymbol failed" }
       return mkBot
@@ -336,16 +332,16 @@ final class Z3Context : LogicContext {
   func app(_ symbol: String, _ args: [Expr], _ range: ExprType) -> Expr {
     guard args.count > 0 else { return constant(symbol, range) }
 
-    let nargs = UInt32(args.count)
+    let n = UInt32(args.count)
     let dom = domain(args.count, free_type)
-    let sym = Z3_mk_string_symbol(ctx, symbol)
-    let decl = Z3_mk_func_decl(ctx, sym, nargs, dom, range)
-    return Z3Expr(ctx, expr: Z3_mk_app(ctx, decl, nargs, args.map{ $0.expr }))
+    let sym = Z3_mk_string_symbol(ctx.raw, symbol)
+    let decl = Z3_mk_func_decl(ctx.raw, sym, n, dom, range)
+    return Z3Expr(ctx, expr: Z3_mk_app(ctx.raw, decl, n, args.map{ $0.expr }))
   }
 
   func mkNum(_ n: Int) -> Expr {
-    let e = MemoryLayout<Int>.size == 4 ? Z3_mk_int(ctx, Int32(n), int_type)
-                                        : Z3_mk_int64(ctx, Int64(n), int_type)
+    let e = MemoryLayout<Int>.size == 4 ? Z3_mk_int(ctx.raw, Int32(n), int_type)
+                                        : Z3_mk_int64(ctx.raw,Int64(n),int_type)
     guard e != nil else {
       Syslog.error { "Z3 typedSymbol failed" }
       return mkBot
@@ -362,9 +358,9 @@ final class Z3Context : LogicContext {
   func ensure(_ formula: Expr) {
     resetResult()
     if (optimize == nil) {
-		  Z3_solver_assert(ctx, solver!, formula.expr)
+		  Z3_solver_assert(ctx.raw, solver!, formula.expr)
     } else {
-		  Z3_optimize_assert(ctx, optimize!, formula.expr)
+		  Z3_optimize_assert(ctx.raw, optimize!, formula.expr)
     }
 	}
 
@@ -380,7 +376,7 @@ final class Z3Context : LogicContext {
       return
     }
 
-    Z3_optimize_maximize(ctx, optimize, expr.expr)
+    Z3_optimize_maximize(ctx.raw, optimize!, expr.expr)
   }
 
   func minimize(_ expr: Expr) {
@@ -390,13 +386,13 @@ final class Z3Context : LogicContext {
       return
     }
 
-    Z3_optimize_maximize(ctx, optimize, expr.expr)
+    Z3_optimize_minimize(ctx.raw, optimize!, expr.expr)
   }
 
 	var isSatisfiable: Bool {
     if last_is_sat == nil  {
-      let res = optimize == nil ? Z3_solver_check(ctx, solver!)
-                                : Z3_optimize_check(ctx, optimize!)
+      let res = (optimize == nil) ? Z3_solver_check(ctx.raw, solver!)
+                                  : Z3_optimize_check(ctx.raw, optimize!)
       switch res {
         case Z3_L_TRUE:
           last_is_sat = true
@@ -413,10 +409,10 @@ final class Z3Context : LogicContext {
   var model : Model? {
     if last_model == nil {
       guard isSatisfiable else { return nil }
-      guard let m = optimize == nil ? Z3_solver_get_model(ctx, solver!)
-                                    : Z3_optimize_get_model(ctx, optimize!)
+      guard let m = (optimize == nil) ? Z3_solver_get_model(ctx.raw, solver!)
+                                      : Z3_optimize_get_model(ctx.raw,optimize!)
         else { return nil }
-      last_model = Model(self, m)
+      last_model = Model(ctx, m)
     }
     return last_model!
   }
@@ -428,13 +424,13 @@ final class Z3Context : LogicContext {
       return nil
     }
 
-    guard let val = max ? Z3_optimize_get_upper(ctx, optimize, ui)
-                        : Z3_optimize_get_lower(ctx, optimize, ui) else {
+    guard let val = max ? Z3_optimize_get_upper(ctx.raw, optimize!, ui)
+                        : Z3_optimize_get_lower(ctx.raw, optimize!, ui) else {
       return nil
     }
 
     var num : Int32 = 0
-    guard Z3_get_numeral_int(ctx, val, &num) == Z3_TRUE  else {
+    guard Z3_get_numeral_int(ctx.raw, val, &num) == Z3_TRUE  else {
       Syslog.error { "Z3 numeral conversion failed" }
       return nil
     }
