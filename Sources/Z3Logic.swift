@@ -420,4 +420,32 @@ final class Z3Context : LogicContext {
     }
     return last_model!
   }
+
+  private func getOpt(max: Bool, _ i: Int) -> Int? {
+    let ui = UInt32(i)
+    guard optimize != nil else {
+      Syslog.error { "Z3 maximization is only available in optimization mode" }
+      return nil
+    }
+
+    guard let val = max ? Z3_optimize_get_upper(ctx, optimize, ui)
+                        : Z3_optimize_get_lower(ctx, optimize, ui) else {
+      return nil
+    }
+
+    var num : Int32 = 0
+    guard Z3_get_numeral_int(ctx, val, &num) == Z3_TRUE  else {
+      Syslog.error { "Z3 numeral conversion failed" }
+      return nil
+    }
+    return Int(num)
+  }
+
+  func getMax(i: Int = 0) -> Int? {
+    return getOpt(max: true, i)
+  }
+
+  func getMin(i: Int = 0) -> Int? {
+    return getOpt(max: false, i)
+  }
 }
