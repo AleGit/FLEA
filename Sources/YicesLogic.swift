@@ -23,6 +23,14 @@ final class YicesExpr : LogicExpr {
     return YicesExpr(yices_implies(self.expr, t.expr))
   }
 
+  func iff(_ t: YicesExpr) -> YicesExpr {
+    return YicesExpr(yices_iff(self.expr, t.expr))
+  }
+
+  func xor(_ t: YicesExpr) -> YicesExpr {
+    return YicesExpr(yices_xor2(self.expr, t.expr))
+  }
+
   func ite(_ t: YicesExpr, _ f: YicesExpr) -> YicesExpr {
       return YicesExpr(yices_ite(self.expr, t.expr, f.expr))
   }

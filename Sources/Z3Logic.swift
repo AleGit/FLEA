@@ -38,6 +38,14 @@ public final class Z3Expr : LogicExpr {
     return Z3Expr(ctx!, expr: Z3_mk_implies(ctx!, self.expr, t.expr))
   }
 
+  func iff(_ t: Z3Expr) -> Z3Expr {
+    return Z3Expr(ctx!, expr: Z3_mk_iff(ctx!, self.expr, t.expr))
+  }
+
+  func xor(_ t: Z3Expr) -> Z3Expr {
+    return Z3Expr(ctx!, expr: Z3_mk_xor(ctx!, self.expr, t.expr))
+  }
+
   func ite(_ t: Z3Expr, _ f: Z3Expr) -> Z3Expr {
       return Z3Expr(ctx!, expr: Z3_mk_ite(ctx!, self.expr, t.expr, f.expr))
   }
