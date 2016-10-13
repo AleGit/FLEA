@@ -21,6 +21,7 @@ public class Z3ContextTests: Z3TestCase {
       ("testArith0", testArith0),
       ("testArith1", testArith1),
       ("testArith2", testArith2),
+      ("testOpt1", testOpt1),
       ("testEmptyClause", testEmptyClause)
     ]
   }
@@ -153,6 +154,25 @@ public class Z3ContextTests: Z3TestCase {
     let _ = z3.ensure(x.add(y) ≻ two)
     let _ = z3.ensure(three ≻ x.add(y))
     XCTAssertFalse(z3.isSatisfiable)
+  }
+
+  func testOpt1() {
+    let z3 = Z3Context(optimize: true)
+    let zero = z3.mkNum(0)
+    let one = z3.mkNum(1)
+    let three = z3.mkNum(3)
+    let two = z3.mkNum(2)
+    let four = z3.mkNum(4)
+    let x = z3.mkIntVar("x")
+    let y = z3.mkIntVar("y")
+    let sum = (x.add(y) == four).ite(one, zero) +
+              (x.add(y) ≻ two).ite(one, zero) +
+              (three ≻ x.add(y)).ite(one, zero)
+    let _ = z3.maximize(sum)
+    XCTAssertTrue(z3.isSatisfiable)
+    let max = z3.getMax()
+    XCTAssertTrue(max != nil)
+    XCTAssertTrue(max! == 2)
   }
 
   func testEmptyClause() {
