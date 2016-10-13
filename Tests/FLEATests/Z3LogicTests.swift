@@ -166,9 +166,14 @@ public class Z3ContextTests: Z3TestCase {
     let four = z3.mkNum(4)
     let x = z3.mkIntVar("x")
     let y = z3.mkIntVar("y")
+    let _ = z3.ensure(x != zero ⋀ y != zero)
     let sum = (x.add(y) == four).ite(one, zero) +
+              (x ≻ three).ite(one, zero) +
+              (two ≻ three).ite(one, zero) +
+              (y ≻ x).ite(one, zero)
+    /*let sum = (x.add(y) == four).ite(one, zero) +
               (x.add(y) ≻ two).ite(one, zero) +
-              (three ≻ x.add(y)).ite(one, zero)
+              (three ≻ x.add(y)).ite(one, zero)*/ // Z3 bug?
     let _ = z3.maximize(sum)
     XCTAssertTrue(z3.isSatisfiable)
     let max = z3.getMax()
@@ -177,7 +182,7 @@ public class Z3ContextTests: Z3TestCase {
   }
 
   func testEval1() {
-    let z3 = Z3Context(optimize: true)
+    let z3 = Z3Context()
     let two = z3.mkNum(2)
     let four = z3.mkNum(4)
     let x = z3.mkIntVar("x")
@@ -187,8 +192,32 @@ public class Z3ContextTests: Z3TestCase {
     XCTAssertTrue(z3.isSatisfiable)
     let m = z3.model
     XCTAssertTrue(m != nil)
+    print("got model")
     let x_val = m!.evalInt(x)
+    print("after eval")
     XCTAssertTrue(x_val == 1)
+    print("end eval")
+  }
+
+  func testEval2() {
+    let z3 = Z3Context()
+    let two = z3.mkNum(2)
+    let five = z3.mkNum(5)
+    let x = z3.mkIntVar("x")
+    let y = z3.mkIntVar("y")
+    let _ = z3.ensure(x.add(y) == five)
+    let _ = z3.ensure(y ≻ two)
+    XCTAssertTrue(z3.isSatisfiable)
+    var m = z3.model
+    XCTAssertTrue(m != nil)
+    var x_val = m!.evalInt(x)
+    XCTAssertTrue(3 > x_val!)
+    let _ = z3.ensure(x.add(x) == two)
+    XCTAssertTrue(z3.isSatisfiable)
+    m = z3.model
+    XCTAssertTrue(m != nil)
+    x_val = m!.evalInt(x)
+    XCTAssertTrue(1 == x_val!)
   }
 
   func testEmptyClause() {
