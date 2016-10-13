@@ -112,3 +112,8 @@ infix operator ≽: ComparisonPrecedence
 func ≽<E:LogicExpr>(_ s : E, _ t: E) -> E {
   return s.ge(t)
 }
+
+infix operator +: AdditionPrecedence
+func +<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.add(t)
+}
