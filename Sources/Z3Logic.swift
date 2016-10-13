@@ -99,7 +99,7 @@ public final class Z3Expr : LogicExpr {
 public final class Z3Model : LogicModel {
   typealias Expr = Z3Expr
 
-  fileprivate let ctx : Z3Context
+  fileprivate var ctx : Z3Context?
   fileprivate var model: Z3_model
 
   init?(_ ctx: Z3Context, _ model: Z3_model) {
@@ -109,7 +109,11 @@ public final class Z3Model : LogicModel {
   }
 
   deinit {
-    Z3_model_dec_ref(ctx.ctx, model)
+  }
+
+  func clear() {
+    Z3_model_dec_ref(ctx!.ctx, model)
+    ctx = nil
   }
 
   // evaluation
@@ -120,7 +124,7 @@ public final class Z3Model : LogicModel {
     p.initialize(to: nil)
 
     // set model completion to true
-    guard Z3_model_eval(ctx.ctx, model, term.expr, Z3_TRUE,p) == Z3_TRUE  else {
+    guard Z3_model_eval(ctx!.ctx, model, term.expr, Z3_TRUE,p) == Z3_TRUE  else {
       Syslog.error { "Z3 evaluation failed" }
       return nil
     }
@@ -129,17 +133,17 @@ public final class Z3Model : LogicModel {
 
   /// Evaluate a boolean term `t`
   func evalBool(_ term: Expr) -> Bool? {
-    assert (ctx.bool_type == Z3_get_sort(ctx.ctx, term.expr))
+    assert (ctx!.bool_type == Z3_get_sort(ctx!.ctx, term.expr))
     guard let val = eval(term) else { return nil }
-    return Z3_get_bool_value(ctx.ctx, val) == Z3_L_TRUE
+    return Z3_get_bool_value(ctx!.ctx, val) == Z3_L_TRUE
   }
 
   /// Evaluate a term `t` of integer type
   func evalInt(_ term: Expr) -> Int? {
-    assert (ctx.int_type == Z3_get_sort(ctx.ctx, term.expr))
+    assert (ctx!.int_type == Z3_get_sort(ctx!.ctx, term.expr))
     var num : Int32 = 0
     guard let val = eval(term) else { return nil }
-    guard Z3_get_numeral_int(ctx.ctx, val, &num) == Z3_TRUE  else {
+    guard Z3_get_numeral_int(ctx!.ctx, val, &num) == Z3_TRUE  else {
       Syslog.error { "Z3 numeral conversion failed" }
       return nil
     }
@@ -147,9 +151,9 @@ public final class Z3Model : LogicModel {
   }
 
   func implies(formula: Expr) -> Bool {
-    let tau = Z3_get_sort(ctx.ctx, formula.expr)
+    let tau = Z3_get_sort(ctx!.ctx, formula.expr)
 
-    Syslog.error(condition: { ctx.bool_type != tau }) {
+    Syslog.error(condition: { ctx!.bool_type != tau }) {
       _ in
       let s = String(expr: formula) ?? "\(formula) n/a"
       return "Formula '\(s)' is not Boolean"
@@ -183,7 +187,7 @@ public extension String {
 
   /// Creates a String representation of a Z3 model
   public init?(model: Z3Model) {
-    guard let cstring = Z3_model_to_string(model.ctx.ctx, model.model) else {
+    guard let cstring = Z3_model_to_string(model.ctx!.ctx, model.model) else {
       Syslog.error { "could not create String from Z3 model" }
       return nil
     }
@@ -201,6 +205,10 @@ final class Z3Context : LogicContext {
   fileprivate var ctx : Z3_context
   private var solver: Z3_solver? = nil
   private var optimize: Z3_optimize? = nil
+
+  // last results: has to be cleared in assertions
+  var last_model : Z3Model?
+  var last_is_sat : Bool?
 
   // types
   let bool_type : Z3_sort
@@ -241,6 +249,7 @@ final class Z3Context : LogicContext {
     mkTop.clear()
     mkBot.clear()
     🚧.clear()
+    if last_model != nil { last_model!.clear() }
 
     if (self.optimize != nil) {
       Z3_dec_ref(self.ctx, self.optimize!)
@@ -345,7 +354,13 @@ final class Z3Context : LogicContext {
   }
 
   // assertion and checking
+  private func resetResult() {
+    last_is_sat = nil
+    last_model = nil
+  }
+
   func ensure(_ formula: Expr) {
+    resetResult()
     if (optimize == nil) {
 		  Z3_solver_assert(ctx, solver!, formula.expr)
     } else {
@@ -359,6 +374,7 @@ final class Z3Context : LogicContext {
 	}
 
   func maximize(_ expr: Expr) {
+    resetResult()
     guard optimize != nil else {
       Syslog.error { "Z3 maximization is only available in optimization mode" }
       return
@@ -368,6 +384,7 @@ final class Z3Context : LogicContext {
   }
 
   func minimize(_ expr: Expr) {
+    resetResult()
     guard optimize != nil else {
       Syslog.error { "Z3 maximization is only available in optimization mode" }
       return
@@ -377,23 +394,30 @@ final class Z3Context : LogicContext {
   }
 
 	var isSatisfiable: Bool {
-    let res = optimize == nil ? Z3_solver_check(ctx, solver!)
-                              : Z3_solver_check(ctx, optimize!)
-    switch res {
-      case Z3_L_TRUE:
-        return true
-      case Z3_L_FALSE:
-        return false
-      default:
-        print("-------------------------------------------------------")
-        assert(false)
-        return true
-      }
+    if last_is_sat == nil  {
+      let res = optimize == nil ? Z3_solver_check(ctx, solver!)
+                                : Z3_optimize_check(ctx, optimize!)
+      switch res {
+        case Z3_L_TRUE:
+          last_is_sat = true
+        case Z3_L_FALSE:
+          last_is_sat = false
+        default:
+          print("-------------------------------------------------------")
+          assert(false)
+        }
+    }
+    return last_is_sat!
 	}
 
   var model : Model? {
-    guard isSatisfiable else { return nil }
-    return optimize == nil ? Model(self, Z3_solver_get_model(ctx, solver!))
-                           : Model(self, Z3_optimize_get_model(ctx, optimize!))
+    if last_model == nil {
+      guard isSatisfiable else { return nil }
+      guard let m = optimize == nil ? Z3_solver_get_model(ctx, solver!)
+                                    : Z3_optimize_get_model(ctx, optimize!)
+        else { return nil }
+      last_model = Model(self, m)
+    }
+    return last_model!
   }
 }
