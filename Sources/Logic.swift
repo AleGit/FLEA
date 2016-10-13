@@ -4,6 +4,8 @@ protocol LogicExpr {
   func and(_ t: Self) -> Self
   func or(_ t: Self) -> Self
   func implies(_ t: Self) -> Self
+  func iff(_ t: Self) -> Self
+  func xor(_ t: Self) -> Self
   func ite(_ t: Self, _ f: Self) -> Self
 
   // arithmetic operators
@@ -77,8 +79,18 @@ func ⋁<E:LogicExpr>(_ s : E, _ t: E) -> E {
 }
 
 infix operator ⟹: LogicalDisjunctionPrecedence
-func ⋁<E:LogicExpr>(_ s : E, _ t: E) -> E {
+func ⟹<E:LogicExpr>(_ s : E, _ t: E) -> E {
   return s.implies(t)
+}
+
+infix operator ⟺: LogicalDisjunctionPrecedence
+func ⟺<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.iff(t)
+}
+
+infix operator ⊕: LogicalDisjunctionPrecedence
+func ⊕<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  return s.xor(t)
 }
 
 infix operator ==: ComparisonPrecedence
