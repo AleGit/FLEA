@@ -20,6 +20,9 @@ public class Z3BasicsTests: FleaTestCase {
     Syslog.debug(condition: { versionString != expected }) {
       "\(nok) actual z3 version is \(versionString) is not \(expected)"
     }
+    if expected == versionString {
+      print(ok, "Z3 version string matches exactly.")
+    }
   }
 
   func testVersion() {
