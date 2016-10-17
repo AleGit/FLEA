@@ -43,6 +43,7 @@ extension Node where Symbol : Hashable {
 
 struct Precedence<C: LogicContext, N: Node>
 where N.Symbol == String {
+  typealias E = C.Expr
 
   var context: C
   fileprivate var vars : [String: C.Expr] // precedence variables
@@ -54,6 +55,8 @@ where N.Symbol == String {
       vars[sym] = context.mkIntVar(sym)
     }
   }
+  
+	subscript (_ v : String) -> E? { return vars[v] } 
 
   func printEval(_ model: C.Model) {
     let var_vals : [(String, Int)] = vars.map {
@@ -63,10 +66,11 @@ where N.Symbol == String {
     let fs = var_vals.sorted(by: { $0.1 > $1.1 })
     guard (fs.count > 1) else { return }
 
-    print(fs[0])
+    var s : String = ""
     for (f, _) in fs {
-      print(" > ", f)
+      s = s.characters.count == 0 ? f : s + " > " + f
     }
+		print(s)
   }
 }
 
@@ -93,8 +97,8 @@ where N.Symbol == String {
   }
 
   func gt(_ l:N, _ r:N) -> E {
-    guard !l.isVar else { return context.mkBot }
-      guard !r.isSubnode(of:l) else { return context.mkTop }
+    guard !l.isVar && !l.isEqual(to: r) else { return context.mkBot }
+      guard !r.isSubnode(of:l) else { return context.mkTop}
       guard !r.isVar else { return context.mkBot } // subterms already handled
 
       let case1 = context.mkOr(l.nodes!.map({ gt($0, r) }))
