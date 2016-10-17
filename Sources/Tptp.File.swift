@@ -212,5 +212,11 @@ extension Tptp {
         return (name, selection, axiomURL)
       }
     }
+
+    var containsIncludes: Bool {
+      return self.includes.reduce(false) { _, _ in true }
+    }
+
+
   }
 }
