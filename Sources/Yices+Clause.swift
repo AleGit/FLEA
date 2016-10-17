@@ -21,8 +21,8 @@ extension Yices {
     switch type {
       case .disjunction:
         guard let literals = clause.nodes, literals.count > 0 else {
-          Syslog.error(condition: { clause.nodes == nil}) { "clause.nodes == nil"}
-          Syslog.info(condition: { clause.nodes != nil}) { "emtpy clause" }
+          Syslog.error(condition: clause.nodes == nil) { "clause.nodes == nil"}
+          Syslog.info(condition: clause.nodes != nil) { "emtpy clause" }
           return (Yices.bot, [Yices.bot], [Yices.bot])
         }
 
@@ -65,10 +65,10 @@ extension Yices {
 
           let yicesClause = yices_or( UInt32(copy.count), &copy)
 
-          Syslog.info(condition: { yicesLiterals != copy}) {
+          Syslog.info(condition: yicesLiterals != copy) {
             "yices literals reorderd"
             }
-          Syslog.info(condition: { yicesLiterals.contains(yicesClause)}) {
+          Syslog.info(condition: yicesLiterals.contains(yicesClause)) {
             "yices literals contain clause"
             }
 

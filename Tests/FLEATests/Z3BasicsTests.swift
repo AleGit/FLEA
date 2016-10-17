@@ -17,7 +17,7 @@ public class Z3BasicsTests: FleaTestCase {
     let expected = "4.4.2.1"
     let versionString = Z3Basics.versionString
     XCTAssertTrue(versionString.hasPrefix("4."), nok)
-    Syslog.debug(condition: { versionString != expected }) {
+    Syslog.debug(condition: versionString != expected ) {
       "\(nok) actual z3 version is \(versionString) is not \(expected)"
     }
   }

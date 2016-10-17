@@ -114,10 +114,10 @@ extension ProverY {
     /// - true otherwise
     private func processNextClause() -> Bool {
         guard let clauseIndex = selectClauseIndex(), clauseIndex < clauses.count else {
-            Syslog.error(condition: { insuredClauses.count != clauses.count }) {
+            Syslog.error(condition: insuredClauses.count != clauses.count ) {
                 "Just \(insuredClauses.count) of \(clauses.count) clauses were processed." }
 
-            Syslog.notice(condition: { insuredClauses.count == clauses.count }) {
+            Syslog.notice(condition: insuredClauses.count == clauses.count ) {
                 "All \(clauses.count) clauses were processed." }
 
             return false
@@ -126,7 +126,7 @@ extension ProverY {
         /// mark a clause after processing
         defer { processedClauseIndices.insert(clauseIndex) }
 
-        Syslog.error(condition: { insuredClauses[clauseIndex] != nil }) {
+        Syslog.error(condition: insuredClauses[clauseIndex] != nil ) {
             "clause #\(clauseIndex) \(insuredClauses[clauseIndex])! already insured." }
 
         insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
@@ -178,7 +178,7 @@ extension ProverY {
                 }
             }
             return false
-            }
+            }()
         ) {
             "Clashings do not match \(message)"
         }
@@ -232,7 +232,7 @@ extension ProverY {
 
         checkConflictsLinearily(negatedLiteral:negated, clashings:clashings)
 
-        Syslog.error(condition: { clashings.contains(clauseIndex)}) {
+        Syslog.error(condition: clashings.contains(clauseIndex)) {
             "Clause \(clauseIndex).\(literalIndex) \(clause) MUST NOT clash with itself."
         }
 

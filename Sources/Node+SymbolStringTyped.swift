@@ -27,7 +27,7 @@ extension Node where Self:SymbolStringTyped {
   func appending<T:Any>(suffix: T) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
-      Syslog.error(condition: { type != .variable}) {
+      Syslog.error(condition: type != .variable) {
         "Node(symbol:\(self.symbol), nodes:nil) must not be of type \(type)."
       }
       let symbol = Self.symbolize(string:"\(string)_\(suffix)", type:type)
@@ -43,7 +43,7 @@ extension Node where Self:SymbolStringTyped {
   symbols: inout Set<String>) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
-      Syslog.error(condition: { type != .variable }) {
+      Syslog.error(condition: type != .variable ) {
         "Node with nil nodes must be of type variable."
       }
 
@@ -53,7 +53,7 @@ extension Node where Self:SymbolStringTyped {
 
       let components = string.components(separatedBy: "_")
 
-      Syslog.error(condition: { components.count > 2 }) {
+      Syslog.error(condition: components.count > 2 ) {
         "Can not handle \(string) with \(components.count) components."
       }
 

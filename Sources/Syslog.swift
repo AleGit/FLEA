@@ -343,7 +343,20 @@ extension Syslog {
     }
   }
 
-  static func error(errcode: Int32 = 0, condition: () -> Bool = { true },
+  static func fail(condition: @autoclosure () -> Bool = true,
+    file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
+    message: () -> String
+  ) {
+    guard condition() else { return }
+
+    log (.error,
+    file:file, function:function, line:line, column:column, message:message)
+
+    assert(false, "\(file)/\(function).\(line):\(column) \(message())")
+
+  }
+
+  static func error(errcode: Int32 = 0, condition: @autoclosure () -> Bool = true ,
     file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
@@ -353,7 +366,7 @@ extension Syslog {
     assert(false, "\(file)/\(function).\(line):\(column) \(message())")
   }
 
-  static func warning(errcode: Int32 = 0, condition: () -> Bool = { true },
+  static func warning(errcode: Int32 = 0, condition: @autoclosure () -> Bool = true ,
     file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
@@ -362,7 +375,7 @@ extension Syslog {
     file:file, function:function, line:line, column:column, message:message)
   }
 
-  static func notice(errcode: Int32 = 0, condition: () -> Bool = { true },
+  static func notice(errcode: Int32 = 0, condition: @autoclosure () -> Bool = true,
     file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
@@ -371,7 +384,7 @@ extension Syslog {
     file:file, function:function, line:line, column:column, message:message)
   }
 
-  static func info(errcode: Int32 = 0, condition: () -> Bool = { true },
+  static func info(errcode: Int32 = 0, condition: @autoclosure () -> Bool = true ,
     file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message: () -> String
   ) {
@@ -380,7 +393,7 @@ extension Syslog {
     file:file, function:function, line:line, column:column, message:message)
   }
 
-  static func debug(errcode: Int32 = 0, condition: () -> Bool = { true },
+  static func debug(errcode: Int32 = 0, condition: @autoclosure () -> Bool = true ,
     file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
     message : () -> String
   ) {
