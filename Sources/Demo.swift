@@ -11,7 +11,6 @@ public struct Demo {
   static let demos = [
   "cnf" : (Demo.Problem.parseCnf, "Parse \(cnfProblem) (cnf)"),
   "fof" : (Demo.Problem.parseFof, "Parse \(fofProblem) (fof)"),
-  // "hwv" : (Demo.Problem.hwv134cnf,"Parse \(hwvProblem) (expensive)"),
   "simple" : (Demo.Problem.simpleNode, "Parse \(hwvProblem) with simple node(expensive)"),
   "sharing" : (Demo.Problem.sharingNode, "Parse \(hwvProblem) with sharing node (expensive)"),
   "smart" : (Demo.Problem.smartNode, "Parse \(hwvProblem) with smart node (expensive)"),
@@ -231,6 +230,21 @@ extension Demo {
     static func parseFof() -> Int {
       typealias NodeType = Tptp.DefaultNode
       let problem = fofProblem
+
+      let inputs: [NodeType] = demoParse(problem:problem)
+      if show {
+        for (i, input) in inputs.enumerated() {
+          print(i, input.description)
+        }
+
+        print("Node == \(String(reflecting: NodeType.self))")
+      }
+      return inputs.count
+    }
+
+    static func parseHWV() -> Int {
+      typealias NodeType = Tptp.DefaultNode
+      let problem = hwvProblem
 
       let inputs: [NodeType] = demoParse(problem:problem)
       if show {
