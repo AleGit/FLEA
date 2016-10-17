@@ -24,18 +24,18 @@ public class LPOTests: YicesTestCase {
     var nodes : [N]? = nil
   }
 
-  private typealias Z3LPO = LPO<N, YicesContext>
+  private typealias YicesLPO = LPO<N, YicesContext>
 
   func testAtoB() {
-    let z3 = YicesContext()
+    let yices = YicesContext()
     let a = N(constant:"a")
     let b = N(constant:"b")
 
-		let lpo = Z3LPO(ctx: z3, trs: [(a, b)])
-    let _ = z3.ensure(lpo.gt(a, b))
-    XCTAssertTrue(z3.isSatisfiable)
+		let lpo = YicesLPO(ctx: yices, trs: [(a, b)])
+    let _ = yices.ensure(lpo.gt(a, b))
+    XCTAssertTrue(yices.isSatisfiable)
 
-    let m = z3.model
+    let m = yices.model
     XCTAssertTrue(m != nil)
 		lpo.printEval(m!)
     let a_prec = m!.evalInt(lpo.prec["a"]!)
@@ -44,24 +44,24 @@ public class LPOTests: YicesTestCase {
   }
 
   func testAtoA() {
-    let z3 = YicesContext()
+    let yices = YicesContext()
     let a = N(constant:"a")
 
-		let lpo = Z3LPO(ctx: z3, trs: [(a, a)])
-    let _ = z3.ensure(lpo.gt(a, a))
-    XCTAssertFalse(z3.isSatisfiable)
+		let lpo = YicesLPO(ctx: yices, trs: [(a, a)])
+    let _ = yices.ensure(lpo.gt(a, a))
+    XCTAssertFalse(yices.isSatisfiable)
 	}
 
   func testEmbedding() {
 		let x = N(variable:"x")
     let f_x = N(symbol:"f", nodes:[x])
 
-    let z3 = YicesContext()
-		let lpo = Z3LPO(ctx: z3, trs: [(f_x, x)])
-    let _ = z3.ensure(lpo.gt(f_x, x))
-    XCTAssertTrue(z3.isSatisfiable)
-    let _ = z3.ensure(lpo.gt(x, f_x))
-    XCTAssertFalse(z3.isSatisfiable)
+    let yices = YicesContext()
+		let lpo = YicesLPO(ctx: yices, trs: [(f_x, x)])
+    let _ = yices.ensure(lpo.gt(f_x, x))
+    XCTAssertTrue(yices.isSatisfiable)
+    let _ = yices.ensure(lpo.gt(x, f_x))
+    XCTAssertFalse(yices.isSatisfiable)
   }
 
   func testSubterm() {
@@ -72,15 +72,15 @@ public class LPOTests: YicesTestCase {
     let f_a_a = N(symbol:"f", nodes:[a, a])
     let f_x_c = N(symbol:"f", nodes:[x, c])
 
-    let z3 = YicesContext()
+    let yices = YicesContext()
 		let trs = [(b, f_a_a), (f_x_c, b)]
-		let lpo = Z3LPO(ctx: z3, trs: trs)
+		let lpo = YicesLPO(ctx: yices, trs: trs)
 		for (l,r) in trs {
-      let _ = z3.ensure(lpo.gt(l, r))
+      let _ = yices.ensure(lpo.gt(l, r))
 		}
-    XCTAssertTrue(z3.isSatisfiable)
+    XCTAssertTrue(yices.isSatisfiable)
 		
-    let m = z3.model
+    let m = yices.model
     XCTAssertTrue(m != nil)
 		lpo.printEval(m!)
     let a_p = m!.evalInt(lpo.prec["a"]!)
@@ -99,10 +99,10 @@ public class LPOTests: YicesTestCase {
     let f_y_z = N(symbol:"f", nodes:[y, z])
     let l = N(symbol:"f", nodes:[f_x_y, z])
     let r = N(symbol:"f", nodes:[x, f_y_z])
-    let z3 = YicesContext()
-		let lpo = Z3LPO(ctx: z3, trs: [(l, r)])
-    let _ = z3.ensure(lpo.gt(r, l))
-    XCTAssertFalse(z3.isSatisfiable)
+    let yices = YicesContext()
+		let lpo = YicesLPO(ctx: yices, trs: [(l, r)])
+    let _ = yices.ensure(lpo.gt(r, l))
+    XCTAssertFalse(yices.isSatisfiable)
   }
 
   func testAssoc2() {
@@ -113,10 +113,10 @@ public class LPOTests: YicesTestCase {
     let f_y_z = N(symbol:"f", nodes:[y, z])
     let l = N(symbol:"f", nodes:[f_x_y, z])
     let r = N(symbol:"f", nodes:[x, f_y_z])
-    let z3 = YicesContext()
-		let lpo = Z3LPO(ctx: z3, trs: [(l, r)])
-    let _ = z3.ensure(lpo.gt(l, r))
-    XCTAssertTrue(z3.isSatisfiable)
+    let yices = YicesContext()
+		let lpo = YicesLPO(ctx: yices, trs: [(l, r)])
+    let _ = yices.ensure(lpo.gt(l, r))
+    XCTAssertTrue(yices.isSatisfiable)
   }
 
   func testGroup() {
@@ -139,13 +139,13 @@ public class LPOTests: YicesTestCase {
     let zero = N(constant:"0")
     let f_0_x = N(symbol:"f", nodes:[zero, x])
 
-    let z3 = YicesContext()
+    let yices = YicesContext()
     let trs = [(l, r), (i_i_x, x), (i_f_x_y, f_i_y_i_x), (f_0_x, x)]
-		let lpo = Z3LPO(ctx: z3, trs: trs)
+		let lpo = YicesLPO(ctx: yices, trs: trs)
     for (l, r) in trs {
-      let _ = z3.ensure(lpo.gt(r, l))
+      let _ = yices.ensure(lpo.gt(r, l))
     }
-    XCTAssertFalse(z3.isSatisfiable)
+    XCTAssertFalse(yices.isSatisfiable)
   }
 
 }
