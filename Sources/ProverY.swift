@@ -1,6 +1,17 @@
 import Foundation
 import CYices
 
+/// The implemented procedure has the following bug:
+/// - it searches for clashing literals of the selected literal of the selected clause and may saturate too fast
+/// - Example
+///     1: p(a)|q(X)
+///     2: p(a)|~q(a)
+///     3: ~p(a)
+///     assert 1: -> 1:p(a) search for clashes in { }
+///     assert 2: -> 2:p(a) search for clashes in { p(a) }
+///     assert 3: -> 3:~p(a) - forces reselection in 1: and 2: - search for clashes in { 1:q(X), 2:~q(a) }, saturated
+///     missing:
+
 /// A instantiation-based prover that uses yices as satisfiablity checker modulo QF_EUF
 /// quantifier free, equalitiy, uninterpreted functions
 final class ProverY<N:Node>: Prover

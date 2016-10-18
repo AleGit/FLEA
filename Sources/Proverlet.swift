@@ -29,7 +29,7 @@ where N:SymbolStringTyped {
             )
 
             Syslog.error(condition: file.containsIncludes) {
-                "(NIY) Included file \(name) at \(url) contains include lines."
+                "Included axiom file \(name) at \(url) contains include lines."
             }
 
             parsedClauses += axioms
