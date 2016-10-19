@@ -23,6 +23,9 @@ protocol Node: Hashable,
 
 
   /// properties of terms
+  var subnodes: Set<Self> { get }
+  var variables: Set<Self> { get }
+
   var height: Int { get }
   var width: Int { get }
   var size: Int { get }
