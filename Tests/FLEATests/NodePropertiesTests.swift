@@ -27,7 +27,10 @@ public class NodePropertiesTests: FleaTestCase {
 
     lazy var hashValue: Int = self.defaultHashValue
     lazy var description: String = self.defaultDescription
+
     lazy var height: Int = self.defaultHeight
+    lazy var width: Int = self.defaultWidth
+    lazy var size: Int = self.defaultSize
 
 
     static let a = "a" as N
@@ -36,14 +39,21 @@ public class NodePropertiesTests: FleaTestCase {
   }
 
   func testHeight() {
-
-    let value = Syslog.carping
-    Syslog.carping = true
-    defer { Syslog.carping = value }
-
     XCTAssertEqual(0, N.a.height, nok)
     XCTAssertEqual(0, N.X.height, nok)
     XCTAssertEqual(1, N.faX.height, nok)
+  }
+
+  func testWidth() {
+    XCTAssertEqual(1, N.a.width, nok)
+    XCTAssertEqual(1, N.X.width, nok)
+    XCTAssertEqual(2, N.faX.width, nok)
+  }
+
+  func testSize() {
+    XCTAssertEqual(1, N.a.size, nok)
+    XCTAssertEqual(1, N.X.size, nok)
+    XCTAssertEqual(3, N.faX.size, nok)
   }
 
   func testHashValue() {

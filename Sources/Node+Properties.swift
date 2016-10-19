@@ -37,8 +37,25 @@ extension Node {
       return 0
     }
 
-    // 1 + max(..., ni.height, ...)
+    // 1 + max(n1.height, ..., ni.height, ... nn.height)
     return nodes.reduce(1) { max($0, $1.height)}
+  }
+
+  var defaultWidth: Int {
+    guard let nodes = self.nodes, nodes.count > 0 else {
+      return 1
+    }
+
+    // n1.width + ... + ni.width + ... nn.width
+    return nodes.reduce(0) { $0 + $1.width }
+  }
+  var defaultSize: Int {
+    guard let nodes = self.nodes, nodes.count > 0 else {
+      return 1
+    }
+
+    // 1 + n1.size + ... + ni.size + ... nn.size
+    return nodes.reduce(1) { $0 + $1.size}
   }
 }
 
@@ -57,6 +74,16 @@ extension Node {
   var height: Int {
     Syslog.fail(condition:Syslog.carping) { "use of default implementation" }
     return defaultHeight
+  }
+
+  var width: Int {
+    Syslog.fail(condition:Syslog.carping) { "use of default implementation" }
+    return defaultWidth
+  }
+
+  var size: Int {
+    Syslog.fail(condition:Syslog.carping) { "use of default implementation" }
+    return defaultSize
   }
 }
 

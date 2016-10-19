@@ -24,6 +24,8 @@ protocol Node: Hashable,
 
   /// properties of terms
   var height: Int { get }
+  var width: Int { get }
+  var size: Int { get }
 }
 
 extension Node {
