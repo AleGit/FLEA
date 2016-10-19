@@ -108,6 +108,8 @@ extension Node where Symbol:StringSymbolable {
 }
 
 extension Node where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
+
+
   var debugDescription : String {
     let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
 

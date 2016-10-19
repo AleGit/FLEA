@@ -22,7 +22,7 @@ protocol Node: Hashable,
   static func share(node: Self) -> Self
 
 
-  /// properties of terms
+  /// calculated properties of terms
   var subnodes: Set<Self> { get }
   var variables: Set<Self> { get }
 
