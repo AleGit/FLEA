@@ -19,11 +19,12 @@ public class FleaTestCase : XCTestCase {
     let logLevel = Syslog.maximalLogLevel
 
     let _ = Syslog.setLogMask(upTo:logLevel)
-    print("+++ FleaTestCase.\(#function) +++")
+    // print("+++ FleaTestCase.\(#function) +++")
+    Syslog.carping = false // off by default
   }
   /// teardown logging once _after_ all tests of a test class
   override class public func tearDown() {
-    print("=== FleaTestCase.\(#function) ===")
+    // print("=== FleaTestCase.\(#function) ===")
     Syslog.closeLog()
     super.tearDown()
   }
@@ -76,7 +77,7 @@ struct Q {
 }
 
 extension Q {
-  static func parse<N:FLEA.Node>(problem:String) -> [N] 
+  static func parse<N:FLEA.Node>(problem:String) -> [N]
   where N:SymbolStringTyped {
     print("N:Node == \(String(reflecting:N.self))")
 

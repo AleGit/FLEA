@@ -32,11 +32,31 @@ extension Node {
 }
 
 extension Node {
+  var defaultHeight: Int {
+    guard let nodes = self.nodes, nodes.count > 0 else {
+      return 0
+    }
+
+    // 1 + max(..., ni.height, ...)
+    return nodes.reduce(1) { max($0, $1.height)}
+  }
+}
+
+
+extension Node {
   var subnodes: Set<Self> {
+    Syslog.fail(condition:Syslog.carping) { "use of default implementation" }
     return defaultSubnodes
   }
 
   var variables: Set<Self> {
+    Syslog.fail(condition:Syslog.carping) { "use of default implementation" }
     return defaultVariables
   }
+
+  var height: Int {
+    Syslog.fail(condition:Syslog.carping) { "use of default implementation" }
+    return defaultHeight
+  }
 }
+

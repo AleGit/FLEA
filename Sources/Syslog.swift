@@ -11,6 +11,8 @@ import Foundation
 /// Static wrapper for [syslog](https://en.wikipedia.org/wiki/Syslog),
 /// see [man 3 syslog]http://www.unix.com/man-page/POSIX/3posix/syslog/
 struct Syslog {
+  static var carping = false
+  static var failOnError = true // make this configurable
 
   enum Priority: Comparable {
     case emergency  // LOG_EMERG      system is unusable
@@ -363,7 +365,8 @@ extension Syslog {
     guard Syslog.loggable(.error, file, function, line), condition() else { return }
     log (.error, errcode:errcode,
     file:file, function:function, line:line, column:column, message:message)
-    assert(false, "\(file)/\(function).\(line):\(column) \(message())")
+
+    assert(!failOnError, "\(file)/\(function).\(line):\(column) \(message())")
   }
 
   static func warning(errcode: Int32 = 0, condition: @autoclosure () -> Bool = true ,

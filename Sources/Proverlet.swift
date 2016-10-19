@@ -10,6 +10,7 @@ where N:SymbolStringTyped {
     /// List of (clause name, clause role, clause) triples.
     fileprivate var parsedClauses: Array<(String, Tptp.Role, N)>
 
+
     /// index structure to find clashing selected literals
     fileprivate var literals = TrieClass<SymHop<N.Symbol>, Int>()
 

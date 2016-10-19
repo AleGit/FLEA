@@ -20,6 +20,10 @@ protocol Node: Hashable,
 
   /// enables sharing of nodes at multiple positions within or between trees.
   static func share(node: Self) -> Self
+
+
+  /// properties of terms
+  var height: Int { get }
 }
 
 extension Node {
