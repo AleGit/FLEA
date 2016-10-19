@@ -31,8 +31,8 @@ public class KBOTests: YicesTestCase {
     let yices = YicesContext()
     let a = N(constant:"a")
 
-		let lpo = YicesKBO(ctx: yices, trs: [(a, a)])
-    let _ = yices.ensure(lpo.gt(a, a))
+		let kbo = YicesKBO(ctx: yices, trs: [(a, a)])
+    let _ = yices.ensure(kbo.gt(a, a))
     XCTAssertFalse(yices.isSatisfiable)
 	}
 
@@ -45,17 +45,17 @@ public class KBOTests: YicesTestCase {
     let f_c_b = N(symbol:"f", nodes:[c, b])
 
     let trs = [(a, b), (f_c_b, f_a_c)]
-		let lpo = YicesKBO(ctx: yices, trs: trs)
+		let kbo = YicesKBO(ctx: yices, trs: trs)
 		for (l,r) in trs {
-      let _ = yices.ensure(lpo.gt(l, r))
+      let _ = yices.ensure(kbo.gt(l, r))
 		}
     XCTAssertTrue(yices.isSatisfiable)
 
     let m = yices.model
     XCTAssertTrue(m != nil)
-		lpo.printEval(m!)
-    let a_prec = m!.evalInt(lpo.prec["a"]!)
-    let b_prec = m!.evalInt(lpo.prec["b"]!)
+		kbo.printEval(m!)
+    let a_prec = m!.evalInt(kbo.prec["a"]!)
+    let b_prec = m!.evalInt(kbo.prec["b"]!)
     XCTAssertTrue(a_prec != nil && b_prec != nil && a_prec! > b_prec!)
   }
 
@@ -64,10 +64,10 @@ public class KBOTests: YicesTestCase {
     let f_x = N(symbol:"f", nodes:[x])
 
     let yices = YicesContext()
-		let lpo = YicesKBO(ctx: yices, trs: [(f_x, x)])
-    let _ = yices.ensure(lpo.gt(f_x, x))
+		let kbo = YicesKBO(ctx: yices, trs: [(f_x, x)])
+    let _ = yices.ensure(kbo.gt(f_x, x))
     XCTAssertTrue(yices.isSatisfiable)
-    let _ = yices.ensure(lpo.gt(x, f_x))
+    let _ = yices.ensure(kbo.gt(x, f_x))
     XCTAssertFalse(yices.isSatisfiable)
   }
 
@@ -81,9 +81,9 @@ public class KBOTests: YicesTestCase {
 
     let yices = YicesContext()
 		let trs = [(b, f_a_a), (f_x_c, b)]
-		let lpo = YicesKBO(ctx: yices, trs: trs)
+		let kbo = YicesKBO(ctx: yices, trs: trs)
 		for (l,r) in trs {
-      let _ = yices.ensure(lpo.gt(l, r))
+      let _ = yices.ensure(kbo.gt(l, r))
 		}
     XCTAssertTrue(yices.isSatisfiable)
   }
@@ -97,8 +97,8 @@ public class KBOTests: YicesTestCase {
     let l = N(symbol:"f", nodes:[f_x_y, z])
     let r = N(symbol:"f", nodes:[x, f_y_z])
     let yices = YicesContext()
-		let lpo = YicesKBO(ctx: yices, trs: [(l, r)])
-    let _ = yices.ensure(lpo.gt(r, l))
+		let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
+    let _ = yices.ensure(kbo.gt(r, l))
     XCTAssertFalse(yices.isSatisfiable)
   }
 
@@ -109,8 +109,8 @@ public class KBOTests: YicesTestCase {
     let t = N(symbol:"g", nodes:[y, x])
     for (l,r) in [(s,t), (t,s)] {
       let yices = YicesContext()
-		  let lpo = YicesKBO(ctx: yices, trs: [(l, r)])
-      let _ = yices.ensure(lpo.gt(l, r))
+		  let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
+      let _ = yices.ensure(kbo.gt(l, r))
       XCTAssertFalse(yices.isSatisfiable)
     }
   }
@@ -124,8 +124,8 @@ public class KBOTests: YicesTestCase {
     let l = N(symbol:"f", nodes:[f_x_y, z])
     let r = N(symbol:"f", nodes:[x, f_y_z])
     let yices = YicesContext()
-		let lpo = YicesKBO(ctx: yices, trs: [(l, r)])
-    let _ = yices.ensure(lpo.gt(l, r))
+		let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
+    let _ = yices.ensure(kbo.gt(l, r))
     XCTAssertTrue(yices.isSatisfiable)
   }
 
@@ -151,9 +151,9 @@ public class KBOTests: YicesTestCase {
 
     let yices = YicesContext()
     let trs = [(l, r), (i_i_x, x), (i_f_x_y, f_i_y_i_x), (f_0_x, x)]
-		let lpo = YicesKBO(ctx: yices, trs: trs)
+		let kbo = YicesKBO(ctx: yices, trs: trs)
     for (l, r) in trs {
-      let _ = yices.ensure(lpo.gt(r, l))
+      let _ = yices.ensure(kbo.gt(r, l))
     }
     XCTAssertFalse(yices.isSatisfiable)
   }
@@ -166,8 +166,9 @@ public class KBOTests: YicesTestCase {
     let f_x_y = N(symbol:"f", nodes:[x, y])
     let i_f_x_y = N(symbol:"i", nodes:[f_x_y])
     let f_i_y_i_x = N(symbol:"f", nodes:[i_y, i_x])
+    let i_i_x = N(symbol:"i", nodes:[i_x])
     let yices = YicesContext()
-    let trs = [(i_f_x_y, f_i_y_i_x)]
+    let trs = [(i_f_x_y, f_i_y_i_x), (i_i_x, x)]
 	  let kbo = YicesKBO(ctx: yices, trs: trs)
     for (l,r) in trs {
       let _ = yices.ensure(kbo.gt(l, r))
@@ -182,5 +183,27 @@ public class KBOTests: YicesTestCase {
     let f_prec = m!.evalInt(kbo.prec["f"]!)
     let i_prec = m!.evalInt(kbo.prec["i"]!)
     XCTAssertTrue(f_prec != nil && i_prec != nil && i_prec! > f_prec!)
+  }
+
+  func testAdmissibility() {
+    let x = N(variable:"x")
+    let y = N(variable:"y")
+    let i_x = N(symbol:"i", nodes:[x])
+    let i_y = N(symbol:"i", nodes:[y])
+    let f_x_y = N(symbol:"f", nodes:[x, y])
+    let i_f_x_y = N(symbol:"i", nodes:[f_x_y])
+    let f_i_y_i_x = N(symbol:"f", nodes:[i_y, i_x])
+    let h_x = N(symbol:"h", nodes:[x])
+    let h_y = N(symbol:"h", nodes:[y])
+    let h_f_x_y = N(symbol:"h", nodes:[f_x_y])
+    let f_h_y_h_x = N(symbol:"f", nodes:[h_y, h_x])
+
+    let yices = YicesContext()
+    let trs = [(i_f_x_y, f_i_y_i_x), (h_f_x_y, f_h_y_h_x)]
+	  let kbo = YicesKBO(ctx: yices, trs: trs)
+    for (l,r) in trs {
+      let _ = yices.ensure(kbo.gt(l, r))
+    }
+    XCTAssertFalse(yices.isSatisfiable)
   }
 }
