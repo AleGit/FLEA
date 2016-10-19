@@ -17,7 +17,8 @@ public class KBOTests: YicesTestCase {
       ("testAssoc2", testAssoc2),
       ("testGroup", testGroup),
       ("testDuplication", testDuplication),
-      ("testDuplication", testDuplication)
+      ("testWeight0", testWeight0),
+      ("testAdmissibility", testAdmissibility)
     ]
   }
 
