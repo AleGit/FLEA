@@ -36,7 +36,11 @@ protocol LogicContext {
 
   init()
 
+<<<<<<< HEAD
   static var versionString: String { get }
+=======
+	static var versionString: String { get }
+>>>>>>> aef7caee5d2343855b295fb12b8f7ee4b974e7b3
 
   // types
   var bool_type : ExprType { get }

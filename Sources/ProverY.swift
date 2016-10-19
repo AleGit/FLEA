@@ -1,5 +1,6 @@
 import Foundation
 
+<<<<<<< HEAD
 /// The implemented procedure has the following bug:
 /// - it searches for clashing literals of the selected literal of the selected clause and may saturate too fast
 /// - Example
@@ -11,6 +12,8 @@ import Foundation
 ///     assert 3: -> 3:~p(a) - forces reselection in 1: and 2: - search for clashes in { 1:q(X), 2:~q(a) }, saturated
 ///     missing:
 
+=======
+>>>>>>> aef7caee5d2343855b295fb12b8f7ee4b974e7b3
 /// A instantiation-based prover that uses a satisfiablity checker modulo QF_EUF
 /// quantifier free, equalitiy, uninterpreted functions
 final class ProverY<N:Node, C:LogicContext>: Prover

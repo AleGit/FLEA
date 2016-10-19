@@ -64,8 +64,13 @@ where N.Symbol == String {
       vars[sym] = context.mkIntVar(sym)
     }
   }
+<<<<<<< HEAD
 
   subscript (_ v : String) -> E? { return vars[v] }
+=======
+  
+	subscript (_ v : String) -> E? { return vars[v] } 
+>>>>>>> aef7caee5d2343855b295fb12b8f7ee4b974e7b3
 
   func printEval(_ model: C.Model) {
     let var_vals : [(String, Int)] = vars.map {
@@ -84,7 +89,11 @@ where N.Symbol == String {
 }
 
 
+<<<<<<< HEAD
 final class LPO<N:Node, C: LogicContext>
+=======
+final class LPO<N:Node, C: LogicContext> 
+>>>>>>> aef7caee5d2343855b295fb12b8f7ee4b974e7b3
 where N.Symbol == String {
 	typealias E = C.Expr
 
