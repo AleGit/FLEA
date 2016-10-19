@@ -25,9 +25,9 @@ public class NodePropertiesTests: FleaTestCase {
   // local private adoption of protocol to avoid any side affects
   private final class FullNode: SymbolStringTyped, SymbolTabulating,
   Sharing, Kin, Node, ExpressibleByStringLiteral {
-    static var symbols = StringIntegerTable<Int>()  // : SymbolTabulating
-    static var pool = WeakSet<FullNode>()                  // : Sharing
-    var folks =  WeakSet<FullNode>()                       // : Kin
+    static var symbols = StringIntegerTable<Int>()          // : SymbolTabulating
+    static var pool = WeakSet<FullNode>()                   // : Sharing
+    var folks =  WeakSet<FullNode>()                        // : Kin
 
     var symbol: Int = FullNode.symbolize(string:"*", type:.variable)       // : Node
     var nodes: [FullNode]? = nil                                           // : Node
