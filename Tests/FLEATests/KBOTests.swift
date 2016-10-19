@@ -15,7 +15,8 @@ public class KBOTests: YicesTestCase {
       ("testSubterm", testSubterm),
       ("testAssoc1", testAssoc1),
       ("testAssoc2", testAssoc2),
-      ("testGroup", testGroup)
+      ("testGroup", testGroup),
+      ("testDuplication", testDuplication)
     ]
   }
 
@@ -101,6 +102,19 @@ public class KBOTests: YicesTestCase {
     XCTAssertFalse(yices.isSatisfiable)
   }
 
+  func testDuplication() {
+    let x = N(variable:"x")
+    let y = N(variable:"y")
+    let s = N(symbol:"f", nodes:[x, x])
+    let t = N(symbol:"g", nodes:[y, x])
+    for (l,r) in [(s,t), (t,s)] {
+      let yices = YicesContext()
+		  let lpo = YicesKBO(ctx: yices, trs: [(l, r)])
+      let _ = yices.ensure(lpo.gt(l, r))
+      XCTAssertFalse(yices.isSatisfiable)
+    }
+  }
+
   func testAssoc2() {
     let x = N(variable:"x")
     let y = N(variable:"y")
@@ -144,4 +158,29 @@ public class KBOTests: YicesTestCase {
     XCTAssertFalse(yices.isSatisfiable)
   }
 
+  func testWeight0() {
+    let x = N(variable:"x")
+    let y = N(variable:"y")
+    let i_x = N(symbol:"i", nodes:[x])
+    let i_y = N(symbol:"i", nodes:[y])
+    let f_x_y = N(symbol:"f", nodes:[x, y])
+    let i_f_x_y = N(symbol:"i", nodes:[f_x_y])
+    let f_i_y_i_x = N(symbol:"f", nodes:[i_y, i_x])
+    let yices = YicesContext()
+    let trs = [(i_f_x_y, f_i_y_i_x)]
+	  let kbo = YicesKBO(ctx: yices, trs: trs)
+    for (l,r) in trs {
+      let _ = yices.ensure(kbo.gt(l, r))
+    }
+    XCTAssertTrue(yices.isSatisfiable)
+
+    let m = yices.model
+    XCTAssertTrue(m != nil)
+		kbo.printEval(m!)
+    let w_i = m!.evalInt(kbo.fun_weight["i"]!)
+    XCTAssertTrue(w_i == 0)
+    let f_prec = m!.evalInt(kbo.prec["f"]!)
+    let i_prec = m!.evalInt(kbo.prec["i"]!)
+    XCTAssertTrue(f_prec != nil && i_prec != nil && i_prec! > f_prec!)
+  }
 }
