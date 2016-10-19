@@ -34,7 +34,9 @@ protocol LogicContext {
   associatedtype Model : LogicModel
   typealias Expr = Model.Expr
 
-	static var versionString: String { get }
+  init()
+
+  static var versionString: String { get }
 
   // types
   var bool_type : ExprType { get }
