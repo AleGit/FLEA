@@ -111,11 +111,7 @@ final class YicesModel : LogicModel {
   func implies(formula: Expr) -> Bool {
     let tau = yices_type_of_term(formula.expr)
 
-<<<<<<< HEAD
     Syslog.error(condition: yices_type_is_bool(tau)==0) {
-=======
-    Syslog.error(condition: { yices_type_is_bool(tau)==0 }) {
->>>>>>> aef7caee5d2343855b295fb12b8f7ee4b974e7b3
       _ in
       let s = String(term: formula.expr) ?? "\(formula) n/a"
       let t = String(tau: tau) ?? "\(tau) n/a"

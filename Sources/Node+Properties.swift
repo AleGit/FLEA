@@ -33,7 +33,6 @@ extension Node {
   func isSubnode(of s: Self) -> Bool {
     return s.defaultSubnodes.contains(self)
   }
-<<<<<<< HEAD
 }
 
 extension Node {
@@ -62,8 +61,6 @@ extension Node {
     // 1 + n1.size + ... + ni.size + ... nn.size
     return nodes.reduce(1) { $0 + $1.size}
   }
-=======
->>>>>>> aef7caee5d2343855b295fb12b8f7ee4b974e7b3
 }
 
 
