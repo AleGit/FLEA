@@ -19,8 +19,8 @@ extension LogicContext {
     switch type {
       case .disjunction:
         guard let literals = clause.nodes, literals.count > 0 else {
-          Syslog.error(condition: { clause.nodes == nil}) { "clause.nodes == nil"}
-          Syslog.info(condition: { clause.nodes != nil}) { "emtpy clause" }
+          Syslog.error(condition: clause.nodes == nil) { "clause.nodes == nil"}
+          Syslog.info(condition: clause.nodes != nil) { "emtpy clause" }
           return (mkBot, [mkBot], [mkBot])
         }
 
