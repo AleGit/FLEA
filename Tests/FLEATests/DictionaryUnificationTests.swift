@@ -2,15 +2,15 @@ import XCTest
 
 @testable import FLEA
 
-public class DictionaryUnificationTests : FleaTestCase {
-  static var allTests : [(String, (DictionaryUnificationTests) -> () throws -> Void)] {
+public class DictionaryUnificationTests: FleaTestCase {
+  static var allTests: [(String, (DictionaryUnificationTests) -> () throws -> Void)] {
     return [
     ("testUnifiable", testUnifiable),
     ("testNotUnifiable", testNotUnifiable)
     ]
   }
 
-  func check<N:Node>(
+  func check<N: Node>(
     _ lhs:N,
     _ rhs:N,
     _ expected:[N:N]? = nil,
@@ -32,7 +32,8 @@ public class DictionaryUnificationTests : FleaTestCase {
         XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ nil \(message)")
       default:
         print("\(actual!),\(expected!)")
-        XCTAssertEqual(actual! , expected!, "\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ \(expected!) \(message)")
+        XCTAssertEqual(actual!, expected!,
+        "\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ \(expected!) \(message)")
     }
   }
 

@@ -4,57 +4,57 @@ import XCTest
 
 /// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
-public class NodePathsTests : FleaTestCase {
+public class NodePathsTests: FleaTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (NodePathsTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (NodePathsTests) -> () throws -> Void)]  {
     return [
       ("testNodePaths", testNodePaths),
-      ("testNegatedPaths",testNegatedPaths)
+      ("testNegatedPaths", testNegatedPaths)
     ]
   }
 
   // local private adoption of protocol to avoid any side affects
-  private final class N : SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
-  ExpressibleByStringLiteral  {
+  private final class LocalKinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+  ExpressibleByStringLiteral {
     typealias S = Int
     static var symbols = StringIntegerTable<Int>()
-    static var pool = WeakSet<N>()
-    var folks = WeakSet<N>()
+    static var pool = WeakSet<LocalKinIntNode>()
+    var folks = WeakSet<LocalKinIntNode>()
 
-    var symbol : S = N.symbolize(string:"*",type:.variable)
-    var nodes : [N]? = nil
+    var symbol: S = LocalKinIntNode.symbolize(string:"*",type:.variable)
+    var nodes: [LocalKinIntNode]? = nil
 
     deinit {
       print("\(#function) \(self)")
     }
 
-    var description : String {
+    var description: String {
       return defaultDescription
     }
   }
 
-  /// accumulate four distict nodes
+  /// accumulate four distinct nodes
   func testNodePaths() {
 
-    let X = N(v:"X")
-    let a = N(c:"a")
-    let fX = N(f:"f", [X])
-    let fa = N(f:"f", [a])
-    let gfXfa = N(f:"g", [fX,fa])
-    let ggfXfaX = N(f:"g", [gfXfa,X])
+    let X = LocalKinIntNode(v:"X")
+    let a = LocalKinIntNode(c:"a")
+    let fX = LocalKinIntNode(f:"f", [X])
+    let fa = LocalKinIntNode(f:"f", [a])
+    let gfXfa = LocalKinIntNode(f:"g", [fX, fa])
+    let ggfXfaX = LocalKinIntNode(f:"g", [gfXfa, X])
 
     let f$ = fX.symbol
     let g$ = gfXfa.symbol
-    let _$ = N.symbols.insert("*",.variable)
+    let _$ = LocalKinIntNode.symbols.insert("*", .variable)
     let a$ = a.symbol
 
-    let count = N.pool.count
-    XCTAssertEqual(count,6, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
+    let count = LocalKinIntNode.pool.count
+    XCTAssertEqual(count, 6, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
     let expected = [
-      [g$,0,g$,0,f$,0,-1],
-      [g$,0,g$,1,f$,0,a$],
-      [g$,1,-1]
+      [g$, 0, g$, 0, f$, 0, -1],
+      [g$,0, g$, 1, f$, 0, a$],
+      [g$, 1, -1]
       ]
     let actual = ggfXfaX.leafPaths
     XCTAssertEqual(
@@ -76,15 +76,13 @@ public class NodePathsTests : FleaTestCase {
   }
 
   func testNegatedPaths() {
-    let pfx : N = "@fof p(f(X))" // p is predicate
-    let npfx : N = "~p(f(X))"
-    let a_X : N = "a = X"
-    let a_n_X : N = "a != X"
+    let pfx: LocalKinIntNode = "@fof p(f(X))" // p is predicate
+    let npfx: LocalKinIntNode = "~p(f(X))"
+    let a_X: LocalKinIntNode = "a = X"
+    let a_n_X: LocalKinIntNode = "a != X"
 
     var expected = pfx.leafPathsPair.0
     var actual = npfx.leafPathsPair.1
-
-
 
     XCTAssertEqual(
       Array(expected.joined()),
@@ -118,8 +116,5 @@ public class NodePathsTests : FleaTestCase {
       Array(actual.joined()),
       "\(a_n_X) \(a_X)"
     )
-
   }
-
-
 }

@@ -2,23 +2,23 @@ import XCTest
 
 @testable import FLEA
 
-public class NodeTests : FleaTestCase {
-  static var allTests : [(String,(NodeTests) -> () throws -> Void)] {
+public class NodeTests: FleaTestCase {
+  static var allTests: [(String, (NodeTests) -> () throws -> Void)] {
     return [
-    ("testInit",testInit)
+    ("testInit", testInit)
     ]
   }
 
   // local private adoption of protocol to avoid any side affects
-  private struct N : Node {
-    var symbol : String = ""
-    var nodes : [N]? = nil
+  private struct LocalNode: Node {
+    var symbol: String = ""
+    var nodes: [LocalNode]? = nil
   }
 
   func testInit() {
-    let a = N(constant:"a")
-    let X = N(variable:"X")
-    let faX = N(symbol:"f",nodes:[a,X])
+    let a = LocalNode(constant:"a")
+    let X = LocalNode(variable:"X")
+    let faX = LocalNode(symbol:"f", nodes:[a, X])
     XCTAssertEqual("f(a,X)", faX.description)
   }
 }

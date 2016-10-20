@@ -12,22 +12,23 @@ public class DescriptionTests: FleaTestCase {
   }
 
   // local private adoption of protocol to avoid any side affects
-  private final class N: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
+  private final class LocalKinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
     typealias S = Int
-    static var symbols = StringIntegerTable<S>()
-    static var pool = WeakSet<N>()
-    var folks =  WeakSet<N>()
 
-    var symbol: S = N.symbolize(string:"*", type:.variable)
-    var nodes: [N]? = nil
+    static var symbols = StringIntegerTable<S>()
+    static var pool = WeakSet<LocalKinIntNode>()
+    var folks =  WeakSet<LocalKinIntNode>()
+
+    var symbol: S = LocalKinIntNode.symbolize(string:"*", type:.variable)
+    var nodes: [LocalKinIntNode]? = nil
 
     lazy var description: String = self.defaultDescription
   }
 
   func testDescription() {
-    let a = N(c:"a")
-    let X = N(v:"X")
-    let fXa = N(f:"f", [X, a])
+    let a = LocalKinIntNode(c:"a")
+    let X = LocalKinIntNode(v:"X")
+    let fXa = LocalKinIntNode(f:"f", [X, a])
 
     XCTAssertEqual("a", a.description, nok)
     XCTAssertEqual("X", X.description, nok)
@@ -36,12 +37,12 @@ public class DescriptionTests: FleaTestCase {
   }
 
   func testDebugDescription() {
-    let a = N(c:"a")
-    let X = N(v:"X")
-    let fXa = N(f:"f", [X, a])
+    let a = LocalKinIntNode(c:"a")
+    let X = LocalKinIntNode(v:"X")
+    let fXa = LocalKinIntNode(f:"f", [X, a])
 
-    let equals = N.symbolize(string:"=", type:.equation)
-    let a_X = N(symbol: equals, nodes: [a, X])
+    let equals = LocalKinIntNode.symbolize(string:"=", type:.equation)
+    let a_X = LocalKinIntNode(symbol: equals, nodes: [a, X])
 
     XCTAssertEqual("1-a-function(0)", a.debugDescription, nok)
     XCTAssertEqual("-3-X-variable", X.debugDescription, nok)
