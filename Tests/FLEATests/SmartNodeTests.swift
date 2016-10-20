@@ -2,11 +2,11 @@ import XCTest
 
 @testable import FLEA
 
-/// Test the accumulation of nodes in N.pool.
+/// Test the accumulation of nodes in LocalSmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
-public class SmartNodeTests : FleaTestCase {
+public class SmartNodeTests: FleaTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (SmartNodeTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (SmartNodeTests) -> () throws -> Void)] {
     return [
       ("testEqualityX", testEqualityX),
       ("testEqualityY", testEqualityY)
@@ -14,15 +14,15 @@ public class SmartNodeTests : FleaTestCase {
   }
 
 // local private adoption of protocol to avoid any side affects
-  private final class N : SymbolStringTyped, Sharing, Node  {
+  private final class LocalSmartNode: SymbolStringTyped, Sharing, Node {
   typealias S = Tptp.Symbol // choose the symbol
-  static var pool = WeakSet<N>()
+  static var pool = WeakSet<LocalSmartNode>()
 
-  var symbol : S = N.symbolize(string:"*", type:.variable)
-  var nodes : [N]? = nil
+  var symbol: S = LocalSmartNode.symbolize(string:"*", type:.variable)
+  var nodes: [LocalSmartNode]? = nil
 
-  lazy var hashValue : Int = self.defaultHashValue
-  lazy var description : String = self.defaultDescription
+  lazy var hashValue: Int = self.defaultHashValue
+  lazy var description: String = self.defaultDescription
 
   deinit {
     print("\(#function) \(self)")
@@ -31,13 +31,14 @@ public class SmartNodeTests : FleaTestCase {
 
   /// accumulate four distict nodes
   func testEqualityX() {
+    typealias N = LocalSmartNode
 
-    let X = N(v:"X")
-    let a = N(c:"a")
-    let fX = N(f:"f", [X])
-    let fa = N(f:"f", [a])
+    let X = LocalSmartNode(v:"X")
+    let a = LocalSmartNode(c:"a")
+    let fX = LocalSmartNode(f:"f", [X])
+    let fa = LocalSmartNode(f:"f", [a])
 
-    let fX_a = fX * [N(v:"X"):N(c:"a")]
+    let fX_a = fX * [LocalSmartNode(v:"X"):LocalSmartNode(c:"a")]
 
     XCTAssertEqual(fX_a,fa)
     XCTAssertTrue(fX_a == fa)
@@ -45,8 +46,8 @@ public class SmartNodeTests : FleaTestCase {
     XCTAssertTrue(fX.nodes!.first! == X)
     XCTAssertTrue(fa.nodes!.first! == a)
 
-    let count = N.pool.count
-    XCTAssertEqual(count,4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
+    let count = LocalSmartNode.pool.count
+    XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
     let ffa = N(f:"f", [ N(f:"f",[N(v:"Y")])]) * [ N(v:"Y") : N(c:"a")]
     XCTAssertEqual(5, N.pool.count, "\(nok)  \(#function) \(count) ≠ 5 smart nodes accumulated.")
@@ -60,22 +61,18 @@ public class SmartNodeTests : FleaTestCase {
   /// accumulate four distict nodes
   func testEqualityY() {
 
-    let X = N(v:"Y")
-    let a = N(c:"a")
-    let fX = N(f:"f", [X])
-    let fa = N(f:"f", [a])
+    let X = LocalSmartNode(v:"Y")
+    let a = LocalSmartNode(c:"a")
+    let fX = LocalSmartNode(f:"f", [X])
+    let fa = LocalSmartNode(f:"f", [a])
 
-    let fX_a = fX * [N(v:"Y"):N(c:"a")]
+    let fX_a = fX * [LocalSmartNode(v:"Y"):LocalSmartNode(c:"a")]
 
-    XCTAssertEqual(fX_a,fa)
+    XCTAssertEqual(fX_a, fa)
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
 
-    let count = N.pool.count
+    let count = LocalSmartNode.pool.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
-
-
-
-
   }
 }

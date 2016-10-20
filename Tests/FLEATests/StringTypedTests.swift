@@ -12,14 +12,13 @@ public class StringTypedTests: FleaTestCase {
     ]
   }
 
-  private final class SmartIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+  private final class LocalSmartIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
-   // typealias N = SmartIntNode
 
     static var symbols = StringIntegerTable<Int>()
     static var pool = WeakSet<N>()
 
-    var symbol: Int = SmartIntNode.symbolize(string:"*", type:.variable)
+    var symbol: Int = LocalSmartIntNode.symbolize(string:"*", type:.variable)
     var nodes: [N]? = nil
 
     lazy var hashValue: Int = self.defaultHashValue
@@ -32,7 +31,7 @@ public class StringTypedTests: FleaTestCase {
   static var f2 = "f(f(Y,a,Y),X,Y)" as N
   }
 
-  private typealias N = SmartIntNode
+  private typealias N = LocalSmartIntNode
 
 
 
