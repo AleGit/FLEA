@@ -10,8 +10,8 @@ extension Node where Symbol:StringSymbolable {
 }
 
 /// default implementations for SymbolStringTyped
-extension Node
-where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
+extension Node where Self:SymbolTabulating,
+Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
   var symbolStringType: (String, Tptp.SymbolType) {
     return Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
   }
@@ -40,8 +40,8 @@ extension Node where Self:SymbolStringTyped {
   }
 
   // remove unnecessary suffixes from variable names
-  private func desuffixing(separator: String, mappings: inout Dictionary<String, String>,
-  symbols: inout Set<String>) -> Self {
+  private func desuffixing(separator: String,
+  mappings: inout Dictionary<String, String>, symbols: inout Set<String>) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
       Syslog.error(condition: type != .variable ) {
@@ -89,56 +89,63 @@ extension Node where Self:SymbolStringTyped {
   }
 
   /* prefix normalization */
-  func normalizing<T: Any>(prefix: T, offset: Int = 0) -> Self {
-    var renaming = Dictionary<Symbol, Symbol>()
 
-    return self.normalizing(prefix: prefix, offset: offset, renaming: &renaming)
+  /// f(X,Y,Y).normalizing(prefix:Z) -> f(Z0,Z1,Z1)
+  func normalizing<T: Any>(prefix: T, separator: String = "", offset: Int = 0) -> Self {
+    var renamings = Dictionary<Symbol, Symbol>()
+
+    return self.normalizing(prefix: prefix, separator: separator, offset: offset,
+    renamings: &renamings)
   }
 
-  private func normalizing<T: Any>(prefix: T, offset: Int, renaming: inout Dictionary<Symbol, Symbol>) -> Self {
+  private func normalizing<T: Any>(prefix: T, separator: String, offset: Int,
+  renamings: inout Dictionary<Symbol, Symbol>) -> Self {
     if let nodes = self.nodes {
       // not a variable
       return Self(symbol: self.symbol, nodes: nodes.map {
-        $0.normalizing(prefix:prefix, offset:offset, renaming:&renaming)
+        $0.normalizing(prefix:prefix, separator:separator, offset:offset, renamings:&renamings)
       })
     }
 
-    if let symbol = renaming[self.symbol] {
+    if let symbol = renamings[self.symbol] {
       // variable symbol was allready encountered
       return Self(variable:symbol)
     }
 
     // variable symbol is unknown so far
-    let symbol = Self.symbolize(string:"\(prefix)\(renaming.count+offset)", type:.variable)
-    renaming[self.symbol] = symbol
+    let symbol = Self.symbolize(
+      string:"\(prefix)\(separator)\(renamings.count+offset)",
+      type:.variable)
+    renamings[self.symbol] = symbol
     return Self(variable:symbol)
 
   }
 
-  /* wildcard normalization */
+  /* placeholder normalization */
 
-  func normalizing(wildcard: String = "*") -> (Self, Dictionary<Self, [Position]>) {
+  func normalizing(placeholder: String = "*️⃣") -> (Self, Dictionary<Self, [Position]>) {
     var variables = Dictionary<Self, [Position]>()
     return (
-      normalizing(wildcard: wildcard, position: ε, variables: &variables),
+      normalizing(placeholder: placeholder, position: ε, variables: &variables),
       variables)
   }
 
-  func normalizing(wildcard: String, position: Position, variables: inout Dictionary<Self, [Position]>)
-   -> Self {
+  func normalizing(placeholder: String, position: Position,
+  variables: inout Dictionary<Self, [Position]>) -> Self {
 
      guard let nodes = self.nodes else {
        var positions = variables[self] ?? [Position] ()
        positions.append(position)
        variables[self] = positions
 
-       return Self(v:"*")
+       return Self(v:placeholder)
      }
 
      var nnodes = [Self]()
 
      for (index, node) in nodes.enumerated() {
-       let nnode = node.normalizing(wildcard:wildcard, position:position + [index], variables:&variables)
+       let nnode = node.normalizing(placeholder:placeholder,
+       position:position + [index], variables:&variables)
        nnodes.append(nnode)
      }
 

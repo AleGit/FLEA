@@ -8,7 +8,7 @@ public class StringTypedTests: FleaTestCase {
   static var allTests: [(String, (StringTypedTests) -> () throws -> Void)] {
     return [
     ("testPrefixNormalization", testPrefixNormalization),
-    ("testWildcardNormalization", testWildcardNormalization)
+    ("testPlaceholderNormalization", testPlaceholderNormalization)
     ]
   }
 
@@ -49,10 +49,10 @@ public class StringTypedTests: FleaTestCase {
       XCTAssertEqual("f(f(Z0,a,Z0),Z1,Z0)", r2.description)
   }
 
-  func testWildcardNormalization() {
-      let (w0, d0) = N.X.normalizing(wildcard:"*")
-      let (w1, d1) = N.f1.normalizing(wildcard:"*")
-      let (w2, d2) = N.f2.normalizing(wildcard:"*")
+  func testPlaceholderNormalization() {
+      let (w0, d0) = N.X.normalizing(placeholder: "♻️")
+      let (w1, d1) = N.f1.normalizing()
+      let (w2, d2) = N.f2.normalizing()
 
       XCTAssertEqual(1, d0.count)
       XCTAssertEqual(2, d1.count)
@@ -75,6 +75,10 @@ public class StringTypedTests: FleaTestCase {
 
       XCTAssertEqual(1, d2[N.X]!.count)
       XCTAssertEqual([1], d2[N.X]!.first!)
+
+      print(w0)
+      print(w1)
+      print(w2)
 
   }
 }
