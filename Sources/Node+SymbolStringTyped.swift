@@ -24,6 +24,7 @@ where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol, Self.Symbols.Key == 
 extension Node where Self:SymbolStringTyped {
   // implies Symbol: Hashable
 
+  /// Creates a term tree where a suffix is added to all variable names
   func appending<T:Any>(suffix: T) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
@@ -78,10 +79,41 @@ extension Node where Self:SymbolStringTyped {
       )
   }
 
+  @available(*, deprecated, message: "- for experimental purposes only -")
+  /// remove unnecessary suffixes _
   func normalizing() -> Self {
     var m = Dictionary<String, String>()
     var s = Set<String>()
     return normalizing(mappings:&m, symbols:&s)
   }
+
+  /// Create term tree where variables x,y,z are renamed to prefix_0, prefix_2, prefix_3
+  ///
+  func normalizing<T: Any>(prefix: T, offset: Int = 0) -> Self {
+    var renaming = Dictionary<Symbol, Symbol>()
+
+    return self.normalizing(renaming: &renaming, offset: offset)
+  }
+
+  private func normalizing(renaming: inout Dictionary<Symbol, Symbol>, offset: Int = 0) -> Self {
+    if let nodes = self.nodes {
+      // not a variable
+      return Self(symbol: self.symbol, nodes: nodes.map { $0.normalizing(renaming:&renaming) })
+    }
+
+    if let symbol = renaming[self.symbol] {
+      // variable symbol was allready encountered
+      return Self(variable:symbol)
+    }
+
+    // variable symbol is unknown so far
+    let (string, _) = self.symbolStringType
+    let symbol = Self.symbolize(string:"\(string)_\(renaming.count+offset)", type:.variable)
+    renaming[self.symbol] = symbol
+    return Self(variable:symbol)
+
+  }
+
+
 
 }

@@ -19,24 +19,24 @@ public class KinNodeTests : FleaTestCase {
     static var symbols = StringIntegerTable<S>()
     static var pool = WeakSet<N>()
     var folks = WeakSet<N>()
-    
+
     var symbol : S = N.symbolize(string:Tptp.wildcard, type:.variable)
     var nodes : [N]? = nil
   }
 
   /// accumulate four distict nodes
   func testEqualityX() {
-    let symbol = N.symbolize(string:"*", type:.variable) 
-    XCTAssertEqual(1,symbol)  
+    let symbol = N.symbolize(string:"*", type:.variable)
+    XCTAssertEqual(-1,symbol)
 
     let X : N = "X"
     let a : N = "a"
     let fX = "f(X)" as N
     let fa = "f(a)" as N
 
-    XCTAssertEqual("6-X-variable",X.debugDescription,nok)
+    XCTAssertEqual("-6-X-variable",X.debugDescription,nok)
     XCTAssertEqual("7-a-function(0)",a.debugDescription,nok)
-    XCTAssertEqual("8-f-function(1)(6-X-variable)",fX.debugDescription,nok)
+    XCTAssertEqual("8-f-function(1)(-6-X-variable)",fX.debugDescription,nok)
     XCTAssertEqual("8-f-function(1)(7-a-function(0))",fa.debugDescription,nok)
 
     // check if folks are set correctly

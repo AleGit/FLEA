@@ -45,9 +45,9 @@ public class DescriptionTests : FleaTestCase {
     // let equals = Tptp.N.Symbol("=",.equation)
 
     XCTAssertEqual("1-a-function(0)", a.debugDescription,nok)
-    XCTAssertEqual("3-X-variable", X.debugDescription,nok)
+    XCTAssertEqual("-3-X-variable", X.debugDescription,nok)
 
-    XCTAssertEqual("4-f-function(2)(3-X-variable,1-a-function(0))", fXa.debugDescription,nok)
+    XCTAssertEqual("4-f-function(2)(-3-X-variable,1-a-function(0))", fXa.debugDescription,nok)
 
     //
     // XCTAssertEqual("f(X,Y)", Q.fXY.debugDescription,nok)

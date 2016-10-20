@@ -113,7 +113,7 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
       break
     }
 
-    let ivalue: I = I(1+symbols.count)
+    let ivalue: I = I(1+symbols.count) * (type == .variable ? -1 : 1)
 
     symbols[string] = ivalue
     strings[ivalue] = (string, type)
