@@ -1,55 +1,3 @@
-import CYices
-
-extension Dictionary {
-  mutating func update(other:Dictionary) {
-    for (k,v) in other {
-      self.updateValue(v, forKey:k)
-    }
-  }
-}
-
-extension Node where Self:SymbolStringTyped, Self:CustomStringConvertible,
-                     Symbol : Hashable {
-  var isVar :  Bool {
-    return nodes == nil
-  }
-
-  var funs: [Symbol: Int] {
-    var fs: [Symbol: Int] = [:]
-    for p in self.positions {
-      let t_p = self[p]!
-      guard !t_p.isVar else { continue }
-
-      fs[t_p.symbol] = t_p.nodes!.count
-    }
-    return fs
-  }
-
-  static func trsFuns(_ trs: [(Self, Self)]) -> [Symbol: Int] {
-    var fs: [Symbol: Int] = [:]
-    for (l, r) in trs {
-      fs.update(other: l.funs)
-      fs.update(other: r.funs)
-    }
-    return fs
-  }
-
-  func varCount() -> [Symbol : Int] {
-    var map : [Symbol : Int] = [:]
-    for p in self.positions {
-      let t_p = self[p]!
-      guard t_p.isVar else { continue }
-
-      guard let k = map[t_p.symbol] else {
-        map[t_p.symbol] = 1
-        continue
-      }
-      map[t_p.symbol] = k + 1
-    }
-    return map
-  }
-}
-
 
 struct Precedence<C: LogicContext, N: Node>
 where N:SymbolStringTyped, N:CustomStringConvertible {
@@ -58,10 +6,10 @@ where N:SymbolStringTyped, N:CustomStringConvertible {
   var context: C
   fileprivate var vars : [String: C.Expr] // precedence variables
 
-  init(_ c: C, trs : [(N,N)]) {
+  init(_ c: C, trs : TRS<N>) {
     context = c
     vars = [:]
-    for (sym, _) in N.trsFuns(trs) {
+    for (sym, _) in trs.funs {
       let name = "\(sym)"
       vars[name] = context.mkIntVar(name)
     }
@@ -86,11 +34,11 @@ where N:SymbolStringTyped, N:CustomStringConvertible {
 }
 
 protocol Order {
-  associatedtype NodeType : SymbolStringTyped, CustomStringConvertible
+  associatedtype NodeType : SymbolStringTyped, CustomStringConvertible, Node
   associatedtype LogicContextType : LogicContext
 
 	typealias E = LogicContextType.Expr
-  init(ctx : LogicContextType, trs: [(NodeType, NodeType)])
+  init(ctx : LogicContextType, trs: TRS<NodeType>)
 	func gt(_ l:NodeType, _ r:NodeType) -> E
   func printEval(_ model: LogicContextType.Model)
 }
@@ -104,7 +52,7 @@ where N:SymbolStringTyped, N:CustomStringConvertible {
   var context: C
   var prec: Precedence<C, N>
 
-  init(ctx : C, trs: [(N, N)]) {
+  init(ctx : C, trs: TRS<N>) {
     prec = Precedence<C, N>(ctx, trs: trs)
     context = ctx
   }
@@ -152,11 +100,11 @@ where N:SymbolStringTyped, N:CustomStringConvertible {
   var fun_weight: [String: E] = [:]
   var w0: E
 
-  init(ctx : C, trs: [(N, N)]) {
+  init(ctx : C, trs: TRS<N>) {
     prec = Precedence<C, N>(ctx, trs: trs)
     context = ctx
     w0 = context.mkIntVar("w0")
-    for (sym, _) in N.trsFuns(trs) {
+    for (sym, _) in trs.funs {
       let name = "\(sym)"
       fun_weight[name] = context.mkIntVar(name)
     }
@@ -170,18 +118,18 @@ where N:SymbolStringTyped, N:CustomStringConvertible {
     return t.nodes!.reduce(w_t_root, { $0.add(weight($1)) })
   }
 
-	func admissible(for trs: [(N, N)]) -> E {
+	func admissible(for trs: TRS<N>) -> E {
 		let zero = context.mkNum(0)
 		var adm = w0 ≻ zero
 
-    for (g, a) in N.trsFuns(trs) {
+    for (g, a) in trs.funs {
       let w_g = fun_weight["\(g)"]!
       if (a == 0) {
 			  adm = adm ⋀ w_g ≽ w0
 			} else if (a == 1) {
 				var max = context.mkTop
 				let p_g = prec[g]!
-        for (f, _) in N.trsFuns(trs) {
+        for (f, _) in trs.funs {
 					guard f != g else { continue }
 			    max = max ⋀ p_g ≻ prec[f]!
 				}

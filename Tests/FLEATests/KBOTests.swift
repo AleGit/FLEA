@@ -33,12 +33,13 @@ public class KBOTests: YicesTestCase {
 }
 
   private typealias YicesKBO = KBO<N, YicesContext>
+  private typealias R = Rule<N>
 
   func testAtoA() {
     let yices = YicesContext()
     let a = N(c:"a")
 
-		let kbo = YicesKBO(ctx: yices, trs: [(a, a)])
+		let kbo = YicesKBO(ctx: yices, trs: TRS([R(a, a)]))
     let _ = yices.ensure(kbo.gt(a, a))
     XCTAssertFalse(yices.isSatisfiable)
 	}
@@ -51,10 +52,10 @@ public class KBOTests: YicesTestCase {
     let f_a_c = N(f:"f", [a, c])
     let f_c_b = N(f:"f", [c, b])
 
-    let trs = [(a, b), (f_c_b, f_a_c)]
+    let trs = TRS([R(a, b), R(f_c_b, f_a_c)])
 		let kbo = YicesKBO(ctx: yices, trs: trs)
-		for (l,r) in trs {
-      let _ = yices.ensure(kbo.gt(l, r))
+		for rule in trs {
+      let _ = yices.ensure(kbo.gt(rule.lhs, rule.rhs))
 		}
     XCTAssertTrue(yices.isSatisfiable)
 
@@ -71,7 +72,7 @@ public class KBOTests: YicesTestCase {
     let f_x = N(f:"f", [x])
 
     let yices = YicesContext()
-		let kbo = YicesKBO(ctx: yices, trs: [(f_x, x)])
+		let kbo = YicesKBO(ctx: yices, trs: TRS([R(f_x, x)]))
     let _ = yices.ensure(kbo.gt(f_x, x))
     XCTAssertTrue(yices.isSatisfiable)
     let _ = yices.ensure(kbo.gt(x, f_x))
@@ -87,10 +88,10 @@ public class KBOTests: YicesTestCase {
     let f_x_c = N(f:"f", [x, c])
 
     let yices = YicesContext()
-		let trs = [(b, f_a_a), (f_x_c, b)]
+		let trs = TRS([R(b, f_a_a), R(f_x_c, b)])
 		let kbo = YicesKBO(ctx: yices, trs: trs)
-		for (l,r) in trs {
-      let _ = yices.ensure(kbo.gt(l, r))
+		for rule in trs {
+      let _ = yices.ensure(kbo.gt(rule.lhs, rule.rhs))
 		}
     XCTAssertTrue(yices.isSatisfiable)
   }
@@ -104,7 +105,7 @@ public class KBOTests: YicesTestCase {
     let l = N(f:"f", [f_x_y, z])
     let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
-		let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
+		let kbo = YicesKBO(ctx: yices, trs: TRS([R(l, r)]))
     let _ = yices.ensure(kbo.gt(r, l))
     XCTAssertFalse(yices.isSatisfiable)
   }
@@ -116,7 +117,7 @@ public class KBOTests: YicesTestCase {
     let t = N(f:"g", [y, x])
     for (l,r) in [(s,t), (t,s)] {
       let yices = YicesContext()
-		  let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
+		  let kbo = YicesKBO(ctx: yices, trs: TRS([R(l, r)]))
       let _ = yices.ensure(kbo.gt(l, r))
       XCTAssertFalse(yices.isSatisfiable)
     }
@@ -131,7 +132,7 @@ public class KBOTests: YicesTestCase {
     let l = N(f:"f", [f_x_y, z])
     let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
-		let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
+		let kbo = YicesKBO(ctx: yices, trs: TRS([R(l, r)]))
     let _ = yices.ensure(kbo.gt(l, r))
     XCTAssertTrue(yices.isSatisfiable)
   }
@@ -157,10 +158,10 @@ public class KBOTests: YicesTestCase {
     let f_0_x = N(f:"f", [zero, x])
 
     let yices = YicesContext()
-    let trs = [(l, r), (i_i_x, x), (i_f_x_y, f_i_y_i_x), (f_0_x, x)]
+    let trs = TRS([R(l, r), R(i_i_x, x), R(i_f_x_y, f_i_y_i_x), R(f_0_x, x)])
 		let kbo = YicesKBO(ctx: yices, trs: trs)
-    for (l, r) in trs {
-      let _ = yices.ensure(kbo.gt(r, l))
+    for rule in trs {
+      let _ = yices.ensure(kbo.gt(rule.rhs, rule.lhs))
     }
     XCTAssertFalse(yices.isSatisfiable)
   }
@@ -175,10 +176,10 @@ public class KBOTests: YicesTestCase {
     let f_i_y_i_x = N(f:"f", [i_y, i_x])
     let i_i_x = N(f:"i", [i_x])
     let yices = YicesContext()
-    let trs = [(i_f_x_y, f_i_y_i_x), (i_i_x, x)]
+    let trs = TRS([R(i_f_x_y, f_i_y_i_x), R(i_i_x, x)])
 	  let kbo = YicesKBO(ctx: yices, trs: trs)
-    for (l,r) in trs {
-      let _ = yices.ensure(kbo.gt(l, r))
+    for rule in trs {
+      let _ = yices.ensure(kbo.gt(rule.lhs, rule.rhs))
     }
     XCTAssertTrue(yices.isSatisfiable)
 
@@ -206,10 +207,10 @@ public class KBOTests: YicesTestCase {
     let f_h_y_h_x = N(f:"f", [h_y, h_x])
 
     let yices = YicesContext()
-    let trs = [(i_f_x_y, f_i_y_i_x), (h_f_x_y, f_h_y_h_x)]
+    let trs = TRS([R(i_f_x_y, f_i_y_i_x), R(h_f_x_y, f_h_y_h_x)])
 	  let kbo = YicesKBO(ctx: yices, trs: trs)
-    for (l,r) in trs {
-      let _ = yices.ensure(kbo.gt(l, r))
+    for rule in trs {
+      let _ = yices.ensure(kbo.gt(rule.lhs, rule.rhs))
     }
     XCTAssertFalse(yices.isSatisfiable)
   }

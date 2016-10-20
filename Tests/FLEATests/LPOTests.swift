@@ -30,13 +30,14 @@ public class LPOTests: YicesTestCase {
 }
 
   private typealias YicesLPO = LPO<N, YicesContext>
+  private typealias R = Rule<N>
 
   func testAtoB() {
     let yices = YicesContext()
     let a = N(c:"a")
     let b = N(c:"b")
 
-		let lpo = YicesLPO(ctx: yices, trs: [(a, b)])
+		let lpo = YicesLPO(ctx: yices, trs: TRS([R(a, b)]))
     let _ = yices.ensure(lpo.gt(a, b))
     XCTAssertTrue(yices.isSatisfiable)
 
@@ -52,7 +53,7 @@ public class LPOTests: YicesTestCase {
     let yices = YicesContext()
     let a = N(c:"a")
 
-		let lpo = YicesLPO(ctx: yices, trs: [(a, a)])
+		let lpo = YicesLPO(ctx: yices, trs: TRS([R(a, a)]))
     let _ = yices.ensure(lpo.gt(a, a))
     XCTAssertFalse(yices.isSatisfiable)
 	}
@@ -62,7 +63,7 @@ public class LPOTests: YicesTestCase {
     let f_x = N(f:"f", [x])
 
     let yices = YicesContext()
-		let lpo = YicesLPO(ctx: yices, trs: [(f_x, x)])
+		let lpo = YicesLPO(ctx: yices, trs: TRS([R(f_x, x)]))
     let _ = yices.ensure(lpo.gt(f_x, x))
     XCTAssertTrue(yices.isSatisfiable)
     let _ = yices.ensure(lpo.gt(x, f_x))
@@ -78,10 +79,10 @@ public class LPOTests: YicesTestCase {
     let f_x_c = N(f:"f", [x, c])
 
     let yices = YicesContext()
-		let trs = [(b, f_a_a), (f_x_c, b)]
+		let trs = TRS([R(b, f_a_a), R(f_x_c, b)])
 		let lpo = YicesLPO(ctx: yices, trs: trs)
-		for (l,r) in trs {
-      let _ = yices.ensure(lpo.gt(l, r))
+		for rl in trs {
+      let _ = yices.ensure(lpo.gt(rl.lhs, rl.rhs))
 		}
     XCTAssertTrue(yices.isSatisfiable)
 		
@@ -105,7 +106,7 @@ public class LPOTests: YicesTestCase {
     let l = N(f:"f", [f_x_y, z])
     let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
-		let lpo = YicesLPO(ctx: yices, trs: [(l, r)])
+		let lpo = YicesLPO(ctx: yices, trs: TRS([R(l, r)]))
     let _ = yices.ensure(lpo.gt(r, l))
     XCTAssertFalse(yices.isSatisfiable)
   }
@@ -119,7 +120,7 @@ public class LPOTests: YicesTestCase {
     let l = N(f:"f", [f_x_y, z])
     let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
-		let lpo = YicesLPO(ctx: yices, trs: [(l, r)])
+		let lpo = YicesLPO(ctx: yices, trs: TRS([R(l, r)]))
     let _ = yices.ensure(lpo.gt(l, r))
     XCTAssertTrue(yices.isSatisfiable)
   }
@@ -145,10 +146,10 @@ public class LPOTests: YicesTestCase {
     let f_0_x = N(f:"f", [zero, x])
 
     let yices = YicesContext()
-    let trs = [(l, r), (i_i_x, x), (i_f_x_y, f_i_y_i_x), (f_0_x, x)]
+    let trs = TRS([R(l, r), R(i_i_x, x), R(i_f_x_y, f_i_y_i_x), R(f_0_x, x)])
 		let lpo = YicesLPO(ctx: yices, trs: trs)
-    for (l, r) in trs {
-      let _ = yices.ensure(lpo.gt(r, l))
+    for rule in trs {
+      let _ = yices.ensure(lpo.gt(rule.rhs, rule.lhs))
     }
     XCTAssertFalse(yices.isSatisfiable)
   }

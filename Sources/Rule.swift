@@ -1,5 +1,17 @@
 
-extension Node where Self:SymbolStringTyped, Self:Hashable {
+extension Dictionary {
+  mutating func update(other:Dictionary) {
+    for (k,v) in other {
+      self.updateValue(v, forKey:k)
+    }
+  }
+}
+
+
+extension Node where Self:SymbolStringTyped, Symbol:Hashable {
+  var isVar :  Bool {
+    return nodes == nil
+  }
 
   func replace(at p: Position, with s: Self) -> Self {
 	  guard let (i, q) = p.decomposing else { return s }
@@ -9,6 +21,32 @@ extension Node where Self:SymbolStringTyped, Self:Hashable {
 		return Self(symbol: self.symbol, nodes: args) 
 	}
 
+  var funs: [Symbol: Int] {
+    var fs: [Symbol: Int] = [:]
+    for p in self.positions {
+      let t_p = self[p]!
+      guard !t_p.isVar else { continue }
+
+      fs[t_p.symbol] = t_p.nodes!.count
+    }
+    return fs
+  }
+
+  func varCount() -> [Symbol : Int] {
+    var map : [Symbol : Int] = [:]
+    for p in self.positions {
+      let t_p = self[p]!
+      guard t_p.isVar else { continue }
+
+      guard let k = map[t_p.symbol] else {
+        map[t_p.symbol] = 1
+        continue
+      }
+      map[t_p.symbol] = k + 1
+    }
+    return map
+  }
+
   // Canonical variable name for integer i
 	// FIXME: use variables of type int!
   private static func ithVar(_ i:Int) -> String {
@@ -17,11 +55,11 @@ extension Node where Self:SymbolStringTyped, Self:Hashable {
 			case 1: return "Y"
 			case 2: return "Z"
 			default: return "X\(String(i))"
-		}
+	  }
 	}
 
   // Canonically rename variables in a Node, using replacement map sub and
-	// next variable index index
+	// next variable index
   private func normalize(_ sub: inout [Symbol:String], _ index: inout Int)
 	             -> Self {
     if self.nodes == nil {
@@ -42,6 +80,7 @@ extension Node where Self:SymbolStringTyped, Self:Hashable {
 		return self.normalize(&sub, &index)
 	}
 }
+
 
 final class Rule<N:Node> where N:SymbolStringTyped, N:Hashable {
 	let lhs: N
