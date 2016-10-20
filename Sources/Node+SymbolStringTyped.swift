@@ -25,13 +25,13 @@ extension Node where Self:SymbolStringTyped {
   // implies Symbol: Hashable
 
   /// Creates a term tree where a suffix is added to all variable names
-  func appending<T:Any>(suffix: T) -> Self {
+  func appending<T:Any>(separator: String = "_", suffix: T) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
       Syslog.error(condition: type != .variable) {
         "Node(symbol:\(self.symbol), nodes:nil) must not be of type \(type)."
       }
-      let symbol = Self.symbolize(string:"\(string)_\(suffix)", type:type)
+      let symbol = Self.symbolize(string:"\(string)\(separator)\(suffix)", type:type)
       return Self(symbol:symbol, nodes:nil)
     }
 
@@ -39,8 +39,8 @@ extension Node where Self:SymbolStringTyped {
 
   }
 
-  // remove unnecessary suffixes
-  private func normalizing(mappings: inout Dictionary<String, String>,
+  // remove unnecessary suffixes from variable names
+  private func desuffixing(separator: String, mappings: inout Dictionary<String, String>,
   symbols: inout Set<String>) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
@@ -52,7 +52,7 @@ extension Node where Self:SymbolStringTyped {
         return Self(symbol: Self.symbolize(string:symbol, type:.variable), nodes: nil)
       }
 
-      let components = string.components(separatedBy: "_")
+      let components = string.components(separatedBy: separator)
 
       Syslog.error(condition: components.count > 2 ) {
         "Can not handle \(string) with \(components.count) components."
@@ -75,20 +75,20 @@ extension Node where Self:SymbolStringTyped {
     }
 
     return Self(symbol: self.symbol, nodes: nodes.map {
-      $0.normalizing(mappings:&mappings, symbols:&symbols)}
+      $0.desuffixing(separator:separator, mappings:&mappings, symbols:&symbols)}
       )
   }
 
   @available(*, deprecated, message: "- for experimental purposes only -")
-  /// remove unnecessary suffixes _
-  func normalizing() -> Self {
+  /// remove unnecessary suffixes
+  func desuffixing(separator: String = "_") -> Self {
+    Syslog.error(condition: separator.isEmpty) { "Must not use empty suffix separator" }
     var m = Dictionary<String, String>()
     var s = Set<String>()
-    return normalizing(mappings:&m, symbols:&s)
+    return desuffixing(separator:separator, mappings:&m, symbols:&s)
   }
 
-  /// Create term tree where variables x,y,z are renamed to prefix_0, prefix_2, prefix_3
-  ///
+  /* prefix normalization */
   func normalizing<T: Any>(prefix: T, offset: Int = 0) -> Self {
     var renaming = Dictionary<Symbol, Symbol>()
 
@@ -114,6 +114,8 @@ extension Node where Self:SymbolStringTyped {
     return Self(variable:symbol)
 
   }
+
+  /* wildcard normalization */
 
   func normalizing(wildcard: String = "*") -> (Self, Dictionary<Self, [Position]>) {
     var variables = Dictionary<Self, [Position]>()
