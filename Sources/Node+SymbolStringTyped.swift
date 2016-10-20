@@ -24,7 +24,7 @@ Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
 extension Node where Self:SymbolStringTyped {
   // implies Symbol: Hashable
 
-  /// Creates a term tree where a suffix is added to all variable names
+  /// Creates a new tree where a suffix is appended to all variable names
   func appending<T:Any>(separator: String = "_", suffix: T) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
@@ -39,7 +39,7 @@ extension Node where Self:SymbolStringTyped {
 
   }
 
-  // remove unnecessary suffixes from variable names
+  // Creates a new tree where suffixes are removed from variable names
   private func desuffixing(separator: String,
   mappings: inout Dictionary<String, String>, symbols: inout Set<String>) -> Self {
     guard let nodes = self.nodes else {
@@ -90,20 +90,24 @@ extension Node where Self:SymbolStringTyped {
 
   /* prefix normalization */
 
-  /// f(X,Y,Y).normalizing(prefix:Z) -> f(Z0,Z1,Z1)
-  func normalizing<T: Any>(prefix: T, separator: String = "", offset: Int = 0) -> Self {
+  /// Creates new tree where variable names are prefix normalized
+  /// - f(X,Y,g(Y)).normalized(prefix:Z) -> f(Z0,Z1,g(Z1)
+  /// - f(X,Y,g(Y)).normalized(prefix:Z, separator:_) -> f(Z_0,Z_1,g(Z_1))
+  /// - f(X,Y,g(Y)).normalized(prefix:Z, offset:1) -> f(Z1,Z2,g(Z2))
+  /// - f(X,Y,g(Y)).normalized(prefix:*, offset:1) -> f(1,2,g(2))
+  func normalized<T: Any>(prefix: T, separator: String = "", offset: Int = 0) -> Self {
     var renamings = Dictionary<Symbol, Symbol>()
 
-    return self.normalizing(prefix: prefix, separator: separator, offset: offset,
+    return self.normalized(prefix: prefix, separator: separator, offset: offset,
     renamings: &renamings)
   }
 
-  private func normalizing<T: Any>(prefix: T, separator: String, offset: Int,
+  private func normalized<T: Any>(prefix: T, separator: String, offset: Int,
   renamings: inout Dictionary<Symbol, Symbol>) -> Self {
     if let nodes = self.nodes {
       // not a variable
       return Self(symbol: self.symbol, nodes: nodes.map {
-        $0.normalizing(prefix:prefix, separator:separator, offset:offset, renamings:&renamings)
+        $0.normalized(prefix:prefix, separator:separator, offset:offset, renamings:&renamings)
       })
     }
 
@@ -123,14 +127,71 @@ extension Node where Self:SymbolStringTyped {
 
   /* placeholder normalization */
 
-  func normalizing(placeholder: String = "*️⃣") -> (Self, Dictionary<Self, [Position]>) {
-    var variables = Dictionary<Self, [Position]>()
-    return (
-      normalizing(placeholder: placeholder, position: ε, variables: &variables),
-      variables)
+  func normalized(hole: String = "□") -> (Self, Array<Self.Symbol>) {
+    var symbols = Array<Self.Symbol>()
+    let result = self.normalized(hole: hole, symbols: &symbols)
+    return (result, symbols)
   }
 
-  func normalizing(placeholder: String, position: Position,
+  private func normalized(hole: String = "□", symbols: inout Array<Self.Symbol>) -> Self {
+    guard let nodes = self.nodes else {
+      symbols.append(self.symbol)
+      return Self(v:hole)
+    }
+
+    guard nodes.count > 0 else {
+      return Self(constant:self.symbol)
+    }
+
+    var children = [Self]()
+    for node in nodes {
+      children.append( node.normalized(hole:hole, symbols: &symbols) )
+    }
+
+    return Self(symbol:self.symbol, nodes:children)
+    
+
+  }
+
+  func denormalized(symbols: Array<Self.Symbol>) -> Self? {
+    var copy = symbols 
+    return self.denormalized(symbols: &copy)
+  }
+
+  private func denormalized(symbols: inout Array<Self.Symbol>) -> Self? {
+
+    guard let nodes = self.nodes else {
+      guard symbols.count > 0 else { return nil } // too few symbols
+      return Self(variable:symbols.removeFirst())
+    }
+
+    var children = [Self]()
+    for node in nodes {
+      guard let child = node.denormalized(symbols: &symbols) else {
+        return nil
+      }
+      children.append(child)
+    }
+    return Self(symbol:self.symbol, nodes:children)
+
+
+    
+
+
+
+  }
+/*
+  /// Creates a new tree where all variable names are replaced by a placeholder
+  /// and returns the mapping from variables to positions
+  func normalized(placeholder: String = "*️⃣") -> (Self, Dictionary<Self, [Position]>) {
+    var variables = Dictionary<Self, [Position]>()
+    return (
+      normalized(placeholder: placeholder, position: ε, variables: &variables),
+      variables)
+  
+  }
+
+  private func normalized(placeholder: String, position: Position,
   variables: inout Dictionary<Self, [Position]>) -> Self {
 
      guard let nodes = self.nodes else {
@@ -144,7 +205,7 @@ extension Node where Self:SymbolStringTyped {
      var nnodes = [Self]()
 
      for (index, node) in nodes.enumerated() {
-       let nnode = node.normalizing(placeholder:placeholder,
+       let nnode = node.normalized(placeholder:placeholder,
        position:position + [index], variables:&variables)
        nnodes.append(nnode)
      }
@@ -152,7 +213,7 @@ extension Node where Self:SymbolStringTyped {
      return Self(symbol:self.symbol, nodes:nnodes)
   }
 
-
+*/
 
 
 
