@@ -213,7 +213,7 @@ import Foundation // URL
 extension Demo {
   struct Problem {
     static func parseCnf() -> Int {
-      typealias NodeType = Tptp.DefaultNode
+      typealias NodeType = Tptp.DemoNode
       let problem = cnfProblem
 
       let inputs: [NodeType] = demoParse(problem:problem)

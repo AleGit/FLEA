@@ -5,12 +5,19 @@ struct Tptp {
 
   typealias S = Tptp.Symbol   // choose a symbol type
   typealias I = Int
-  typealias DefaultNode = KinNode    // choose an implementation
+  typealias DemoNode = KinNode
+  typealias DefaultNode = SmartIntNode    // choose an implementation
+
+  /* sample implementations of protocol `Node` and related protocols
+    - SymbolStringTyped
+    - SymbolTabulating
+    - Sharing
+    - Kin
+    */
 
   /* simple *************************************************************************/
 
-  /// equal nodes are not always the same object
-  /// depending on the method to build composite nodes
+  @available(*, deprecated, message: "- Tptp.SimpleNode is for demo purposes only -")
   final class SimpleNode: SymbolStringTyped, Node,
   ExpressibleByStringLiteral {
     typealias N = SimpleNode
@@ -19,6 +26,9 @@ struct Tptp {
     var nodes: [N]? = nil
   }
 
+  /// The simplest node implementation with an integer symbol and a symbol table.
+  /// sharing is possible but happens by accident,
+  /// i.e. equal nodes may or may not reference the same object
   final class SimpleIntNode: SymbolStringTyped, SymbolTabulating, Node,
   ExpressibleByStringLiteral {
     typealias N = SimpleIntNode
@@ -31,9 +41,7 @@ struct Tptp {
 
   /* sharing (strong) *************************************************************************/
 
-  /// equal nodes are the same objects
-  /// pool holds string references to all created nodes,
-  /// i.e. all nodes are permanent
+  @available(*, deprecated, message: "- Tptp.SharingNode suffers from node accumulation and is for demo purposes only -")
   final class SharingNode: SymbolStringTyped, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias N = Tptp.SharingNode
@@ -46,6 +54,11 @@ struct Tptp {
     lazy var hashValue: Int = self.defaultHashValue
   }
 
+  /// A simple sharing node implementation with an integer symbol and a symbol table.
+  /// - the sharing is automatic and perfect for ground terms
+  /// - all (sub)nodes are strongly referenced by a `pool` (a set),
+  ///   i.e. all nodes stay in memory (node accumulation)
+  @available(*, deprecated, message: "- Tptp.SharingIntNode suffers from node accumulation and is for demo purposes only -")
   final class SharingIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias N = Tptp.SharingIntNode
@@ -61,8 +74,7 @@ struct Tptp {
 
   /* sharing (weak) *************************************************************************/
 
-  /// equal nodes are the same objects
-  /// `pool` holds weak references to all created nodes.
+  @available(*, deprecated, message: "- Tptp.SmartNode is for demo purposes only -")
   final class SmartNode: SymbolStringTyped, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias N = Tptp.SmartNode
@@ -76,6 +88,10 @@ struct Tptp {
     var description: String { return self.defaultDescription }
   }
 
+  /// A smarter sharing node implementation with an integer symbol and a symbol table.
+  /// - the sharing is automatic and perfect for ground terms
+  /// - all (sub)nodes are weakly referenced by a `pool` (a setlike collection),
+  ///   i.e. nodes only stay in memory when they are referenced outside the pool too.
   final class SmartIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias N = Tptp.SmartIntNode
@@ -89,11 +105,9 @@ struct Tptp {
     lazy var hashValue: Int = self.defaultHashValue
   }
 
-  /* sharing and kin s(weak) *************************************************************************/
+  /* sharing and kin (weak) *************************************************************************/
 
-  /// equal nodes are the same objects
-  /// `pool` holds weak references to all created nodes,
-  /// `folks` holds weak references to node's predecessors
+  @available(*, deprecated, message: "- Tptp.KinNode is for demo purposes only -")
   final class KinNode: SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
     typealias N = Tptp.KinNode
 
@@ -106,6 +120,13 @@ struct Tptp {
     lazy var hashValue: Int = self.defaultHashValue
   }
 
+  /// A sharing node implementation with an integer symbol, a symbol table, and
+  /// back references from nodes to all its predecessors.
+  /// - the sharing is automatic and perfect for ground terms
+  /// - the back references are automatic
+  /// - all (sub)nodes are weakly referenced by a `pool` (a setlike collection),
+  ///   i.e. nodes only stay in memory when they are referenced outside the pool too.
+  /// - all predecessors are weakly referenced, i.e. no retain cycles occur.
   final class KinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
   ExpressibleByStringLiteral {
     typealias N = Tptp.KinIntNode

@@ -14,7 +14,7 @@
       (strings, types) in a symbol table.
 
   ### Proposals
-  1. Rename `SymbolStringTyped` to
+  1. Rename `SymbolStringTyped` to ?
   2. Rename `StringSymbolable` to `StringTyped`,
     since `where Self.Symbol : StringTyped` is nice to read.
   3. Rename `StringType` to `StringTypePair`,
