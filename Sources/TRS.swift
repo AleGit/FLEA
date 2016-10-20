@@ -1,8 +1,12 @@
 
-final class TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
+struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
   typealias Symbol = N.Symbol
 
   var rules: [Rule<N>]
+
+  init() {
+		rules = []
+	}
 
   init(_ rs: [Rule<N>]) {
 		rules = rs
@@ -10,6 +14,10 @@ final class TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
 
 	func makeIterator() -> TRSIterator<N> {
 			return TRSIterator<N>(self)
+	}
+
+	mutating func add(_ rule: Rule<N>) {
+		rules +=  [rule]
 	}
 
   var funs: [Symbol: Int] {
@@ -23,6 +31,10 @@ final class TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
 
 	var symm: TRS {
 		return TRS(self.rules + self.rules.map { $0.flip })
+	}
+
+	func filter(_ pred : (Rule<N>) -> Bool) -> TRS<N> {
+		return TRS(rules.filter(pred))
 	}
 }
 
