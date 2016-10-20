@@ -8,7 +8,8 @@ extension Dictionary {
   }
 }
 
-extension Node where Symbol : Hashable {
+extension Node where Self:SymbolStringTyped, Self:CustomStringConvertible,
+                     Symbol : Hashable {
   var isVar :  Bool {
     return nodes == nil
   }
@@ -51,7 +52,7 @@ extension Node where Symbol : Hashable {
 
 
 struct Precedence<C: LogicContext, N: Node>
-where N.Symbol == String {
+where N:SymbolStringTyped, N:CustomStringConvertible {
   typealias E = C.Expr
 
   var context: C
@@ -61,11 +62,12 @@ where N.Symbol == String {
     context = c
     vars = [:]
     for (sym, _) in N.trsFuns(trs) {
-      vars[sym] = context.mkIntVar(sym)
+      let name = "\(sym)"
+      vars[name] = context.mkIntVar(name)
     }
   }
-	
-  subscript (_ v : String) -> E? { return vars[v] }
+
+  subscript (_ sym : N.Symbol) -> E? { return vars["\(sym)"] }
 
   func printEval(_ model: C.Model) {
     let var_vals : [(String, Int)] = vars.map {
@@ -83,10 +85,21 @@ where N.Symbol == String {
   }
 }
 
+protocol Order {
+  associatedtype NodeType : SymbolStringTyped, CustomStringConvertible
+  associatedtype LogicContextType : LogicContext
 
-final class LPO<N:Node, C: LogicContext>
-where N.Symbol == String {
+	typealias E = LogicContextType.Expr
+  init(ctx : LogicContextType, trs: [(NodeType, NodeType)])
+	func gt(_ l:NodeType, _ r:NodeType) -> E
+  func printEval(_ model: LogicContextType.Model)
+}
+
+final class LPO<N:Node, C: LogicContext> : Order
+where N:SymbolStringTyped, N:CustomStringConvertible {
 	typealias E = C.Expr
+	typealias NodeType = N
+	typealias LogicContextType = C
 
   var context: C
   var prec: Precedence<C, N>
@@ -112,7 +125,7 @@ where N.Symbol == String {
 
       let case1 = context.mkOr(l.nodes!.map({ gt($0, r) }))
       if l.symbol != r.symbol {
-        let case2 = (prec.vars[l.symbol]! ≻ prec.vars[r.symbol]!) ⋀
+        let case2 = (prec[l.symbol]! ≻ prec[r.symbol]!) ⋀
                      context.mkAnd(r.nodes!.map { gt(l, $0) })
         return case1 ⋁ case2
       } else {
@@ -128,9 +141,11 @@ where N.Symbol == String {
 }
 
 
-final class KBO<N:Node, C: LogicContext>
-where N.Symbol == String {
+final class KBO<N:Node, C: LogicContext> : Order
+where N:SymbolStringTyped, N:CustomStringConvertible {
 	typealias E = C.Expr
+	typealias NodeType = N
+	typealias LogicContextType = C
 
   var context: C
   var prec: Precedence<C, N>
@@ -142,7 +157,8 @@ where N.Symbol == String {
     context = ctx
     w0 = context.mkIntVar("w0")
     for (sym, _) in N.trsFuns(trs) {
-      fun_weight[sym] = context.mkIntVar(sym)
+      let name = "\(sym)"
+      fun_weight[name] = context.mkIntVar(name)
     }
 		context.ensure(admissible(for: trs))
   }
@@ -150,7 +166,7 @@ where N.Symbol == String {
   func weight(_ t: N) -> E {
     guard !t.isVar else { return w0 }
 
-    let w_t_root = fun_weight[t.symbol]!
+    let w_t_root = fun_weight["\(t.symbol)"]!
     return t.nodes!.reduce(w_t_root, { $0.add(weight($1)) })
   }
 
@@ -159,7 +175,7 @@ where N.Symbol == String {
 		var adm = w0 ≻ zero
 
     for (g, a) in N.trsFuns(trs) {
-			let w_g = fun_weight[g]!
+      let w_g = fun_weight["\(g)"]!
       if (a == 0) {
 			  adm = adm ⋀ w_g ≽ w0
 			} else if (a == 1) {
@@ -207,7 +223,7 @@ where N.Symbol == String {
     let w_l = weight(l)
     let w_r = weight(r)
 
-    let dec = l.symbol != r.symbol ? prec.vars[l.symbol]! ≻ prec.vars[r.symbol]!
+    let dec = l.symbol != r.symbol ? prec[l.symbol]! ≻ prec[r.symbol]!
 		                               : lex(l.nodes!, r.nodes!)
     return (w_l ≻ w_r) ⋁ ((w_l ≽ w_r) ⋀ dec)
   }

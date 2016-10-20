@@ -19,17 +19,22 @@ public class LPOTests: YicesTestCase {
     ]
   }
 
-  private struct N : Node {
-    var symbol : String = ""
-    var nodes : [N]? = nil
-  }
+  private final class N : SymbolStringTyped, Node  {
+  typealias S = Tptp.Symbol
+
+  var symbol : S = N.symbolize(string:"*", type:.variable)
+  var nodes : [N]? = nil
+
+  lazy var hashValue : Int = self.defaultHashValue
+  lazy var description : String = self.defaultDescription
+}
 
   private typealias YicesLPO = LPO<N, YicesContext>
 
   func testAtoB() {
     let yices = YicesContext()
-    let a = N(constant:"a")
-    let b = N(constant:"b")
+    let a = N(c:"a")
+    let b = N(c:"b")
 
 		let lpo = YicesLPO(ctx: yices, trs: [(a, b)])
     let _ = yices.ensure(lpo.gt(a, b))
@@ -38,14 +43,14 @@ public class LPOTests: YicesTestCase {
     let m = yices.model
     XCTAssertTrue(m != nil)
 		lpo.printEval(m!)
-    let a_prec = m!.evalInt(lpo.prec["a"]!)
-    let b_prec = m!.evalInt(lpo.prec["b"]!)
+    let a_prec = m!.evalInt(lpo.prec[a.symbol]!)
+    let b_prec = m!.evalInt(lpo.prec[b.symbol]!)
     XCTAssertTrue(a_prec != nil && b_prec != nil && a_prec! > b_prec!)
   }
 
   func testAtoA() {
     let yices = YicesContext()
-    let a = N(constant:"a")
+    let a = N(c:"a")
 
 		let lpo = YicesLPO(ctx: yices, trs: [(a, a)])
     let _ = yices.ensure(lpo.gt(a, a))
@@ -53,8 +58,8 @@ public class LPOTests: YicesTestCase {
 	}
 
   func testEmbedding() {
-		let x = N(variable:"x")
-    let f_x = N(symbol:"f", nodes:[x])
+		let x = N(v:"x")
+    let f_x = N(f:"f", [x])
 
     let yices = YicesContext()
 		let lpo = YicesLPO(ctx: yices, trs: [(f_x, x)])
@@ -65,12 +70,12 @@ public class LPOTests: YicesTestCase {
   }
 
   func testSubterm() {
-    let a = N(constant:"a")
-    let b = N(constant:"b")
-    let c = N(constant:"c")
-		let x = N(variable:"x")
-    let f_a_a = N(symbol:"f", nodes:[a, a])
-    let f_x_c = N(symbol:"f", nodes:[x, c])
+    let a = N(c:"a")
+    let b = N(c:"b")
+    let c = N(c:"c")
+		let x = N(v:"x")
+    let f_a_a = N(f:"f", [a, a])
+    let f_x_c = N(f:"f", [x, c])
 
     let yices = YicesContext()
 		let trs = [(b, f_a_a), (f_x_c, b)]
@@ -83,22 +88,22 @@ public class LPOTests: YicesTestCase {
     let m = yices.model
     XCTAssertTrue(m != nil)
 		lpo.printEval(m!)
-    let a_p = m!.evalInt(lpo.prec["a"]!)
-    let b_p = m!.evalInt(lpo.prec["b"]!)
-    let c_p = m!.evalInt(lpo.prec["c"]!)
-    let f_p = m!.evalInt(lpo.prec["f"]!)
+    let a_p = m!.evalInt(lpo.prec[a.symbol]!)
+    let b_p = m!.evalInt(lpo.prec[b.symbol]!)
+    let c_p = m!.evalInt(lpo.prec[c.symbol]!)
+    let f_p = m!.evalInt(lpo.prec[f_a_a.symbol]!)
     XCTAssertTrue(a_p != nil && b_p != nil && c_p != nil && f_p != nil &&
 		              c_p! > b_p! && b_p! > a_p! && b_p! > f_p!)
   }
 
   func testAssoc1() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let z = N(variable:"z")
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let f_y_z = N(symbol:"f", nodes:[y, z])
-    let l = N(symbol:"f", nodes:[f_x_y, z])
-    let r = N(symbol:"f", nodes:[x, f_y_z])
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let z = N(v:"z")
+    let f_x_y = N(f:"f", [x, y])
+    let f_y_z = N(f:"f", [y, z])
+    let l = N(f:"f", [f_x_y, z])
+    let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
 		let lpo = YicesLPO(ctx: yices, trs: [(l, r)])
     let _ = yices.ensure(lpo.gt(r, l))
@@ -106,13 +111,13 @@ public class LPOTests: YicesTestCase {
   }
 
   func testAssoc2() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let z = N(variable:"z")
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let f_y_z = N(symbol:"f", nodes:[y, z])
-    let l = N(symbol:"f", nodes:[f_x_y, z])
-    let r = N(symbol:"f", nodes:[x, f_y_z])
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let z = N(v:"z")
+    let f_x_y = N(f:"f", [x, y])
+    let f_y_z = N(f:"f", [y, z])
+    let l = N(f:"f", [f_x_y, z])
+    let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
 		let lpo = YicesLPO(ctx: yices, trs: [(l, r)])
     let _ = yices.ensure(lpo.gt(l, r))
@@ -120,24 +125,24 @@ public class LPOTests: YicesTestCase {
   }
 
   func testGroup() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let z = N(variable:"z")
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let z = N(v:"z")
     
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let f_y_z = N(symbol:"f", nodes:[y, z])
-    let l = N(symbol:"f", nodes:[f_x_y, z])
-    let r = N(symbol:"f", nodes:[x, f_y_z])
+    let f_x_y = N(f:"f", [x, y])
+    let f_y_z = N(f:"f", [y, z])
+    let l = N(f:"f", [f_x_y, z])
+    let r = N(f:"f", [x, f_y_z])
 
-    let i_x = N(symbol:"i", nodes:[x])
-    let i_i_x = N(symbol:"i", nodes:[i_x])
+    let i_x = N(f:"i", [x])
+    let i_i_x = N(f:"i", [i_x])
 
-    let i_y = N(symbol:"i", nodes:[y])
-    let f_i_y_i_x = N(symbol:"f", nodes:[i_y, i_x])
-    let i_f_x_y = N(symbol:"i", nodes:[f_x_y])
+    let i_y = N(f:"i", [y])
+    let f_i_y_i_x = N(f:"f", [i_y, i_x])
+    let i_f_x_y = N(f:"i", [f_x_y])
 
-    let zero = N(constant:"0")
-    let f_0_x = N(symbol:"f", nodes:[zero, x])
+    let zero = N(c:"0")
+    let f_0_x = N(f:"f", [zero, x])
 
     let yices = YicesContext()
     let trs = [(l, r), (i_i_x, x), (i_f_x_y, f_i_y_i_x), (f_0_x, x)]

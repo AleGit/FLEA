@@ -22,16 +22,21 @@ public class KBOTests: YicesTestCase {
     ]
   }
 
-  private struct N : Node {
-    var symbol : String = ""
-    var nodes : [N]? = nil
-  }
+  private final class N : SymbolStringTyped, Node  {
+  typealias S = Tptp.Symbol
+
+  var symbol : S = N.symbolize(string:"*", type:.variable)
+  var nodes : [N]? = nil
+
+  lazy var hashValue : Int = self.defaultHashValue
+  lazy var description : String = self.defaultDescription
+}
 
   private typealias YicesKBO = KBO<N, YicesContext>
 
   func testAtoA() {
     let yices = YicesContext()
-    let a = N(constant:"a")
+    let a = N(c:"a")
 
 		let kbo = YicesKBO(ctx: yices, trs: [(a, a)])
     let _ = yices.ensure(kbo.gt(a, a))
@@ -40,11 +45,11 @@ public class KBOTests: YicesTestCase {
 
   func testAtoB() {
     let yices = YicesContext()
-    let a = N(constant:"a")
-    let b = N(constant:"b")
-    let c = N(constant:"c")
-    let f_a_c = N(symbol:"f", nodes:[a, c])
-    let f_c_b = N(symbol:"f", nodes:[c, b])
+    let a = N(c:"a")
+    let b = N(c:"b")
+    let c = N(c:"c")
+    let f_a_c = N(f:"f", [a, c])
+    let f_c_b = N(f:"f", [c, b])
 
     let trs = [(a, b), (f_c_b, f_a_c)]
 		let kbo = YicesKBO(ctx: yices, trs: trs)
@@ -56,14 +61,14 @@ public class KBOTests: YicesTestCase {
     let m = yices.model
     XCTAssertTrue(m != nil)
 		kbo.printEval(m!)
-    let a_prec = m!.evalInt(kbo.prec["a"]!)
-    let b_prec = m!.evalInt(kbo.prec["b"]!)
+    let a_prec = m!.evalInt(kbo.prec[a.symbol]!)
+    let b_prec = m!.evalInt(kbo.prec[b.symbol]!)
     XCTAssertTrue(a_prec != nil && b_prec != nil && a_prec! > b_prec!)
   }
 
   func testEmbedding() {
-		let x = N(variable:"x")
-    let f_x = N(symbol:"f", nodes:[x])
+		let x = N(v:"x")
+    let f_x = N(f:"f", [x])
 
     let yices = YicesContext()
 		let kbo = YicesKBO(ctx: yices, trs: [(f_x, x)])
@@ -74,12 +79,12 @@ public class KBOTests: YicesTestCase {
   }
 
   func testSubterm() {
-    let a = N(constant:"a")
-    let b = N(constant:"b")
-    let c = N(constant:"c")
-		let x = N(variable:"x")
-    let f_a_a = N(symbol:"f", nodes:[a, a])
-    let f_x_c = N(symbol:"f", nodes:[x, c])
+    let a = N(c:"a")
+    let b = N(c:"b")
+    let c = N(c:"c")
+		let x = N(v:"x")
+    let f_a_a = N(f:"f", [a, a])
+    let f_x_c = N(f:"f", [x, c])
 
     let yices = YicesContext()
 		let trs = [(b, f_a_a), (f_x_c, b)]
@@ -91,13 +96,13 @@ public class KBOTests: YicesTestCase {
   }
 
   func testAssoc1() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let z = N(variable:"z")
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let f_y_z = N(symbol:"f", nodes:[y, z])
-    let l = N(symbol:"f", nodes:[f_x_y, z])
-    let r = N(symbol:"f", nodes:[x, f_y_z])
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let z = N(v:"z")
+    let f_x_y = N(f:"f", [x, y])
+    let f_y_z = N(f:"f", [y, z])
+    let l = N(f:"f", [f_x_y, z])
+    let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
 		let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
     let _ = yices.ensure(kbo.gt(r, l))
@@ -105,10 +110,10 @@ public class KBOTests: YicesTestCase {
   }
 
   func testDuplication() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let s = N(symbol:"f", nodes:[x, x])
-    let t = N(symbol:"g", nodes:[y, x])
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let s = N(f:"f", [x, x])
+    let t = N(f:"g", [y, x])
     for (l,r) in [(s,t), (t,s)] {
       let yices = YicesContext()
 		  let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
@@ -118,13 +123,13 @@ public class KBOTests: YicesTestCase {
   }
 
   func testAssoc2() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let z = N(variable:"z")
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let f_y_z = N(symbol:"f", nodes:[y, z])
-    let l = N(symbol:"f", nodes:[f_x_y, z])
-    let r = N(symbol:"f", nodes:[x, f_y_z])
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let z = N(v:"z")
+    let f_x_y = N(f:"f", [x, y])
+    let f_y_z = N(f:"f", [y, z])
+    let l = N(f:"f", [f_x_y, z])
+    let r = N(f:"f", [x, f_y_z])
     let yices = YicesContext()
 		let kbo = YicesKBO(ctx: yices, trs: [(l, r)])
     let _ = yices.ensure(kbo.gt(l, r))
@@ -132,24 +137,24 @@ public class KBOTests: YicesTestCase {
   }
 
   func testGroup() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let z = N(variable:"z")
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let z = N(v:"z")
     
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let f_y_z = N(symbol:"f", nodes:[y, z])
-    let l = N(symbol:"f", nodes:[f_x_y, z])
-    let r = N(symbol:"f", nodes:[x, f_y_z])
+    let f_x_y = N(f:"f", [x, y])
+    let f_y_z = N(f:"f", [y, z])
+    let l = N(f:"f", [f_x_y, z])
+    let r = N(f:"f", [x, f_y_z])
 
-    let i_x = N(symbol:"i", nodes:[x])
-    let i_i_x = N(symbol:"i", nodes:[i_x])
+    let i_x = N(f:"i", [x])
+    let i_i_x = N(f:"i", [i_x])
 
-    let i_y = N(symbol:"i", nodes:[y])
-    let f_i_y_i_x = N(symbol:"f", nodes:[i_y, i_x])
-    let i_f_x_y = N(symbol:"i", nodes:[f_x_y])
+    let i_y = N(f:"i", [y])
+    let f_i_y_i_x = N(f:"f", [i_y, i_x])
+    let i_f_x_y = N(f:"i", [f_x_y])
 
-    let zero = N(constant:"0")
-    let f_0_x = N(symbol:"f", nodes:[zero, x])
+    let zero = N(c:"0")
+    let f_0_x = N(f:"f", [zero, x])
 
     let yices = YicesContext()
     let trs = [(l, r), (i_i_x, x), (i_f_x_y, f_i_y_i_x), (f_0_x, x)]
@@ -161,14 +166,14 @@ public class KBOTests: YicesTestCase {
   }
 
   func testWeight0() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let i_x = N(symbol:"i", nodes:[x])
-    let i_y = N(symbol:"i", nodes:[y])
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let i_f_x_y = N(symbol:"i", nodes:[f_x_y])
-    let f_i_y_i_x = N(symbol:"f", nodes:[i_y, i_x])
-    let i_i_x = N(symbol:"i", nodes:[i_x])
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let i_x = N(f:"i", [x])
+    let i_y = N(f:"i", [y])
+    let f_x_y = N(f:"f", [x, y])
+    let i_f_x_y = N(f:"i", [f_x_y])
+    let f_i_y_i_x = N(f:"f", [i_y, i_x])
+    let i_i_x = N(f:"i", [i_x])
     let yices = YicesContext()
     let trs = [(i_f_x_y, f_i_y_i_x), (i_i_x, x)]
 	  let kbo = YicesKBO(ctx: yices, trs: trs)
@@ -182,23 +187,23 @@ public class KBOTests: YicesTestCase {
 		kbo.printEval(m!)
     let w_i = m!.evalInt(kbo.fun_weight["i"]!)
     XCTAssertTrue(w_i == 0)
-    let f_prec = m!.evalInt(kbo.prec["f"]!)
-    let i_prec = m!.evalInt(kbo.prec["i"]!)
+    let f_prec = m!.evalInt(kbo.prec[f_x_y.symbol]!)
+    let i_prec = m!.evalInt(kbo.prec[i_x.symbol]!)
     XCTAssertTrue(f_prec != nil && i_prec != nil && i_prec! > f_prec!)
   }
 
   func testAdmissibility() {
-    let x = N(variable:"x")
-    let y = N(variable:"y")
-    let i_x = N(symbol:"i", nodes:[x])
-    let i_y = N(symbol:"i", nodes:[y])
-    let f_x_y = N(symbol:"f", nodes:[x, y])
-    let i_f_x_y = N(symbol:"i", nodes:[f_x_y])
-    let f_i_y_i_x = N(symbol:"f", nodes:[i_y, i_x])
-    let h_x = N(symbol:"h", nodes:[x])
-    let h_y = N(symbol:"h", nodes:[y])
-    let h_f_x_y = N(symbol:"h", nodes:[f_x_y])
-    let f_h_y_h_x = N(symbol:"f", nodes:[h_y, h_x])
+    let x = N(v:"x")
+    let y = N(v:"y")
+    let i_x = N(f:"i", [x])
+    let i_y = N(f:"i", [y])
+    let f_x_y = N(f:"f", [x, y])
+    let i_f_x_y = N(f:"i", [f_x_y])
+    let f_i_y_i_x = N(f:"f", [i_y, i_x])
+    let h_x = N(f:"h", [x])
+    let h_y = N(f:"h", [y])
+    let h_f_x_y = N(f:"h", [f_x_y])
+    let f_h_y_h_x = N(f:"f", [h_y, h_x])
 
     let yices = YicesContext()
     let trs = [(i_f_x_y, f_i_y_i_x), (h_f_x_y, f_h_y_h_x)]
