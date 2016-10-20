@@ -47,39 +47,88 @@ public class YicesTestCase : FleaTestCase {
 }
 
 struct Q {
-  typealias Node = Tptp.SmartNode
+  static let wildcard = "*"
 
-  static var X = Node(v:"X")
-  static var Y = Node(v:"Y")
-  static var Z = Node(v:"Z")
-  static var a = Node(c:"a")
-  static var b = Node(c:"b")
-  static var c = Node(c:"c")
+  typealias S = Tptp.Symbol
 
-  static var fXY = Node(f:"f",[X,Y])
+  final class SimpleNode: SymbolStringTyped, FLEA.Node,
+  ExpressibleByStringLiteral {
+    typealias N = SimpleNode
+
+    var symbol = S(wildcard, .variable)
+    var nodes: [N]? = nil
+  }
+
+  final class SharingNode: SymbolStringTyped, Sharing, FLEA.Node,
+  ExpressibleByStringLiteral {
+    typealias N = SharingNode
+
+    static var pool = Set<N>()
+
+    var symbol = S(wildcard, .variable)
+    var nodes: [N]? = nil
+
+    lazy var hashValue: Int = self.defaultHashValue
+  }
+
+  final class SmartNode: SymbolStringTyped, Sharing, FLEA.Node,
+  ExpressibleByStringLiteral {
+    typealias N = SmartNode
+
+    static var pool = WeakSet<N>()
+
+    var symbol = S(wildcard, .variable)
+    var nodes: [N]? = nil
+
+    lazy var hashValue: Int = self.defaultHashValue
+    var description: String { return self.defaultDescription }
+  }
+
+  final class KinNode: SymbolStringTyped, Sharing, Kin, FLEA.Node, ExpressibleByStringLiteral {
+    typealias N = KinNode
+
+    static var pool = WeakSet<N>()
+    var folks =  WeakSet<N>()
+
+    var symbol = S(wildcard, .variable)
+    var nodes: [N]? = nil
+
+    lazy var hashValue: Int = self.defaultHashValue
+  }
+
+  typealias Node = Q.SmartNode
+
+  static var X = Q.Node(v:"X")
+  static var Y = Q.Node(v:"Y")
+  static var Z = Q.Node(v:"Z")
+  static var a = Q.Node(c:"a")
+  static var b = Q.Node(c:"b")
+  static var c = Q.Node(c:"c")
+
+  static var fXY = "f(X,Y)" as Q.Node
   static var fXZ = fXY * [Y:Z]
   static var fYZ = fXZ * [X:Y]
   static var fXX = fXY * X
 
-  static var gXYZ = Node(f:"g",[X,Y,Z])
-  static var hX = Node(f:"h",[X])
+  static var gXYZ = "g(X,Y,Z)" as Q.Node
+  static var hX = "h(X)" as Q.Node
 
   static var X_a = [X:a]
   static var Y_b = [Y:b]
   static var Z_c = [Z:c]
 
-  static var fab = fXY * [X:a,Y:b]
-  static var faa = fXY * [X:a,Y:a]
-  static var gabc = gXYZ * [X:a,Y:b,Z:c]
+  static var fab = fXY * [X:a, Y:b]
+  static var faa = fXY * [X:a, Y:a]
+  static var gabc = gXYZ * [X:a, Y:b, Z:c]
   static var ha = hX * [X:a]
 
-  static var ffaaZ = Node(f:"f",[faa,Z])
+  static var ffaaZ = "f(f(a,a),Z)" as Q.Node
 }
 
 extension Q {
   static func parse<N:FLEA.Node>(problem:String) -> [N]
   where N:SymbolStringTyped {
-    print("N:Node == \(String(reflecting:N.self))")
+    print("N:Node == \(String(reflecting: N.self))")
 
     guard let url = URL(fileURLWithProblem:problem) else {
       print("Path for '\(problem)' could not be found.")
@@ -101,7 +150,7 @@ extension Q {
 
     print("count=\(countResult), time=\(countTime) '\(url.relativePath)'")
 
-    let (result,time) = utileMeasure {
+    let (result, time) = utileMeasure {
       // tptpFile.inputs.map { N(tree:$0) }
       tptpFile.ast() as N?
     }
@@ -119,7 +168,7 @@ extension Q {
 
     print("#1", inputs[0])
 
-    print("Node == \(String(reflecting:N.self))")
+    print("Node == \(String(reflecting: N.self))")
     return inputs
   }
 }

@@ -15,31 +15,31 @@ public class ParseTptpTests
   }
 
   func testParseHWV106toSimpleNodes() {
-    typealias NodeType = Tptp.SimpleNode
-    let inputs : [NodeType] = Q.parse(problem:"HWV106-1")
-    XCTAssertEqual(287949,inputs.count,nok)
+    typealias NodeType = Q.SimpleNode
+    let inputs: [NodeType] = Q.parse(problem:"HWV106-1")
+    XCTAssertEqual(287949, inputs.count, nok)
   }
 
   func testParseHWV106toSharingNodes() {
-    typealias NodeType = Tptp.SharingNode
-    let inputs : [NodeType] = Q.parse(problem:"HWV106-1")
-    XCTAssertEqual(287949,inputs.count,nok)
-    XCTAssertEqual(807725,NodeType.pool.count)
+    typealias NodeType = Q.SharingNode
+    let inputs: [NodeType] = Q.parse(problem:"HWV106-1")
+    XCTAssertEqual(287949, inputs.count, nok)
+    XCTAssertEqual(807725, NodeType.pool.count)
   }
 
   func testParseHWV106toSmartNodes() {
-    typealias NodeType = Tptp.SmartNode
-    let inputs : [NodeType] = Q.parse(problem:"HWV106-1")
-    XCTAssertEqual(287949,inputs.count,nok)
-    XCTAssertEqual(807725,NodeType.pool.count,nok)
-    XCTAssertEqual(0, NodeType.pool.collisionCount,nok)
+    typealias NodeType = Q.SmartNode
+    let inputs: [NodeType] = Q.parse(problem:"HWV106-1")
+    XCTAssertEqual(287949, inputs.count, nok)
+    XCTAssertEqual(807725, NodeType.pool.count, nok)
+    XCTAssertEqual(0, NodeType.pool.collisionCount, nok)
   }
 
   func testParseHWV106toKinNodes() {
-    typealias NodeType = Tptp.KinNode
-    let inputs : [NodeType] = Q.parse(problem:"HWV106-1")
-    XCTAssertEqual(287949,inputs.count,nok)
-    XCTAssertEqual(807725,NodeType.pool.count,nok)
-    XCTAssertEqual(0, NodeType.pool.collisionCount,nok)
+    typealias NodeType = Q.KinNode
+    let inputs: [NodeType] = Q.parse(problem:"HWV106-1")
+    XCTAssertEqual(287949, inputs.count, nok)
+    XCTAssertEqual(807725, NodeType.pool.count, nok)
+    XCTAssertEqual(0, NodeType.pool.collisionCount, nok)
   }
 }

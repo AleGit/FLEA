@@ -49,7 +49,6 @@ public class YicesTests: YicesTestCase {
     ///  |
     /// role -> formula -> [annoations]
 
-
     let cnfs = file.cnfs.map { N(tree:$0.child!.sibling!) }
     XCTAssertEqual(12, cnfs.count, nok)
 
@@ -65,7 +64,7 @@ public class YicesTests: YicesTestCase {
 
   func testTop() {
 
-    let p = "p|~p" as FLEA.Tptp.SimpleNode
+    let p = "p|~p" as Q.Node
 
     let context = Yices.Context()
     let _ = context.insure(clause:p)
@@ -74,8 +73,8 @@ public class YicesTests: YicesTestCase {
 
   func testBottom() {
 
-    let np = "~p(X)" as FLEA.Tptp.SimpleNode
-    let p = "@cnf p(Y)" as FLEA.Tptp.SimpleNode
+    let np = "~p(X)" as Q.Node
+    let p = "@cnf p(Y)" as Q.Node
 
 
     let context = Yices.Context()
@@ -86,8 +85,8 @@ public class YicesTests: YicesTestCase {
   }
 
   func testEmptyClause() {
-    let symbol = Tptp.SimpleNode.symbolize(string:"|", type:.disjunction)
-    let empty = Tptp.SimpleNode(symbol:symbol, nodes: Array<Tptp.SimpleNode>())
+    let symbol = Q.Node.symbolize(string:"|", type:.disjunction)
+    let empty = Q.Node(symbol:symbol, nodes: Array<Q.Node>())
 
     let context = Yices.Context()
     let _ = context.insure(clause:empty)
