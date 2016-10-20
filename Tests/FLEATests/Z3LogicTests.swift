@@ -174,9 +174,7 @@ public class Z3ContextTests: Z3TestCase {
     /*let sum = (x.add(y) == four).ite(one, zero) +
               (x.add(y) ≻ two).ite(one, zero) +
               (three ≻ x.add(y)).ite(one, zero)*/ // Z3 bug?
-    let _ = z3.maximize(sum)
-    XCTAssertTrue(z3.isSatisfiable)
-    let max = z3.getMax()
+    let max = z3.maximize(sum)
     XCTAssertTrue(max != nil)
     XCTAssertTrue(max! == 2)
   }

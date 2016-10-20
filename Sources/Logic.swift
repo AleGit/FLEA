@@ -63,6 +63,14 @@ protocol LogicContext {
 }
 
 
+protocol OptLogicContext : LogicContext {
+  func maximize(_ expr: Expr) -> Int?
+  func minimize(_ expr: Expr) -> Int?
+  func push()
+  func pop()
+}
+
+
 prefix operator !
 prefix func !<E:LogicExpr>(_ s : E) -> E {
   return s.not()

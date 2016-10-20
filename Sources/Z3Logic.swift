@@ -194,7 +194,7 @@ public extension String {
 }
 
 
-final class Z3Context : LogicContext {
+final class Z3Context : OptLogicContext {
   typealias ExprType = Z3_sort
   typealias Model = Z3Model
   typealias Expr = Model.Expr
@@ -369,24 +369,42 @@ final class Z3Context : LogicContext {
 		return isSatisfiable
 	}
 
-  func maximize(_ expr: Expr) {
+  func push() {
+    if (optimize == nil) {
+		  Z3_solver_push(ctx.raw, solver!)
+    } else {
+		  Z3_optimize_push(ctx.raw, optimize!)
+    }
+  }
+
+  func pop() {
+    if (optimize == nil) {
+		  Z3_solver_pop(ctx.raw, solver!, 1)
+    } else {
+		  Z3_optimize_pop(ctx.raw, optimize!)
+    }
+  }
+
+  func maximize(_ expr: Expr) -> Int? {
     resetResult()
     guard optimize != nil else {
       Syslog.error { "Z3 maximization is only available in optimization mode" }
-      return
+      return nil
     }
 
     Z3_optimize_maximize(ctx.raw, optimize!, expr.expr)
+    return getMax()
   }
 
-  func minimize(_ expr: Expr) {
+  func minimize(_ expr: Expr) -> Int? {
     resetResult()
     guard optimize != nil else {
       Syslog.error { "Z3 maximization is only available in optimization mode" }
-      return
+      return nil
     }
 
     Z3_optimize_minimize(ctx.raw, optimize!, expr.expr)
+    return getMin()
   }
 
 	var isSatisfiable: Bool {
@@ -421,6 +439,10 @@ final class Z3Context : LogicContext {
     let ui = UInt32(i)
     guard optimize != nil else {
       Syslog.error { "Z3 maximization is only available in optimization mode" }
+      return nil
+    }
+    guard isSatisfiable else {
+      Syslog.error { "Z3 maximization encountered unsat" }
       return nil
     }
 
