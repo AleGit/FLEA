@@ -93,6 +93,10 @@ final class Rule<N:Node> where N:SymbolStringTyped, N:Hashable {
 
 	var terms : (N,N) { return (self.lhs, self.rhs) }
 
+	var flip : Rule {
+		return Rule(rhs, lhs)
+	}
+
 	var rename : Rule {
 		return Rule<N>(self.lhs.appending(suffix: "#"),
 		               self.rhs.appending(suffix: "#"))

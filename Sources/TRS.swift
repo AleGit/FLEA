@@ -8,6 +8,10 @@ final class TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
 		rules = rs
 	}
 
+	func makeIterator() -> TRSIterator<N> {
+			return TRSIterator<N>(self)
+	}
+
   var funs: [Symbol: Int] {
     var fs: [Symbol: Int] = [:]
     for rule in rules {
@@ -17,8 +21,8 @@ final class TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
     return fs
   }
 
-	func makeIterator() -> TRSIterator<N> {
-			return TRSIterator<N>(self)
+	var symm: TRS {
+		return TRS(self.rules + self.rules.map { $0.flip })
 	}
 }
 
