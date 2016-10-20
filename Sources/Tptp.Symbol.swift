@@ -31,7 +31,6 @@ extension Node where Self:SymbolStringTyped {
     self.init(symbol:s, nodes:nodes)
   }
 
-
   init(p: String, _ nodes: [Self]) {
     let s = Self.symbolize(string:p, type:.predicate(nodes.count))
     self.init(symbol:s, nodes:nodes)

@@ -10,12 +10,12 @@ import XCTest
 let ok = "✅ "
 let nok = "❌ "
 
-public class FleaTestCase : XCTestCase {
+public class FleaTestCase: XCTestCase {
 
   /// set up logging once _before_ all tests of a test class
   override class public func setUp() {
     super.setUp()
-    Syslog.openLog(options:.console,.pid,.perror)
+    Syslog.openLog(options: .console, .pid, .perror)
     let logLevel = Syslog.maximalLogLevel
 
     let _ = Syslog.setLogMask(upTo:logLevel)
@@ -30,7 +30,7 @@ public class FleaTestCase : XCTestCase {
   }
 }
 
-public class YicesTestCase : FleaTestCase {
+public class YicesTestCase: FleaTestCase {
   /// set up yices globals _before_ each test function
   override public func setUp() {
     super.setUp()
@@ -97,6 +97,7 @@ struct Q {
   }
 
   typealias Node = Q.SmartNode
+
 
   static var X = Q.Node(v:"X")
   static var Y = Q.Node(v:"Y")
