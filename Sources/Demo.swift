@@ -61,16 +61,16 @@ extension Demo {
   struct Unification {
     static func demo() -> Int {
 
-      // let nodes : [Tptp.DefaultNode] = demoCreateNodes()
+      // let nodes : [Demo.KinNode] = demoCreateNodes()
 
-      let X = Tptp.DefaultNode(v: "X")
-      let Y = Tptp.DefaultNode(v: "Y")
-      let Z = Tptp.DefaultNode(v: "Z")
+      let X = Demo.KinNode(v: "X")
+      let Y = Demo.KinNode(v: "Y")
+      let Z = Demo.KinNode(v: "Z")
 
-      let a = Tptp.DefaultNode(c: "a")
-      let b = Tptp.DefaultNode(c: "a")
+      let a = Demo.KinNode(c: "a")
+      let b = Demo.KinNode(c: "a")
 
-      let fXY = Tptp.DefaultNode(f: "f", [X, Y])
+      let fXY = Demo.KinNode(f: "f", [X, Y])
 
       let fYX = fXY * [X:Y, Y:X]
       let fYZ = fXY * [X:Y, Y:Z]
@@ -97,15 +97,15 @@ extension Demo {
 /// MARK: - Node
 
 extension Demo {
-  final class SimpleNode: Node {
-    var symbol = Tptp.Symbol("", .undefined)
-    var nodes: [Demo.SimpleNode]? = nil
+  final class SimpleNode: SymbolStringTyped, Node,
+  ExpressibleByStringLiteral {
+    typealias N = SimpleNode
 
-    lazy var hashValue: Int = self.defaultHashValue
-    lazy var description: String = self.debugDescription
+    var symbol = Tptp.Symbol("*", .variable)
+    var nodes: [N]? = nil
   }
 
-  final class SharingNode: Sharing, Node {
+  final class SharingNode: SymbolStringTyped, Sharing, Node {
     static var counter = 0
 
     static var pool = Set<Demo.SharingNode>()
@@ -139,6 +139,31 @@ extension Demo {
     deinit {
       print("\(#function)#\(self.c): \(self)")
     }
+  }
+
+  final class SmartNode: SymbolStringTyped, Sharing, Node,
+  ExpressibleByStringLiteral {
+    typealias N = Demo.SmartNode
+
+    static var pool = WeakSet<N>()
+
+    var symbol = Tptp.Symbol("*", .variable)
+    var nodes: [N]? = nil
+
+    lazy var hashValue: Int = self.defaultHashValue
+    var description: String { return self.defaultDescription }
+  }
+
+  final class KinNode: SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
+    typealias N = Demo.KinNode
+
+    static var pool = WeakSet<N>()
+    var folks =  WeakSet<N>()
+
+    var symbol = Tptp.Symbol("*", .variable)
+    var nodes: [N]? = nil
+
+    lazy var hashValue: Int = self.defaultHashValue
   }
 }
 
@@ -213,7 +238,7 @@ import Foundation // URL
 extension Demo {
   struct Problem {
     static func parseCnf() -> Int {
-      typealias NodeType = Tptp.DemoNode
+      typealias NodeType = Demo.KinNode
       let problem = cnfProblem
 
       let inputs: [NodeType] = demoParse(problem:problem)
@@ -228,7 +253,7 @@ extension Demo {
     }
 
     static func parseFof() -> Int {
-      typealias NodeType = Tptp.DefaultNode
+      typealias NodeType = Demo.KinNode
       let problem = fofProblem
 
       let inputs: [NodeType] = demoParse(problem:problem)
@@ -243,7 +268,7 @@ extension Demo {
     }
 
     static func parseHWV() -> Int {
-      typealias NodeType = Tptp.DefaultNode
+      typealias NodeType = Demo.KinNode
       let problem = hwvProblem
 
       let inputs: [NodeType] = demoParse(problem:problem)
@@ -258,7 +283,7 @@ extension Demo {
     }
 
     static func broken() -> Int {
-      typealias NodeType = Tptp.DefaultNode
+      typealias NodeType = Demo.KinNode
       let problem = "Package.swift"
 
       let inputs: [NodeType] = demoParse(problem:problem)
@@ -272,7 +297,7 @@ extension Demo {
     }
 
     static func simpleNode() -> Int {
-      typealias NodeType = Tptp.SimpleNode
+      typealias NodeType = Demo.SimpleNode
 
       let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }
@@ -288,7 +313,7 @@ extension Demo {
       return inputs.count
     }
     static func sharingNode() -> Int {
-      typealias NodeType = Tptp.SharingNode
+      typealias NodeType = Demo.SharingNode
 
       let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }
@@ -305,7 +330,7 @@ extension Demo {
       return inputs.count
     }
     static func smartNode() -> Int {
-      typealias NodeType = Tptp.SmartNode
+      typealias NodeType = Demo.SmartNode
 
       let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }
@@ -322,7 +347,7 @@ extension Demo {
       return inputs.count
     }
     static func kinNode() -> Int {
-      typealias NodeType = Tptp.KinNode
+      typealias NodeType = Demo.KinNode
 
       let inputs: [NodeType] = demoParse(problem:hwvProblem)
       if show { print(hwvProblem, "count :", inputs.count) }

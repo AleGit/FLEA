@@ -5,7 +5,6 @@ struct Tptp {
 
   typealias S = Tptp.Symbol   // choose a symbol type
   typealias I = Int
-  typealias DemoNode = KinNode
   typealias DefaultNode = SmartIntNode    // choose an implementation
 
   /* sample implementations of protocol `Node` and related protocols
