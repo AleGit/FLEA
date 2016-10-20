@@ -92,13 +92,15 @@ extension Node where Self:SymbolStringTyped {
   func normalizing<T: Any>(prefix: T, offset: Int = 0) -> Self {
     var renaming = Dictionary<Symbol, Symbol>()
 
-    return self.normalizing(renaming: &renaming, offset: offset)
+    return self.normalizing(prefix: prefix, offset: offset, renaming: &renaming)
   }
 
-  private func normalizing(renaming: inout Dictionary<Symbol, Symbol>, offset: Int = 0) -> Self {
+  private func normalizing<T: Any>(prefix: T, offset: Int, renaming: inout Dictionary<Symbol, Symbol>) -> Self {
     if let nodes = self.nodes {
       // not a variable
-      return Self(symbol: self.symbol, nodes: nodes.map { $0.normalizing(renaming:&renaming) })
+      return Self(symbol: self.symbol, nodes: nodes.map {
+        $0.normalizing(prefix:prefix, offset:offset, renaming:&renaming)
+      })
     }
 
     if let symbol = renaming[self.symbol] {
@@ -107,12 +109,41 @@ extension Node where Self:SymbolStringTyped {
     }
 
     // variable symbol is unknown so far
-    let (string, _) = self.symbolStringType
-    let symbol = Self.symbolize(string:"\(string)_\(renaming.count+offset)", type:.variable)
+    let symbol = Self.symbolize(string:"\(prefix)\(renaming.count+offset)", type:.variable)
     renaming[self.symbol] = symbol
     return Self(variable:symbol)
 
   }
+
+  func normalizing(wildcard: String = "*") -> (Self, Dictionary<Self, [Position]>) {
+    var variables = Dictionary<Self, [Position]>()
+    return (
+      normalizing(wildcard: wildcard, position: ε, variables: &variables),
+      variables)
+  }
+
+  func normalizing(wildcard: String, position: Position, variables: inout Dictionary<Self, [Position]>)
+   -> Self {
+
+     guard let nodes = self.nodes else {
+       var positions = variables[self] ?? [Position] ()
+       positions.append(position)
+       variables[self] = positions
+
+       return Self(v:"*")
+     }
+
+     var nnodes = [Self]()
+
+     for (index, node) in nodes.enumerated() {
+       let nnode = node.normalizing(wildcard:wildcard, position:position + [index], variables:&variables)
+       nnodes.append(nnode)
+     }
+
+     return Self(symbol:self.symbol, nodes:nnodes)
+  }
+
+
 
 
 
