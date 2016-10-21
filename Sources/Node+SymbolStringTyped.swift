@@ -24,7 +24,7 @@ Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
 extension Node where Self:SymbolStringTyped {
   // implies Symbol: Hashable
 
-  /// Creates a new tree where a suffix is appended to all variable names
+  /// Constructs a new tree where a suffix is appended to all variable names
   func appending<T:Any>(separator: String = "_", suffix: T) -> Self {
     guard let nodes = self.nodes else {
       let (string, type) = self.symbolStringType
@@ -39,7 +39,7 @@ extension Node where Self:SymbolStringTyped {
 
   }
 
-  // Creates a new tree where suffixes are removed from variable names
+  // Constructs a new tree where suffixes are removed from variable names
   private func desuffixing(separator: String,
   mappings: inout Dictionary<String, String>, symbols: inout Set<String>) -> Self {
     guard let nodes = self.nodes else {
@@ -90,7 +90,7 @@ extension Node where Self:SymbolStringTyped {
 
   /* prefix normalization */
 
-  /// Creates new tree where variable names are prefix normalized
+  /// Constructs a new tree where variable names are prefix normalized
   /// - f(X,Y,g(Y)).normalized(prefix:Z) -> f(Z0,Z1,g(Z1)
   /// - f(X,Y,g(Y)).normalized(prefix:Z, separator:_) -> f(Z_0,Z_1,g(Z_1))
   /// - f(X,Y,g(Y)).normalized(prefix:Z, offset:1) -> f(Z1,Z2,g(Z2))
@@ -127,12 +127,16 @@ extension Node where Self:SymbolStringTyped {
 
   /* placeholder normalization */
 
+  /// Constructs a new tree where all variables are renamed to `hole`
+  /// and the list of variable symbols in preorder traversal
+  /// - f(X,Y,g(Y)).normalized() -> (f(□,□,g(□)), [X,Y,Y])
   func normalized(hole: String = "□") -> (Self, Array<Self.Symbol>) {
     var symbols = Array<Self.Symbol>()
     let result = self.normalized(hole: hole, symbols: &symbols)
     return (result, symbols)
   }
 
+  /// To be called by func normalized(hole: String = "□") only.
   private func normalized(hole: String = "□", symbols: inout Array<Self.Symbol>) -> Self {
     guard let nodes = self.nodes else {
       symbols.append(self.symbol)
@@ -149,13 +153,22 @@ extension Node where Self:SymbolStringTyped {
     }
 
     return Self(symbol:self.symbol, nodes:children)
-    
-
   }
 
-  func denormalized(symbols: Array<Self.Symbol>) -> Self? {
-    var copy = symbols 
+  /// Constructs a tree where all variables are renamed with elements of a list of symbols
+  /// If the tree has more variable positions than symbols in the list then nil is returned.
+  /// The sequence of variables is determined by preorder traversal.
+  /// - (f(□,□,g(□)).denormalizing(with:[A,B,C]) -> f(A,B,g(C))
+  /// - (f(X,Y,g(X)).denormalizing(with:[A,B,C]) -> f(A,B,g(C))
+  /// - (f(X,Y,g(X)).denormalizing(with:[A,B]) -> nil
+  /// - (f(X,Y,g(X)).denormalizing(with:[A,B,C,E]) -> f(A,B,g(C))
+  func denormalizing(with symbols: Array<Self.Symbol>) -> Self? {
+    var copy = symbols
     return self.denormalized(symbols: &copy)
+
+    Syslog.warning(condition:copy.count > 0) {
+      "\(self) has more variable positions than\n\(symbols) has members"
+    }
   }
 
   private func denormalized(symbols: inout Array<Self.Symbol>) -> Self? {
@@ -173,48 +186,6 @@ extension Node where Self:SymbolStringTyped {
       children.append(child)
     }
     return Self(symbol:self.symbol, nodes:children)
-
-
-    
-
-
-
   }
-/*
-  /// Creates a new tree where all variable names are replaced by a placeholder
-  /// and returns the mapping from variables to positions
-  func normalized(placeholder: String = "*️⃣") -> (Self, Dictionary<Self, [Position]>) {
-    var variables = Dictionary<Self, [Position]>()
-    return (
-      normalized(placeholder: placeholder, position: ε, variables: &variables),
-      variables)
-  
-  }
-
-  private func normalized(placeholder: String, position: Position,
-  variables: inout Dictionary<Self, [Position]>) -> Self {
-
-     guard let nodes = self.nodes else {
-       var positions = variables[self] ?? [Position] ()
-       positions.append(position)
-       variables[self] = positions
-
-       return Self(v:placeholder)
-     }
-
-     var nnodes = [Self]()
-
-     for (index, node) in nodes.enumerated() {
-       let nnode = node.normalized(placeholder:placeholder,
-       position:position + [index], variables:&variables)
-       nnodes.append(nnode)
-     }
-
-     return Self(symbol:self.symbol, nodes:nnodes)
-  }
-
-*/
-
-
 
 }

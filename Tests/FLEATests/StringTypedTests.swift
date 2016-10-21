@@ -50,7 +50,7 @@ public class StringTypedTests: FleaTestCase {
   }
 
   func testPlaceholderNormalization() {
-    
+
       let (w0, d0) = N.X.normalized()
       let (w1, d1) = N.f1.normalized()
       let (w2, d2) = N.f2.normalized()
@@ -68,22 +68,21 @@ public class StringTypedTests: FleaTestCase {
       XCTAssertEqual([y, y, x, y], d2)
 
 
-      XCTAssertEqual(N.X, w0.denormalized(symbols: d0))
-      XCTAssertEqual(N.f1, w1.denormalized(symbols: d1))
-      XCTAssertEqual(N.f2, w2.denormalized(symbols: d2))
+      XCTAssertEqual(N.X, w0.denormalizing(with: d0))
+      XCTAssertEqual(N.f1, w1.denormalizing(with: d1))
+      XCTAssertEqual(N.f2, w2.denormalizing(with: d2))
 
-      XCTAssertNil(w0.denormalized(symbols: Array(d0.dropFirst() )))
-      XCTAssertNil(w1.denormalized(symbols: Array(d1.dropFirst() )))
-      XCTAssertNil(w2.denormalized(symbols: Array(d2.dropFirst() )))
-      
-      XCTAssertNil(w1.denormalized(symbols: d0 ))
+      XCTAssertNil(w0.denormalizing(with: Array(d0.dropFirst() )))
+      XCTAssertNil(w1.denormalizing(with: Array(d1.dropFirst() )))
+      XCTAssertNil(w2.denormalizing(with: Array(d2.dropFirst() )))
 
+      XCTAssertNil(w1.denormalizing(with: d0 ))
 
-      XCTAssertEqual(N.X, w0.denormalized(symbols: d1))
+      XCTAssertEqual(N.X, w0.denormalizing(with: d1))
 
-      XCTAssertEqual(N.Y, w0.denormalized(symbols: d2))
-      XCTAssertEqual(N.f2, w2.denormalized(symbols: d2))
-      XCTAssertEqual(N.f1, w2.denormalized(symbols: d1))
+      XCTAssertEqual(N.Y, w0.denormalizing(with: d2))
+      XCTAssertEqual(N.f2, w2.denormalizing(with: d2))
+      XCTAssertEqual(N.f1, w2.denormalizing(with: d1))
 
 
       /*
