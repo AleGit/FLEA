@@ -43,7 +43,7 @@ public class RuleTests: FleaTestCase {
 		let gb = N(f:"g", [b])
 		let fbX = N(f:"f", [b, X])
 		let rl = R(fbX, gb)
-		let cp = R.cp(inner: rl, at:ε, outer: rl)
+		let cp = rl.cp(inner: rl, at:ε)
     XCTAssertTrue(cp == nil)
   }
 
@@ -58,7 +58,7 @@ public class RuleTests: FleaTestCase {
 		let fbX = N(f:"f", [b, X])
 		let rl1 = R(fbX, a)
 		let rl2 = R(fXY, gX)
-		let cp = R.cp(inner: rl1, at:ε, outer: rl2)
+		let cp = rl2.cp(inner: rl1, at:ε)
     XCTAssertTrue(cp != nil)
 		XCTAssertTrue(cp!.lhs.isEqual(to: a) && cp!.rhs.isEqual(to: gb))
   }
@@ -73,28 +73,30 @@ public class RuleTests: FleaTestCase {
 		let rl1 = R(fbX, gb)
 		let rl2 = R(b, c)
 
-		let cp1 = R.cp(inner: rl2, at:[0], outer: rl1)
+		let cp1 = rl1.cp(inner: rl2, at:[0])
     XCTAssertTrue(cp1 != nil)
 		XCTAssertTrue(cp1!.lhs.isEqual(to: fcX) && cp1!.rhs.isEqual(to: gb))
 
-		let cp2 = R.cp(inner: rl2, at:[1], outer: rl1)
+		let cp2 = rl1.cp(inner: rl2, at:[1])
     XCTAssertTrue(cp2 == nil)
   }
 
   func testCP2() {
 		let X = N(v:"X")
+		let Y = N(v:"Y")
 		let gX = N(f:"g", [X])
+		let gY = N(f:"g", [Y])
 		let hX = N(f:"h", [X])
 		let hgX = N(f:"h", [gX])
-		let ggX = N(f:"g", [gX])
+		let ggY = N(f:"g", [gY])
 		let fXgX = N(f:"f", [X, gX])
 		let fgXX = N(f:"f", [gX, X])
 		let rl1 = R(fgXX, hX)
-		let rl2 = R(ggX, X)
+		let rl2 = R(ggY, Y)
 
-		let cp = R.cp(inner: rl2, at:[0], outer: rl1)
+		let cp = rl1.cp(inner: rl2, at:[0])
+		print(cp)
     XCTAssertTrue(cp != nil)
 		XCTAssertTrue(cp!.lhs.isEqual(to: fXgX) && cp!.rhs.isEqual(to: hgX))
   }
-
 }

@@ -36,6 +36,11 @@ struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
 	func filter(_ pred : (Rule<N>) -> Bool) -> TRS<N> {
 		return TRS(rules.filter(pred))
 	}
+
+  // Return critical pairs with trs.
+	var cps: TRS {
+    return TRS(rules.flatMap{ $0.cps(with: self).rules })
+	}
 }
 
 
