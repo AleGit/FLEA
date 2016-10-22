@@ -86,7 +86,7 @@ extension Node where Self:SymbolStringTyped, Symbol:Hashable {
 }
 
 
-final class Rule<N:Node> where N:SymbolStringTyped, N:Hashable {
+final class Rule<N:Node> : Hashable where N:SymbolStringTyped, N:Hashable {
 	let lhs: N
 	let rhs: N
 
@@ -96,6 +96,18 @@ final class Rule<N:Node> where N:SymbolStringTyped, N:Hashable {
 	}
 
 	var terms : (N,N) { return (self.lhs, self.rhs) }
+
+	var hashValue: Int {
+			return lhs.hashValue ^ rhs.hashValue
+	}
+
+	var nontrivial : Bool {
+		return !lhs.isEqual(to: rhs)
+	}
+
+	static func == (rl1: Rule, rl2: Rule) -> Bool {
+	  return rl1.lhs.isEqual(to: rl2.lhs) && rl1.rhs.isEqual(to: rl2.rhs)
+	}
 
 	var flip : Rule {
 		return Rule(rhs, lhs)
@@ -139,7 +151,7 @@ final class Rule<N:Node> where N:SymbolStringTyped, N:Hashable {
   // Return critical pairs with trs. Variables get renamed, results normalized.
 	func cps (with trs: TRS<N>) -> TRS<N> {
 		let rule = self.rename
-    return TRS(trs.rules.flatMap{ rule.cps(with:$0) })
+    return trs.flatMap{ TRS<N>(rule.cps(with:$0)) }
 	}
 }
 
@@ -187,7 +199,7 @@ extension Node where Self:SymbolStringTyped, Symbol:Hashable {
 	func applySubst(_ σ: Subst) -> Self { return self * σ }
 
 	func rewrite_step (with rule: Rule<Self>) -> Self? {
-		for p in rule.lhs.funsPos {
+		for p in self.funsPos {
       let t = rewrite_step(with: rule, at: p)
 			if t != nil {
 				return t
@@ -199,7 +211,7 @@ extension Node where Self:SymbolStringTyped, Symbol:Hashable {
 	func nf (with trs: TRS<Self>) -> Self {
 		guard !isVar else { return self }
 
-	  for rule in trs {
+	  for rule in trs.rules {
       let u = rewrite_step(with: rule)
 			if u != nil {
 				return (u!).nf(with: trs)

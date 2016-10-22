@@ -1,23 +1,42 @@
 
 struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
   typealias Symbol = N.Symbol
+	typealias R = Rule<N>
+	typealias Iterator = TRSIterator<N>
 
-  var rules: [Rule<N>]
+  var rules: Set<R>
 
   init() {
-		rules = []
+		rules = Set()
 	}
 
-  init(_ rs: [Rule<N>]) {
+  init(_ rs: Set<R>) {
 		rules = rs
 	}
 
-	func makeIterator() -> TRSIterator<N> {
-			return TRSIterator<N>(self)
+  init(_ rs: [R]) {
+		rules = Set<R>()
+		for r in rs {
+		  rules.insert(r)
+		}
 	}
 
-	mutating func add(_ rule: Rule<N>) {
-		rules +=  [rule]
+	func makeIterator() -> Iterator {
+			return Iterator(self)
+	}
+
+	var isEmpty : Bool { return rules.isEmpty }
+
+	mutating func add(_ rule: R) {
+		rules.insert(rule)
+	}
+
+	mutating func add(_ other: TRS) {
+		rules.formUnion(other.rules)
+	}
+
+	func union(_ other: TRS) -> TRS {
+		return TRS<N>(rules.union(other.rules))
 	}
 
   var funs: [Symbol: Int] {
@@ -29,34 +48,56 @@ struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
     return fs
   }
 
-	var symm: TRS {
-		return TRS(self.rules + self.rules.map { $0.flip })
+	func map(_ f : (R) -> R) -> TRS {
+		return TRS<N>(rules.map(f))
 	}
 
-	func filter(_ pred : (Rule<N>) -> Bool) -> TRS<N> {
-		return TRS(rules.filter(pred))
+	func flatMap(_ f : (R) -> TRS) -> TRS {
+		return TRS<N>(rules.flatMap { f($0).rules })
+	}
+
+	func filter(_ pred : (R) -> Bool) -> TRS {
+		return TRS<N>(rules.filter(pred))
+	}
+
+	var symm: TRS {
+		return union(self.map { $0.flip })
 	}
 
   // Return critical pairs with trs.
 	var cps: TRS {
-    return TRS(rules.flatMap{ $0.cps(with: self).rules })
+    return TRS<N>(rules.flatMap{ $0.cps(with: self).rules })
+	}
+
+	func simplify(with other: TRS) -> TRS {
+		var simp = TRS<N>()
+	  for st in self {
+			let s = st.lhs.nf(with: other)
+			let t = st.rhs.nf(with: other)
+      simp.add(R(s, t))
+	  }
+		return simp
 	}
 }
 
 
 struct TRSIterator<N:Node> : IteratorProtocol
-      where N:SymbolStringTyped, N:Hashable {
-	let trs: TRS<N>
-	var index = 0
+       where N:SymbolStringTyped, N:Hashable {
+	typealias R = Rule<N>
+	typealias T = TRS<N>
 
-	init(_ trs: TRS<N>) {
+	let trs: T
+	var index : SetIndex<R>
+
+	init(_ trs: T) {
 		self.trs = trs
+		index = trs.rules.startIndex
 	}
 
-	mutating func next() -> Rule<N>? {
-			guard index < trs.rules.count else { return nil }
+	mutating func next() -> R? {
+			guard index < trs.rules.endIndex else { return nil }
 			let i = index
-			index += 1
+			trs.rules.formIndex(after: &index)
 			return trs.rules[i]
 	}
 }
