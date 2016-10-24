@@ -1,7 +1,12 @@
 //  Copyright © 2016 Alexander Maringele. All rights reserved.
 
-/* This file contains extensions for protocol `Node`
-  to _normalize_ variable names, when symbols are `SymbolStringTyped`
+/* This file contains extensions for protocol `Node` to alter variable names,
+  when symbols are `SymbolStringTyped`:
+  - append same (separator and) suffix to all variable names
+  - remove separator and suffix from variable names
+  - normalize variable names with common symbol, (separator), and increasing suffix
+  - normalize variable names with same symbol and extract variable symbols by preorder traversing
+  - denormalize variable names by renaming variable names with list of symbols by preorder traversing
   */
 
 extension Node where Self:SymbolStringTyped {
