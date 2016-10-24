@@ -29,6 +29,15 @@ protocol Node: Hashable,
   var height: Int { get }
   var width: Int { get }
   var size: Int { get }
+
+  var properties: (
+    subnodes: Set<Self>,
+    variables: Set<Self>,
+    height: Int,
+    width: Int,
+    size: Int
+  ) { get }
+
 }
 
 extension Node {

@@ -41,7 +41,13 @@ public class NodePropertiesTests: FleaTestCase {
     lazy var width: Int = self.defaultWidth
     lazy var size: Int = self.defaultSize
 
-    // test terms
+    lazy var properties: (
+      subnodes: Set<LocalKinIntNode>,
+      variables: Set<LocalKinIntNode>,
+      height: Int,
+      width: Int,
+      size: Int
+      ) = self.defaultProperties
 
 
     static let a = "a" as LocalKinIntNode
