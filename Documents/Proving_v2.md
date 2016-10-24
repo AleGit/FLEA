@@ -102,6 +102,18 @@ p.1.a  p.1.a
 p.1.b  p.1.f.
 ```
 
+## The Given Clause and Pair Algorithms
+
+Repeat
+    1. decide a set S of inferences to make
+    2. make all inferences in S and process the results
+until a proof has been found.
+
+The given clause algorithm selects a clause C and makes inferences using C and all clauses
+previously selected as given clauses.
+
+The pair algorithm selects a pair of clauses (not previously selected) and makes inferences
+between those two clauses only.
 
 
 [www.cs.unm.edu/~mccune/prover9/manual/Dec-2007/loop.html](https://www.cs.unm.edu/~mccune/prover9/manual/Dec-2007/loop.html)
@@ -121,6 +133,9 @@ While the sos list is not empty:
     4. append new clauses that pass the retention tests to the sos list.
 
 end of while loop.
+
+sos = set of support, passive
+
 
 
 
