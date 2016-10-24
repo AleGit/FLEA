@@ -32,12 +32,12 @@ public class NodePropertiesTests: FleaTestCase {
     var symbol: Int = LocalKinIntNode.symbolize(string:"*", type:.variable)       // : Node
     var nodes: [LocalKinIntNode]? = nil                                           // : Node
 
-    // lazy evaluation and memorizing of node properties
+    // lazy evaluation and memorizing of node dimensions
 
     lazy var hashValue: Int = self.defaultHashValue
     lazy var description: String = self.defaultDescription
 
-    lazy var properties: (
+    lazy var dimensions: (
       // subnodes: Set<LocalKinIntNode>,
       // variables: Set<LocalKinIntNode>,
       height: Int,

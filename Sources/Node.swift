@@ -22,7 +22,7 @@ protocol Node: Hashable,
   static func share(node: Self) -> Self
 
 
-  /// calculated properties of terms
+  /// calculated dimensions of terms
   var subnodes: Set<Self> { get }
   var variables: Set<Self> { get }
 
@@ -30,7 +30,7 @@ protocol Node: Hashable,
   var width: Int { get }
   var size: Int { get }
 
-  var properties: (
+  var dimensions: (
     // subnodes: Set<Self>,
     // variables: Set<Self>,
     height: Int,

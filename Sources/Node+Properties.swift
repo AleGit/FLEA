@@ -71,19 +71,19 @@ extension Node {
   }
 
   var height: Int {
-    return self.properties.height
+    return self.dimensions.height
   }
 
   var width: Int {
-    return self.properties.width
+    return self.dimensions.width
   }
 
   var size: Int {
-    return self.properties.size
+    return self.dimensions.size
   }
 
-  var properties: Properties {
-    Syslog.fail(condition:Syslog.carping) { "use of default properties implementation" }
+  var dimensions: Dimensions {
+    Syslog.fail(condition:Syslog.carping) { "use of default dimensions implementation" }
     return defaultProperties
   }
 }
@@ -92,7 +92,7 @@ extension Node {
 /* ****************************************************************************************************** */
 
 extension Node {
-  typealias Properties = (
+  typealias Dimensions = (
     // subnodes: Set<Self>,
     // variables: Set<Self>,
     height: Int,
@@ -100,7 +100,7 @@ extension Node {
     size: Int
   )
 
-  var defaultProperties: Properties {
+  var defaultProperties: Dimensions {
     guard let nodes = self.nodes else {
       return (
         // Set(arrayLiteral: self), // a variable is a subnode
@@ -129,7 +129,7 @@ extension Node {
 
 
     let collect = nodes.reduce(base) {
-      return Self.combine(lhs:$0, rhs:$1.properties)
+      return Self.combine(lhs:$0, rhs:$1.dimensions)
     }
 
     return (
@@ -141,7 +141,7 @@ extension Node {
     )
   }
 
-  private static func combine(lhs: Properties, rhs: Properties) -> Properties {
+  private static func combine(lhs: Dimensions, rhs: Dimensions) -> Dimensions {
     return (
       // subnodes:lhs.subnodes.union(rhs.subnodes),
       // variables:lhs.variables.union(rhs.variables),
