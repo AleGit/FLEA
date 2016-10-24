@@ -31,8 +31,8 @@ protocol Node: Hashable,
   var size: Int { get }
 
   var properties: (
-    subnodes: Set<Self>,
-    variables: Set<Self>,
+    // subnodes: Set<Self>,
+    // variables: Set<Self>,
     height: Int,
     width: Int,
     size: Int

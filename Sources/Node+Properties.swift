@@ -9,6 +9,7 @@ extension Node {
     guard let nodes = self.nodes, nodes.count == 0 else {
       return false
     }
+    // self.nodes == nil or nodes.count > 0
     return true
   }
 }
@@ -62,28 +63,23 @@ extension Node {
 
 extension Node {
   var subnodes: Set<Self> {
-    Syslog.fail(condition:Syslog.carping) { "use of default subnodes implementation" }
-    return defaultSubnodes
+    return self.defaultSubnodes
   }
 
   var variables: Set<Self> {
-    Syslog.fail(condition:Syslog.carping) { "use of default variables implementation" }
-    return defaultVariables
+    return self.defaultVariables
   }
 
   var height: Int {
-    Syslog.fail(condition:Syslog.carping) { "use of default height implementation" }
-    return defaultHeight
+    return self.properties.height
   }
 
   var width: Int {
-    Syslog.fail(condition:Syslog.carping) { "use of default widht implementation" }
-    return defaultWidth
+    return self.properties.width
   }
 
   var size: Int {
-    Syslog.fail(condition:Syslog.carping) { "use of default size implementation" }
-    return defaultSize
+    return self.properties.size
   }
 
   var properties: Properties {
@@ -97,8 +93,8 @@ extension Node {
 
 extension Node {
   typealias Properties = (
-    subnodes: Set<Self>,
-    variables: Set<Self>,
+    // subnodes: Set<Self>,
+    // variables: Set<Self>,
     height: Int,
     width: Int,
     size: Int
@@ -107,8 +103,8 @@ extension Node {
   var defaultProperties: Properties {
     guard let nodes = self.nodes else {
       return (
-        Set(arrayLiteral: self), // a variable is a subnode
-        Set(arrayLiteral: self), // a variable is a variable
+        // Set(arrayLiteral: self), // a variable is a subnode
+        // Set(arrayLiteral: self), // a variable is a variable
         0, // a variable has height 0
         1, // a variable has width 1
         1  // a variable has size 1
@@ -117,8 +113,8 @@ extension Node {
 
     guard nodes.count > 0 else {
       return (
-        Set(arrayLiteral: self), // a constant is a subnode
-        Set<Self>(), // a constant is not a variable
+        // Set(arrayLiteral: self), // a constant is a subnode
+        // Set<Self>(), // a constant is not a variable
         0, // a constant has height 0
         1, // a constant has width 1
         1  // a constant has size 1
@@ -126,8 +122,8 @@ extension Node {
     }
 
     let base = (
-      subnodes:Set(arrayLiteral:self), // an inner node is a subnode
-      variables:Set<Self>(), // an inner node is not a variable
+      // subnodes:Set(arrayLiteral:self), // an inner node is a subnode
+      // variables:Set<Self>(), // an inner node is not a variable
       height:0, width:0, size:1
     )
 
@@ -136,11 +132,9 @@ extension Node {
       return Self.combine(lhs:$0, rhs:$1.properties)
     }
 
-    // let collect = base
-
     return (
-      collect.0, // self was allready added to the set of subnodes
-      collect.1, // self is not a member of set of variables
+      // collect.0, // self was allready added to the set of subnodes
+      // collect.1, // self is not a member of set of variables
       collect.height + 1, // add one to the maximum height of all subtrees
       collect.width, // the total sum is just the sum of all widths of the subtrees
       collect.size // we've allready added one to the sum of sizes of the subtrees
@@ -149,8 +143,8 @@ extension Node {
 
   private static func combine(lhs: Properties, rhs: Properties) -> Properties {
     return (
-      subnodes:lhs.subnodes.union(rhs.subnodes),
-      variables:lhs.variables.union(rhs.variables),
+      // subnodes:lhs.subnodes.union(rhs.subnodes),
+      // variables:lhs.variables.union(rhs.variables),
       height:max(lhs.height, rhs.height),
       width:lhs.width + rhs.width,
       size:lhs.size + rhs.size)

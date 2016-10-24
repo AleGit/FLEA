@@ -37,13 +37,9 @@ public class NodePropertiesTests: FleaTestCase {
     lazy var hashValue: Int = self.defaultHashValue
     lazy var description: String = self.defaultDescription
 
-    lazy var height: Int = self.defaultHeight
-    lazy var width: Int = self.defaultWidth
-    lazy var size: Int = self.defaultSize
-
     lazy var properties: (
-      subnodes: Set<LocalKinIntNode>,
-      variables: Set<LocalKinIntNode>,
+      // subnodes: Set<LocalKinIntNode>,
+      // variables: Set<LocalKinIntNode>,
       height: Int,
       width: Int,
       size: Int
