@@ -43,7 +43,7 @@ public class NodePropertiesTests: FleaTestCase {
       height: Int,
       width: Int,
       size: Int
-      ) = self.defaultProperties
+      ) = self.defaultDimensions
 
 
     static let a = "a" as LocalKinIntNode

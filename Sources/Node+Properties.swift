@@ -84,7 +84,7 @@ extension Node {
 
   var dimensions: Dimensions {
     Syslog.fail(condition:Syslog.carping) { "use of default dimensions implementation" }
-    return defaultProperties
+    return defaultDimensions
   }
 }
 
@@ -100,7 +100,7 @@ extension Node {
     size: Int
   )
 
-  var defaultProperties: Dimensions {
+  var defaultDimensions: Dimensions {
     guard let nodes = self.nodes else {
       return (
         // Set(arrayLiteral: self), // a variable is a subnode
