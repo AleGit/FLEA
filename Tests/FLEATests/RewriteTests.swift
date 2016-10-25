@@ -125,7 +125,6 @@ public class RewriteTests: FleaTestCase {
   func testGroupCPs() {
 		let cps = group_trs.cps
 	  for cp in cps {
-      print(cp.lhs, " = ", cp.rhs)
 			let s = cp.lhs.nf(with: group_trs)
 			let t = cp.rhs.nf(with: group_trs)
       XCTAssertTrue(s.isEqual(to: t))
