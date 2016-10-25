@@ -86,7 +86,8 @@ extension Node where Self:SymbolStringTyped, Symbol:Hashable {
 }
 
 
-final class Rule<N:Node> : Hashable where N:SymbolStringTyped, N:Hashable {
+final class Rule<N:Node> : Hashable, CustomStringConvertible
+            where N:SymbolStringTyped, N:Hashable {
 	let lhs: N
 	let rhs: N
 
@@ -101,12 +102,12 @@ final class Rule<N:Node> : Hashable where N:SymbolStringTyped, N:Hashable {
 			return lhs.hashValue ^ rhs.hashValue
 	}
 
-	var nontrivial : Bool {
-		return !lhs.isEqual(to: rhs)
-	}
-
 	static func == (rl1: Rule, rl2: Rule) -> Bool {
 	  return rl1.lhs.isEqual(to: rl2.lhs) && rl1.rhs.isEqual(to: rl2.rhs)
+	}
+
+	var nontrivial : Bool {
+		return !lhs.isEqual(to: rhs)
 	}
 
 	var flip : Rule {
@@ -153,6 +154,10 @@ final class Rule<N:Node> : Hashable where N:SymbolStringTyped, N:Hashable {
 		let rule = self.rename
     return trs.flatMap{ TRS<N>(rule.cps(with:$0)) }
 	}
+
+	var description: String {
+		return String(describing: lhs) + " -> " + String(describing: rhs)
+  }
 }
 
 
@@ -218,5 +223,17 @@ extension Node where Self:SymbolStringTyped, Symbol:Hashable {
 			}
 		}
 		return self
+	}
+
+	func isReducible (with trs: TRS<Self>) -> Bool {
+    guard !isVar else { return false }
+
+    for rule in trs.rules {
+      let u = rewrite_step(with: rule)
+			if u != nil {
+				return true
+			}
+		}
+		return false
 	}
 }
