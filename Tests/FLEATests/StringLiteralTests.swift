@@ -4,9 +4,9 @@ import XCTest
 
 /// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
-public class StringLiteralTests : FleaTestCase {
+public class StringLiteralTests: FleaTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (StringLiteralTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (StringLiteralTests) -> () throws -> Void)]  {
     return [
       ("testAnnotations", testAnnotations),
       ("testHeuristics", testHeuristics),
@@ -16,7 +16,7 @@ public class StringLiteralTests : FleaTestCase {
 
 
 // local private adoption of protocol to avoid any side affects
-  private final class LocalSimpleNode : SymbolStringTyped, Node, ExpressibleByStringLiteral {
+  private final class LocalSimpleNode: SymbolStringTyped, Node, ExpressibleByStringLiteral {
   typealias S = Tptp.Symbol
 
   var symbol: S = LocalSimpleNode.symbolize(string:"*", type:.variable)
@@ -99,7 +99,7 @@ public class StringLiteralTests : FleaTestCase {
   }
 
   func testUndefined() {
-    let ab : LocalSimpleNode = "@cnf a&b" // =>
+    let ab: LocalSimpleNode = "@cnf a&b" // =>
     // XCTAssertEqual(ab.symbol.type,.function(2),"\(nok) ab :: \(ab)")
     XCTAssertEqual("@cnf a&b ❌ .parse error", ab.description)
 

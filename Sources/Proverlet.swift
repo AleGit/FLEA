@@ -16,16 +16,16 @@ import CYices
      /// tptp clauses with the same encoding could be variants
      private var clauseVariants = Dictionary<term_t, Set<Int>>()
 
+     private var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, Int>()
+
      var count: Int { return clauses.count }
 
-
      /// insert a normalized copy of the clause if no variant is allready there
-     // @discardableResult
      func insert(clause: N) -> (inserted: Bool, indexAfterInsert: Int) {
 
          let newClause = clause.normalized(prefix:"X")
          let newIndex = clauses.count
-         let (yicesClause, _, _) = Yices.clause(newClause)
+         let (yicesClause, yicesLiterals, shuffledYicesLiterals) = Yices.clause(newClause)
 
          guard let candidates = clauseVariants[yicesClause] else {
              // there are no candidates for variants
@@ -36,7 +36,6 @@ import CYices
 
          if let index = candidates.first(where: { newClause == clauses[$0]}) {
              // a variant was found (variants must be equal because of normalization)
-             print(newClause, clauses[index])
              return (false, index)
          }
 

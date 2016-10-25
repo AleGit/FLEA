@@ -2,8 +2,8 @@ import XCTest
 
 @testable import FLEA
 
-public class PositionTests : FleaTestCase {
-  static var allTests : [(String, (PositionTests) -> () throws -> Void)] {
+public class PositionTests: FleaTestCase {
+  static var allTests: [(String, (PositionTests) -> () throws -> Void)] {
     return [
       ("testBasics", testBasics)
     ]

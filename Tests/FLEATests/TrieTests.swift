@@ -7,7 +7,8 @@ public class TrieTests: FleaTestCase {
     return [
     ("testTrieStruct", testTrieStruct),
     ("testTrieClass", testTrieClass),
-    ("testUnifiables", testUnifiables)
+    ("testUnifiables", testUnifiables),
+    ("testPrefixes", testPrefixes)
     ]
   }
 

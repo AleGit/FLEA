@@ -3,14 +3,14 @@ import XCTest
 import Foundation
 @testable import FLEA
 
-public class CommandLineTests : FleaTestCase {
+public class CommandLineTests: FleaTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (CommandLineTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (CommandLineTests) -> () throws -> Void)]  {
     return [
     // ("testMacOS", testMacOS),
     ("testOS", testOS),
-    ("testIfSwift",testIfSwift),
-    ("testName",testName)
+    ("testIfSwift", testIfSwift),
+    ("testName", testName)
     ]
   }
 
@@ -55,9 +55,11 @@ public class CommandLineTests : FleaTestCase {
   func testName() {
     let name = CommandLine.name
     #if os(OSX)
-    XCTAssertEqual("/Applications/Xcode.app/Contents/Developer/usr/bin/xctest", name,"\(nok) \(name)")
+    XCTAssertEqual("/Applications/Xcode.app/Contents/Developer/usr/bin/xctest",
+    name, "\(nok) \(name)")
     #elseif os(Linux)
-    XCTAssertTrue(name.hasSuffix(".build/debug/FLEAPackageTests.xctest"),"\(nok) \(name)")
+    XCTAssertTrue(name.hasSuffix(".build/debug/FLEAPackageTests.xctest"),
+    "\(nok) \(name)")
     #endif
 
   }

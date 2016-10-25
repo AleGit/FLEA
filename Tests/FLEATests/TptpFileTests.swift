@@ -3,8 +3,8 @@ import Foundation
 
 @testable import FLEA
 
-public class TptpFileTests : FleaTestCase {
-  static var allTests : [(String, (TptpFileTests) -> () throws -> Void)] {
+public class TptpFileTests: FleaTestCase {
+  static var allTests: [(String, (TptpFileTests) -> () throws -> Void)] {
     return [
     ("testNonFile", testNonFile),
     ("testProblems", testProblems),
@@ -90,7 +90,7 @@ public class TptpFileTests : FleaTestCase {
       ("HWV039+1", 744, 0.12),
       // ("HWV067-1",94241,20.0)
     ] {
-      check(problem,count,runtime) 
+      check(problem,count,runtime)
     }
   }
 }

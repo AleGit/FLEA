@@ -9,6 +9,7 @@ public class YicesTests: YicesTestCase {
   static var allTests: [(String, (YicesTests) -> () throws -> Void)] {
     return [
       ("testVersionString", testVersionString),
+      ("testVersion", testVersion),
       ("testPUZ001c1", testPUZ001c1),
       ("testTop", testTop),
       ("testBottom", testBottom),

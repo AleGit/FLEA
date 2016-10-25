@@ -1,8 +1,8 @@
 import XCTest
 @testable import CYices
 //
-class CYicesApiTests : FleaTestCase {
-  static var allTests : [(String, (CYicesApiTests) -> () throws -> Void)] {
+class CYicesApiTests: FleaTestCase {
+  static var allTests: [(String, (CYicesApiTests) -> () throws -> Void)] {
     return [
     ("testTypes", testTypes),
     ("testBasics", testBasics)
@@ -45,7 +45,8 @@ class CYicesApiTests : FleaTestCase {
 
 
 
-  private func status(context:OpaquePointer, term: term_t, expected : smt_status = STATUS_SAT, line:Int = #line) {
+  private func status(context:OpaquePointer, term: term_t,
+  expected : smt_status = STATUS_SAT, line:Int = #line) {
 
     guard let string = String(term: term) else { return }
 
@@ -67,14 +68,14 @@ class CYicesApiTests : FleaTestCase {
 
         guard let model_string = String(model:mdl) else { return }
         print(model_string)
-        break;
+        break
 
       case STATUS_UNSAT:
-        print("Unsatisfiable", expected == st ? ok : nok);
-        break;
+        print("Unsatisfiable", expected == st ? ok : nok)
+        break
       case STATUS_UNKNOWN:
-        print("Status is unknown");
-        break;
+        print("Status is unknown")
+        break
       case STATUS_IDLE:
         fallthrough
       case STATUS_SEARCHING:
@@ -86,7 +87,7 @@ class CYicesApiTests : FleaTestCase {
       default:
         // these codes should not be returned
         print("Bug: unexpected status returned");
-        break;
+        break
     }
   }
 

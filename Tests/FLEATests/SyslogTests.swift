@@ -10,8 +10,8 @@ import XCTest
 
 @testable import FLEA
 
-public class SyslogTests : FleaTestCase {
-  static var allTests : [(String, (SyslogTests) -> () throws -> Void)] {
+public class SyslogTests: FleaTestCase {
+  static var allTests: [(String, (SyslogTests) -> () throws -> Void)] {
     return [
     ("testSyslog", testSyslog),
     ("testConfiguration", testConfiguration)
@@ -90,7 +90,7 @@ public class SyslogTests : FleaTestCase {
       XCTFail()
       return
     }
-    
+
     guard let lines = path.lines(predicate:{
        !($0.hasPrefix("#") || $0.isEmpty)
     }), lines.count == 6 else {
@@ -102,6 +102,6 @@ public class SyslogTests : FleaTestCase {
 
 
 
-     
+
   }
 }

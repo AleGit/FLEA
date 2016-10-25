@@ -5,7 +5,7 @@ import XCTest
 public class ParseTptpTests
 // : FleaTestCase // deactivated
 {
-  static var allTests : [(String, (ParseTptpTests) -> () throws -> Void)] {
+  static var allTests: [(String, (ParseTptpTests) -> () throws -> Void)] {
     return [
       ("testParseHWV106toSimpleNodes", testParseHWV106toSimpleNodes),
       ("testParseHWV106toSharingNodes", testParseHWV106toSharingNodes),

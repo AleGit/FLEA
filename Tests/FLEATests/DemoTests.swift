@@ -2,8 +2,8 @@ import XCTest
 
 @testable import FLEA
 
-public class DemoTests : FleaTestCase {
-  static var allTests : [(String, (DemoTests) -> () throws -> Void)] {
+public class DemoTests: FleaTestCase {
+  static var allTests: [(String, (DemoTests) -> () throws -> Void)] {
     return [
       ("testDemo", testDemo),
       ("testProblem", testProblem)
@@ -25,18 +25,5 @@ public class DemoTests : FleaTestCase {
     // XCTAssertEqual(12,Demo.Problem.sharingNode(show:false),nok)
     // XCTAssertEqual(12,Demo.Problem.smartNode(show:false),nok)
     // XCTAssertEqual(12,Demo.Problem.kinNode(show:false),nok)
-  }
-
-  func _testSimple() {
-
-    XCTAssertEqual(2332428,Demo.Problem.simpleNode(),nok)
-    print(ok,#function)
-  } 
-
-  func _testSharing() {
-
-    XCTAssertEqual(2332428,Demo.Problem.sharingNode(),nok)
-    print(ok,#function)
-
   }
 }

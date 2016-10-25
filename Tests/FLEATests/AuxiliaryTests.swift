@@ -39,28 +39,28 @@ public class AuxiliaryTests: FleaTestCase {
     let array = [2, 3, 5, 7, 11, 13]
 
     var checks = 0
-    XCTAssertFalse(array.all { 
+    XCTAssertFalse(array.all {
       checks += 1
       return $0 % 2 == 0
-    },nok)
-    XCTAssertEqual(2, checks,nok)
+    }, nok)
+    XCTAssertEqual(2, checks, nok)
 
     checks = 0
-    XCTAssertTrue(array.one { 
+    XCTAssertTrue(array.one {
       checks += 1
       return $0 % 2 == 0
-    },nok)
+    }, nok)
     XCTAssertEqual(1, checks)
 
     checks = 0
-    XCTAssertTrue(array.all { 
+    XCTAssertTrue(array.all {
       checks += 1
       return $0 > 1
     },nok)
     XCTAssertEqual(array.count, checks)
 
     checks = 0
-    XCTAssertFalse(array.one { 
+    XCTAssertFalse(array.one {
       checks += 1
       return $0 < 1
     },nok)
@@ -78,7 +78,7 @@ public class AuxiliaryTests: FleaTestCase {
     // count elements > 1
     XCTAssertEqual(array.count,array.count { $0 > 1},nok)
 
-    // count elements < 1 
+    // count elements < 1
     XCTAssertEqual(0, array.count { $0 < 1 },nok)
   }
 
@@ -92,13 +92,13 @@ public class AuxiliaryTests: FleaTestCase {
     let ü = "ÜbÉr"
     let ä = "älter"
 
-    print(ü,ü.characters.map {$0})
+    print(ü, ü.characters.map {$0})
 
     XCTAssertTrue(ü.isUppercased(at:ü.startIndex),nok)
     XCTAssertFalse(ü.isUppercased(at:ü.index(after:ü.startIndex)))
     XCTAssertTrue(ü.isUppercased(at:ü.index(ü.startIndex, offsetBy:2)))
     XCTAssertFalse(ü.isUppercased(at:ü.index(before:ü.endIndex)))
-    
+
     XCTAssertFalse(ä.isUppercased(at:ä.startIndex), nok)
 
   }
@@ -118,7 +118,7 @@ public class AuxiliaryTests: FleaTestCase {
     // a string contains all of its characters
     XCTAssertTrue(string.containsAll(string.characters.map{String($0)}), nok)
     XCTAssertTrue(ε.containsAll(ε.characters.map{String($0)}), nok)
-    
+
     // a string contains one of its characters
     XCTAssertTrue(string.containsOne(string.characters.map{String($0)}), nok)
     // a empty string contains not one of its characters

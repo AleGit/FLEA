@@ -3,7 +3,7 @@ import XCTest
 @testable import FLEA
 
 public class DictionarySubstitutionTests : FleaTestCase {
-  static var allTests : [(String, (DictionarySubstitutionTests) -> () throws -> Void)] {
+  static var allTests: [(String, (DictionarySubstitutionTests) -> () throws -> Void)] {
     return [
       ("testBasics", testBasics)
     ]
@@ -22,13 +22,13 @@ public class DictionarySubstitutionTests : FleaTestCase {
       return
     }
 
-    XCTAssertEqual(XYZ_abc,lcombined,"\(XYZ_abc) ≠ \(lcombined)")
+    XCTAssertEqual(XYZ_abc, lcombined, "\(XYZ_abc) ≠ \(lcombined)")
 
     guard let rc = (Y_b * Z_c), let rcombined = X_a * rc else {
       XCTFail("\(X_a) * \(Y_b) * \(Z_c) was not derived.")
       return
     }
 
-    XCTAssertEqual(XYZ_abc,rcombined,"\(XYZ_abc) ≠ \(rcombined)")
+    XCTAssertEqual(XYZ_abc, rcombined, "\(XYZ_abc) ≠ \(rcombined)")
   }
 }

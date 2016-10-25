@@ -9,6 +9,7 @@ public class Z3BasicsTests: FleaTestCase {
   static var allTests: [(String, (Z3BasicsTests) -> () throws -> Void)] {
     return [
       ("testVersionString", testVersionString),
+      ("testVersion", testVersion),
 
     ]
   }
