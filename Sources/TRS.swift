@@ -38,6 +38,10 @@ struct TRS<N:Node> : Sequence, CustomStringConvertible
 		rules.formUnion(other.rules)
 	}
 
+	static func ==(_ trs: TRS, _ other: TRS) -> Bool {
+		return trs.rules == other.rules
+	}
+
 	func union(_ other: TRS) -> TRS {
 		return TRS<N>(rules.union(other.rules))
 	}
