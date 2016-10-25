@@ -1,5 +1,6 @@
 
-struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
+struct TRS<N:Node> : Sequence, CustomStringConvertible
+       where N:SymbolStringTyped, N:Hashable {
   typealias Symbol = N.Symbol
 	typealias R = Rule<N>
 	typealias Iterator = TRSIterator<N>
@@ -26,6 +27,8 @@ struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
 	}
 
 	var isEmpty : Bool { return rules.isEmpty }
+
+	var count: Int { return rules.count }
 
 	mutating func add(_ rule: R) {
 		rules.insert(rule)
@@ -64,6 +67,10 @@ struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
 		return union(self.map { $0.flip })
 	}
 
+	var normalize: TRS {
+		return self.map { $0.normalize }
+	}
+
   // Return critical pairs with trs.
 	var cps: TRS {
     return TRS<N>(rules.flatMap{ $0.cps(with: self).rules })
@@ -74,10 +81,39 @@ struct TRS<N:Node> : Sequence where N:SymbolStringTyped, N:Hashable {
 	  for st in self {
 			let s = st.lhs.nf(with: other)
 			let t = st.rhs.nf(with: other)
-      simp.add(R(s, t))
+      simp.add(R(s, t).normalize)
 	  }
 		return simp
 	}
+
+	func simplifiedNontrivial(with other: TRS) -> TRS {
+		return simplify(with: other).filter({ $0.nontrivial })
+	}
+
+  // return l->r' such that l->r is in self, l is irreducible an r' = NF(r)
+	var reduced: TRS {
+		var reduced = TRS<N>()
+	  for st in self {
+			guard !st.lhs.isReducible(with: reduced) else { continue }
+			let t = st.rhs.nf(with: reduced)
+			let rule = R(st.lhs, t).normalize
+
+			let new = TRS<N>([ rule ])
+			var red = new
+			for lr in reduced {
+				guard !lr.lhs.isReducible(with: new) else { continue }
+				let r = lr.rhs.nf(with: new)
+				red.add(R(lr.lhs, r).normalize)
+			}
+			reduced = red
+	  }
+		return reduced
+	}
+
+	var description: String {
+		let s = rules.reduce("{", { $0 + "\n  " + String(describing: $1)})
+		return s + "\n}"
+  }
 }
 
 
