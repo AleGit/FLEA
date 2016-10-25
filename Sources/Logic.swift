@@ -64,6 +64,7 @@ protocol LogicContext {
 
 
 protocol OptLogicContext : LogicContext {
+  init(optimize opt: Bool)
   func maximize(_ expr: Expr) -> Int?
   func minimize(_ expr: Expr) -> Int?
   func push()
