@@ -3,9 +3,9 @@ import XCTest
 import Foundation
 @testable import FLEA
 
-public class ProcessTests : FleaTestCase {
+public class CommandLineTests : FleaTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests : [(String, (ProcessTests) -> () throws -> Void)]  {
+  static var allTests : [(String, (CommandLineTests) -> () throws -> Void)]  {
     return [
     // ("testMacOS", testMacOS),
     ("testOS", testOS),

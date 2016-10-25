@@ -3,26 +3,29 @@ import XCTest
 
 XCTMain([
   testCase(AuxiliaryTests.allTests),
+  testCase(CommandLineTests.allTests),
   testCase(CTptpParsingApiTests.allTests),
   testCase(CYicesApiTests.allTests),
-  testCase(DescriptionTests.allTests),
   testCase(DemoTests.allTests),
+  testCase(DescriptionTests.allTests),
   testCase(DictionarySubstitutionTests.allTests),
   testCase(DictionaryUnificationTests.allTests),
 
   testCase(KinNodeTests.allTests),
-  testCase(NodeTests.allTests),
   testCase(NodePathsTests.allTests),
-  // testCase(ParseTptpTests.allTests),
+  testCase(NodePropertiesTests.allTests),
+  testCase(NodeTests.allTests),
+  // testCase(ParseTptpTests.allTests), // to expensive
   testCase(PositionTests.allTests),
+  testCase(ProverletTests.allTests),
   testCase(ProverTests.allTests),
 
-  testCase(ProcessTests.allTests),
   testCase(SharingNodeTests.allTests),
   testCase(SmartNodeTests.allTests),
   testCase(StringLiteralTests.allTests),
 
   testCase(StringPathTests.allTests),
+  testCase(StringTypedTests.allTests),
   testCase(SubstitutionPerformanceTests.allTests),
   testCase(SubstitutionTests.allTests),
   testCase(SyslogTests.allTests),
