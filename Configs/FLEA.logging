@@ -3,19 +3,13 @@
 # emergency < alert < critical < error < warning < notice < info < debug
 # for details see Project/Configs.
 
-"---"                           :: "error"   # global minimum log priority
-"+++"                           :: "debug"   # global maximal log priority
-"***"                           :: "error" # global default log priority
+"---"                           :: "error"   # minimal log priority
+"+++"                           :: "warning" # maximal log priority
+"***"                           :: "error"   # default log priority
 
-# evaluationn for for logging active 
-# priority of origin »file«/»function»:
-# »file«/»function»:»value«
-# »file : »value«
-# »***» : »value« 
-
-# "Tptp.File.swift"       :: "debug"
+# "Tptp.File.swift"       :: "debug"    // file specific log priority
 # "URL+FilePath.swift"    :: "debug"
 # "Prover.swift"          :: "debug"
 # "main.swift"            :: "debug"
-# "CommandLine.swift" :: "String"
- 
+# "CommandLine.swift"     :: "String"
+

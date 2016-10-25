@@ -32,11 +32,15 @@ This directory contains the output of swift debug or release builds.
 ### Configs _[Preliminary]_
 This directory holds configuration files for logging.
 The confiuration file will be selected by command line argument
-or based on the process name, e.g. /path/to/name.xctest -> logging.xctest.
+or based on the process name, e.g.
+- `/path/to/name.xctest` -> `xctest.logging`
+- `.build/debug/FLEA` -> `FLEA.logging`
+
 A logging configuration file determines the general and specific
 loggging priorities. At runtime a logging message with priority »priortiy«
 and originating from »file«/»function« (with »scope« _n/a_) will be written:
-- if the message »priority« is smaller than the maximal logging priority _and_
+- if the message »priority« is prior (i.e.smaller or equal)
+  to the maximal logging priority _and_
   - the message »priorty« is prior to the minimal logging priority
   - _or_ the »file«/»function« priority value exists
       _and_ »priority« is prior to it,

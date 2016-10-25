@@ -5,18 +5,8 @@
 
 "---"                           :: "error"   # global minimum log priority
 "+++"                           :: "debug"   # global maximal log priority
+
 "***"                           :: "error"   # global default log priority
 
-# evaluationn for for logging active
-# priority of origin »file«/»function»:
-# »file«/»function»:»value«
-# »file : »value«
-# »***» : »value«
-
-#"Tptp.File.swift"               :: "info"
-# "URL+FilePath.swift"          :: "info"
-#"Prover.swift"                  :: "error"
-#"ProverY.swift"                 :: "error"          # comment
-#"ProverY.swift/checkConflictsLinearily(negatedLiteral:clashings:)"  :: "error"
 
 

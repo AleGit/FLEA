@@ -54,18 +54,22 @@ extension URL {
       let url = URL(fileURLWithPath:"Configs/xctest.logging")
       if url.isAccessible { return url }
 
-      print(url, "is not accessible")
+      print("\(url) is not accessible") // logging is not active at this point
     }
 
     let url = URL(fileURLWithPath:CommandLine.name)
 
     let name = url.lastPathComponent
     if !name.isEmpty {
+      #if DEBUG
+      let degubUrl = URL(fileURLWithPath:"Configs/\(name).debug.logging")
+      if url.isAccessible { return degubUrl }
+      #endif
 
       let url = URL(fileURLWithPath:"Configs/\(name).logging")
       if url.isAccessible { return url }
 
-      print(url, "is not accessible")
+      print("\(url) is not accessible") // logging is not active at this point
     }
 
     return URL(fileURLWithPath: "Configs/default.logging")

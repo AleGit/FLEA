@@ -1,24 +1,27 @@
 # CONFIGURATION
 
+# FLEA's logging system wrappes [syslog](https://en.wikipedia.org/wiki/Syslog)
+#
 # log levels: 1...8
-# emergency < alert < critical < error < warning < notice < info < .debug
+# emergency < alert < critical < error < warning < notice < info < debug
 
-# minimal log level - everything lower will be logged
-# maximal log level - nothing higher than this will be logged
-# default log level - the log level for unspecified files or functions
-# specific log level for files and functions
+# a minimal, default, and maximal log level can be configured
+#
+# - `minimal ≤ default ≤ maximal` is recommended.
+# - `error ≤ minimum` is recommended - emergency, alert, critical, error should be reported.
+# - `maximal < notice` is recommended for release builds
 
-# minimal <= actual default log level <= maximal log level
-# minimal <= actual specific file log level <= maximal log level
-# minimal actual specific file function log level <= maximal log level
+"---"                        :: "error"     # minimal log level
+"***"                        :: "warning"   # default log level
+"+++"                        :: "notice"    # maximal log level
 
-# setLogMask(upTo:minimal)
+# minimal log level - error: everything not higher will be logged (emergency, alert, critical, error)
+# maximal log level - notice: nothing higher than this will be logged (info, debug)
+#
+# default log level - warning: the log level for unspecified files or functions priorities
 
-"---"                        :: "error"  # minimal log level
-"+++"                        :: "error"  # maximal log level 
-"***"                        :: "error"  # default log level
-"String+Path.swift"          :: "debug"  # specific file log level
-"Demo.swift"                 :: "error"  # specific file log level
-"Node.swift/init"            :: "info"   # specific file function log level
+"String+Path.swift"          :: "debug"  # file specific log priority
+"Demo.swift"                 :: "error"  # file specific log priority
+"Node.swift/init"            :: "info"   # file/function specific log priority
 
 
