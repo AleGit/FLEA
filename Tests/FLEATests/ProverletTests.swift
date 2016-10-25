@@ -46,4 +46,22 @@ public class ProverletTests: YicesTestCase {
 
           }
   }
+
+  func testClauses() {
+
+    let clauses = Clauses<TestNode>()
+
+    XCTAssertTrue((true, 0) == clauses.insert(clause:"p(X)|q(Y)"))    // new
+    XCTAssertTrue((false, 0) == clauses.insert(clause:"p(X)|q(Y)"))
+    XCTAssertTrue((true, 1) == clauses.insert(clause:"p(X)|q(X)"))    // new
+
+    XCTAssertTrue((true, 2) == clauses.insert(clause:"@cnf p(X)"))    // new
+
+    XCTAssertTrue((false, 2) == clauses.insert(clause:"@cnf p(Z)"))
+    XCTAssertTrue((false, 0) == clauses.insert(clause:"p(Z)|q(Y)"))
+    XCTAssertTrue((false, 1) == clauses.insert(clause:"p(Z)|q(Z)"))
+
+    XCTAssertEqual(3, clauses.count)
+
+  }
 }

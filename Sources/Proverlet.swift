@@ -1,8 +1,51 @@
 //  Copyright © 2016 Alexander Maringele. All rights reserved.
 
+import CYices
+
 /* The class `Proverlet` implements a procedure to process a list of clauses to infer new clauses
  until an unsatisfiable instances is found or now new clauses can be inferred.
  */
+
+ final class Clauses<N:Node>
+  where N:SymbolStringTyped {
+     private var clauses = Array<N>()
+
+     /// map yices clauses to tptp clauses
+     /// - variants of tptp clauses will be encoded to the same yices term
+     /// - variable renamings of tptp clauses too
+     /// tptp clauses with the same encoding could be variants
+     private var clauseVariants = Dictionary<term_t, Set<Int>>()
+
+     var count: Int { return clauses.count }
+
+
+     /// insert a normalized copy of the clause if no variant is allready there
+     // @discardableResult
+     func insert(clause: N) -> (inserted: Bool, indexAfterInsert: Int) {
+
+         let newClause = clause.normalized(prefix:"X")
+         let newIndex = clauses.count
+         let (yicesClause, _, _) = Yices.clause(newClause)
+
+         guard let candidates = clauseVariants[yicesClause] else {
+             // there are no candidates for variants
+             clauseVariants[yicesClause] = Set(arrayLiteral: newIndex)
+             clauses.append(newClause)
+             return (true, newIndex)
+         }
+
+         if let index = candidates.first(where: { newClause == clauses[$0]}) {
+             // a variant was found (variants must be equal because of normalization)
+             print(newClause, clauses[index])
+             return (false, index)
+         }
+
+         // a new clause
+         clauseVariants[yicesClause]?.insert(newIndex)
+         clauses.append(newClause)
+         return (true, newIndex)
+    }
+ }
 
 
 
@@ -14,12 +57,7 @@ where N:SymbolStringTyped {
     /// List of (clause name, clause role, clause) triples.
     fileprivate var parsedClauses: Array<(String, Tptp.Role, N)>
 
-
-    /// index structure to find clashing selected literals
-    fileprivate var literals = TrieClass<SymHop<N.Symbol>, Int>()
-
-    /// index structure to find clause variants
-    fileprivate var variants = TrieClass<N.Symbol, Int>()
+    fileprivate let clauses = Clauses<N>()
 
 
 
@@ -53,6 +91,17 @@ where N:SymbolStringTyped {
             parsedClauses += axioms
             parsedFiles.append((url.path, axioms.count))
         }
+
+        // preliminary
+
+        for (_, _, clause) in parsedClauses {
+            let _ = clauses.insert(clause:clause)
+        }
+
+        // preliminary
+        Syslog.warning(condition: clauses.count != parsedClauses.count) {
+            "Problem '\(name)' holds mutliple veriants of clauses."
+        }
     }
 
     var fileCount: Int {
@@ -60,7 +109,7 @@ where N:SymbolStringTyped {
     }
 
     var clauseCount: Int {
-        return parsedClauses.count
+        return clauses.count
     }
 }
 

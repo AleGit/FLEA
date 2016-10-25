@@ -6,7 +6,7 @@
 "---"                           :: "error"   # global minimum log priority
 "+++"                           :: "debug"   # global maximal log priority
 
-"***"                           :: "error"   # global default log priority
+"***"                           :: "warning"   # global default log priority
 
 
 
