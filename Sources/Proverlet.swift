@@ -2,52 +2,9 @@
 
 import CYices
 
-/* The class `Proverlet` implements a procedure to process a list of clauses to infer new clauses
- until an unsatisfiable instances is found or now new clauses can be inferred.
- */
-
- final class Clauses<N:Node>
-  where N:SymbolStringTyped {
-     private var clauses = Array<N>()
-
-     /// map yices clauses to tptp clauses
-     /// - variants of tptp clauses will be encoded to the same yices term
-     /// - variable renamings of tptp clauses too
-     /// tptp clauses with the same encoding could be variants
-     private var clauseVariants = Dictionary<term_t, Set<Int>>()
-
-     private var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, Int>()
-
-     var count: Int { return clauses.count }
-
-     /// insert a normalized copy of the clause if no variant is allready there
-     func insert(clause: N) -> (inserted: Bool, indexAfterInsert: Int) {
-
-         let newClause = clause.normalized(prefix:"X")
-         let newIndex = clauses.count
-         let (yicesClause, yicesLiterals, shuffledYicesLiterals) = Yices.clause(newClause)
-
-         guard let candidates = clauseVariants[yicesClause] else {
-             // there are no candidates for variants
-             clauseVariants[yicesClause] = Set(arrayLiteral: newIndex)
-             clauses.append(newClause)
-             return (true, newIndex)
-         }
-
-         if let index = candidates.first(where: { newClause == clauses[$0]}) {
-             // a variant was found (variants must be equal because of normalization)
-             return (false, index)
-         }
-
-         // a new clause
-         clauseVariants[yicesClause]?.insert(newIndex)
-         clauses.append(newClause)
-         return (true, newIndex)
-    }
- }
-
-
-
+/// `Proverlet` implements a procedure to process a list of clauses to infer new clauses
+/// until an unsatisfiable set of ground instances was found or no new clauses could be inferred.
+/// The procedure may not terminate or may consume to much space and time.
 final class Proverlet<N:Node>: Prover
 where N:SymbolStringTyped {
     /// List of (file path, number of clauses) pairs.
@@ -56,6 +13,9 @@ where N:SymbolStringTyped {
     /// List of (clause name, clause role, clause) triples.
     fileprivate var parsedClauses: Array<(String, Tptp.Role, N)>
 
+    /// a at least syntactically variant free collection of clauses
+    /// - syntactically variant free: {p(X)|q(Y), q(Z)|p(X)} excludes p(Y)|q(Z)
+    /// - semantically variant free: {p(X)|q(Y)} excludes q(Z)|p(X)
     fileprivate let clauses = Clauses<N>()
 
 
