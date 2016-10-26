@@ -20,19 +20,22 @@ final class Clauses<N:Node> : ClauseCollection
 
      private var clauses = Array<Clause>()
 
-     /// map yices clauses to tptp clauses
-     /// - variants of tptp clauses will be encoded to the same yices term
-     /// - variable renamings of tptp clauses too
-     /// tptp clauses with the same encoding could be variants
-     /// Let F be the clause p(A)|q(B)
-     /// then the clauses
+     /// map yices clauses of type `term_t` to tptp clauses of type `Node``
+     /// for fast variant candidates retrieval.
+     /// 
+     /// Let F be the clause p(A)|q(B). Then the clauses
      /// - p(X)|q(Y), a (structural) variant with renaming [A→Y,B→X]
-     /// - p(X)|q(X), a (structural) instance with variable substitution [A→X,B→X]
+     /// - p(X)|q(X), a (structural) non-proper instance with variable substitution [A→X,B→X]
      /// - q(X)|p(Y), a variant with q(X)|p(Y)≣p(Y)|q(X) and renaming [A→Y,B→X]
      /// - p(X)|q(Y)|q(Z), a generalization with variable substitution [X→A, Y→B, Z→B])
-     /// are all variant candidates of F, because 
-     /// F_ = p(_)|q(_) ≣ p(_)|q(_) ≣ p(_)|q(_) ≣ q(_)|p(_)p(_) ≣ q(_)|q(_)
-     private var clauseVariants = Dictionary<term_t, Set<ClauseReference>>()
+     /// are ingorable for satisfiability and their corresponding yices terms are equivalent to p(_)|q(_).
+
+     /// Let G be the clause p(A)|q(A). Then the clauses
+     /// - p(X)|q(Y), a generalization of G with [X→A, Y→B]
+     /// - p(X)|q(Y)|q(Z), a generalization of G with [X→A, Y→B, Y→C]
+     /// is not ignorable, but their corresponding yices terms are equivalent to p(_)|q(_),
+     /// but these cases will not occur.
+     private var clauseVariantCandidates = Dictionary<term_t, Set<ClauseReference>>()
 
      /// map leaf paths to literal, i.e. pairs of clauses and selected literals
      private var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, LiteralReference>()
@@ -69,9 +72,9 @@ final class Clauses<N:Node> : ClauseCollection
          let newIndex = clauses.count
          let (yicesClause, yicesLiterals, shuffledYicesLiterals) = Yices.clause(newClause)
 
-         guard let candidates = clauseVariants[yicesClause] else {
+         guard let candidates = clauseVariantCandidates[yicesClause] else {
              // there are no candidates for variants
-             clauseVariants[yicesClause] = Set(arrayLiteral: newIndex)
+             clauseVariantCandidates[yicesClause] = Set(arrayLiteral: newIndex)
              clauses.append(newClause)
              return (true, newIndex)
          }
@@ -82,7 +85,7 @@ final class Clauses<N:Node> : ClauseCollection
          }
 
          // a new clause
-         clauseVariants[yicesClause]?.insert(newIndex)
+         clauseVariantCandidates[yicesClause]?.insert(newIndex)
          clauses.append(newClause)
          return (true, newIndex)
     }
