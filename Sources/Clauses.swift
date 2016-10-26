@@ -11,11 +11,6 @@ protocol ClauseCollection {
     func insert(clause: Clause) -> (inserted:Bool, referenceAfterInsert: ClauseReference)
 }
 
-extension Pair {
-    var clauseReference: T { return values.0 }
-    var literalReference: U { return values.1 }
-}
-
 final class Clauses<N:Node> : ClauseCollection
   where N:SymbolStringTyped {
       typealias Clause = N
@@ -23,17 +18,25 @@ final class Clauses<N:Node> : ClauseCollection
       typealias ClauseReference = Int
       typealias LiteralReference = Pair<ClauseReference, Int>
 
-
      private var clauses = Array<Clause>()
 
      /// map yices clauses to tptp clauses
      /// - variants of tptp clauses will be encoded to the same yices term
      /// - variable renamings of tptp clauses too
      /// tptp clauses with the same encoding could be variants
+     /// Let F be the clause p(A)|q(B)
+     /// then the clauses
+     /// - p(X)|q(Y), a (structural) variant with renaming [A→Y,B→X]
+     /// - p(X)|q(X), a (structural) instance with variable substitution [A→X,B→X]
+     /// - q(X)|p(Y), a variant with q(X)|p(Y)≣p(Y)|q(X) and renaming [A→Y,B→X]
+     /// - p(X)|q(Y)|q(Z), a generalization with variable substitution [X→A, Y→B, Z→B])
+     /// are all variant candidates of F, because 
+     /// F_ = p(_)|q(_) ≣ p(_)|q(_) ≣ p(_)|q(_) ≣ q(_)|p(_)p(_) ≣ q(_)|q(_)
      private var clauseVariants = Dictionary<term_t, Set<ClauseReference>>()
 
      /// map leaf paths to literal, i.e. pairs of clauses and selected literals
      private var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, LiteralReference>()
+
 
      private func clause(byLiteralReference reference:LiteralReference) -> Clause {
          return clauses[reference.values.0]
@@ -48,6 +51,7 @@ final class Clauses<N:Node> : ClauseCollection
              selectedLiteralsTrie.insert(reference, at:path)
          }
      }
+
      private func deselect(literalReference reference: LiteralReference) {
          for path in literal(byLiteralReference:reference).leafPaths {
              selectedLiteralsTrie.remove(reference, at:path)

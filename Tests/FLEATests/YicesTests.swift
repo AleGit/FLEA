@@ -93,4 +93,25 @@ public class YicesTests: YicesTestCase {
     let _ = context.insure(clause:empty)
     XCTAssertFalse(context.isSatisfiable)
   }
+
+  func testVariants() {
+    let a = "p(X)|q(Y)" as Q.Node
+    let b = "p(Y)|q(Z)" as Q.Node
+    let c = "q(Z)|p(X)" as Q.Node
+    let d = "q(A)|q(B)|p(C)" as Q.Node
+
+    let ya = Yices.clause(a)
+    let yb = Yices.clause(b)
+    let yc = Yices.clause(c)
+    let yd = Yices.clause(d)
+
+    XCTAssertEqual(ya.0, yb.0)
+    XCTAssertEqual(ya.0, yc.0)
+    XCTAssertEqual(ya.0, yd.0)
+    XCTAssertEqual(yb.0, yc.0)
+    XCTAssertEqual(yb.0, yd.0)
+    XCTAssertEqual(yc.0, yd.0)
+
+
+  }
 }
