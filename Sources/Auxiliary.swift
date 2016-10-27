@@ -183,18 +183,22 @@ public func utileMeasure<R>(f: () -> R) -> (R, UtileTimes) {
   return (result, end - start)
 }
 
-struct Pair<T:Hashable,U:Hashable> : Hashable {
-  let values : (T, U)
+struct Pair<T: Hashable, U: Hashable> : Hashable {
+  let values: (T, U)
 
-  var hashValue : Int {
+  var hashValue: Int {
       get {
-          let (a,b) = values
+          let (a, b) = values
           return a.hashValue &* 31 &+ b.hashValue
       }
+  }
+
+  init(_ t: T, _ u: U) {
+    values = (t, u)
   }
 }
 
 // comparison function for conforming to Equatable protocol
-func ==<T:Hashable,U:Hashable>(lhs: Pair<T,U>, rhs: Pair<T,U>) -> Bool {
+func ==<T: Hashable, U: Hashable>(lhs: Pair<T, U>, rhs: Pair<T, U>) -> Bool {
   return lhs.values == rhs.values
 }

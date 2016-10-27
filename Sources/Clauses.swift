@@ -16,13 +16,15 @@ final class Clauses<N:Node> : ClauseCollection
       typealias Clause = N
       typealias Literal = N
       typealias ClauseReference = Int
-      typealias LiteralReference = Pair<ClauseReference, Int>
+      typealias LiteralIndex = Int
+      typealias LiteralReference = Pair<ClauseReference, LiteralIndex>
 
      private var clauses = Array<Clause>()
+     private var triples = Array<Yices.Tuple>()
 
      /// map yices clauses of type `term_t` to tptp clauses of type `Node``
      /// for fast variant candidates retrieval.
-     /// 
+     ///
      /// Let F be the clause p(A)|q(B). Then the clauses
      /// - p(X)|q(Y), a (structural) variant with renaming [A→Y,B→X]
      /// - p(X)|q(X), a (structural) non-proper instance with variable substitution [A→X,B→X]
@@ -35,58 +37,89 @@ final class Clauses<N:Node> : ClauseCollection
      /// - p(X)|q(Y)|q(Z), a generalization of G with [X→A, Y→B, Y→C]
      /// is not ignorable, but their corresponding yices terms are equivalent to p(_)|q(_),
      /// but these cases will not occur.
-     private var clauseVariantCandidates = Dictionary<term_t, Set<ClauseReference>>()
-
-     /// map leaf paths to literal, i.e. pairs of clauses and selected literals
-     private var selectedLiteralsTrie = TrieClass<SymHop<N.Symbol>, LiteralReference>()
-
-
-     private func clause(byLiteralReference reference:LiteralReference) -> Clause {
-         return clauses[reference.values.0]
-     }
-
-     private func literal(byLiteralReference reference:LiteralReference) -> Literal {
-         return clauses[reference.values.0].nodes![reference.values.1]
-     }
-
-     private func select(literalReference reference: LiteralReference) {
-         for path in literal(byLiteralReference:reference).leafPaths {
-             selectedLiteralsTrie.insert(reference, at:path)
-         }
-     }
-
-     private func deselect(literalReference reference: LiteralReference) {
-         for path in literal(byLiteralReference:reference).leafPaths {
-             selectedLiteralsTrie.remove(reference, at:path)
-         }
-     }
-
-
-
+     private var registeredClauseReferences = Dictionary<term_t, Set<ClauseReference>>()
      var count: Int { return clauses.count }
 
+     /// map leaf paths to literal, i.e. pairs of clauses and selected literals
+     private var registeredLiteralReferences = TrieClass<SymHop<N.Symbol>, LiteralReference>()
+
+     private func clause(literalReference: LiteralReference) -> Clause {
+         let (clauseReference, _) = literalReference.values
+         return clauses[clauseReference]
+     }
+
+     private func literal(literalReference: LiteralReference) -> Literal {
+         let (clauseReference, literalIndex) = literalReference.values
+         return clauses[clauseReference].nodes![literalIndex]
+     }
+
+     private func yicesLiteral(literalReference: LiteralReference) -> term_t {
+         let (clauseReference, literalIndex) = literalReference.values
+         return triples[clauseReference].literals[literalIndex]
+     }
+
+     private func register(literalReference: LiteralReference) {
+         for path in literal(literalReference:literalReference).leafPaths {
+             let _ = registeredLiteralReferences.insert(literalReference, at:path)
+         }
+     }
+
+     private func deregister(literalReference: LiteralReference) {
+         for path in literal(literalReference:literalReference).leafPaths {
+             let _ = registeredLiteralReferences.remove(literalReference, at:path)
+         }
+     }
+
+     /// search for a literal of a clause that holds in model
+     private func selectLiteral(clauseReference: ClauseReference,
+     consider: @autoclosure (term_t) -> Bool = true ,
+     model: Yices.Model) -> LiteralReference? {
+         let (_, literals, shuffled) = triples[clauseReference]
+
+         guard let t = shuffled.first(where: { consider($0) && model.implies(formula:$0) }),
+         let idx = literals.index(of:t) else {
+              Syslog.error { "\(literals),\(shuffled) do not hold in model" }
+              return nil
+         }
+
+         return LiteralReference(clauseReference, idx)
+    }
+
+    /// referenced yices literal and its valuation in model
+    private func validate(literalReference: LiteralReference,
+    model: Yices.Model) -> (term_t, Bool) {
+        let t = yicesLiteral(literalReference: literalReference)
+        return (t, model.implies(formula: t))
+    }
+
+    private func insert(clause: N, triple: Yices.Tuple) -> ClauseReference {
+        assert(clauses.count == triples.count)
+
+        let clauseReference = clauses.count
+
+        clauses.append(clause)
+        triples.append(triple)
+
+        if registeredClauseReferences[triple.clause]?.insert(clauseReference) == nil {
+            registeredClauseReferences[triple.clause] = Set(arrayLiteral: clauseReference)
+        }
+
+        return clauseReference
+
+    }
+
      /// insert a normalized copy of the clause if no variant is allready there
-     func insert(clause: N) -> (inserted: Bool, referenceAfterInsert: Int) {
+     func insert(clause: N) -> (inserted: Bool, referenceAfterInsert: ClauseReference) {
 
-         let newClause = clause.normalized(prefix:"X")
-         let newIndex = clauses.count
-         let (yicesClause, yicesLiterals, shuffledYicesLiterals) = Yices.clause(newClause)
+         let newClause = clause.normalized(prefix:"V")
+         let newTriple = Yices.clause(newClause)
 
-         guard let candidates = clauseVariantCandidates[yicesClause] else {
-             // there are no candidates for variants
-             clauseVariantCandidates[yicesClause] = Set(arrayLiteral: newIndex)
-             clauses.append(newClause)
-             return (true, newIndex)
-         }
+         if let clauseReference = registeredClauseReferences[newTriple.clause]?.first(where: {
+             newClause == clauses[$0]
+             }) {
+             return (false, clauseReference)
+        }
 
-         if let index = candidates.first(where: { newClause == clauses[$0]}) {
-             // a variant was found (variants must be equal because of normalization)
-             return (false, index)
-         }
-
-         // a new clause
-         clauseVariantCandidates[yicesClause]?.insert(newIndex)
-         clauses.append(newClause)
-         return (true, newIndex)
+         return (true, insert(clause:newClause, triple:newTriple))
     }
  }
