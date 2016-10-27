@@ -12,7 +12,8 @@ public class ProverletTests: YicesTestCase {
       // ("testInitPUZ001c1", testInitPUZ001c1),
       // ("testInitPUZ062c1", testInitPUZ062c1),
       ("testPUZs", testPUZs),
-      ("testClauses", testClauses)
+      ("testClauses", testClauses),
+      ("testLiterals", testLiterals)
     ]
   }
 
