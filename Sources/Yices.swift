@@ -75,14 +75,14 @@ extension Yices {
 		}
 
 		var isSatisfiable: Bool {
-			switch yices_check_context(context, nil) {
+			let status = yices_check_context(context, nil)
+			switch status {
 				case STATUS_SAT:
 				return true
 				case STATUS_UNSAT:
 				return false
 				default:
-				print("-------------------------------------------------------")
-				assert(false)
+				assert(false, "\(status)")
 				return true
 			}
 		}

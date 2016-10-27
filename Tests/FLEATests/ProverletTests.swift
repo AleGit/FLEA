@@ -62,7 +62,19 @@ public class ProverletTests: YicesTestCase {
     XCTAssertTrue((false, 0) == clauses.insert(clause:"p(Z)|q(Y)"))
     XCTAssertTrue((false, 1) == clauses.insert(clause:"p(Z)|q(Z)"))
 
-    XCTAssertEqual(3, clauses.count)
+    XCTAssertTrue((true, 3) == clauses.insert(clause:"q(X)|p(Y)")) // unfortunately new
 
+    XCTAssertEqual(4, clauses.count)
+
+  }
+
+  func testLiterals() {
+    print(Yices.clause("p(X)|p(Z)|q(Y)" as TestNode))
+    print(Yices.clause("q(X)|p(Y)" as TestNode))
+    print(Yices.clause("p(X)|q(Y)" as TestNode))
+
+    print(Yices.clause("~p(X)|p(Z)|q(Y)" as TestNode))
+    print(Yices.clause("q(X)|~p(Y)" as TestNode))
+    print(Yices.clause("~p(X)|q(Y)" as TestNode))
   }
 }

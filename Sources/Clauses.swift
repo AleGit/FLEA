@@ -8,7 +8,7 @@ protocol ClauseCollection {
     associatedtype ClauseReference : Hashable
     associatedtype LiteralReference : Hashable
 
-    func insert(clause: Clause) -> (inserted:Bool, referenceAfterInsert: ClauseReference)
+    func insert(clause: Clause) -> (inserted: Bool, referenceAfterInsert: ClauseReference)
 }
 
 final class Clauses<N:Node> : ClauseCollection
@@ -21,6 +21,8 @@ final class Clauses<N:Node> : ClauseCollection
 
      private var clauses = Array<Clause>()
      private var triples = Array<Yices.Tuple>()
+     private var activeLiterals = Dictionary<ClauseReference, LiteralIndex>()
+     private var pendingLiterals = Dictionary<ClauseReference, LiteralIndex>()
 
      /// map yices clauses of type `term_t` to tptp clauses of type `Node``
      /// for fast variant candidates retrieval.
@@ -37,11 +39,11 @@ final class Clauses<N:Node> : ClauseCollection
      /// - p(X)|q(Y)|q(Z), a generalization of G with [X→A, Y→B, Y→C]
      /// is not ignorable, but their corresponding yices terms are equivalent to p(_)|q(_),
      /// but these cases will not occur.
-     private var registeredClauseReferences = Dictionary<term_t, Set<ClauseReference>>()
+     private var clauseReferences = Dictionary<term_t, Set<ClauseReference>>()
      var count: Int { return clauses.count }
 
      /// map leaf paths to literal, i.e. pairs of clauses and selected literals
-     private var registeredLiteralReferences = TrieClass<SymHop<N.Symbol>, LiteralReference>()
+     private var literalReferences = TrieClass<SymHop<N.Symbol>, LiteralReference>()
 
      private func clause(literalReference: LiteralReference) -> Clause {
          let (clauseReference, _) = literalReference.values
@@ -58,22 +60,31 @@ final class Clauses<N:Node> : ClauseCollection
          return triples[clauseReference].literals[literalIndex]
      }
 
-     private func register(literalReference: LiteralReference) {
+     private func activate(literalReference: LiteralReference) {
+         let (clauseReference, literalIndex) = literalReference.values
+
+         // an activated literal is not pending anymore
+         pendingLiterals[clauseReference] = nil
+         activeLiterals[clauseReference] = literalIndex
+
          for path in literal(literalReference:literalReference).leafPaths {
-             let _ = registeredLiteralReferences.insert(literalReference, at:path)
+             let _ = literalReferences.insert(literalReference, at:path)
          }
      }
 
-     private func deregister(literalReference: LiteralReference) {
+     private func deactivate(literalReference: LiteralReference) {
          for path in literal(literalReference:literalReference).leafPaths {
-             let _ = registeredLiteralReferences.remove(literalReference, at:path)
+             let _ = literalReferences.remove(literalReference, at:path)
          }
+
+         let (clauseReference, _) = literalReference.values
+         activeLiterals[clauseReference] = nil
      }
 
      /// search for a literal of a clause that holds in model
      private func selectLiteral(clauseReference: ClauseReference,
-     consider: @autoclosure (term_t) -> Bool = true ,
-     model: Yices.Model) -> LiteralReference? {
+     consider: (term_t) -> Bool = { _ in true } ,
+     model: Yices.Model) -> LiteralIndex? {
          let (_, literals, shuffled) = triples[clauseReference]
 
          guard let t = shuffled.first(where: { consider($0) && model.implies(formula:$0) }),
@@ -82,17 +93,18 @@ final class Clauses<N:Node> : ClauseCollection
               return nil
          }
 
-         return LiteralReference(clauseReference, idx)
+         return idx
     }
 
     /// referenced yices literal and its valuation in model
-    private func validate(literalReference: LiteralReference,
+    private func validateLiteral(literalReference: LiteralReference,
     model: Yices.Model) -> (term_t, Bool) {
         let t = yicesLiteral(literalReference: literalReference)
         return (t, model.implies(formula: t))
     }
 
-    private func insert(clause: N, triple: Yices.Tuple) -> ClauseReference {
+    /// append and register an allready _normalized_ and _encoded_ clause to collectctions
+    private func append(clause: N, triple: Yices.Tuple) -> ClauseReference {
         assert(clauses.count == triples.count)
 
         let clauseReference = clauses.count
@@ -100,12 +112,11 @@ final class Clauses<N:Node> : ClauseCollection
         clauses.append(clause)
         triples.append(triple)
 
-        if registeredClauseReferences[triple.clause]?.insert(clauseReference) == nil {
-            registeredClauseReferences[triple.clause] = Set(arrayLiteral: clauseReference)
+        if clauseReferences[triple.clause]?.insert(clauseReference) == nil {
+            clauseReferences[triple.clause] = Set(arrayLiteral: clauseReference)
         }
 
         return clauseReference
-
     }
 
      /// insert a normalized copy of the clause if no variant is allready there
@@ -114,12 +125,49 @@ final class Clauses<N:Node> : ClauseCollection
          let newClause = clause.normalized(prefix:"V")
          let newTriple = Yices.clause(newClause)
 
-         if let clauseReference = registeredClauseReferences[newTriple.clause]?.first(where: {
+         if let clauseReference = clauseReferences[newTriple.clause]?.first(where: {
              newClause == clauses[$0]
              }) {
              return (false, clauseReference)
         }
 
-         return (true, insert(clause:newClause, triple:newTriple))
+         return (true, append(clause:newClause, triple:newTriple))
     }
+
+
+    func insure(clauseReference: ClauseReference, context: Yices.Context) -> Bool {
+        let (yicesClause, _, _) = triples[clauseReference]
+
+        guard context.insure(clause: yicesClause),
+        let model = Yices.Model(context: context) else {
+            return false // not satisfiable
+        }
+        // context is satisfiable and a model was constructed
+
+        pendingLiterals[clauseReference] = selectLiteral(
+            clauseReference:clauseReference, model: model
+        )
+
+        for (clauseReference, literalIndex) in activeLiterals {
+            let literalReference = LiteralReference(clauseReference, literalIndex)
+
+            let (term, holds) = validateLiteral(
+                literalReference:literalReference,
+                model:model
+            )
+
+            if holds { continue }
+
+            deactivate(literalReference: literalReference)
+
+            pendingLiterals[clauseReference] = selectLiteral(
+                clauseReference: clauseReference, consider: { $0 != term },
+                model: model )
+        }
+
+        return true
+
+    }
+
+
  }
