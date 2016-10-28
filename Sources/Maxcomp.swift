@@ -16,11 +16,12 @@ where O.NodeType == N, O.LogicContextType == C {
 		var sum = zero
 		let es_symm = es.symm
     for c in es_symm {
-			sum = sum + (order.gt(c.lhs, c.rhs)).ite(context.mkNum(1), zero)
+			sum = sum + ite(order.gt(c.lhs, c.rhs), context.mkNum(1), zero)
 		}
+		context.push()
 		guard let _ = context.maximize(sum) else { return nil }
 		guard let m = context.model else { return nil }
-
+    context.pop()
 		return es_symm.filter { m.evalBool(order.gt($0.lhs,$0.rhs)) == true }
 	}
 
@@ -31,6 +32,7 @@ where O.NodeType == N, O.LogicContextType == C {
   // find complete TRS, return nil upon failure
   func complete(_ es: ES, max_steps: Int) -> TRS<N>? {
 		print("max ", max_steps)
+		print("got ES: ", es)
 		guard max_steps > 0 else { print("maximal steps reached"); return nil }
 
 		guard var trs = maxTerm(es) else { return nil }
