@@ -12,8 +12,6 @@ public class ProverletTests: YicesTestCase {
       // ("testInitPUZ001c1", testInitPUZ001c1),
       // ("testInitPUZ062c1", testInitPUZ062c1),
       ("testPUZs", testPUZs),
-      ("testClauses", testClauses),
-      ("testLiterals", testLiterals)
     ]
   }
 
@@ -47,35 +45,5 @@ public class ProverletTests: YicesTestCase {
       XCTAssertEqual(nof, theProver.fileCount, nok)
 
           }
-  }
-
-  func testClauses() {
-
-    let clauses = Clauses<TestNode>()
-
-    XCTAssertTrue((true, 0) == clauses.insert(clause:"p(X)|q(Y)"))    // new
-    XCTAssertTrue((false, 0) == clauses.insert(clause:"p(X)|q(Y)"))
-    XCTAssertTrue((true, 1) == clauses.insert(clause:"p(X)|q(X)"))    // new
-
-    XCTAssertTrue((true, 2) == clauses.insert(clause:"@cnf p(X)"))    // new
-
-    XCTAssertTrue((false, 2) == clauses.insert(clause:"@cnf p(Z)"))
-    XCTAssertTrue((false, 0) == clauses.insert(clause:"p(Z)|q(Y)"))
-    XCTAssertTrue((false, 1) == clauses.insert(clause:"p(Z)|q(Z)"))
-
-    XCTAssertTrue((true, 3) == clauses.insert(clause:"q(X)|p(Y)")) // unfortunately new
-
-    XCTAssertEqual(4, clauses.count)
-
-  }
-
-  func testLiterals() {
-    print(Yices.clause("p(X)|p(Z)|q(Y)" as TestNode))
-    print(Yices.clause("q(X)|p(Y)" as TestNode))
-    print(Yices.clause("p(X)|q(Y)" as TestNode))
-
-    print(Yices.clause("~p(X)|p(Z)|q(Y)" as TestNode))
-    print(Yices.clause("q(X)|~p(Y)" as TestNode))
-    print(Yices.clause("~p(X)|q(Y)" as TestNode))
   }
 }

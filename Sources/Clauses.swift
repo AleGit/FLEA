@@ -103,7 +103,7 @@ where N:SymbolStringTyped {
     }
 
     /// check if a literal still holds
-    private func validateLiteral(literalReference: LiteralReference,
+    private func validate(literalReference: LiteralReference,
     model: Yices.Model) -> (term_t, Bool) {
         let t = yicesLiteral(literalReference: literalReference)
         return (t, model.implies(formula: t))
@@ -155,7 +155,7 @@ where N:SymbolStringTyped {
         for (clauseReference, literalIndex) in activeLiterals {
             let literalReference = LiteralReference(clauseReference, literalIndex)
 
-            let (term, holds) = validateLiteral(
+            let (term, holds) = validate(
                 literalReference:literalReference,
                 model:model
             )
