@@ -7,6 +7,36 @@ final class YicesExpr : LogicExpr {
     self.expr = e
   }
 
+  static func ==(_ s: YicesExpr, _ t: YicesExpr) -> Bool {
+    return s.expr == t.expr
+  }
+
+  static func !=(_ s: YicesExpr, _ t: YicesExpr) -> Bool {
+    return s.expr != t.expr
+  }
+
+  var mkTop : YicesExpr {
+    return YicesExpr(yices_true())
+  }
+
+  var mkBot : YicesExpr {
+    return YicesExpr(yices_false())
+  }
+
+  var isFalse : Bool {
+    return expr == mkBot.expr
+  }
+
+  var isTrue : Bool {
+    return expr == mkTop.expr
+  }
+
+  var isZero : Bool {
+    let z = MemoryLayout<Int>.size == 4 ? yices_int32(Int32(0))
+                                        : yices_int64(Int64(0))
+    return expr == z
+  }
+
   func not() -> YicesExpr {
     return YicesExpr(yices_not(expr))
   }
@@ -164,13 +194,11 @@ final class YicesContext : LogicContext {
   var mkBot = YicesExpr(yices_false())
 
   func mkOr(_ ts: [Expr]) -> Expr {
-    var ts_copy = ts.map{ $0.expr }
-    return YicesExpr(yices_or(UInt32(ts.count), &ts_copy))
+    return ts.reduce(mkBot, { $0 ⋁ $1 })
   }
 
   func mkAnd(_ ts: [Expr]) -> Expr {
-    var ts_copy = ts.map{ $0.expr }
-    return YicesExpr(yices_and(UInt32(ts.count), &ts_copy))
+    return ts.reduce(mkTop, { $0 ⋀ $1 })
   }
   
   func freshVar(_ name: String, _ type: term_t) -> Expr  {

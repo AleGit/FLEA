@@ -26,6 +26,37 @@ public final class Z3Expr : LogicExpr {
     Z3_dec_ref(ctx.raw, self.expr)
   }
 
+  static func ==(_ s: Z3Expr, _ t: Z3Expr) -> Bool {
+    return s.expr == t.expr
+  }
+
+  static func !=(_ s: Z3Expr, _ t: Z3Expr) -> Bool {
+    return s.expr != t.expr
+  }
+
+  var mkTop : Z3Expr {
+    return Z3Expr(ctx, expr: Z3_mk_true(ctx.raw))
+  }
+
+  var mkBot : Z3Expr {
+    return Z3Expr(ctx, expr: Z3_mk_false(ctx.raw))
+  }
+
+  var isFalse : Bool {
+    return expr == mkBot.expr
+  }
+
+  var isTrue : Bool {
+    return expr == mkTop.expr
+  }
+
+  var isZero : Bool {
+    let int_type = Z3_mk_int_sort(ctx.raw)
+    let z = MemoryLayout<Int>.size == 4 ? Z3_mk_int(ctx.raw, Int32(0), int_type)
+                                        : Z3_mk_int64(ctx.raw,Int64(0),int_type)
+    return expr == z
+  }
+
   func clear() {
     Z3_dec_ref(ctx.raw, self.expr)
   }
@@ -55,7 +86,7 @@ public final class Z3Expr : LogicExpr {
   }
 
   func ite(_ t: Z3Expr, _ f: Z3Expr) -> Z3Expr {
-      return Z3Expr(ctx, expr: Z3_mk_ite(ctx.raw, expr, t.expr, f.expr))
+    return Z3Expr(ctx, expr: Z3_mk_ite(ctx.raw, expr, t.expr, f.expr))
   }
 
   // arithmetic operators
@@ -86,6 +117,8 @@ public final class Z3Expr : LogicExpr {
   }
 
   func add(_ t: Z3Expr) -> Z3Expr {
+    guard !isZero else { return t }
+    guard !t.isZero else { return self }
     return Z3Expr(ctx, expr: Z3_mk_add(ctx.raw, 2, [expr, t.expr]))
   }
   
@@ -269,13 +302,11 @@ final class Z3Context : OptLogicContext {
   var mkBot : Expr
 
   func mkOr(_ ts: [Expr]) -> Expr {
-    return Z3Expr(ctx, expr: Z3_mk_or(ctx.raw, UInt32(ts.count),
-                  Expr.toZ3Array(ts)))
+    return ts.reduce(mkBot, { $0 ⋁ $1 })
   }
 
   func mkAnd(_ ts: [Expr]) -> Expr {
-    return Z3Expr(ctx, expr: Z3_mk_and(ctx.raw, UInt32(ts.count),
-                  Expr.toZ3Array(ts)))
+    return ts.reduce(mkTop, { $0 ⋀ $1 })
   }
   
   func freshVar(_ name: String, _ type: ExprType) -> Expr  {

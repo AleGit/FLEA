@@ -1,4 +1,16 @@
 protocol LogicExpr {
+
+  // FIXME: those two exist to enable simplifying operators
+  var mkTop : Self { get }
+  var mkBot : Self { get }
+
+  var isTrue : Bool { get }
+  var isFalse : Bool { get }
+  var isZero : Bool { get }
+
+  static func ==(_ s: Self, _ t: Self) -> Bool
+  static func !=(_ s: Self, _ t: Self) -> Bool
+
   // logical operators
   func not() -> Self
   func and(_ t: Self) -> Self
@@ -74,16 +86,24 @@ protocol OptLogicContext : LogicContext {
 
 prefix operator !
 prefix func !<E:LogicExpr>(_ s : E) -> E {
+  guard !s.isTrue else { return s.mkBot }
+  guard !s.isFalse else { return s.mkTop }
   return s.not()
 }
 
 infix operator ⋀: LogicalConjunctionPrecedence
 func ⋀<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  guard !s.isTrue && s != t else { return t }
+  guard !t.isTrue else { return s }
+  guard !s.isFalse && !t.isFalse else { return s.mkBot }
   return s.and(t)
 }
 
 infix operator ⋁: LogicalDisjunctionPrecedence
 func ⋁<E:LogicExpr>(_ s : E, _ t: E) -> E {
+  guard !s.isFalse && s != t else { return t }
+  guard !t.isFalse else { return s }
+  guard !s.isTrue && !t.isTrue else { return s.mkTop }
   return s.or(t)
 }
 
@@ -125,4 +145,10 @@ func ≽<E:LogicExpr>(_ s : E, _ t: E) -> E {
 infix operator +: AdditionPrecedence
 func +<E:LogicExpr>(_ s : E, _ t: E) -> E {
   return s.add(t)
+}
+
+func ite<E:LogicExpr>(_ c: E, _ t: E, _ f: E) -> E {
+  guard !c.isTrue else { return t }
+  guard !c.isFalse else { return f }
+  return c.ite(t, f)
 }
