@@ -93,7 +93,13 @@ where N:SymbolStringTyped {
      model: Yices.Model) -> LiteralIndex? {
          let (_, literals, shuffled) = triples[clauseReference]
 
-         guard let t = shuffled.first(where: { consider($0) && model.implies(formula:$0) }),
+         guard 
+         // find a liteal term that holds in the model
+         let t = shuffled.first(where: { 
+             consider($0) // by default every literal term is considered
+             && model.implies(formula:$0) // that holds in the model
+             }),
+         // get the index of the liteal term thats holds in the model
          let idx = literals.index(of:t) else {
               Syslog.error { "\(literals),\(shuffled) do not hold in model" }
               return nil
