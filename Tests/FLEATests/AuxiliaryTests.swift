@@ -9,7 +9,7 @@ public class AuxiliaryTests: FleaTestCase {
       ("testUppercased", testUppercased),
       ("testContains", testContains),
       ("testIds", testIds),
-      // ("testMemoize", testMemoize)
+      ("testMemoize", testMemoize)
     ]
   }
 
@@ -156,50 +156,37 @@ public class AuxiliaryTests: FleaTestCase {
     XCTAssertEqual(a€a, "?")
   }
 
-  func _testMemoize() {
-    func fibunacci(value:Int) -> Int {
-      guard value > 2 else { return 1 }
+  func testMemoize() {
 
-      return fibunacci(value:value-2) + fibunacci(value:value-1)
+    let n = 36
+
+
+    let value = [n, n/2, n/3, n/4, n/5, 2, 1, 0]
+    print(value)
+
+
+    let (result0, time0) = utileMeasure {
+      value.map { fibonacci($0) }
     }
 
-    let value = 45
+    print(result0, time0.2)
 
-    let (memres, memt) = utileMeasure {
-      () -> Int in
-      let memfib = memoize {
-        (f:(Int)->Int, n:Int) in
-        n < 3 ? 1 : f(n-1)+f(n-2)
+    let (result1, time1) = utileMeasure {
 
-      }
-      return memfib(value)
-
-    }
-    print(memres, memt)
-
-
-    let (result, time) = utileMeasure {
-      () -> Int in
-      fibunacci(value:value)
+      value.map { fib1($0) }
     }
 
-    print(result, time)
+    print(result1, time1.2, time1.2/time0.2)
+    let (result2, time2) = utileMeasure {
 
-    let (seqres, seqt) = utileMeasure {
-      return ((1...value).reduce((0,1)) { 
-        a,b in (a.1, a.0+a.1)
-      }).0
+       value.map { fib2($0) }
     }
 
-    print(seqres, seqt)
+    print(result2, time2.2)
 
-    
-
-    XCTAssertEqual(memres, result)
-
-    XCTAssertEqual(seqres, result)
-    XCTAssertTrue(time > memt)
-    XCTAssertTrue(seqt > memt)
-
-  }
+    XCTAssertEqual(result0, result1)
+    XCTAssertEqual(result0, result2)
+    XCTAssertTrue(time0 < time1)
+    XCTAssertTrue(time2 < time0)
+    }
 }

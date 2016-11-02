@@ -203,32 +203,50 @@ func ==<T: Hashable, U: Hashable>(lhs: Pair<T, U>, rhs: Pair<T, U>) -> Bool {
   return lhs.values == rhs.values
 }
 
-
-func memoize<T:Hashable, U>(fn : @escaping (T) -> U) -> (T) -> U {
-  var cache = [T:U]()
-  return {
-    (val : T) -> U in
-
-    if let result = cache[val] {
-      return result
-    }
-
-    let result = fn(val)
-    cache[val] = result
-    return result
-  }
-}
-
-func memoize<T:Hashable, U>( body: @escaping((T)->U,T) -> U) -> (T)->U {
+func memoize<T: Hashable, U>( body: @escaping((T) -> U, T) -> U) -> (T) -> U {
   var memo = [T:U]()
-  var result: ((T)->U)!
+  var result: ((T) -> U)!
   result = { x in
     if let q = memo[x] { return q }
-    let r = body(result,x)
+    let r = body(result, x)
     memo[x] = r
     return r
   }
   return result
 }
 
-// let fibonacci = memoize { (fibonacci:Int->Double,n:Int) in n < 2 ? Double(n) : fibonacci(n-1) + fibonacci(n-2) }
+let fibonacci = memoize {
+  (f0: (Int) -> Int, n: Int) in n < 2 ? (n) : f0(n-1) + f0(n-2)
+}
+
+func memoize2<U> ( body: @escaping((Int) -> U, Int) -> U) -> (Int) -> U {
+  var memo = [U]()
+  var result: ((Int) -> U)!
+  result = { x in
+    if x < 0 {
+      return body( result, 0)
+    } else {
+      while memo.count <= x {
+        memo.append( body( result, memo.count))
+      }
+      return memo[x]
+    }
+  }
+  return result
+
+}
+
+func fib1(_ value: Int) -> Int {
+      guard value > 1 else {
+        // 0, 1
+        return value
+      }
+      // 0 + 1, 1+1, 2+1, 3+2, 5+3
+
+      return fib1(value-2) + fib1(value-1)
+    }
+
+let fib2 = memoize2 {
+  (f2: (Int) -> Int, n: Int) in
+  return n < 2 ? n : f2(n-1) + f2(n-2)
+}
