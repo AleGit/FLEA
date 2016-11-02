@@ -73,7 +73,7 @@ where N:SymbolStringTyped {
      }
 
      /// acitvate a literal (that holds and all derivations have been drawn)
-     private func activate(literalReference: LiteralReference) {
+    func activate(literalReference: LiteralReference) {
          let (clauseReference, literalIndex) = literalReference.values
 
          // an activated literal is not pending anymore
@@ -160,15 +160,17 @@ where N:SymbolStringTyped {
     }
 
     func clashingLiterals(literalReference: LiteralReference) -> Set<LiteralReference>? {
-        guard let negatedLiteral = self.literal(literalReference: literalReference).negated else {
+        let literal = self.literal(literalReference: literalReference)
+        guard let negatedLiteral = literal.negated else {
             return nil
         }
 
-        return literalReferences.unifiables(paths: negatedLiteral.leafPaths,
-        wildcard: SymHop.symbol(self.wildcard))
+        let paths = negatedLiteral.leafPaths
+        let wildcard = SymHop.symbol(self.wildcard)
 
+        print(literal, negatedLiteral, paths)
 
-
+        return literalReferences.unifiables(paths: paths, wildcard: wildcard)
     }
 
 

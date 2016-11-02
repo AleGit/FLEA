@@ -67,4 +67,39 @@ public class ClausesTests: YicesTestCase {
     XCTAssertEqual(clause5, clause6)
   }
 
+  func testClashings() {
+    let context = Yices.Context()
+
+    let clauses = Clauses<TestNode>()
+
+    XCTAssertTrue((true, 0) == clauses.insert(clause:"p(X) | a!=a"))
+    XCTAssertTrue((true, 1) == clauses.insert(clause:"X!=Y | p(a)"))
+     XCTAssertTrue((true, 2) == clauses.insert(clause:"~p(b) | c!=c"))
+
+
+
+    XCTAssertTrue(clauses.insure(clauseReference:0, context: context))
+    clauses.activate(literalReference: Pair(0, 0))
+
+    XCTAssertTrue(clauses.insure(clauseReference:1, context: context))
+    clauses.activate(literalReference: Pair(1, 1))
+
+    XCTAssertNil( clauses.clashingLiterals(literalReference: Pair(1, 1)))
+    clauses.activate(literalReference: Pair(2, 0))
+
+
+
+    XCTAssertTrue(clauses.insure(clauseReference:2, context: context))
+
+    let clashings =  clauses.clashingLiterals(literalReference: Pair(2, 0))!
+    print(clashings)
+
+
+
+
+
+
+
+  }
+
 }
