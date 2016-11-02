@@ -225,7 +225,7 @@ extension ProverY {
             return
         }
 
-        guard let negated = nodes[literalIndex].negating else {
+        guard let negated = nodes[literalIndex].negated else {
             Syslog.error { "Literal \(clauseIndex).\(literalIndex) could not be negated." }
             return
         }

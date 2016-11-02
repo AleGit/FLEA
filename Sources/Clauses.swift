@@ -9,10 +9,9 @@ protocol ClauseCollection {
     associatedtype LiteralReference : Hashable
     associatedtype Context
     // associatedtype Model
-    
-    func clause(clauseReference:ClauseReference) -> Clause   
-    func clause(literalReference:LiteralReference) -> Clause 
-    func literal(literalReference:LiteralReference) -> Literal
+
+    func clause(clauseReference: ClauseReference) -> Clause
+    func literal(literalReference: LiteralReference) -> Literal
 
     func insert(clause: Clause) -> (inserted: Bool, referenceAfterInsert: ClauseReference)
     func insure(clauseReference: ClauseReference, context: Context) -> Bool
@@ -55,14 +54,8 @@ where N:SymbolStringTyped {
 
      var count: Int { return clauses.count }
 
-     func clause(clauseReference:ClauseReference) -> Clause {
+     func clause(clauseReference: ClauseReference) -> Clause {
          return clauses[clauseReference]
-     }
-
-     /// get clause, i.e. the parent, by literal reference
-     func clause(literalReference: LiteralReference) -> Clause {
-         let (clauseReference, _) = literalReference.values
-         return clause(clauseReference:clauseReference)
      }
 
      /// get literal by reference
@@ -106,9 +99,9 @@ where N:SymbolStringTyped {
      model: Yices.Model) -> LiteralIndex? {
          let (_, literals, shuffled) = triples[clauseReference]
 
-         guard 
+         guard
          // find a liteal term that holds in the model
-         let t = shuffled.first(where: { 
+         let t = shuffled.first(where: {
              selectable($0) // by default every literal term is considered
              && model.implies(formula:$0) // that holds in the model
              }),
@@ -162,6 +155,19 @@ where N:SymbolStringTyped {
         // no variant of given clause was found
 
          return (true, append(clause:newClause, triple:newTriple))
+    }
+
+    func clashingLiterals(literalReference: LiteralReference) -> Set<LiteralReference>? {
+        guard let negatedLiteral = self.literal(literalReference: literalReference).negated else {
+            return nil
+        }
+        let wildcard = negatedLiteral.joker
+
+        return literalReferences.unifiables(paths: negatedLiteral.leafPaths,
+        wildcard: SymHop.symbol(wildcard))
+
+
+
     }
 
 
