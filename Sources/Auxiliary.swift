@@ -216,7 +216,7 @@ func memoize<T: Hashable, U>( body: @escaping((T) -> U, T) -> U) -> (T) -> U {
 }
 
 let fibonacci = memoize {
-  (f0: (Int) -> Int, n: Int) in n < 2 ? (n) : f0(n-1) + f0(n-2)
+  (f0: (Int) -> Int, n: Int) in n < 2 ? max(0, n) : f0(n-1) + f0(n-2)
 }
 
 func memoize2<U> ( body: @escaping((Int) -> U, Int) -> U) -> (Int) -> U {
@@ -239,7 +239,7 @@ func memoize2<U> ( body: @escaping((Int) -> U, Int) -> U) -> (Int) -> U {
 func fib1(_ value: Int) -> Int {
       guard value > 1 else {
         // 0, 1
-        return value
+        return max(0, value)
       }
       // 0 + 1, 1+1, 2+1, 3+2, 5+3
 

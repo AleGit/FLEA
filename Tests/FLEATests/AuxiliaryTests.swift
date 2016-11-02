@@ -161,7 +161,7 @@ public class AuxiliaryTests: FleaTestCase {
     let n = 36
 
 
-    let value = [n, n/2, n/3, n/4, n/5, 2, 1, 0]
+    let value = [-1, n, n/2, n/3, n/4, n/5, 2, 1, 0]
     print(value)
 
 
