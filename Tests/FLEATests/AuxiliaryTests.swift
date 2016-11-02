@@ -8,7 +8,8 @@ public class AuxiliaryTests: FleaTestCase {
       ("testAllOneCount", testAllOneCount),
       ("testUppercased", testUppercased),
       ("testContains", testContains),
-      ("testIds", testIds)
+      ("testIds", testIds),
+      // ("testMemoize", testMemoize)
     ]
   }
 
@@ -153,5 +154,52 @@ public class AuxiliaryTests: FleaTestCase {
     XCTAssertEqual(€a, "?")
     let a€a = "?"
     XCTAssertEqual(a€a, "?")
+  }
+
+  func _testMemoize() {
+    func fibunacci(value:Int) -> Int {
+      guard value > 2 else { return 1 }
+
+      return fibunacci(value:value-2) + fibunacci(value:value-1)
+    }
+
+    let value = 45
+
+    let (memres, memt) = utileMeasure {
+      () -> Int in
+      let memfib = memoize {
+        (f:(Int)->Int, n:Int) in
+        n < 3 ? 1 : f(n-1)+f(n-2)
+
+      }
+      return memfib(value)
+
+    }
+    print(memres, memt)
+
+
+    let (result, time) = utileMeasure {
+      () -> Int in
+      fibunacci(value:value)
+    }
+
+    print(result, time)
+
+    let (seqres, seqt) = utileMeasure {
+      return ((1...value).reduce((0,1)) { 
+        a,b in (a.1, a.0+a.1)
+      }).0
+    }
+
+    print(seqres, seqt)
+
+    
+
+    XCTAssertEqual(memres, result)
+
+    XCTAssertEqual(seqres, result)
+    XCTAssertTrue(time > memt)
+    XCTAssertTrue(seqt > memt)
+
   }
 }

@@ -202,3 +202,33 @@ struct Pair<T: Hashable, U: Hashable> : Hashable {
 func ==<T: Hashable, U: Hashable>(lhs: Pair<T, U>, rhs: Pair<T, U>) -> Bool {
   return lhs.values == rhs.values
 }
+
+
+func memoize<T:Hashable, U>(fn : @escaping (T) -> U) -> (T) -> U {
+  var cache = [T:U]()
+  return {
+    (val : T) -> U in
+
+    if let result = cache[val] {
+      return result
+    }
+
+    let result = fn(val)
+    cache[val] = result
+    return result
+  }
+}
+
+func memoize<T:Hashable, U>( body: @escaping((T)->U,T) -> U) -> (T)->U {
+  var memo = [T:U]()
+  var result: ((T)->U)!
+  result = { x in
+    if let q = memo[x] { return q }
+    let r = body(result,x)
+    memo[x] = r
+    return r
+  }
+  return result
+}
+
+// let fibonacci = memoize { (fibonacci:Int->Double,n:Int) in n < 2 ? Double(n) : fibonacci(n-1) + fibonacci(n-2) }

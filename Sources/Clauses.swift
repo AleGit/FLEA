@@ -7,8 +7,15 @@ protocol ClauseCollection {
     associatedtype Literal
     associatedtype ClauseReference : Hashable
     associatedtype LiteralReference : Hashable
+    associatedtype Context
+    // associatedtype Model
+    
+    func clause(clauseReference:ClauseReference) -> Clause   
+    func clause(literalReference:LiteralReference) -> Clause 
+    func literal(literalReference:LiteralReference) -> Literal
 
     func insert(clause: Clause) -> (inserted: Bool, referenceAfterInsert: ClauseReference)
+    func insure(clauseReference: ClauseReference, context: Context) -> Bool
 }
 
 final class Clauses<N:Node> : ClauseCollection
@@ -18,6 +25,8 @@ where N:SymbolStringTyped {
     typealias ClauseReference = Int
     typealias LiteralIndex = Int
     typealias LiteralReference = Pair<ClauseReference, LiteralIndex>
+    // typealias Context = Yices.Context
+    /// typealias Model = Yices.Model
 
     private var clauses = Array<Clause>()
     private var triples = Array<Yices.Tuple>()
@@ -46,14 +55,18 @@ where N:SymbolStringTyped {
 
      var count: Int { return clauses.count }
 
-     /// get clause by reference
-     private func clause(literalReference: LiteralReference) -> Clause {
-         let (clauseReference, _) = literalReference.values
+     func clause(clauseReference:ClauseReference) -> Clause {
          return clauses[clauseReference]
      }
 
+     /// get clause, i.e. the parent, by literal reference
+     func clause(literalReference: LiteralReference) -> Clause {
+         let (clauseReference, _) = literalReference.values
+         return clause(clauseReference:clauseReference)
+     }
+
      /// get literal by reference
-     private func literal(literalReference: LiteralReference) -> Literal {
+     func literal(literalReference: LiteralReference) -> Literal {
          let (clauseReference, literalIndex) = literalReference.values
          return clauses[clauseReference].nodes![literalIndex]
      }
@@ -89,14 +102,14 @@ where N:SymbolStringTyped {
 
      /// find a literal of a clause that holds
      private func selectLiteral(clauseReference: ClauseReference,
-     consider: (term_t) -> Bool = { _ in true } ,
+     selectable: (term_t) -> Bool = { _ in true }, // by default all literals are selectable
      model: Yices.Model) -> LiteralIndex? {
          let (_, literals, shuffled) = triples[clauseReference]
 
          guard 
          // find a liteal term that holds in the model
          let t = shuffled.first(where: { 
-             consider($0) // by default every literal term is considered
+             selectable($0) // by default every literal term is considered
              && model.implies(formula:$0) // that holds in the model
              }),
          // get the index of the liteal term thats holds in the model
@@ -124,6 +137,7 @@ where N:SymbolStringTyped {
         clauses.append(clause)
         triples.append(triple)
 
+        // add or update mapping from yices clause to (tptp) clause referneces
         if clauseReferences[triple.clause]?.insert(clauseReference) == nil {
             clauseReferences[triple.clause] = Set(arrayLiteral: clauseReference)
         }
@@ -131,17 +145,21 @@ where N:SymbolStringTyped {
         return clauseReference
     }
 
-     /// insert a normalized copy of the clause if no variant is allready there
+     /// insert the normalized copy of the clause if no variant is allready there
      func insert(clause: N) -> (inserted: Bool, referenceAfterInsert: ClauseReference) {
 
          let newClause = clause.normalized(prefix:"V")
          let newTriple = Yices.clause(newClause)
+
+         // find first variant of given clause
 
          if let clauseReference = clauseReferences[newTriple.clause]?.first(where: {
              newClause == clauses[$0]
              }) {
              return (false, clauseReference)
         }
+
+        // no variant of given clause was found
 
          return (true, append(clause:newClause, triple:newTriple))
     }
@@ -172,7 +190,8 @@ where N:SymbolStringTyped {
 
             pendingLiterals[clauseReference] = selectLiteral(
                 clauseReference: clauseReference,
-                consider: { $0 != term }, model: model )
+                selectable: { $0 != term }, // ignore previously checked yices literal
+                model: model )
         }
 
         return true
