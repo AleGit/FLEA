@@ -35,7 +35,6 @@ protocol SymbolStringTyped {
 
   var symbolStringType: StringType { get }
   static func symbolize(string: String, type: Tptp.SymbolType) -> Symbol
-  // static var joker: Symbol
 }
 
 

@@ -1,5 +1,5 @@
 extension Node where Self:SymbolStringTyped {
-  var joker: Symbol {
+  static var joker: Symbol {
     return Self.symbolize(string:Tptp.wildcard, type:.variable)
   }
 
@@ -9,7 +9,7 @@ extension Node where Self:SymbolStringTyped {
   /// a=f(x,b) -> { =.0.a, =.1.f.0.*, =.1.f.1.b}
   var leafPaths: [[SymHop<Symbol>]] {
     guard let nodes = self.nodes else {
-      return [[.symbol(self.joker)]]
+      return [[.symbol(Self.joker)]]
     }
     guard nodes.count > 0 else {
       return [[.symbol(self.symbol)]]
@@ -78,7 +78,7 @@ extension Node where Symbol == Int, Self:SymbolStringTyped {
   /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
   var leafPaths: [[Int]] {
     guard let nodes = self.nodes else {
-      return [[self.joker]]
+      return [[Self.joker]]
     }
     guard nodes.count > 0 else {
       return [[self.symbol]]

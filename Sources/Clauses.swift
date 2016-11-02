@@ -32,6 +32,8 @@ where N:SymbolStringTyped {
     private var activeLiterals = Dictionary<ClauseReference, LiteralIndex>()
     private var pendingLiterals = Dictionary<ClauseReference, LiteralIndex>()
 
+    lazy var wildcard = N.joker
+
      /// map yices clauses of type `term_t` to tptp clauses of type `Node``
      /// for fast variant candidates retrieval.
      ///
@@ -161,10 +163,9 @@ where N:SymbolStringTyped {
         guard let negatedLiteral = self.literal(literalReference: literalReference).negated else {
             return nil
         }
-        let wildcard = negatedLiteral.joker
 
         return literalReferences.unifiables(paths: negatedLiteral.leafPaths,
-        wildcard: SymHop.symbol(wildcard))
+        wildcard: SymHop.symbol(self.wildcard))
 
 
 
