@@ -158,7 +158,7 @@ public class AuxiliaryTests: FleaTestCase {
 
   func testMemoize() {
 
-    let n = 36
+    let n = 37
 
 
     let value = [-1, n, n/2, n/3, n/4, n/5, 2, 1, 0]
@@ -184,9 +184,9 @@ public class AuxiliaryTests: FleaTestCase {
 
     print(result2, time2.2)
 
-    XCTAssertEqual(result0, result1)
-    XCTAssertEqual(result0, result2)
-    XCTAssertTrue(time0 < time1)
-    XCTAssertTrue(time2 < time0)
+    XCTAssertEqual(result0, result1, nok)
+    XCTAssertEqual(result0, result2, nok)
+    XCTAssertTrue(time0 < time1, nok)
+    XCTAssertTrue(time2 < time1, nok)
     }
 }

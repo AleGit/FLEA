@@ -2,6 +2,7 @@ import XCTest
 
 @testable import FLEA
 
+
 /// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
 public class ClausesTests: YicesTestCase {
