@@ -183,7 +183,7 @@ public func utileMeasure<R>(f: () -> R) -> (R, UtileTimes) {
   return (result, end - start)
 }
 
-struct Pair<T: Hashable, U: Hashable> : Hashable {
+struct Pair<T: Hashable, U: Hashable> : Hashable, CustomStringConvertible {
   let values: (T, U)
 
   var hashValue: Int {
@@ -195,6 +195,10 @@ struct Pair<T: Hashable, U: Hashable> : Hashable {
 
   init(_ t: T, _ u: U) {
     values = (t, u)
+  }
+
+  var description: String {
+    return "\(values)"
   }
 }
 

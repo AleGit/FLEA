@@ -1,5 +1,6 @@
 // MARK: - Node:CustomStringConvertible
 
+
 extension Node {
   /// implementations of Node will call this
   var description: String { return defaultDescription }
@@ -13,9 +14,10 @@ extension Node {
   }
 }
 
+
 extension Node where Self : SymbolStringTyped {
-  var defaultDescription : String {
-    let (string,type) = self.symbolStringType
+  var defaultDescription: String {
+    let (string, type) = self.symbolStringType
     return buildDescription(string:string, type:type)
   }
 }
@@ -23,7 +25,7 @@ extension Node where Self : SymbolStringTyped {
 extension Node {
 
   /// Build a description with symbol string and type.
-  func buildDescription(string:String,type:Tptp.SymbolType) -> String {
+  func buildDescription(string: String, type: Tptp.SymbolType) -> String {
     guard let nodes = self.nodes?.map({$0.description}), nodes.count > 0 else {
       return string
     }
@@ -63,8 +65,8 @@ extension Node {
 
 extension Node {
   /// Build a more verbose description in prefix notation.
-  func buildDebugDescription(string:String) -> String {
-    guard let nodes = self.nodes?.map( { $0.debugDescription }), nodes.count > 0
+  func buildDebugDescription(string: String) -> String {
+    guard let nodes = self.nodes?.map({ $0.debugDescription }), nodes.count > 0
     else { return string }
     let tuple = nodes.joined(separator:",")
     return "\(string)(\(tuple))"
@@ -79,14 +81,14 @@ extension Node {
 }
 
 extension Node where Symbol == String {
-  var debugDescription : String {
-    assert(false,"Do not use symole Sting as Node.Symbol")
+  var debugDescription: String {
+    assert(false, "Do not use symole String as Node.Symbol")
     return buildDebugDescription(string:self.symbol)
   }
 }
 
 extension Node where Symbol == Tptp.Symbol {
-  var debugDescription : String {
+  var debugDescription: String {
     return buildDebugDescription(string:"\(self.symbol.debugDescription)")
   }
 }
@@ -101,17 +103,16 @@ extension Node where Self:SymbolStringTyped {
 */
 
 extension Node where Symbol:StringSymbolable {
-  var debugDescription : String {
+  var debugDescription: String {
     // with reliable string and type information we use it
     return buildDebugDescription(string:"\(self.symbol)-\(self.symbol.string)-\(self.symbol.type)")
   }
 }
 
-extension Node where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
-
-
-  var debugDescription : String {
-    let (string,type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
+extension Node where Self:SymbolTabulating, Symbol == Self.Symbols.Symbol,
+Self.Symbols.Key == String {
+  var debugDescription: String {
+    let (string, type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
 
     return buildDebugDescription(string:"\(self.symbol)-\(string)-\(type)")
   }

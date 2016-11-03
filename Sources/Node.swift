@@ -38,6 +38,8 @@ protocol Node: Hashable,
     size: Int
   ) { get }
 
+  var defaultDescription: String { get }
+
 }
 
 extension Node {

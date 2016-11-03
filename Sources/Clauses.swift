@@ -54,6 +54,9 @@ where N:SymbolStringTyped {
     // map leaf paths to literal, i.e. pairs of clauses and selected literals
     private var literalReferences = TrieClass<SymHop<N.Symbol>, LiteralReference>()
 
+    // make protocol of derivations
+    private var literalPairs = Set<Set<LiteralReference>>()
+
     var count: Int { return clauses.count }
 
     func clause(clauseReference: ClauseReference) -> Clause {
@@ -159,17 +162,58 @@ where N:SymbolStringTyped {
     }
 
     func clashingLiterals(literalReference: LiteralReference) -> Set<LiteralReference>? {
-        let literal = self.literal(literalReference: literalReference)
-        guard let negatedLiteral = literal.negated else {
+        guard let negatedLiteral = literal(literalReference: literalReference).negated else {
             return nil
         }
 
         let paths = negatedLiteral.leafPaths
         let wildcard = SymHop.symbol(self.wildcard)
 
-        print(literal, negatedLiteral, paths)
-
         return literalReferences.unifiables(paths: paths, wildcard: wildcard)
+    }
+
+    private func clauseAndLiteral(literalReference: LiteralReference) -> (Clause, Literal) {
+        let (clauseReference, literalIndex) = literalReference.values
+
+        let clause = self.clause(clauseReference: clauseReference)
+        return (clause, clause.nodes![literalIndex])
+    }
+
+
+
+    func derivations(literalReference: LiteralReference) -> Array<Clause> {
+        let (clauseReference, literalIndex) = literalReference.values
+
+
+        let clause = self.clause(clauseReference: clauseReference).appending(suffix: clauseReference)
+
+        print(literalReference.values, ">>>>>", clause)
+
+        let negatedLiteral = clause.nodes![literalIndex].negated!
+
+        let paths = negatedLiteral.leafPaths
+        let wildcard = SymHop.symbol(self.wildcard)
+
+        let clashingLitaralReferences = literalReferences.unifiables(paths: paths, wildcard: wildcard)
+
+        var array = Array<Clause>()
+
+        for otherLiteralReference in clashingLitaralReferences! {
+
+            let (otherClause, otherLiteral) = clauseAndLiteral(literalReference: otherLiteralReference)
+
+            let (inserted, _) = literalPairs.insert(Set([literalReference, otherLiteralReference]))
+
+            assert (inserted, "\(literalReference), \(otherLiteralReference) allready drawn")
+
+            if let mgu = negatedLiteral =?= otherLiteral {
+
+
+                array.append(clause * mgu)
+                array.append(otherClause * mgu)
+            }
+        }
+        return array
     }
 
 

@@ -27,7 +27,7 @@ public class ClausesTests: YicesTestCase {
     var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
     var nodes: [N]? = nil
 
-    var description: String { return defaultDescription }
+    // var description: String { return defaultDescription }
     lazy var hashValue: Int = self.defaultHashValue
   }
 
@@ -95,12 +95,9 @@ public class ClausesTests: YicesTestCase {
     let clashings =  clauses.clashingLiterals(literalReference: Pair(2, 0))!
     print(clashings)
 
-
-
-
-
-
-
+    let derivations = clauses.derivations(literalReference: Pair(2,0))
+    for derivation in derivations {
+      print(derivation.description, derivation)
+    }
   }
-
 }
