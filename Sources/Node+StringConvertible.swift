@@ -2,10 +2,10 @@
 
 extension Node {
   /// implementations of Node will call this
-  var description : String { return defaultDescription }
+  var description: String { return defaultDescription }
 
   /// possible usage: lazy var description = defaultDescritpion
-  var defaultDescription : String {
+  var defaultDescription: String {
     let s = "\(self.symbol)"
     // without reliable symbol type information, everything is a prefix function.
     // empty parenthesis will be ommitted, e.g. for variables, constants, predicates.

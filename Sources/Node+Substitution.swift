@@ -73,22 +73,28 @@ where N == S.K, N==S.V, S.Iterator==DictionaryIterator<N, N> {
 }
 
 /// 't * s' returns the substitution of all variables in t with term s.
-/// - implicit sharing of nodes MAY happen
+/// - Term `s` will be shared when N is a reference type
+/// - All nodes above multiple occurences of term `s` are fresh,
+///     e.g. unshared when N: Sharing does not apply.
 func *<N: Node>(t: N, s: N) -> N {
-    guard let nodes = t.nodes else { return s } // any variable is replaced by term s
+    guard let nodes = t.nodes else {
+        return s  // implicit sharing for reference types
+    } // any variable is replaced by term s
 
     return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
 }
 
-/// 't⊥' returns the substitution of all variables in t with constant '⊥'.
+/// 't⊥' returns the substitution of all variables in t with constant term '⊥'.
+/// - Constant term '⊥' will be shared when N is a reference type.
+/// - All nodes above multiple occurences of constant term '⊥' are fresh,
+///     eg. unshared when N: Sharing does not apply.
 postfix func ⊥<N: Node>(t: N) -> N
 where N:SymbolStringTyped {
     return t * N(c:"⊥")
 }
 
 
-
-
+/// add substitution functionality to dictionary of Node:Node mappings
 extension Dictionary where Key:Node, Value:Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?
     private var isHomogenous: Bool {

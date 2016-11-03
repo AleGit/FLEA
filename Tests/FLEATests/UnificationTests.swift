@@ -55,6 +55,11 @@ public class UnificationTests: FleaTestCase {
 
     check( Q.fXX, Q.fXZ, [Q.X:Q.Z]  as Instantiator, "H")
     check( Q.fXZ, Q.fXX, [Q.Z:Q.X] as Instantiator, "I")
+
+    let fx = "f(X)" as Q.Node
+    let y = "Y" as Q.Node
+
+    check( fx, y, [y : fx] as Instantiator)
   }
 
   func testNotUnifiable() {
@@ -68,6 +73,11 @@ public class UnificationTests: FleaTestCase {
 
     check( a, b, nil as Instantiator?)
 
+    let fx = "f(X)" as Q.Node
+    let x = "X" as Q.Node
+
+    check( fx, x, nil as Instantiator?)
+
   }
 
   func testSuffixing() {
@@ -78,6 +88,7 @@ public class UnificationTests: FleaTestCase {
       XCTFail(nok)
       return
     }
+
     XCTAssertEqual([Q.X:X1], mgu, nok)
 
     let X2 = Q.X * mgu
@@ -91,10 +102,10 @@ public class UnificationTests: FleaTestCase {
     let X4 = X2.desuffixing()
     let X5 = X2.desuffixing()
 
-     XCTAssertEqual(Q.X, X4, nok)
-     XCTAssertEqual(Q.X, X5, nok)
+    XCTAssertEqual(Q.X, X4, nok)
+    XCTAssertEqual(Q.X, X5, nok)
 
-     XCTAssertEqual("X", "\(X4)", nok)
+    XCTAssertEqual("X", "\(X4)", nok)
     XCTAssertEqual("X", "\(X5)", nok)
 
   }

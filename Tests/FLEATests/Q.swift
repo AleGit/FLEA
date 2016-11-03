@@ -81,7 +81,7 @@ struct Q {
     var nodes: [N]? = nil
 
     lazy var hashValue: Int = self.defaultHashValue
-    var description: String { return self.defaultDescription }
+    // var description: String { return self.defaultDescription }
   }
 
   final class KinNode: SymbolStringTyped, Sharing, Kin, FLEA.Node, ExpressibleByStringLiteral {

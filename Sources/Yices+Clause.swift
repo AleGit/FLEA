@@ -1,7 +1,6 @@
 //  Copyright © 2016 Alexander Maringele. All rights reserved.
 
 import CYices
-
 import Foundation
 
 extension Yices {
@@ -21,11 +20,9 @@ extension Yices {
     switch type {
       case .disjunction:
         guard let literals = clause.nodes, literals.count > 0 else {
-          Syslog.error(condition: clause.nodes == nil) { "clause.nodes == nil"}
           Syslog.info(condition: clause.nodes != nil) { "emtpy clause" }
           return (Yices.bot, [Yices.bot], [Yices.bot])
         }
-
         return Yices.clause(literals)
 
       // unit clause
@@ -34,56 +31,52 @@ extension Yices {
         let yicesLiteral = literal(clause)
           return (yicesLiteral, [yicesLiteral], [yicesLiteral])
 
-          // not a clause at all
+      // not a clause at all
       default:
-            Syslog.error { "'\(clause)' is of type \(type)" }
-            assert(false, "\(#function)(\(clause)) Argument is of type \(type)")
-            return (Yices.bot, [Yices.bot], [Yices.bot])
+        Syslog.fail { "'\(clause)' is of type \(type)" }
+        return (Yices.bot, [Yices.bot], [Yices.bot])
     }
-
-
   }
 
-        /// Return a yices clause and yices literals from an array of node literals.
-        /// The children of `yicesClause` are often different from `yicesLiterals`.
-        /// `yicesLiterals` are a mapping from `literals` to yices terms, while
-        /// `yicesClause` is just equivalent to the conjunction of the `yicesLiterals`.
-        /// * `true ≡ [ ⊥ = ⊥, ... ]`
-        /// * `true ≡ [ p, ~p ]`
-        /// * `true ≡ [ ⊥ = ⊥, ⊥ ~= ⊥ ]`
-        /// * `p ≡ [ p, p ]`
-        /// * `p ≡ [ ⊥ ~= ⊥, p ]`
-        /// * `[p,q,q,q,q] ≡ [ p, q, ⊥ ~= ⊥, p,q ]`
+  /// Return a yices clause and yices literals from an array of node literals.
+  /// The children of `yicesClause` are often different from `yicesLiterals`.
+  /// `yicesLiterals` are a mapping from `literals` to yices terms, while
+  /// `yicesClause` is just equivalent to the conjunction of the `yicesLiterals`.
+  /// * `true ≡ [ ⊥ = ⊥, ... ]`
+  /// * `true ≡ [ p, ~p ]`
+  /// * `true ≡ [ ⊥ = ⊥, ⊥ ~= ⊥ ]`
+  /// * `p ≡ [ p, p ]`
+  /// * `p ≡ [ ⊥ ~= ⊥, p ]`
+  /// * `[p,q,q,q,q] ≡ [ p, q, ⊥ ~= ⊥, p,q ]`
   static func clause<N: Node>(_ literals:[N]) -> Tuple
   where N:SymbolStringTyped {
-          /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
+    /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
+    let yicesLiterals = literals.map { self.literal($0) }
+    var copy = yicesLiterals
 
-          let yicesLiterals = literals.map { self.literal($0) }
-          var copy = yicesLiterals
+    // `yices_or` might change the order and content of the array
 
-          // `yices_or` might change the order and content of the array
+    let yicesClause = yices_or( UInt32(copy.count), &copy)
 
-          let yicesClause = yices_or( UInt32(copy.count), &copy)
+    Syslog.info(condition: yicesLiterals != copy) {
+      "yices literals reorderd"
+    }
+    Syslog.info(condition: yicesLiterals.contains(yicesClause)) {
+      "yices literals contain clause"
+    }
 
-          Syslog.info(condition: yicesLiterals != copy) {
-            "yices literals reorderd"
-            }
-          Syslog.info(condition: yicesLiterals.contains(yicesClause)) {
-            "yices literals contain clause"
-            }
+    return (
+      yicesClause,
+      yicesLiterals,
+      copy
+    )
+  }
 
-          return (
-            yicesClause,
-            yicesLiterals,
-            copy
-          )
-        }
-
-        /// Build boolean term from literal, i.e.
-        /// - a negation
-        /// - an equation
-        /// - an inequation
-        /// - a predicatate term or a proposition constant
+  /// Build boolean term from literal, i.e.
+  /// - a negation
+  /// - an equation
+  /// - an inequation
+  /// - a predicatate term or a proposition constant
   private static func literal<N: Node>(_ literal:N) -> term_t
   where N:SymbolStringTyped {
 
@@ -127,7 +120,7 @@ extension Yices {
     }
   }
 
-                  /// Build uninterpreted function term from term.
+  /// Build uninterpreted function term from term.
   private static func term<N: Node>(_ term:N) -> term_t
   where N:SymbolStringTyped {
   // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
