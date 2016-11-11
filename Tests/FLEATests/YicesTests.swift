@@ -23,8 +23,11 @@ public class YicesTests: YicesTestCase {
     let expected = "2.5.1"
     let versionString = Yices.versionString
     XCTAssertTrue(versionString.hasPrefix("2."), nok)
-    Syslog.debug(condition: versionString != expected ) {
-      "\(nok) actual yices version is \(versionString) is not \(expected)"
+    Syslog.warning(condition: versionString != expected ) {
+      "\n\(nok) actual yices version \(versionString) does not match \(expected)"
+    }
+    Syslog.info(condition: versionString == expected ) {
+      "\n\(ok) actual yices version \(versionString) matches exactly."
     }
   }
 

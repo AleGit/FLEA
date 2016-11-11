@@ -15,14 +15,14 @@ public class Z3BasicsTests: FleaTestCase {
   }
 
   func testVersionString() {
-    let expected = "4.4.2.1"
+    let expected = "4.5.1.0"
     let versionString = Z3Basics.versionString
     XCTAssertTrue(versionString.hasPrefix("4."), nok)
-    Syslog.debug(condition: versionString != expected ) {
-      "\(nok) actual z3 version is \(versionString) is not \(expected)"
+    Syslog.warning(condition: versionString != expected ) {
+      "\n\(nok) actual z3 version \(versionString) does not match \(expected)"
     }
-    if expected == versionString {
-      print(ok, "Z3 version string matches exactly.")
+    Syslog.info(condition: versionString == expected) {
+      "\n\(ok) actual z3 version \(versionString) matches exactly"
     }
   }
 
