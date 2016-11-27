@@ -16,13 +16,13 @@ name=`uname -s`
 if [ "${name}" == "Darwin" ]; then
     # Do something under Mac OS X platform
     echo "${name}"
-elif [ "$(name)" == "Linux" ]; then
+elif [ "${name}" == "Linux" ]; then
     # Do something under GNU/Linux platform
     echo "${name} workaround"
     sudo find /usr/include -name "z3*h" -type f -ls -exec ln -s -t /usr/local/include {} \;
     echo "${name} workaround completed"
 else
-    echo "Unknown $(name)"
+    echo "Unknown ${name}"
 fi
 
 find /usr/local/include -name "z3*h" -type f -ls
