@@ -42,9 +42,10 @@ XCTMain([
   testCase(UnificationTests.allTests),
   testCase(URLTests.allTests),
 
+  testCase(VersionTests.allTests),
   testCase(WeakSetTests.allTests),
   testCase(YicesTests.allTests),
-  testCase(Z3BasicsTests.allTests)
+  testCase(Z3Tests.allTests)
   ])
 
 

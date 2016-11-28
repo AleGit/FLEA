@@ -8,8 +8,6 @@ public class YicesTests: YicesTestCase {
   /// Collect all tests by hand for Linux.
   static var allTests: [(String, (YicesTests) -> () throws -> Void)] {
     return [
-      ("testVersionString", testVersionString),
-      ("testVersion", testVersion),
       ("testPUZ001c1", testPUZ001c1),
       ("testTop", testTop),
       ("testBottom", testBottom),
@@ -18,22 +16,6 @@ public class YicesTests: YicesTestCase {
   }
 
   typealias N = FLEA.Tptp.KinIntNode
-
-  func testVersionString() {
-    let expected = "2.5.1"
-    let versionString = Yices.versionString
-    XCTAssertTrue(versionString.hasPrefix("2."), nok)
-    Syslog.warning(condition: versionString != expected ) {
-      "\n\(nok) actual yices version \(versionString) does not match \(expected)"
-    }
-    Syslog.info(condition: versionString == expected ) {
-      "\n\(ok) actual yices version \(versionString) matches exactly."
-    }
-  }
-
-    func testVersion() {
-      XCTAssertEqual(2 as UInt32, Yices.version[0])
-  }
 
   func testPUZ001c1() {
     let problem = "PUZ001-1"
@@ -56,7 +38,7 @@ public class YicesTests: YicesTestCase {
     let cnfs = file.cnfs.map { N(tree:$0.child!.sibling!) }
     XCTAssertEqual(12, cnfs.count, nok)
 
-    print(cnfs.first?.description)
+    print(cnfs.first!.description)
     print("\(cnfs.last!)")
 
     let context = Yices.Context()
@@ -114,6 +96,41 @@ public class YicesTests: YicesTestCase {
     XCTAssertEqual(yb.0, yc.0)
     XCTAssertEqual(yb.0, yd.0)
     XCTAssertEqual(yc.0, yd.0)
+  }
+
+  func testSatEncoding() {
+    let pid = "p,f,•,•,g•"
+    let eid = "~,f,•,•,g•"
+
+    let p = Yices.typedSymbol(pid, term_tau: Yices.bool_tau)
+    let np = Yices.not(p)
+    let e = Yices.typedSymbol(eid, term_tau: Yices.bool_tau)
+    let ne = Yices.not(e)
+
+    let c1 = Yices.or(p, ne)
+    let c2 = Yices.or(np, e)
+
+    let context = Yices.Context()
+
+    context.insure(clause: c1)
+    context.insure(clause: c2)
+
+    print(context.isSatisfiable)
+
+    guard let model = Yices.Model(context: context) else {
+      XCTFail("")
+      return
+    }
+
+    for term in [p, np, e, ne, c1, c2] {
+
+      print(p, String(term:term)!, model.implies(formula: term))
+
+
+
+    }
+
+
 
 
   }
