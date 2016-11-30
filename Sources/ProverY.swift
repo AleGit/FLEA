@@ -7,10 +7,13 @@ import CYices
 ///     1: p(a)|q(X)
 ///     2: p(a)|~q(a)
 ///     3: ~p(a)
-///     assert 1: -> 1:p(a) search for clashes in { }
-///     assert 2: -> 2:p(a) search for clashes in { p(a) }
-///     assert 3: -> 3:~p(a) - forces reselection in 1: and 2: - search for clashes in { 1:q(X), 2:~q(a) }, saturated
-///     missing:
+///     assert 1: -> 1:p(a) search clash in selected literals { }
+///     assert 2: -> 2:p(a) search clash in selected literals { 1: p(a) }
+///                     p(a) does not clash with p(a)
+///     assert 3: -> 3:~p(a) - forces reselection in 1: and 2: { 1:q(X), 2:~q(a) }, saturated
+///                     ~p(a) does not clashe with q(X)
+///                     ~p(a) does not clash with ~q(a)
+///     missing: q(X) clashes with ~q(a)
 
 /// A instantiation-based prover that uses yices as satisfiablity checker modulo QF_EUF
 /// quantifier free, equalitiy, uninterpreted functions
