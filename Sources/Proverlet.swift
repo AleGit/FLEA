@@ -18,6 +18,15 @@ where N:SymbolStringTyped {
     /// - semantically variant free: {p(X)|q(Y)} excludes q(Z)|p(X)
     fileprivate let clauses = Clauses<N>()
 
+    init(axioms: [N]) {
+        Syslog.info { "initializing with in memory clauses" }
+        parsedClauses = Array<(String, Tptp.Role, N)>() // stays empty
+
+        for clause in axioms {
+            let _ = clauses.insert(clause:clause)
+        }
+    }
+
 
 
     /// initialize with the name of a problem
@@ -102,7 +111,27 @@ extension Proverlet {
         */
     func run(timeout: TimeInterval) -> Bool? {
         Syslog.fail { "MISSING IMPLEMENTATION" }
+
         return nil
+    }
+
+    func runUp() -> Bool {
+        let context = Yices.Context()
+        var i = 0
+        while i < clauses.count {
+
+            guard clauses.insure(clauseReference: i, context: context) else {
+                return false
+            }
+            print(i, "of", clauses.count, "\t", clauses.clause(byReference: i))
+
+
+
+            i += 1
+        }
+
+        return context.isSatisfiable
+
     }
 }
 

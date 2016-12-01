@@ -12,6 +12,8 @@ protocol ClauseCollection {
     // associatedtype Model
 
     func clause(byReference: ClauseReference) -> Clause
+    var count: Int { get } // number of clauses in the collection
+
     func literal(byReference: LiteralReference) -> Literal
 
     func insert(clause: Clause) -> (inserted: Bool, referenceAfterInsert: ClauseReference)
@@ -216,8 +218,6 @@ where N:SymbolStringTyped {
         return (clause, clause.nodes![literalIndex])
     }
 
-
-
     ///
     func derivations(literalReference: LiteralReference) -> Array<Clause> {
         let (clauseReference, literalIndex) = literalReference.values
@@ -231,21 +231,23 @@ where N:SymbolStringTyped {
 
         let paths = negatedLiteral.leafPaths
 
-        let clashingLitaralReferences = literalReferences.unifiables(paths: paths, wildcard: self.wildcardsymbol)
-
         var array = Array<Clause>()
 
-        for otherLiteralReference in clashingLitaralReferences! {
+        guard let clashingLitaralReferences =
+        literalReferences.unifiables(paths: paths, wildcard: self.wildcardsymbol) else {
+            return array
+        }
 
-            let (otherClause, otherLiteral) = clauseAndLiteral(literalReference: otherLiteralReference)
+        for otherLiteralReference in clashingLitaralReferences {
+
+            let (otherClause, otherLiteral) =
+            clauseAndLiteral(literalReference: otherLiteralReference)
 
             let (inserted, _) = literalPairs.insert(Set([literalReference, otherLiteralReference]))
 
             assert (inserted, "\(literalReference), \(otherLiteralReference) allready drawn")
 
             if let mgu = negatedLiteral =?= otherLiteral {
-
-
                 array.append(clause * mgu)
                 array.append(otherClause * mgu)
             }

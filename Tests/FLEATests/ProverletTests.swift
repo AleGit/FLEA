@@ -32,7 +32,7 @@ public class ProverletTests: YicesTestCase {
   }
 
   func testPUZs () {
-      for (problem, noc, nof, equational) in [
+      for (problem, noc, nof, _) in [
           ("PUZ001-1", 12, 1, false),
           ("PUZ007-1", 28, 2, true),
           ] {
@@ -45,5 +45,33 @@ public class ProverletTests: YicesTestCase {
       XCTAssertEqual(nof, theProver.fileCount, nok)
 
           }
+  }
+
+    func testPeano() {
+    // https://en.wikipedia.org/wiki/Peano_axioms
+    let axioms: [TestNode] = [
+      "@cnf natural(zero) ",               // 0 is a natural number.
+
+      "@cnf X=X ",                         // reflexivity
+      " X != Y | Y = X ",                   // symmetry
+      " X != Y | Y != Z | X = Y ",          // transitifity
+      " X != Y | ~natural(X) | natural(Y) ", // congruence (closed under equality)
+
+      " ~natural(X)|natural(s(X)) ",      // For every natural number n, S(n) is a natural number.
+
+      " X != Y | s(X)=s(Y) ", // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
+      " s(X)!=s(Y) | X = Y ",
+
+      " ~natural(X) | s(X)!=zero " // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
+    ]
+
+    let prover = Proverlet(axioms: axioms)
+
+    let satisfiable = prover.runUp()
+    print(prover.clauseCount, satisfiable)
+
+
+
+
   }
 }

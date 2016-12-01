@@ -98,7 +98,7 @@ extension Tptp {
 
     /// free dynammically allocated memory
     deinit {
-      Syslog.notice { "'\(self.path)' memory freed." }
+      Syslog.debug { "'\(self.path)' memory freed." }
       if let store = store {
         prlcDestroyStore(store)
       }

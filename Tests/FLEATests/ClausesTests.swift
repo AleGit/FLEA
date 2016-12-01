@@ -100,4 +100,38 @@ public class ClausesTests: YicesTestCase {
       print(derivation.description, derivation)
     }
   }
+
+  func testPeano() {
+    // https://en.wikipedia.org/wiki/Peano_axioms
+    let axioms: [TestNode] = [
+      "@cnf natural(zero)",               // 0 is a natural number.
+
+      "@cnf X=X",                         // reflexivity
+      "X != Y | Y = X",                   // symmetry
+      "X != Y | Y != Z | X = Y",          // transitifity
+      "X != Y | ~natural(X) | natural(Y)", // congruence (closed under equality)
+
+      "~natural(X)|natural(s(X))",      // For every natural number n, S(n) is a natural number.
+
+      "X != Y | s(X)=s(Y)", // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
+      "s(X)!=s(Y) | X = Y",
+
+      "~natural(X)|s(X)!=zero" // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
+    ]
+
+    let context = Yices.Context()
+    let clauses = Clauses<TestNode>()
+
+    for axiom in axioms {
+      let (a,b) = clauses.insert(clause: axiom)
+      let c = clauses.insure(clauseReference: b, context:context)
+      print("\(a),\(b),\(c)) >> \(axiom)")
+    }
+
+    print(context.isSatisfiable ? "\(ok) Context is satisfiable." : "\(nok) Context is not satisfiable.")
+
+
+
+
+  }
 }
