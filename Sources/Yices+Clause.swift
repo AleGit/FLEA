@@ -58,12 +58,14 @@ extension Yices {
 
     let yicesClause = yices_or( UInt32(copy.count), &copy)
 
+/*
     Syslog.info(condition: yicesLiterals != copy) {
       "yices literals \(yicesLiterals) reorderd to \(copy)"
     }
     Syslog.info(condition: yicesLiterals.contains(yicesClause)) {
       "yices literals \(yicesLiterals) contain clause \(yicesClause) \(copy)"
     }
+*/
 
     return (
       yicesClause,

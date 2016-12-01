@@ -115,15 +115,22 @@ extension Proverlet {
         return nil
     }
 
-    func runUp() -> Bool {
+    func runSequentially(timeout: TimeInterval = 30.0) -> Bool {
+        let stopTime = AbsoluteTimeGetCurrent() + timeout
+
         let context = Yices.Context()
         var i = 0
-        while i < clauses.count {
+        while i < clauses.count && AbsoluteTimeGetCurrent() < stopTime {
 
             guard clauses.insure(clauseReference: i, context: context) else {
                 return false
             }
-            print(i, "of", clauses.count, "\t", clauses.clause(byReference: i))
+            // print(i, "of", clauses.count, "\t", clauses.clause(byReference: i))
+
+
+            clauses.processPending()
+
+
 
 
 

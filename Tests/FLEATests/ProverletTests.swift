@@ -47,27 +47,43 @@ public class ProverletTests: YicesTestCase {
           }
   }
 
-    func testPeano() {
-    // https://en.wikipedia.org/wiki/Peano_axioms
+  func testInfDom() {
     let axioms: [TestNode] = [
-      "@cnf natural(zero) ",               // 0 is a natural number.
-
-      "@cnf X=X ",                         // reflexivity
-      " X != Y | Y = X ",                   // symmetry
-      " X != Y | Y != Z | X = Y ",          // transitifity
-      " X != Y | ~natural(X) | natural(Y) ", // congruence (closed under equality)
-
-      " ~natural(X)|natural(s(X)) ",      // For every natural number n, S(n) is a natural number.
-
-      " X != Y | s(X)=s(Y) ", // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
-      " s(X)!=s(Y) | X = Y ",
-
-      " ~natural(X) | s(X)!=zero " // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
+      "@cnf s(X) != zero",
+      "s(X)!=s(Y) | X = Y"
     ]
 
     let prover = Proverlet(axioms: axioms)
 
-    let satisfiable = prover.runUp()
+    let satisfiable = prover.runSequentially()
+    print(prover.clauseCount, satisfiable)
+
+  }
+
+    func testPeano() {
+    // https://en.wikipedia.org/wiki/Peano_axioms
+    let axioms: [TestNode] = [
+      // "@cnf natural(zero) ",               // 0 is a natural number.
+/*
+      "@cnf X=X ",                         // reflexivity
+      " X != Y | Y = X ",                   // symmetry
+      " X != Y | Y != Z | X = Y ",          // transitifity
+      " X != Y | ~natural(X) | natural(Y) ", // congruence (closed under equality)
+      */
+
+      // " ~natural(X)|natural(s(X)) ",      // For every natural number n, S(n) is a natural number.
+
+      // " X != Y | s(X)=s(Y) ", // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
+      " s(X)!=s(Y) | X = Y ",
+
+      "@cnf s(X) != zero"
+
+      // " ~natural(X) | s(X)!=zero " // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
+    ]
+
+    let prover = Proverlet(axioms: axioms)
+
+    let satisfiable = prover.runSequentially()
     print(prover.clauseCount, satisfiable)
 
 

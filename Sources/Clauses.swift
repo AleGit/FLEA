@@ -218,7 +218,20 @@ where N:SymbolStringTyped {
         return (clause, clause.nodes![literalIndex])
     }
 
-    ///
+    func processPending() {
+        for (clauseReference, literalIndex) in pendingLiterals {
+            let literalReference = Pair(clauseReference, literalIndex)
+            for clause in derivations(literalReference: literalReference) {
+                let (a, b) = self.insert(clause: clause)
+                /*
+                if a {
+                    print(b, clause)
+                }*/
+            }
+            activate(literalReference:literalReference)
+        }
+    }
+
     func derivations(literalReference: LiteralReference) -> Array<Clause> {
         let (clauseReference, literalIndex) = literalReference.values
 
