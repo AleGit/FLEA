@@ -28,46 +28,73 @@ where N:SymbolStringTyped {
     // typealias Context = Yices.Context
     /// typealias Model = Yices.Model
 
+    /// all inserted clauses
+    /// - clause reference is an array index
+    /// - literal reference is a pair of array indices
     private var clauses = Array<Clause>()
+
+    /// yices encoding for clauses
     private var yicesTuples = Array<Yices.Tuple>()
+
+    /// within active literals all conflicts (clashes) are already considered
     private var activeLiterals = Dictionary<ClauseReference, LiteralIndex>()
+
+    /// within pending literals and against active literals conflicts may still exist
     private var pendingLiterals = Dictionary<ClauseReference, LiteralIndex>()
 
-    lazy var wildcard = N.joker // '*'
+    // lazy var wildcard = N.joker // '*'
+    lazy var wildcardsymbol = SymHop.symbol(N.joker)
+
+
+    /*
+    Let F be the clause p(A)|q(B). Then the clauses
+    - p(X)|q(Y), a (structural) variant with renaming [A→Y,B→X]
+    - p(X)|q(X), a (structural) non-proper instance with variable substitution [A→X,B→X]
+    - q(X)|p(Y), a variant with q(X)|p(Y)≣p(Y)|q(X) and renaming [A→Y,B→X]
+    - p(X)|q(Y)|q(Z), a generalization with variable substitution [X→A, Y→B, Z→B])
+      are ingorable for satisfiability and their corresponding yices terms are equivalent to p(_)|q(_).
+
+    Let G be the clause p(A)|q(A). Then the clauses
+    - p(X)|q(Y), a generalization of G with [X→A, Y→B]
+    - p(X)|q(Y)|q(Z), a generalization of G with [X→A, Y→B, Y→C]
+      is not ignorable, but their corresponding yices terms are equivalent to p(_)|q(_),
+      but these cases will not occur. ?(does this hold)?
+    */
 
     /// map yices clauses of type `term_t` to tptp clauses of type `Node``
     /// for fast variant candidates retrieval.
-    ///
-    /// Let F be the clause p(A)|q(B). Then the clauses
-    /// - p(X)|q(Y), a (structural) variant with renaming [A→Y,B→X]
-    /// - p(X)|q(X), a (structural) non-proper instance with variable substitution [A→X,B→X]
-    /// - q(X)|p(Y), a variant with q(X)|p(Y)≣p(Y)|q(X) and renaming [A→Y,B→X]
-    /// - p(X)|q(Y)|q(Z), a generalization with variable substitution [X→A, Y→B, Z→B])
-    /// are ingorable for satisfiability and their corresponding yices terms are equivalent to p(_)|q(_).
-
-    /// Let G be the clause p(A)|q(A). Then the clauses
-    /// - p(X)|q(Y), a generalization of G with [X→A, Y→B]
-    /// - p(X)|q(Y)|q(Z), a generalization of G with [X→A, Y→B, Y→C]
-    /// is not ignorable, but their corresponding yices terms are equivalent to p(_)|q(_),
-    /// but these cases will not occur.
     private var clauseReferences = Dictionary<term_t, Set<ClauseReference>>()
 
-    // map leaf paths to literal, i.e. pairs of clauses and selected literals
+    /*
+    literal leaf paths:
+    - literal l_1 = p(f(X,a),y, h(X)) has four leaf nodes { X, a, Y, X },
+      hence it has four leaf paths: { p.1.f.1.*, p.1.f.2.a, p.2.*, p.3.h.1.* }
+    - literal l_2 = p(X,Y,c) has three { { p.1.*, p.2.*, p.3.c }}
+    - literal l_3 = p(X,Y,Z) has three { p.1.*, p.2.*, p.3.* }
+    candidates inquiry: the intersection of unifiable literals
+        p.1.* -> { p.1.f.1.*, p.1.f.2.a } -> { l_1, l_2 }
+        p.2.* -> { p.2.Y } -> { l_1, l_2 }
+        p.3.* -> { p.3.h.1.X } -> { l_1, l_2 }
+    */
+
+    /// map leaf paths to literals, i.e. pairs of clauses and selected literals
+    /// for fast retrieval of unifiable or clashing selected literals.
     private var literalReferences = TrieClass<SymHop<N.Symbol>, LiteralReference>()
 
-    // make protocol of derivations
+    // make protocol of derivations, i.e. pairs of processed clashing literals
     private var literalPairs = Set<Set<LiteralReference>>()
 
     var count: Int { return clauses.count }
 
-    func clause(byReference index: ClauseReference) -> Clause {
-        return clauses[index]
+    // get clause by reference
+    func clause(byReference clauseReference: ClauseReference) -> Clause {
+        return clauses[clauseReference]
     }
 
     /// get literal by reference
     func literal(byReference literalReference: LiteralReference) -> Literal {
-        let (clauseIndex, literalIndex) = literalReference.values
-        return clauses[clauseIndex].nodes![literalIndex]
+        let (clauseReference, literalIndex) = literalReference.values
+        return clauses[clauseReference].nodes![literalIndex]
     }
 
     /// get yices literal by reference
@@ -89,31 +116,37 @@ where N:SymbolStringTyped {
         }
     }
 
-    /// deactivate a literal (that does not hold anymore)
+    /// deactivate a literal (that does not hold anymore,
+    /// which implies that the litaral cannot be pending too).
     private func deactivate(literalReference: LiteralReference) {
         for path in literal(byReference:literalReference).leafPaths {
             let _ = literalReferences.remove(literalReference, at:path)
         }
 
         let (clauseReference, _) = literalReference.values
+
         activeLiterals[clauseReference] = nil
     }
 
-    /// find a literal of a clause that holds
+    /// find a literal of a clause that holds in the model
     private func selectLiteral(clauseReference: ClauseReference,
     selectable: (term_t) -> Bool = { _ in true }, // by default all literals are selectable
     model: Yices.Model) -> LiteralIndex? {
         let (_, literals, shuffled) = yicesTuples[clauseReference]
 
-        guard
-        // find a liteal term that holds in the model
-        let t = shuffled.first(where: {
-            selectable($0) // by default every literal term is considered
-            && model.implies(formula:$0) // that holds in the model
-            }),
-        // get the index of the liteal term thats holds in the model
-        let idx = literals.index(of:t) else {
-            Syslog.error { "\(literals),\(shuffled) do not hold in model" }
+        // find a selectable literal term that holds in the model
+        guard let t = shuffled.first(where: {
+            selectable($0)            // the literal is selecteable
+            &&  model.implies(formula:$0) // and holds in the model
+        }) else {
+            Syslog.error {
+                "None of \(shuffled) holds in model. \(literals)"
+            }
+            return nil
+        }
+        // get the index of the literal term thats holds in the model
+        guard let idx = literals.index(of:t) else {
+            Syslog.error { "Literal \(t) was not found in \(literals). \(shuffled)" }
             return nil
         }
 
@@ -127,18 +160,21 @@ where N:SymbolStringTyped {
         return (t, model.implies(formula: t))
     }
 
-    /// append and register an allready _normalized_ and _encoded_ clause to collectctions
-    private func append(clause: N, triple: Yices.Tuple) -> ClauseReference {
+    /// append and register an allready _normalized_ and _encoded_ clause to collectction
+    /// and return the clause reference
+    private func append(clause: N, tuple: Yices.Tuple) -> ClauseReference {
         assert(clauses.count == yicesTuples.count)
+
+        let (yicesClause, _, _) = tuple
 
         let clauseReference = clauses.count
 
         clauses.append(clause)
-        yicesTuples.append(triple)
+        yicesTuples.append(tuple)
 
         // add or update mapping from yices clause to (tptp) clause referneces
-        if clauseReferences[triple.clause]?.insert(clauseReference) == nil {
-            clauseReferences[triple.clause] = Set(arrayLiteral: clauseReference)
+        if clauseReferences[yicesClause]?.insert(clauseReference) == nil {
+            clauseReferences[yicesClause] = Set(arrayLiteral: clauseReference)
         }
 
         return clauseReference
@@ -159,7 +195,7 @@ where N:SymbolStringTyped {
         }
 
         // no variant of given clause was found
-        return (true, append(clause:newClause, triple:newTriple))
+        return (true, append(clause:newClause, tuple:newTriple))
     }
 
     func clashingLiterals(literalReference: LiteralReference) -> Set<LiteralReference>? {
@@ -168,11 +204,11 @@ where N:SymbolStringTyped {
         }
 
         let paths = negatedLiteral.leafPaths
-        let wildcard = SymHop.symbol(self.wildcard)
 
-        return literalReferences.unifiables(paths: paths, wildcard: wildcard)
+        return literalReferences.unifiables(paths: paths, wildcard: wildcardsymbol)
     }
 
+    /// get clause and literal by literal reference
     private func clauseAndLiteral(literalReference: LiteralReference) -> (Clause, Literal) {
         let (clauseReference, literalIndex) = literalReference.values
 
@@ -182,20 +218,20 @@ where N:SymbolStringTyped {
 
 
 
+    ///
     func derivations(literalReference: LiteralReference) -> Array<Clause> {
         let (clauseReference, literalIndex) = literalReference.values
 
-
+        // get clause and append clause index to variable names
+        // e.g. p(x)|~q(y) -> p(x_i)|~q(y_i)
         let clause = self.clause(byReference: clauseReference).appending(suffix: clauseReference)
 
-        print(literalReference.values, ">>>>>", clause)
-
+        // negate literal, e.g. p(x_i) -> ~p(x_i) or ~q(y_i) -> q(y_i)
         let negatedLiteral = clause.nodes![literalIndex].negated!
 
         let paths = negatedLiteral.leafPaths
-        let wildcard = SymHop.symbol(self.wildcard)
 
-        let clashingLitaralReferences = literalReferences.unifiables(paths: paths, wildcard: wildcard)
+        let clashingLitaralReferences = literalReferences.unifiables(paths: paths, wildcard: self.wildcardsymbol)
 
         var array = Array<Clause>()
 
@@ -222,10 +258,14 @@ where N:SymbolStringTyped {
         let (yicesClause, _, _) = yicesTuples[clauseReference]
 
         guard context.insure(clause: yicesClause), let model = Yices.Model(context: context) else {
+            Syslog.info {
+                "[\(clauseReference)] \(yicesClause) is not satisfiable."
+            }
             return false // not satisfiable
         }
         // context is satisfiable and a model was constructed
 
+        // select literal with model
         pendingLiterals[clauseReference] = selectLiteral(
             clauseReference: clauseReference, model: model)
 
