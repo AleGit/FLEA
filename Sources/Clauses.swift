@@ -2,6 +2,7 @@
 
 import CYices
 
+/// manage and access clauses and literal by reference
 protocol ClauseCollection {
     associatedtype Clause
     associatedtype Literal
@@ -10,7 +11,7 @@ protocol ClauseCollection {
     associatedtype Context
     // associatedtype Model
 
-    func clause(clauseReference: ClauseReference) -> Clause
+    func clause(byReference: ClauseReference) -> Clause
     func literal(literalReference: LiteralReference) -> Literal
 
     func insert(clause: Clause) -> (inserted: Bool, referenceAfterInsert: ClauseReference)
@@ -59,8 +60,8 @@ where N:SymbolStringTyped {
 
     var count: Int { return clauses.count }
 
-    func clause(clauseReference: ClauseReference) -> Clause {
-        return clauses[clauseReference]
+    func clause(byReference: ClauseReference) -> Clause {
+        return clauses[byReference]
     }
 
     /// get literal by reference
@@ -175,7 +176,7 @@ where N:SymbolStringTyped {
     private func clauseAndLiteral(literalReference: LiteralReference) -> (Clause, Literal) {
         let (clauseReference, literalIndex) = literalReference.values
 
-        let clause = self.clause(clauseReference: clauseReference)
+        let clause = self.clause(byReference: clauseReference)
         return (clause, clause.nodes![literalIndex])
     }
 
@@ -185,7 +186,7 @@ where N:SymbolStringTyped {
         let (clauseReference, literalIndex) = literalReference.values
 
 
-        let clause = self.clause(clauseReference: clauseReference).appending(suffix: clauseReference)
+        let clause = self.clause(byReference: clauseReference).appending(suffix: clauseReference)
 
         print(literalReference.values, ">>>>>", clause)
 
@@ -226,7 +227,7 @@ where N:SymbolStringTyped {
         // context is satisfiable and a model was constructed
 
         pendingLiterals[clauseReference] = selectLiteral(
-            clauseReference:clauseReference, model: model)
+            clauseReference: clauseReference, model: model)
 
         for (clauseReference, literalIndex) in activeLiterals {
             let literalReference = LiteralReference(clauseReference, literalIndex)
