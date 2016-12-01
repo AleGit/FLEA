@@ -115,7 +115,7 @@ extension Proverlet {
         return nil
     }
 
-    func runSequentially(timeout: TimeInterval = 30.0) -> Bool {
+    func runSequentially(timeout: TimeInterval = 1.0) -> Bool {
         let stopTime = AbsoluteTimeGetCurrent() + timeout
 
         let context = Yices.Context()
