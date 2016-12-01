@@ -12,7 +12,7 @@ protocol ClauseCollection {
     // associatedtype Model
 
     func clause(byReference: ClauseReference) -> Clause
-    func literal(literalReference: LiteralReference) -> Literal
+    func literal(byReference: LiteralReference) -> Literal
 
     func insert(clause: Clause) -> (inserted: Bool, referenceAfterInsert: ClauseReference)
     func insure(clauseReference: ClauseReference, context: Context) -> Bool
@@ -29,7 +29,7 @@ where N:SymbolStringTyped {
     /// typealias Model = Yices.Model
 
     private var clauses = Array<Clause>()
-    private var triples = Array<Yices.Tuple>()
+    private var yicesTuples = Array<Yices.Tuple>()
     private var activeLiterals = Dictionary<ClauseReference, LiteralIndex>()
     private var pendingLiterals = Dictionary<ClauseReference, LiteralIndex>()
 
@@ -60,20 +60,20 @@ where N:SymbolStringTyped {
 
     var count: Int { return clauses.count }
 
-    func clause(byReference: ClauseReference) -> Clause {
-        return clauses[byReference]
+    func clause(byReference index: ClauseReference) -> Clause {
+        return clauses[index]
     }
 
     /// get literal by reference
-    func literal(literalReference: LiteralReference) -> Literal {
-        let (clauseReference, literalIndex) = literalReference.values
-        return clauses[clauseReference].nodes![literalIndex]
+    func literal(byReference literalReference: LiteralReference) -> Literal {
+        let (clauseIndex, literalIndex) = literalReference.values
+        return clauses[clauseIndex].nodes![literalIndex]
     }
 
     /// get yices literal by reference
-    private func yicesLiteral(literalReference: LiteralReference) -> term_t {
+    private func yicesLiteral(byReference literalReference: LiteralReference) -> term_t {
         let (clauseReference, literalIndex) = literalReference.values
-        return triples[clauseReference].literals[literalIndex]
+        return yicesTuples[clauseReference].literals[literalIndex]
     }
 
     /// acitvate a literal (that holds and all derivations have been drawn)
@@ -84,14 +84,14 @@ where N:SymbolStringTyped {
         pendingLiterals[clauseReference] = nil
         activeLiterals[clauseReference] = literalIndex
 
-        for path in literal(literalReference:literalReference).leafPaths {
+        for path in literal(byReference:literalReference).leafPaths {
             let _ = literalReferences.insert(literalReference, at:path)
         }
     }
 
     /// deactivate a literal (that does not hold anymore)
     private func deactivate(literalReference: LiteralReference) {
-        for path in literal(literalReference:literalReference).leafPaths {
+        for path in literal(byReference:literalReference).leafPaths {
             let _ = literalReferences.remove(literalReference, at:path)
         }
 
@@ -103,7 +103,7 @@ where N:SymbolStringTyped {
     private func selectLiteral(clauseReference: ClauseReference,
     selectable: (term_t) -> Bool = { _ in true }, // by default all literals are selectable
     model: Yices.Model) -> LiteralIndex? {
-        let (_, literals, shuffled) = triples[clauseReference]
+        let (_, literals, shuffled) = yicesTuples[clauseReference]
 
         guard
         // find a liteal term that holds in the model
@@ -123,18 +123,18 @@ where N:SymbolStringTyped {
     /// check if a literal still holds
     private func validate(literalReference: LiteralReference,
     model: Yices.Model) -> (term_t, Bool) {
-        let t = yicesLiteral(literalReference: literalReference)
+        let t = yicesLiteral(byReference: literalReference)
         return (t, model.implies(formula: t))
     }
 
     /// append and register an allready _normalized_ and _encoded_ clause to collectctions
     private func append(clause: N, triple: Yices.Tuple) -> ClauseReference {
-        assert(clauses.count == triples.count)
+        assert(clauses.count == yicesTuples.count)
 
         let clauseReference = clauses.count
 
         clauses.append(clause)
-        triples.append(triple)
+        yicesTuples.append(triple)
 
         // add or update mapping from yices clause to (tptp) clause referneces
         if clauseReferences[triple.clause]?.insert(clauseReference) == nil {
@@ -163,7 +163,7 @@ where N:SymbolStringTyped {
     }
 
     func clashingLiterals(literalReference: LiteralReference) -> Set<LiteralReference>? {
-        guard let negatedLiteral = literal(literalReference: literalReference).negated else {
+        guard let negatedLiteral = literal(byReference: literalReference).negated else {
             return nil
         }
 
@@ -219,7 +219,7 @@ where N:SymbolStringTyped {
 
 
     func insure(clauseReference: ClauseReference, context: Yices.Context) -> Bool {
-        let (yicesClause, _, _) = triples[clauseReference]
+        let (yicesClause, _, _) = yicesTuples[clauseReference]
 
         guard context.insure(clause: yicesClause), let model = Yices.Model(context: context) else {
             return false // not satisfiable
