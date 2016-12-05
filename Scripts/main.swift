@@ -7,6 +7,8 @@ defer {
     Syslog.closeLog()
 }
 
+
+
 private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias S = Int
@@ -61,3 +63,5 @@ if let problems = options["--problem"] {
         process(problem:problem)
     }
 }
+
+

@@ -55,8 +55,10 @@ public class ProverletTests: YicesTestCase {
 
     let prover = Proverlet(axioms: axioms)
 
-    let satisfiable = prover.runSequentially()
-    print(prover.clauseCount, satisfiable)
+    for run in 1...10 {
+      let satisfiable = prover.runSequentially(timeout:30)
+      print(run, prover.clauseCount, prover.ignoreCount, satisfiable)
+    }
 
   }
 
@@ -88,6 +90,20 @@ public class ProverletTests: YicesTestCase {
 
 
 
+
+  }
+
+  func testSimple() {
+     let axioms: [TestNode] = [
+      "@cnf s(X) != zero",
+      "s(X)!=s(Y) | X = Y",
+      "@cnf s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(zero))))))))))))))))))))=s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(s(zero))))))))))))))))))))))"
+    ]
+
+    let prover = Proverlet(axioms: axioms)
+
+    let satisfiable = prover.runSequentially(timeout:300.0)
+    print(prover.clauseCount, satisfiable)
 
   }
 }

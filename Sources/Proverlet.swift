@@ -19,7 +19,8 @@ where N:SymbolStringTyped {
     fileprivate let clauses = Clauses<N>()
 
     init(axioms: [N]) {
-        Syslog.info { "initializing with in memory clauses" }
+        print("Hello World")
+        // Syslog.info { "initializing with in memory clauses" }
         parsedClauses = Array<(String, Tptp.Role, N)>() // stays empty
 
         for clause in axioms {
@@ -27,6 +28,7 @@ where N:SymbolStringTyped {
         }
     }
 
+    fileprivate var i = 0
 
 
     /// initialize with the name of a problem
@@ -79,6 +81,10 @@ where N:SymbolStringTyped {
     var clauseCount: Int {
         return clauses.count
     }
+
+    var ignoreCount: Int {
+        return clauses.ignoreCount
+    }
 }
 
 extension Proverlet {
@@ -115,11 +121,13 @@ extension Proverlet {
         return nil
     }
 
+
+
     func runSequentially(timeout: TimeInterval = 1.0) -> Bool {
         let stopTime = AbsoluteTimeGetCurrent() + timeout
 
         let context = Yices.Context()
-        var i = 0
+
         while i < clauses.count && AbsoluteTimeGetCurrent() < stopTime {
 
             guard clauses.insure(clauseReference: i, context: context) else {

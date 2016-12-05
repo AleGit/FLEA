@@ -17,7 +17,8 @@ public struct Demo {
   "Kin" : (Demo.Problem.kinNode, "Parse \(hwvProblem) with kin node (expensive)"),
   "broken" : (Demo.Problem.broken, "Parse invalid file"),
   "pool" : (Demo.sharing, "Node sharing"),
-  "mgu" : (Demo.Unification.demo, "Unfication")
+  "mgu" : (Demo.Unification.demo, "Unfication"),
+"succ" : (Demo.Prover.succ, "Successor")
   ]
 
   public static func demo() -> Int? {
@@ -97,6 +98,7 @@ extension Demo {
 /// MARK: - Node
 
 extension Demo {
+
   final class SimpleNode: SymbolStringTyped, Node,
   ExpressibleByStringLiteral {
     typealias N = SimpleNode
@@ -165,6 +167,9 @@ extension Demo {
 
     lazy var hashValue: Int = self.defaultHashValue
   }
+
+
+
 }
 
 extension Demo {
@@ -404,3 +409,53 @@ where N:SymbolStringTyped {
 
   return inputs
 }
+
+extension Demo {
+
+  struct Prover {
+    private final class TestNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+  ExpressibleByStringLiteral {
+    typealias S = Int
+    typealias N = TestNode
+    static var symbols = StringIntegerTable<S>()
+    static var pool = WeakSet<N>()
+    // var folks = WeakSet<N>() // protocol Kin
+
+    var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
+    var nodes: [N]? = nil
+
+    var description: String { return defaultDescription }
+    lazy var hashValue: Int = self.defaultHashValue
+  }
+
+
+
+    static func succ() -> Int {
+      Yices.setUp()
+
+      defer {
+        Yices.tearDown()
+      }
+
+      let axioms: [TestNode] = [
+      "@cnf s(X) != zero",
+      "s(X)!=s(Y) | X = Y",
+      // "@cnf s(s(s(s(s(s(s(X))))))) = zero",
+    ]
+
+    let prover = Proverlet(axioms: axioms)
+
+    for run in 1...10 {
+      let satisfiable = prover.runSequentially(timeout:30)
+      print(run, prover.clauseCount, prover.ignoreCount, satisfiable)
+    }
+
+
+      return 0
+
+  }
+
+  }
+}
+
+

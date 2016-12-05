@@ -34,6 +34,7 @@ where N:SymbolStringTyped {
     /// - clause reference is an array index
     /// - literal reference is a pair of array indices
     private var clauses = Array<Clause>()
+    fileprivate var ignored = 0
 
     /// yices encoding for clauses
     private var yicesTuples = Array<Yices.Tuple>()
@@ -87,6 +88,7 @@ where N:SymbolStringTyped {
     private var literalPairs = Set<Set<LiteralReference>>()
 
     var count: Int { return clauses.count }
+    var ignoreCount: Int { return ignored }
 
     // get clause by reference
     func clause(byReference clauseReference: ClauseReference) -> Clause {
@@ -134,7 +136,7 @@ where N:SymbolStringTyped {
     private func selectLiteral(clauseReference: ClauseReference,
     selectable: (term_t) -> Bool = { _ in true }, // by default all literals are selectable
     model: Yices.Model) -> LiteralIndex? {
-        let (_, literals, shuffled) = yicesTuples[clauseReference]
+        let (c, literals, shuffled) = yicesTuples[clauseReference]
 
         // find a selectable literal term that holds in the model
         guard let t = shuffled.first(where: {
@@ -142,7 +144,7 @@ where N:SymbolStringTyped {
             &&  model.implies(formula:$0) // and holds in the model
         }) else {
             Syslog.error {
-                "None of \(shuffled) holds in model. \(literals)"
+                "None of \(shuffled) in \(c) holds in model. \(literals) \(clause(byReference: clauseReference))"
             }
             return nil
         }
@@ -193,6 +195,7 @@ where N:SymbolStringTyped {
         if let clauseReference = clauseReferences[newTriple.clause]?.first(where: {
             newClause == clauses[$0]
             }) {
+                ignored += 1
             return (false, clauseReference)
         }
 
