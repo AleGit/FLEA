@@ -56,7 +56,7 @@ public class ProverletTests: YicesTestCase {
     let prover = Proverlet(axioms: axioms)
 
     for run in 1...10 {
-      let satisfiable = prover.runSequentially(timeout:30)
+      let satisfiable = prover.runSequentially(timeout:1)
       print(run, prover.clauseCount, prover.ignoreCount, satisfiable)
     }
 
@@ -102,7 +102,7 @@ public class ProverletTests: YicesTestCase {
 
     let prover = Proverlet(axioms: axioms)
 
-    let satisfiable = prover.runSequentially(timeout:300.0)
+    let satisfiable = prover.runSequentially(timeout:0.4)
     print(prover.clauseCount, satisfiable)
 
   }

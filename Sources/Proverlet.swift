@@ -19,7 +19,6 @@ where N:SymbolStringTyped {
     fileprivate let clauses = Clauses<N>()
 
     init(axioms: [N]) {
-        print("Hello World")
         // Syslog.info { "initializing with in memory clauses" }
         parsedClauses = Array<(String, Tptp.Role, N)>() // stays empty
 
