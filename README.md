@@ -9,6 +9,10 @@
 
 ### Prerequisites
 
+[Yices](http://yices.csl.sri.com), 
+[Z3](https://github.com/Z3Prover/z3), 
+and [Swift 3](https://swift.org/download/) have to be installed.
+
 - Install [Yices](http://yices.csl.sri.com) and check:
 ```
 $ yices -V
@@ -31,7 +35,7 @@ $ ls /usr/local/include
 
 
 
-- Install [Swift 3 Release](https://swift.org/download/) and check:
+- Install [Swift 3](https://swift.org/download/) and check:
 ```
 $ swift -version
 Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1) # Mac
