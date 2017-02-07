@@ -40,7 +40,7 @@ and check:
 ```
 $ swift -version
 Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1) # Mac
-Swift version 3.0 (swift-3.0-RELEASE)                       # Linux
+Swift version 3.0.2 (swift-3.0.2-RELEASE)                       # Linux
 
 $ xcode-select -p          # Mac only
 /Applications/Xcode.app/Contents/Developer
