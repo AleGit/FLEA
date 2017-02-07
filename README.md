@@ -62,12 +62,6 @@ $ swift test                                        # run all tests
 The first (failing) `swift build` is necessary to download the system packages. 
 But it cannot succeed because the parsing lib is not installed yet.
 
-- Build [workaround][1] and run a binary
-```
-$ Scripts/build.sh -c release -Xlinker -L/usr/lib
-$ .build/release/FLEA --demo
-```
-
 - Run all tests / tests in class NodeTests / NodeTests.testInit()
 ```
 $ Scripts/tests.sh            # i.e. $ swift test -Xlinker -L/usr/local/lib
@@ -75,5 +69,13 @@ $ Scripts/tests.sh Node       # i.e. $ swift test -s FLEATests.NodeTests
 $ Scripts/tests.sh Node Init  # i.e. $ swift test -s FLEATests.NodeTests/testInit 
 ```
 
-[1]: The build workaround is necessary because otherwise `Sources/main.swift` 
-and `Tests/LinuxMain.swift` would clash on Linux when building the tests.
+- Build [1] and run the release binary
+```
+$ Scripts/build.sh -c release -Xlinker -L/usr/local/lib   # Mac?
+$ Scripts/build.sh -c release -Xlinker -L/usr/lib         # Linux?
+$ .build/release/FLEA --demo
+```
+
+[1]: The script copies `main.swift` into `Sources` and then envokes `swift build`.
+After the build it removes `main.swift` from `Sources`, because
+on Linux `Sources/main.swift` and `Tests/LinuxMain.swift` clash when building tests.
