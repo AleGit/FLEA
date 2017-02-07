@@ -25,7 +25,7 @@ On Linux the z3 header files in `/usr/include` have to be linked into `/usr/loca
 ```
 $ Scripts/z3headers.sh
 $ ls /usr/local/include
-… PrlcCore.h … yices.h … z3.h
+… yices.h … z3.h …
 ```
 
 
