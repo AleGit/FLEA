@@ -82,8 +82,7 @@ $ Scripts/tests.sh Node Init  # i.e. $ swift test -s FLEATests.NodeTests/testIni
 
 - Build [1] and run the release binary
 ```
-$ Scripts/build.sh -c release -Xlinker -L/usr/local/lib   # Mac?
-$ Scripts/build.sh -c release -Xlinker -L/usr/lib         # Linux?
+$ Scripts/build.sh -c release -Xlinker -L/usr/local/lib   # parser and yices libraries
 $ .build/release/FLEA --demo
 ```
 
