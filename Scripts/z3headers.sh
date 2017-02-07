@@ -17,6 +17,8 @@
 # }
 
 # Hence on Linux the headers have to be linked into `/usr/local/include`
+# See [SE-0063 SwiftPM System Module Search Paths](https://github.com/apple/swift-evolution/blob/master/proposals/0063-swiftpm-system-module-search-paths.md)
+# for a more general solution for Swift 3 package manager.
 
 name=`uname -s`
 

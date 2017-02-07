@@ -15,7 +15,7 @@ public class YicesTests: YicesTestCase {
     ]
   }
 
-  typealias N = FLEA.Tptp.KinIntNode
+  typealias Node = Q.Node // sharing, but no symbol table
 
   func testPUZ001c1() {
     let problem = "PUZ001-1"
@@ -35,7 +35,7 @@ public class YicesTests: YicesTestCase {
     ///  |
     /// role -> formula -> [annoations]
 
-    let cnfs = file.cnfs.map { N(tree:$0.child!.sibling!) }
+    let cnfs = file.cnfs.map { Node(tree:$0.child!.sibling!) }
     XCTAssertEqual(12, cnfs.count, nok)
 
     print(cnfs.first!.description)
@@ -50,7 +50,7 @@ public class YicesTests: YicesTestCase {
 
   func testTop() {
 
-    let p = "p|~p" as Q.Node
+    let p = "p|~p" as Node
 
     let context = Yices.Context()
     let _ = context.insure(clause:p)
@@ -59,9 +59,8 @@ public class YicesTests: YicesTestCase {
 
   func testBottom() {
 
-    let np = "~p(X)" as Q.Node
-    let p = "@cnf p(Y)" as Q.Node
-
+    let np = "~p(X)" as Node
+    let p = "@cnf p(Y)" as Node
 
     let context = Yices.Context()
     let _ = context.insure(clause:p)
@@ -71,8 +70,8 @@ public class YicesTests: YicesTestCase {
   }
 
   func testEmptyClause() {
-    let symbol = Q.Node.symbolize(string:"|", type:.disjunction)
-    let empty = Q.Node(symbol:symbol, nodes: Array<Q.Node>())
+    let symbol = Node.symbolize(string:"|", type:.disjunction)
+    let empty = Node(symbol:symbol, nodes: [Node]())
 
     let context = Yices.Context()
     let _ = context.insure(clause:empty)
@@ -80,10 +79,10 @@ public class YicesTests: YicesTestCase {
   }
 
   func testVariants() {
-    let a = "p(X)|q(Y)" as Q.Node
-    let b = "p(Y)|q(Z)" as Q.Node
-    let c = "q(Z)|p(X)" as Q.Node
-    let d = "q(A)|q(B)|p(C)" as Q.Node
+    let a = "p(X)|q(Y)" as Node
+    let b = "p(Y)|q(Z)" as Node
+    let c = "q(Z)|p(X)" as Node
+    let d = "q(A)|q(B)|p(C)" as Node
 
     let ya = Yices.clause(a)
     let yb = Yices.clause(b)
@@ -112,8 +111,8 @@ public class YicesTests: YicesTestCase {
 
     let context = Yices.Context()
 
-    context.insure(clause: c1)
-    context.insure(clause: c2)
+    let _ = context.insure(clause: c1)
+    let _ = context.insure(clause: c2)
 
     print(context.isSatisfiable)
 
@@ -123,15 +122,7 @@ public class YicesTests: YicesTestCase {
     }
 
     for term in [p, np, e, ne, c1, c2] {
-
       print(p, String(term:term)!, model.implies(formula: term))
-
-
-
     }
-
-
-
-
   }
 }
