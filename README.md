@@ -7,7 +7,7 @@
 - Mac (OS X El Capitan, macOS Sierra)
 - Linux 64-bit (Ubuntu 14.04, 15.10, 16.04)
 
-### Installation
+### Prerequisites
 
 - Install [Yices](http://yices.csl.sri.com) and check:
 ```
@@ -40,6 +40,8 @@ Swift version 3.0 (swift-3.0-RELEASE)                       # Linux
 $ xcode-select -p          # Mac only
 /Applications/Xcode.app/Contents/Developer
 ```
+
+### Installation
 
 - Download and unpack package [TPTP-v6.4.0.tgz](http://www.cs.miami.edu/~tptp/) (or newer).
 Create a symbolic link to the unpacked `TPTP-v6.4.0` directory
