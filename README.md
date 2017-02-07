@@ -73,7 +73,7 @@ $ swift test                                        # run all tests
 The first (failing) `swift build` is necessary to download the system packages.
 But it cannot succeed because the parsing lib is not installed yet.
 
-- Run all tests / tests in class NodeTests / NodeTests.testInit()
+- Run all tests / tests in `class NodeTests` / `NodeTests.testInit()` only:
 ```
 $ Scripts/tests.sh            # i.e. $ swift test -Xlinker -L/usr/local/lib
 $ Scripts/tests.sh Node       # i.e. $ swift test -s FLEATests.NodeTests
