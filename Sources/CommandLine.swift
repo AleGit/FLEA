@@ -37,8 +37,9 @@ public extension CommandLine {
   }
 
   static var options: [String : [String]] = {
-    var dictionary = ["" : [String]()]
-    var name = ""
+    var name = "•"  // key for entries previous to the first --key
+    var dictionary = [name: [String]()]
+
     for parameter in CommandLine.parameters {
       if parameter.hasPrefix("--") {
         name = parameter
@@ -46,11 +47,6 @@ public extension CommandLine {
           dictionary[name] = [String]()
         }
       } else {
-        /// --A 1 2 4 --B 5 --C -A 7
-        // "" : []
-        // "--A" : 1,2,4,7
-        // "--B" : 5
-        // "--C" : []
         dictionary[name]?.append(parameter)
        }
      }

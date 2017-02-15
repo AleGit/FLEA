@@ -40,7 +40,7 @@ private typealias Prover = ProverY<TestNode>
   func testPUZs () {
       for (problem, noc, nof, equational) in [
           ("PUZ001-1", 12, 1, false),
-          // ("PUZ007-1", 28, 2, true)
+          // ("PUZ007-1", 28, 2, true),
           // ("PUZ001-1y", 12, 1, false),
           ] {
       guard let theProver = FLEA.ProverY<TestNode>(problem:problem) else {
@@ -59,6 +59,17 @@ private typealias Prover = ProverY<TestNode>
       print("problem:", problem, result, runtime,
       "clauses:", theProver.clauseCount, "ensured:", theProver.insuredClausesCount)
       }
+
+  }
+
+  func testAck() {
+    let a0 = "a(z,X)=s(x)" as TestNode
+    let a1 = "a(s(X),z)=a(X,s(z))" as TestNode
+    let a2 = "a(s(X),s(Y))=a(X,a(s(X),Y))" as TestNode
+
+    print("a0\t\t", a0)
+    print("a1\t\t", a1)
+    print("a2\t\t", a2)
 
   }
 }

@@ -76,7 +76,7 @@ The swift buid process uses the file `Package.swift` to
 resolve dependecies to (system) modules. These modules source
 code will be stored in `Packages`.
 
-### Problems
+### Problem and axiom files
 Problem and axiom files for tests, additionally **FLEA**
 makes use of `--tptp_root`, `$TPTP_ROOT`,
 or`~/TPTP` to find problem and axiom files by name.
@@ -106,3 +106,13 @@ The scripts must be started in the root directory of the project, e.g.
 ### Sources
 
 ### Tests
+
+##Command line options
+
+- `--demo`
+- `--problem`   problem file name (without path or file extension)
+- `--tptp_root` absolute path to directory with axiom and problem folders
+```
+Axioms   Problems    README
+```
+- `--timeout`

@@ -27,8 +27,6 @@ private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
     lazy var hashValue: Int = self.defaultHashValue // protocol Node : Hashable
   }
 
-
-
 // MARK: functions
 func process(problem: String) {
 
@@ -53,6 +51,11 @@ let _ = Demo.demo()
 // ============================================================/
 
 let options = CommandLine.options
+
+for (key, value) in options {
+    print(key, value)
+}
+
 if let problems = options["--problem"] {
 
     Yices.setUp()
