@@ -29,8 +29,9 @@ public class SymbolTabledNodeTests: FleaTestCase {
     let fa = LocalNode(f:"f", [LocalNode(c:"a")])
     XCTAssertEqual("f(a)", fa.description)
 
-    if let (a, b, c) = LocalNode.symbols.remove("f") {
-        print(a, b, c, "removed")
+    guard let _ = LocalNode.symbols.remove("f") else {
+        XCTFail("'f' was not removed from symbol table")
+        return
     }
 
     let f = LocalNode(f:"f", [LocalNode(c:"a"), LocalNode(v:"X")])
