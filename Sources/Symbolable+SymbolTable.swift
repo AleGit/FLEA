@@ -53,6 +53,10 @@ protocol SymbolTable {
   associatedtype Symbol : Hashable
 
   mutating func insert(_ key: Key, _ type: Tptp.SymbolType) -> Symbol
+
+  // mutating func remove(_ key: Key, _ type: Tptp.SymbolType) -> Symbol?
+  mutating func remove(_ key: Key) -> (Symbol, Key, Tptp.SymbolType)?
+
   subscript(symbol: Symbol) -> (Key, Tptp.SymbolType)? { get }
 
   var isEquational: Bool { get }
@@ -99,7 +103,20 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
   mutating func insert(_ string: String, _ type: Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
       // the symbol is allready in the table, check the type
-      assert(strings[symbol]?.1 == type, "\(strings[symbol]) != (\(string),\(type)")
+      // assert(strings[symbol]?.1 == type, "\(strings[symbol]) != (\(string),\(type)")
+
+      // guard let info = strings[symbol] else {
+      //   Syslog.error { "Stored Symbol \(symbol) \(string) has not type."}
+      // }
+
+      guard let (s, t) = strings[symbol] else {
+        Syslog.error { "Symbol \(symbol) \(string) \(type) has no stored type." }
+        return symbol
+      }
+
+      Syslog.error(condition: t != type) {
+        "\nSymbol '\(symbol)' has type mismatth: \(s, t) != (\(string),\(type))"
+      }
 
       return symbol
     }
@@ -117,6 +134,23 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
     strings[ivalue] = (string, type)
 
     return ivalue
+  }
+
+  mutating func remove(_ string: String) -> (I, String, Tptp.SymbolType)? {
+    guard let symbol = symbols[string] else {
+      // nothing in the table
+      return nil
+    }
+
+    symbols[string] = nil
+
+    guard let type = strings[symbol] else {
+      return (symbol, "", Tptp.SymbolType.undefined)
+    }
+
+    strings[symbol] = nil
+    return (symbol, type.0, type.1)
+
   }
 
   subscript(value: I) -> StringType? {
@@ -160,6 +194,11 @@ struct StringStringTable: SymbolTable {
     }
 
     return string
+  }
+
+  mutating func remove(_ string: String) -> (String, String, Tptp.SymbolType)? {
+    Syslog.error { "-----" }
+    return nil
   }
 
   subscript(value: String) -> StringType? {
