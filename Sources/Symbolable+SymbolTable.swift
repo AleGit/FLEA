@@ -63,7 +63,6 @@ protocol SymbolTable {
 protocol SymbolTabulating {
   associatedtype Symbols : SymbolTable
   static var symbols: Symbols { get set }
-  static func clearSymbols()
 }
 
 /// Integers that can be initialized with an `Int` value.
@@ -93,8 +92,8 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
 
   private(set) var isEquational: Bool = false
 
-  private var symbols = [String : I]()
-  private var strings = [I : StringType] ()
+  private var symbols = [String: I]()
+  private var strings = [I: StringType] ()
 
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
   mutating func insert(_ string: String, _ type: Tptp.SymbolType) -> I {
@@ -122,6 +121,11 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
 
   subscript(value: I) -> StringType? {
     return strings[value]
+  }
+
+  mutating func clear() {
+    symbols.removeAll()
+    strings.removeAll()
   }
 }
 
@@ -161,5 +165,9 @@ struct StringStringTable: SymbolTable {
   subscript(value: String) -> StringType? {
     guard let type = types[value] else { return nil }
     return (value, type)
+  }
+
+  mutating func clear() {
+    types.removeAll()
   }
 }

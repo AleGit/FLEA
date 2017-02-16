@@ -47,6 +47,7 @@ extension Tptp {
      case fi_domain, fi_functors, fi_predicates
      case unknown
   }
+
   enum SymbolType: Equatable {
     case undefined
 

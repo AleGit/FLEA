@@ -40,6 +40,8 @@ protocol Node: Hashable,
 
   var defaultDescription: String { get }
 
+  /// reset type, e.g. clear symbols, clear pool, etc.
+  static func reset()
 }
 
 extension Node {
@@ -48,6 +50,12 @@ extension Node {
   /// None-sharing is suitable for value types.
   static func share(node: Self) -> Self {
     return node
+  }
+
+  static func reset() {
+    Syslog.warning { // -> debug
+      "Class or Struct '\(self)' must bring its own implemtation of static func '\(#function)'.'"
+    }
   }
 }
 
