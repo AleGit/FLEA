@@ -3,16 +3,19 @@
 ## Steps
 
 1. Parse problem and axiom files
-2. Build clause index structure to avoid variants of clauses
-3. Build literal index structures to find clashing literals
+2. Build index structures for clauses to avoid variants of clauses
+3. Build index structures for literals to find clashing literals
 4. Select clause, assert clause in yices context
 5. If context is not satisfiable, return UNSAT
-6. Get model and select literals for processed and actual clauses
+6. Get model and (re)select literals for processed and actual clauses
 7. Search clashing literals for all newly selected literals (update literal index)
-8. Derive new clauses D, check for redundancy
-    - discard D if clause D exists where mgu(D,D') is renaming
-    - discard D = A|B, if if clause B exists where mgu(B,B') is renaming
-    - deactivate C' = D'|E' where mgu(D,D') is renaming
+8. Derive a clause D, check for redundancy
+    - discard D if clause D' exists where mgu(D,D') is a renaming,
+      because here D ≡ D' and D⊥ = D'⊥.
+    - discard D = A|D', if clause D' exists where mgu(D,D') is renaming
+      because D' ⊨ A|D' = D and D'⊥ ⊨ D⊥.
+    - activate D and deactivate all C = A|D' where mgu(D,D') is renaming,
+      because D ⊨ A|D' = C and D⊥ ⊨ C⊥.
 
 ## Parsing
 

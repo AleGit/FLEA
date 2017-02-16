@@ -57,13 +57,13 @@ protocol SymbolTable {
 
   var isEquational: Bool { get }
 
-
 }
 
 /// A symbol table users type holds a symbol table.
 protocol SymbolTabulating {
   associatedtype Symbols : SymbolTable
   static var symbols: Symbols { get set }
+  static func clearSymbols()
 }
 
 /// Integers that can be initialized with an `Int` value.

@@ -8,10 +8,10 @@ import CYices
 final class Proverlet<N:Node>: Prover
 where N:SymbolStringTyped {
     /// List of (file path, number of clauses) pairs.
-    fileprivate var parsedFiles = Array<(String, Int)>()
+    fileprivate var parsedFiles = [(String, Int)]()
 
     /// List of (clause name, clause role, clause) triples.
-    fileprivate var parsedClauses: Array<(String, Tptp.Role, N)>
+    fileprivate var parsedClauses: [(String, Tptp.Role, N)]
 
     /// a at least syntactically variant free collection of clauses
     /// - syntactically variant free: {p(X)|q(Y), q(Z)|p(X)} excludes p(Y)|q(Z)

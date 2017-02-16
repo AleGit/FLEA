@@ -28,6 +28,10 @@ Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
   static func symbolize(string: String, type: Tptp.SymbolType) -> Symbol {
     return self.symbols.insert(string, type)
   }
+
+  static func clearSymbols() {
+    print ("clear symbols")
+  }
 }
 
 
