@@ -48,14 +48,15 @@ $ xcode-select -p          # Mac only
 
 ### Installation
 
-- Download and unpack package [TPTP-v6.4.0.tgz](http://www.cs.miami.edu/~tptp/) (or newer).
-Create a symbolic link to the unpacked `TPTP-v6.4.0` directory
+- Download and unpack package [TPTP-v6.4.0.tgz](http://www.cs.miami.edu/~tptp/TPTP/Distribution/TPTP-v6.4.0.tgz)
+(or newer) from [TPTP](http://www.cs.miami.edu/~tptp/) .
+Create a symbolic link to the unpacked `TPTP-v6.y.z` directory
 in your home directory, and check:
 ```
 ls ~/TPTP
 Axioms		Documents	Generators	Problems	README		Scripts		TPTP2X
 ```
-This will enable the unit tests to find problems and axioms.
+This will enable the unit tests to find problem and axiom files.
 (Alternatively you can set the environment variable `TPTP_ROOT`
 to the full path to the unpacked `TPTP-v6.4.0` directory.)
 - Clone, build and run [FLEA](https://github.com/AleGit/FLEA) tests:
@@ -86,6 +87,11 @@ $ Scripts/build.sh -c release -Xlinker -L/usr/local/lib   # parser and yices lib
 $ .build/release/FLEA --demo
 ```
 
-[1]: The script copies `main.swift` into `Sources` and then envokes `swift build`.
-After the build it removes `main.swift` from `Sources`, because
-on Linux `Sources/main.swift` and `Tests/LinuxMain.swift` clash when building tests.
+- Solve the [Dreadbury Mansion](http://www.cs.miami.edu/~tptp/cgi-bin/SeeTPTP?Category=Problems&Domain=PUZ&File=PUZ001-1.p) mystery in a second
+```
+$ .build/release/FLEA --problem PUZ001-1 --timeout 1
+```
+
+[1]: The script creates a copy of  `Scripts/main.swift` in `Sources` and envokes `swift build` afterwards.
+When the build is done the script removes `Sources/main.swift`. 
+Otherwise `Sources/main.swift` and `Tests/LinuxMain.swift` would clash when building tests on Linux.
