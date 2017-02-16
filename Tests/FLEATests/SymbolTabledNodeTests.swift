@@ -16,11 +16,10 @@ public class SymbolTabledNodeTests: FleaTestCase {
 
     static var pool = Set<LocalNode>()
     static var symbols = StringIntegerTable<Int>()
-
-
   }
 
   override public func tearDown() {
+      // clear symbol table after each test, i.e. between tests.
       LocalNode.symbols.clear()
       super.tearDown()
   }
@@ -34,8 +33,8 @@ public class SymbolTabledNodeTests: FleaTestCase {
         return
     }
 
-    let f = LocalNode(f:"f", [LocalNode(c:"a"), LocalNode(v:"X")])
-    XCTAssertEqual("f(a,X)", f.description)
+    let faX = LocalNode(f:"f", [LocalNode(c:"a"), LocalNode(v:"X")])
+    XCTAssertEqual("f(a,X)", faX.description)
   }
 
   func testF2() {

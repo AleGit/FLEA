@@ -102,20 +102,11 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
   mutating func insert(_ string: String, _ type: Tptp.SymbolType) -> I {
     if let symbol = symbols[string] {
-      // the symbol is allready in the table, check the type
-      // assert(strings[symbol]?.1 == type, "\(strings[symbol]) != (\(string),\(type)")
+      // the symbol is allready in the table, check for consitentcy
 
-      // guard let info = strings[symbol] else {
-      //   Syslog.error { "Stored Symbol \(symbol) \(string) has not type."}
-      // }
-
-      guard let (s, t) = strings[symbol] else {
-        Syslog.error { "Symbol \(symbol) \(string) \(type) has no stored type." }
+      guard let (s, t) = strings[symbol], s == string, type == t else {
+        Syslog.error { "\nSymbol '\(symbol)' (\(string),\(type)) <⚡️> \(strings[symbol]))\n" }
         return symbol
-      }
-
-      Syslog.error(condition: t != type) {
-        "\nSymbol '\(symbol)' has type mismatth: \(s, t) != (\(string),\(type))"
       }
 
       return symbol
