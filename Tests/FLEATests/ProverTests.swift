@@ -31,6 +31,18 @@ public class ProverTests: YicesTestCase {
     lazy var hashValue: Int = self.defaultHashValue
   }
 
+  private final class TestProver: FLEA.Prover {
+    init?(problem name: String) {
+      return nil
+    }
+    func run(timeout: TimeInterval) -> Bool? {
+      return nil
+    }
+    var fileCount: Int { return 0 }
+    var clauseCount: Int { return 0 }
+
+  }
+
 private typealias Prover = ProverY<TestNode>
   func testPUZs () {
       for (problem, noc, nof, equational) in [

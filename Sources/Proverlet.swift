@@ -35,7 +35,7 @@ where N:SymbolStringTyped {
 
         // read and parse the main (problem) file
 
-        guard let (url, file) = Proverlet.URLAndFile(problem: name) else { return nil }
+        guard let (url, file) = URLAndFile(problem: name) else { return nil }
 
         parsedClauses = file.nameRoleClauseTriples()
         parsedFiles.append((url.path, parsedClauses.count))

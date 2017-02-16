@@ -55,7 +55,7 @@ where N:SymbolStringTyped {
     init?(problem name: String) {
         Syslog.info { "problem name = \(name)" }
 
-        guard let (url, file) = ProverY.URLAndFile(problem: name) else { return nil }
+        guard let (url, file) = URLAndFile(problem: name) else { return nil }
 
         clauses = file.nameRoleClauseTriples()
         let includes = file.includeSelectionURLTriples(url: url)
