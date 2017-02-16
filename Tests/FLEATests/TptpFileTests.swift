@@ -13,12 +13,12 @@ public class TptpFileTests: FleaTestCase {
 
   func check(
     _ name: String,
-    _ expected:Int, // expected number of 'inputs'
-    _ maxtime:Double = 0,
-    _ message:String = "",
+    _ expected: Int, // expected number of 'inputs'
+    _ maxtime: Double = 0,
+    _ message: String = "",
     _ file: String = #file,
-    _ function : String = #function,
-    _ line : Int = #line
+    _ function: String = #function,
+    _ line: Int = #line
   ) {
     let (_, runtime) = utileMeasure {
       guard let url = URL(fileURLWithProblem:name) else {
@@ -31,7 +31,7 @@ public class TptpFileTests: FleaTestCase {
         return
       }
 
-      let ast : Q.Node? = file.ast()
+      let ast: Q.Node? = file.ast()
 
       guard let nodes = ast?.nodes else {
         XCTFail("\(nok):\(line) \(url.relativePath) is just a single node")

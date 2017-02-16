@@ -31,7 +31,6 @@ public class ProverTests: YicesTestCase {
     lazy var hashValue: Int = self.defaultHashValue
   }
 
-
 private typealias Prover = ProverY<TestNode>
   func testPUZs () {
       for (problem, noc, nof, equational) in [

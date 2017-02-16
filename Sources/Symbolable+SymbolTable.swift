@@ -161,7 +161,7 @@ struct StringStringTable: SymbolTable {
   typealias Symbol = String
 
   private(set) var isEquational: Bool = false
-  private var types = Dictionary<String, Tptp.SymbolType>()
+  private var types = Dictionary<String, Tptp.SymbolType>() // [String: Tptp.SymbolType]() // won't work
 
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
   mutating func insert(_ string: Key, _ type: Tptp.SymbolType) -> Symbol {

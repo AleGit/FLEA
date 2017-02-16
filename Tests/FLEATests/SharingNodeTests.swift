@@ -19,7 +19,7 @@ public class SharingNodeTests: FleaTestCase {
   static var pool = Set<LocalSharingNode>()
 
   var symbol: S = LocalSharingNode.symbolize(string:"*", type:.variable)
-  var nodes: [LocalSharingNode]? = nil
+  var nodes: [LocalSharingNode]?
 
   deinit {
     print("\(#function) \(self)")
@@ -34,7 +34,7 @@ public class SharingNodeTests: FleaTestCase {
     let fX = LocalSharingNode(f:"f", [X])
     let fa = LocalSharingNode(f:"f", [a])
 
-    let fX_a = fX * [LocalSharingNode(v:"X"):LocalSharingNode(c:"a")]
+    let fX_a = fX * [LocalSharingNode(v:"X"): LocalSharingNode(c:"a")]
 
     XCTAssertEqual(fX_a, fa)
     XCTAssertTrue(fX_a == fa)
@@ -57,7 +57,7 @@ public class SharingNodeTests: FleaTestCase {
     let fX = LocalSharingNode(f:"f", [X])
     let fa = LocalSharingNode(f:"f", [a])
 
-    let fX_a = fX * [LocalSharingNode(v:"Y"):LocalSharingNode(c:"a")]
+    let fX_a = fX * [LocalSharingNode(v:"Y"): LocalSharingNode(c:"a")]
 
     XCTAssertEqual(fX_a, fa)
     XCTAssertTrue(fX_a == fa)

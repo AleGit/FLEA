@@ -4,7 +4,7 @@ import XCTest
 
 public class SymbolTabledNodeTests: FleaTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests: [(String, (SymbolTabledNodeTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (SymbolTabledNodeTests) -> () throws -> Void)] {
     return [
       ("testF1", testF1),
       ("testF2", testF2)
@@ -13,7 +13,7 @@ public class SymbolTabledNodeTests: FleaTestCase {
   private final class LocalNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
     var symbol: Int = LocalNode.symbolize(string:"*", type:.variable)
-    var nodes: [LocalNode]? = nil
+    var nodes: [LocalNode]?
 
     static var pool = Set<LocalNode>()
     static var symbols = StringIntegerTable<Int>()

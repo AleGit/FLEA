@@ -19,12 +19,12 @@ extension String {
     "=": Tptp.SymbolType.equation,
     "!=": Tptp.SymbolType.inequation,
     "<~>": Tptp.SymbolType.xor,
-    "⊻" : Tptp.SymbolType.xor,
+    "⊻": Tptp.SymbolType.xor,
     "⊕" : Tptp.SymbolType.xor,
     "~|": Tptp.SymbolType.nor,
-    "⊽" : Tptp.SymbolType.nor,
+    "⊽": Tptp.SymbolType.nor,
     "~&": Tptp.SymbolType.nand,
-    "⊼" : Tptp.SymbolType.nand,
+    "⊼": Tptp.SymbolType.nand,
     "<=>": Tptp.SymbolType.bicondition,
     "↔": Tptp.SymbolType.bicondition
   ]

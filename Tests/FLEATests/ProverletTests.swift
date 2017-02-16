@@ -25,7 +25,7 @@ public class ProverletTests: YicesTestCase {
     // var folks = WeakSet<N>() // protocol Kin
 
     var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     var description: String { return defaultDescription }
     lazy var hashValue: Int = self.defaultHashValue
@@ -89,9 +89,6 @@ public class ProverletTests: YicesTestCase {
 
     let satisfiable = prover.runSequentially()
     print(prover.clauseCount, satisfiable)
-
-
-
 
   }
 
