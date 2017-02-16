@@ -23,8 +23,6 @@
   5.
 */
 
-
-
 /// Symbol string typed nodes can convert symbols to pairs of string and type,
 /// and vice versa e.g.
 /// - extension Node where Symbol:StringSymbolable {
@@ -36,7 +34,6 @@ protocol SymbolStringTyped {
   var symbolStringType: StringType { get }
   static func symbolize(string: String, type: Tptp.SymbolType) -> Symbol
 }
-
 
 /// A string symbolable type contains its string representation and its symbol type.
 protocol StringSymbolable {

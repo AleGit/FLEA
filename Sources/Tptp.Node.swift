@@ -22,7 +22,7 @@ struct Tptp {
     typealias N = SimpleNode
 
     var symbol = S(wildcard, .variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
   }
 
   /// The simplest node implementation with an integer symbol and a symbol table.
@@ -35,12 +35,13 @@ struct Tptp {
     static var symbols = StringIntegerTable<I>()
 
     var symbol: Int = N.symbolize(string:wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
   }
 
   /* sharing (strong) *************************************************************************/
 
-  @available(*, deprecated, message: "- Tptp.SharingNode suffers from node accumulation and is for demo purposes only -")
+  @available(*, deprecated, message:
+  "- Tptp.SharingNode suffers from node accumulation and is for demo purposes only -")
   final class SharingNode: SymbolStringTyped, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias N = Tptp.SharingNode
@@ -48,7 +49,7 @@ struct Tptp {
     static var pool = Set<N>()
 
     var symbol = S(wildcard, .variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     lazy var hashValue: Int = self.defaultHashValue
   }
@@ -57,7 +58,8 @@ struct Tptp {
   /// - the sharing is automatic and perfect for ground terms
   /// - all (sub)nodes are strongly referenced by a `pool` (a set),
   ///   i.e. all nodes stay in memory (node accumulation)
-  @available(*, deprecated, message: "- Tptp.SharingIntNode suffers from node accumulation and is for demo purposes only -")
+  @available(*, deprecated, message:
+  "- Tptp.SharingIntNode suffers from node accumulation and is for demo purposes only -")
   final class SharingIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
   ExpressibleByStringLiteral {
     typealias N = Tptp.SharingIntNode
@@ -66,7 +68,7 @@ struct Tptp {
     static var pool = Set<N>()
 
     var symbol: Int = N.symbolize(string:wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     lazy var hashValue: Int = self.defaultHashValue
   }
@@ -81,7 +83,7 @@ struct Tptp {
     static var pool = WeakSet<N>()
 
     var symbol = S(wildcard, .variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     lazy var hashValue: Int = self.defaultHashValue
     var description: String { return self.defaultDescription }
@@ -99,7 +101,7 @@ struct Tptp {
     static var pool = WeakSet<N>()
 
     var symbol: Int = SmartIntNode.symbolize(string:wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     lazy var hashValue: Int = self.defaultHashValue
   }
@@ -114,7 +116,7 @@ struct Tptp {
     var folks =  WeakSet<N>()
 
     var symbol = S(wildcard, .variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     lazy var hashValue: Int = self.defaultHashValue
   }
@@ -135,7 +137,7 @@ struct Tptp {
     var folks = WeakSet<N>()
 
     var symbol: Int = N.symbolize(string:wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     lazy var hashValue: Int = self.defaultHashValue
   }

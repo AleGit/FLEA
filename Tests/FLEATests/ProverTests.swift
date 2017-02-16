@@ -25,7 +25,7 @@ public class ProverTests: YicesTestCase {
     // var folks = WeakSet<N>() // protocol Kin
 
     var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     var description: String { return defaultDescription }
     lazy var hashValue: Int = self.defaultHashValue
@@ -33,13 +33,9 @@ public class ProverTests: YicesTestCase {
 
 
 private typealias Prover = ProverY<TestNode>
-
-
-
-
   func testPUZs () {
       for (problem, noc, nof, equational) in [
-          ("PUZ001-1", 12, 1, false),
+          ("PUZ001-1", 12, 1, false)
           // ("PUZ007-1", 28, 2, true),
           // ("PUZ001-1y", 12, 1, false),
           ] {

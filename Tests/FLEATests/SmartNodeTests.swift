@@ -19,7 +19,7 @@ public class SmartNodeTests: FleaTestCase {
   static var pool = WeakSet<LocalSmartNode>()
 
   var symbol: S = LocalSmartNode.symbolize(string:"*", type:.variable)
-  var nodes: [LocalSmartNode]? = nil
+  var nodes: [LocalSmartNode]?
 
   lazy var hashValue: Int = self.defaultHashValue
   lazy var description: String = self.defaultDescription
@@ -38,9 +38,9 @@ public class SmartNodeTests: FleaTestCase {
     let fX = LocalSmartNode(f:"f", [X])
     let fa = LocalSmartNode(f:"f", [a])
 
-    let fX_a = fX * [LocalSmartNode(v:"X"):LocalSmartNode(c:"a")]
+    let fX_a = fX * [LocalSmartNode(v: "X"): LocalSmartNode(c:"a")]
 
-    XCTAssertEqual(fX_a,fa)
+    XCTAssertEqual(fX_a, fa)
     XCTAssertTrue(fX_a == fa)
     XCTAssertTrue(fX_a === fa)
     XCTAssertTrue(fX.nodes!.first! == X)
@@ -49,13 +49,13 @@ public class SmartNodeTests: FleaTestCase {
     let count = LocalSmartNode.pool.count
     XCTAssertEqual(count, 4, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
-    let ffa = N(f:"f", [ N(f:"f",[N(v:"Y")])]) * [ N(v:"Y") : N(c:"a")]
+    let ffa = N(f:"f", [ N(f:"f", [N(v:"Y")])]) * [ N(v:"Y"): N(c:"a")]
     XCTAssertEqual(5, N.pool.count, "\(nok)  \(#function) \(count) ≠ 5 smart nodes accumulated.")
     let g = fX * [ X: fa]
     XCTAssertEqual(5, N.pool.count, "\(nok)  \(#function) \(count) ≠ 5 smart nodes accumulated.")
     XCTAssertTrue(ffa == g)
 
-    XCTAssertFalse( N.pool.one { $0.symbolStringType.0 == "Y" } ) /// Y must not be stored
+    XCTAssertFalse( N.pool.one { $0.symbolStringType.0 == "Y" }) /// Y must not be stored
   }
 
   /// accumulate four distict nodes
@@ -66,7 +66,7 @@ public class SmartNodeTests: FleaTestCase {
     let fX = LocalSmartNode(f:"f", [X])
     let fa = LocalSmartNode(f:"f", [a])
 
-    let fX_a = fX * [LocalSmartNode(v:"Y"):LocalSmartNode(c:"a")]
+    let fX_a = fX * [LocalSmartNode(v:"Y"): LocalSmartNode(c:"a")]
 
     XCTAssertEqual(fX_a, fa)
     XCTAssertTrue(fX_a == fa)

@@ -29,7 +29,6 @@ where N:SymbolStringTyped {
 
     fileprivate var i = 0
 
-
     /// initialize with the name of a problem
     init?(problem name: String) {
         Syslog.info { "problem name = \(name)" }
@@ -120,8 +119,6 @@ extension Proverlet {
         return nil
     }
 
-
-
     func runSequentially(timeout: TimeInterval = 1.0) -> Bool {
         let stopTime = AbsoluteTimeGetCurrent() + timeout
 
@@ -134,12 +131,7 @@ extension Proverlet {
             }
             // print(i, "of", clauses.count, "\t", clauses.clause(byReference: i))
 
-
             clauses.processPending()
-
-
-
-
 
             i += 1
         }
@@ -148,4 +140,3 @@ extension Proverlet {
 
     }
 }
-

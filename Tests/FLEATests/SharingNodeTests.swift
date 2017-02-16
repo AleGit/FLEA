@@ -6,7 +6,7 @@ import XCTest
 /// Nodes MAY accumulate between tests.
 public class SharingNodeTests: FleaTestCase {
   /// Collect all tests by hand for Linux.
-  static var allTests: [(String, (SharingNodeTests) -> () throws -> Void)]  {
+  static var allTests: [(String, (SharingNodeTests) -> () throws -> Void)] {
     return [
       ("testEqualityX", testEqualityX),
       ("testEqualityY", testEqualityY)

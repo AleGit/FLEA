@@ -2,7 +2,6 @@ import XCTest
 
 @testable import FLEA
 
-
 /// Test the accumulation of nodes in SmartNode.pool.
 /// Nodes MUST NOT accumulate between tests.
 public class ClausesTests: YicesTestCase {
@@ -25,13 +24,11 @@ public class ClausesTests: YicesTestCase {
     // var folks = WeakSet<N>() // protocol Kin
 
     var symbol: S = N.symbolize(string:Tptp.wildcard, type:.variable)
-    var nodes: [N]? = nil
+    var nodes: [N]?
 
     // var description: String { return defaultDescription }
     lazy var hashValue: Int = self.defaultHashValue
   }
-
-
 
   func testClauses() {
 
@@ -77,8 +74,6 @@ public class ClausesTests: YicesTestCase {
     XCTAssertTrue((true, 1) == clauses.insert(clause:"X!=Y | p(a)"))
      XCTAssertTrue((true, 2) == clauses.insert(clause:"~p(b) | c!=c"))
 
-
-
     XCTAssertTrue(clauses.insure(clauseReference:0, context: context))
     clauses.activate(literalReference: Pair(0, 0))
 
@@ -88,14 +83,12 @@ public class ClausesTests: YicesTestCase {
     XCTAssertNil( clauses.clashingLiterals(literalReference: Pair(1, 1)))
     clauses.activate(literalReference: Pair(2, 0))
 
-
-
     XCTAssertTrue(clauses.insure(clauseReference:2, context: context))
 
     let clashings =  clauses.clashingLiterals(literalReference: Pair(2, 0))!
     print(clashings)
 
-    let derivations = clauses.derivations(literalReference: Pair(2,0))
+    let derivations = clauses.derivations(literalReference: Pair(2, 0))
     for derivation in derivations {
       print(derivation.description, derivation)
     }
@@ -113,25 +106,23 @@ public class ClausesTests: YicesTestCase {
 
       "~natural(X)|natural(s(X))",      // For every natural number n, S(n) is a natural number.
 
-      "X != Y | s(X)=s(Y)", // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
+      "X != Y | s(X)=s(Y)",
+      // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
       "s(X)!=s(Y) | X = Y",
 
-      "~natural(X)|s(X)!=zero" // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
+      "~natural(X)|s(X)!=zero"
+      // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
     ]
 
     let context = Yices.Context()
     let clauses = Clauses<TestNode>()
 
     for axiom in axioms {
-      let (a,b) = clauses.insert(clause: axiom)
+      let (a, b) = clauses.insert(clause: axiom)
       let c = clauses.insure(clauseReference: b, context:context)
       print("\(a),\(b),\(c)) >> \(axiom)")
     }
 
     print(context.isSatisfiable ? "\(ok) Context is satisfiable." : "\(nok) Context is not satisfiable.")
-
-
-
-
   }
 }

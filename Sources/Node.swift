@@ -21,7 +21,6 @@ protocol Node: Hashable,
   /// enables sharing of nodes at multiple positions within or between trees.
   static func share(node: Self) -> Self
 
-
   /// calculated properties of terms
   var subnodes: Set<Self> { get }
   var variables: Set<Self> { get }

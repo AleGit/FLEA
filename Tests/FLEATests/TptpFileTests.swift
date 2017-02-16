@@ -7,7 +7,7 @@ public class TptpFileTests: FleaTestCase {
   static var allTests: [(String, (TptpFileTests) -> () throws -> Void)] {
     return [
     ("testNonFile", testNonFile),
-    ("testProblems", testProblems),
+    ("testProblems", testProblems)
     ]
   }
 
@@ -45,9 +45,9 @@ public class TptpFileTests: FleaTestCase {
       }
     }
 
-    XCTAssertTrue(runtime.2 < maxtime,"\n\(nok):\(line) \(name) runtime=\(runtime) > \(maxtime)")
+    XCTAssertTrue(runtime.2 < maxtime, "\n\(nok):\(line) \(name) runtime=\(runtime) > \(maxtime)")
 
-    if (runtime.2 < maxtime) {
+    if runtime.2 < maxtime {
         print("\(ok):\(line) \(name) read in \(runtime.2)")
     }
   }
@@ -60,7 +60,7 @@ public class TptpFileTests: FleaTestCase {
   }
 
   func testProblems() {
-    for (problem,count,runtime) in [
+    for (problem, count, runtime) in [
       ("Problems/PUZ001+1", 14, 0.1),
 
       ("PUZ001-1", 12, 0.1),
@@ -87,10 +87,10 @@ public class TptpFileTests: FleaTestCase {
       ("HWV019-1", 5, 0.1),
       ("HWV020-1", 6, 0.1),
 
-      ("HWV039+1", 744, 0.12),
+      ("HWV039+1", 744, 0.12)
       // ("HWV067-1",94241,20.0)
     ] {
-      check(problem,count,runtime)
+      check(problem, count, runtime)
     }
   }
 }

@@ -133,7 +133,7 @@ struct Syslog {
      }
 
      // create configuration
-     var cnfg = [String:Priority]()
+     var cnfg = [String: Priority]()
 
      for entry in entries {
        let components = entry.components(separatedBy: "::")
@@ -157,9 +157,6 @@ struct Syslog {
        #if DEGUB
        print(entry, key, p)
        #endif
-
-
-
 
      }
 
@@ -188,7 +185,6 @@ struct Syslog {
     // the message is always logged when one the two sufficient conditions hold:
     // - there is no configuration at all or
     // - the message priority is not bigger than the minimal logging priority
-
 
     guard let configuration = Syslog.configuration   // is a configuration available
     , priority > Syslog.minimalLogLevel    // is the priority > minimal logging priority

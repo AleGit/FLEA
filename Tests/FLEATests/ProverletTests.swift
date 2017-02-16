@@ -11,7 +11,7 @@ public class ProverletTests: YicesTestCase {
     return [
       // ("testInitPUZ001c1", testInitPUZ001c1),
       // ("testInitPUZ062c1", testInitPUZ062c1),
-      ("testPUZs", testPUZs),
+      ("testPUZs", testPUZs)
     ]
   }
 
@@ -34,7 +34,7 @@ public class ProverletTests: YicesTestCase {
   func testPUZs () {
       for (problem, noc, nof, _) in [
           ("PUZ001-1", 12, 1, false),
-          ("PUZ007-1", 28, 2, true),
+          ("PUZ007-1", 28, 2, true)
           ] {
       guard let theProver = FLEA.Proverlet<TestNode>(problem:problem) else {
           XCTFail(nok)
@@ -75,12 +75,14 @@ public class ProverletTests: YicesTestCase {
 
       // " ~natural(X)|natural(s(X)) ",      // For every natural number n, S(n) is a natural number.
 
-      // " X != Y | s(X)=s(Y) ", // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
+      // " X != Y | s(X)=s(Y) ",
+      // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
       " s(X)!=s(Y) | X = Y ",
 
       "@cnf s(X) != zero"
 
-      // " ~natural(X) | s(X)!=zero " // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
+      // " ~natural(X) | s(X)!=zero "
+      // For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
     ]
 
     let prover = Proverlet(axioms: axioms)

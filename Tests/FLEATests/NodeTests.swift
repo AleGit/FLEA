@@ -12,7 +12,7 @@ public class NodeTests: FleaTestCase {
   // local private adoption of protocol to avoid any side affects
   private struct LocalNode: Node {
     var symbol: String = ""
-    var nodes: [LocalNode]? = nil
+    var nodes: [LocalNode]?
   }
 
   func testInit() {

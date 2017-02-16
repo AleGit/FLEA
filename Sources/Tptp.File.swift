@@ -13,8 +13,6 @@ extension Tptp {
     /// <TPTP_file> ::= <TPTP_input>*
     private(set) var root: TreeNodeRef?
 
-
-
     /// intiialize with the content of a file referenced by file path
     private init?(path: FilePath) {
       Syslog.notice { "TptpFile(path:\(path))" }
@@ -94,7 +92,6 @@ extension Tptp {
         return nil
       }
     }
-
 
     /// free dynammically allocated memory
     deinit {
@@ -216,7 +213,5 @@ extension Tptp {
     var containsIncludes: Bool {
       return self.includes.reduce(false) { _, _ in true }
     }
-
-
   }
 }
