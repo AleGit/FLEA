@@ -49,13 +49,11 @@ protocol StringSymbolable {
 /// A symbol table maps symbols to pairs of string and type, and vice versa.
 /// (usually Key == String)
 protocol SymbolTable {
-  associatedtype Key : Hashable
-  associatedtype Symbol : Hashable
+  associatedtype Key : Hashable     // usually the symbol as parsed, i.e. a string
+  associatedtype Symbol : Hashable  // usually a small structure, e.g. an integer
 
   mutating func insert(_ key: Key, _ type: Tptp.SymbolType) -> Symbol
-
-  // mutating func remove(_ key: Key, _ type: Tptp.SymbolType) -> Symbol?
-  mutating func remove(_ key: Key) -> (Symbol, Key, Tptp.SymbolType)?
+  mutating func remove(_ key: Key) -> (Symbol, Tptp.SymbolType)?
 
   subscript(symbol: Symbol) -> (Key, Tptp.SymbolType)? { get }
 
@@ -91,8 +89,8 @@ typealias StringType = (String, Tptp.SymbolType)
 
 /// A string symbol tabple that maps (string,type) to an integer symbol.
 struct StringIntegerTable<I:GenericInteger> : SymbolTable {
-  // Key == String
-  // Symbol == I
+  typealias Key = String
+  typealias Symbol = I
 
   private(set) var isEquational: Bool = false
 
@@ -100,7 +98,7 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
   private var strings = [I: StringType] ()
 
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
-  mutating func insert(_ string: String, _ type: Tptp.SymbolType) -> I {
+  mutating func insert(_ string: Key, _ type: Tptp.SymbolType) -> Symbol {
     if let symbol = symbols[string] {
       // the symbol is allready in the table, check for consitentcy
 
@@ -127,25 +125,30 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
     return ivalue
   }
 
-  mutating func remove(_ string: String) -> (I, String, Tptp.SymbolType)? {
-    guard let symbol = symbols[string] else {
-      // nothing in the table
+  subscript(value: I) -> StringType? {
+    return strings[value]
+  }
+
+  subscript(value: Key) -> (Symbol, Tptp.SymbolType)? {
+    guard let symbol = symbols[value] else {
+      return nil
+    }
+    guard let (_, type) = strings[symbol] else {
+      return (symbol, .undefined)
+    }
+    return (symbol, type)
+  }
+
+  mutating func remove(_ string: Key) -> (Symbol, Tptp.SymbolType)? {
+    guard let (symbol, type) = self[string] else {
       return nil
     }
 
     symbols[string] = nil
-
-    guard let type = strings[symbol] else {
-      return (symbol, "", Tptp.SymbolType.undefined)
-    }
-
     strings[symbol] = nil
-    return (symbol, type.0, type.1)
 
-  }
+    return (symbol, type)
 
-  subscript(value: I) -> StringType? {
-    return strings[value]
   }
 
   mutating func clear() {
@@ -157,19 +160,14 @@ struct StringIntegerTable<I:GenericInteger> : SymbolTable {
 /// A string symbol table that maps (string,type) to the same string symbol:
 /// Only the symbol type needs to be stored.
 struct StringStringTable: SymbolTable {
-  // Key == String
-  // Symbol == String
+  typealias Key = String
+  typealias Symbol = String
 
   private(set) var isEquational: Bool = false
-
-  // private var types = [String : Tptp.SymbolType]()
-  // error: type of expression is ambiguous without more context
-  // private var types = [String : Tptp.SymbolType]()
-  //                     ^~~~~~~~~~~~~~~~~~~~~~~~~~
   private var types = Dictionary<String, Tptp.SymbolType>()
 
   // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
-  mutating func insert(_ string: String, _ type: Tptp.SymbolType) -> String {
+  mutating func insert(_ string: Key, _ type: Tptp.SymbolType) -> Symbol {
 
     if let t = types[string] {
       assert(t==type, "\(string), \(t) != \(type)")
@@ -187,7 +185,7 @@ struct StringStringTable: SymbolTable {
     return string
   }
 
-  mutating func remove(_ string: String) -> (String, String, Tptp.SymbolType)? {
+  mutating func remove(_ string: String) -> (String, Tptp.SymbolType)? {
     Syslog.error { "-----" }
     return nil
   }
