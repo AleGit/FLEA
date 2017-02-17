@@ -5,8 +5,8 @@ import CYices
 /// `Proverlet` implements a procedure to process a list of clauses to infer new clauses
 /// until an unsatisfiable set of ground instances was found or no new clauses could be inferred.
 /// The procedure may not terminate or may consume to much space and time.
-final class Proverlet<N:Node>: Prover
-where N:SymbolStringTyped {
+final class Proverlet<N: Node>: Prover
+    where N: SymbolStringTyped {
     /// List of (file path, number of clauses) pairs.
     fileprivate var parsedFiles = [(String, Int)]()
 
@@ -23,7 +23,7 @@ where N:SymbolStringTyped {
         parsedClauses = Array<(String, Tptp.Role, N)>() // stays empty
 
         for clause in axioms {
-            let _ = clauses.insert(clause:clause)
+            _ = clauses.insert(clause: clause)
         }
     }
 
@@ -63,7 +63,7 @@ where N:SymbolStringTyped {
         // preliminary
 
         for (_, _, clause) in parsedClauses {
-            let _ = clauses.insert(clause:clause)
+            _ = clauses.insert(clause: clause)
         }
 
         // preliminary
@@ -88,31 +88,31 @@ where N:SymbolStringTyped {
 extension Proverlet {
 
     /*
-        adoption of the given clause algorithm (reference?)
-        ==================================
-        - initialize a list of passive clauses with the clauses of a problem
-        - create an empty list of usable clauses
-        - the following may loop forever (e.g. satisfiable set of clauses with an infinite model)
-          or exceed all reasonable costs (time and space):
-            1. select a clause c_i from passive clauses (by a strategy)
-            2. assert grounded c_i in SMT solver context
-            3. goto 12 if not SAT(context)
-            4. get a model from satisfiable context
-            5. check selected literals of usable clauses and
-               unselect selected literals that not hold in actual model
-            6. add clause c_i to usable clauses, remove c_i from passive clauses
-            7. select a clause c_j without a selected literal from usable clauses, e.g c_i
-            8. select literal l_j_k from c_j and search for clashing selected literals
-            9. derive clauses by clashes and equality axioms and add
-               new clauses (i.e. no variants exsit) to the passive clauses.
-            10. goto 7 if at least one usable clause without a selected literal is left.
-            11. goto 1 if at least one passive clause is left.
-            12. SAT(problem) <=> SAT(context)
-        - maintain index structures for the search for variants and clashing literals:
-            ad 5. remove deselected literals from selecected literal index.
-            ad 9. insert literal l_j_k -> c_j to selected literal index,
+     adoption of the given clause algorithm (reference?)
+     ==================================
+     - initialize a list of passive clauses with the clauses of a problem
+     - create an empty list of usable clauses
+     - the following may loop forever (e.g. satisfiable set of clauses with an infinite model)
+     or exceed all reasonable costs (time and space):
+     1. select a clause c_i from passive clauses (by a strategy)
+     2. assert grounded c_i in SMT solver context
+     3. goto 12 if not SAT(context)
+     4. get a model from satisfiable context
+     5. check selected literals of usable clauses and
+     unselect selected literals that not hold in actual model
+     6. add clause c_i to usable clauses, remove c_i from passive clauses
+     7. select a clause c_j without a selected literal from usable clauses, e.g c_i
+     8. select literal l_j_k from c_j and search for clashing selected literals
+     9. derive clauses by clashes and equality axioms and add
+     new clauses (i.e. no variants exsit) to the passive clauses.
+     10. goto 7 if at least one usable clause without a selected literal is left.
+     11. goto 1 if at least one passive clause is left.
+     12. SAT(problem) <=> SAT(context)
+     - maintain index structures for the search for variants and clashing literals:
+     ad 5. remove deselected literals from selecected literal index.
+     ad 9. insert literal l_j_k -> c_j to selected literal index,
 
-        */
+     */
     func run(timeout: TimeInterval) -> Bool? {
         Syslog.fail { "MISSING IMPLEMENTATION" }
 
@@ -137,6 +137,5 @@ extension Proverlet {
         }
 
         return context.isSatisfiable
-
     }
 }

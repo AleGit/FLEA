@@ -6,90 +6,90 @@
 /// with the constraints that no reference is duplicated, and none points to the root.
 /// <a href="https://en.wikipedia.org/wiki/Tree_(data_structure)">wikipedia</a>
 protocol Node: Hashable,
-  CustomStringConvertible, CustomDebugStringConvertible {
+    CustomStringConvertible, CustomDebugStringConvertible {
 
-  associatedtype Symbol : Hashable
+    associatedtype Symbol: Hashable
 
-  /// The Value of the node.
-  var symbol: Symbol { get set }
-  /// References to nodes (the "children")
-  var nodes: [Self]? { get set }
+    /// The Value of the node.
+    var symbol: Symbol { get set }
+    /// References to nodes (the "children")
+    var nodes: [Self]? { get set }
 
-  /// every adopting type (even non-sharing) must provide the empty initializer
-  init()
+    /// every adopting type (even non-sharing) must provide the empty initializer
+    init()
 
-  /// enables sharing of nodes at multiple positions within or between trees.
-  static func share(node: Self) -> Self
+    /// enables sharing of nodes at multiple positions within or between trees.
+    static func share(node: Self) -> Self
 
-  /// calculated properties of terms
-  var subnodes: Set<Self> { get }
-  var variables: Set<Self> { get }
+    /// calculated properties of terms
+    var subnodes: Set<Self> { get }
+    var variables: Set<Self> { get }
 
-  var height: Int { get }
-  var width: Int { get }
-  var size: Int { get }
+    var height: Int { get }
+    var width: Int { get }
+    var size: Int { get }
 
-  var dimensions: (
-    // subnodes: Set<Self>,
-    // variables: Set<Self>,
-    height: Int,
-    width: Int,
-    size: Int
-  ) { get }
+    var dimensions: (
+        // subnodes: Set<Self>,
+        // variables: Set<Self>,
+        height: Int,
+        width: Int,
+        size: Int
+    ) { get }
 
-  var defaultDescription: String { get }
+    var defaultDescription: String { get }
 
-  /// reset type, e.g. clear symbols, clear pool, etc.
-  static func reset()
+    /// reset type, e.g. clear symbols, clear pool, etc.
+    static func reset()
 }
 
 extension Node {
-  /// By default nodes are not shared within or between trees,
-  /// e.g. four instances of variable `X` in `p(X,f(X,X))` and `q(X)`
-  /// None-sharing is suitable for value types.
-  static func share(node: Self) -> Self {
-    return node
-  }
-
-  static func reset() {
-    Syslog.warning { // -> debug
-      "Class or Struct '\(self)' must bring its own implemtation of static func '\(#function)'.'"
+    /// By default nodes are not shared within or between trees,
+    /// e.g. four instances of variable `X` in `p(X,f(X,X))` and `q(X)`
+    /// None-sharing is suitable for value types.
+    static func share(node: Self) -> Self {
+        return node
     }
-  }
+
+    static func reset() {
+        Syslog.warning { // -> debug
+            "Class or Struct '\(self)' must bring its own implemtation of static func '\(#function)'.'"
+        }
+    }
 }
 
 extension Node {
 
-  /// *Dedicated* initializer for all non-sharing and sharing nodes types.
-  init(symbol: Symbol, nodes: [Self]?) {
-    self.init()                   // self must be initialized ...
-    self.symbol = symbol
-    self.nodes = nodes
-    self = Self.share(node:self)  // ... before it can be used
-  }
+    /// *Dedicated* initializer for all non-sharing and sharing nodes types.
+    init(symbol: Symbol, nodes: [Self]?) {
+        self.init() // self must be initialized ...
+        self.symbol = symbol
+        self.nodes = nodes
+        self = Self.share(node: self) // ... before it can be used
+    }
 
-  /// Conveniance initializer for variables.
-  init(variable: Symbol) {
-    self.init(symbol:variable, nodes:nil)
-  }
+    /// Conveniance initializer for variables.
+    init(variable: Symbol) {
+        self.init(symbol: variable, nodes: nil)
+    }
 
-  /// Convenience initializer for constants.
-  init(constant: Symbol) {
-    self.init(symbol:constant, nodes:[Self]())
-  }
+    /// Convenience initializer for constants.
+    init(constant: Symbol) {
+        self.init(symbol: constant, nodes: [Self]())
+    }
 
-  /// Convenience initializer for nodes with a sequence of children.
-  init<S: Sequence>(symbol: Symbol, nodes: S?)
-  where S.Iterator.Element == Self {
-    self.init(symbol:symbol, nodes: nodes?.map ({ $0 }))
-  }
+    /// Convenience initializer for nodes with a sequence of children.
+    init<S: Sequence>(symbol: Symbol, nodes: S?)
+        where S.Iterator.Element == Self {
+        self.init(symbol: symbol, nodes: nodes?.map({ $0 }))
+    }
 }
 
 // MARK: Conversion between `Node<S:Symbol>` implemenations with matching symbol types.
 
 extension Node {
     init<N: Node>(_ other: N)
-    where N.Symbol == Symbol {    // similar to Int(3.5)
+        where N.Symbol == Symbol { // similar to Int(3.5)
 
         // no conversion between same types
         if let t = other as? Self {

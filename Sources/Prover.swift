@@ -22,7 +22,6 @@ protocol Prover {
 
 // MARK: - protocol extensions
 
-
 /// Searches for a problem by name, convention, and TPTP Path,
 /// e.g. "PUZ001-1" => ~/TPTP/Problems/PUZ001-1p
 /// It will return
@@ -31,11 +30,11 @@ protocol Prover {
 func URLAndFile(problem name: String) -> (URL, Tptp.File)? {
     /// find an accessible problem file(with $name extension '.p')
     guard let url = URL(fileURLWithProblem: name) else {
-        Syslog.error {  "Problem \(name) could not be found." }
+        Syslog.error { "Problem \(name) could not be found." }
         return nil
     }
     /// parse accessible problem file
-    guard let file = Tptp.File(url:url) else {
+    guard let file = Tptp.File(url: url) else {
         Syslog.error { "Problem \(name) at \(url.path) could not be read or parsed." }
         return nil
     }
@@ -55,7 +54,7 @@ func URLAndFile(axiom name: String, problemURL: URL?) -> (URL, Tptp.File)? {
     }
 
     /// parse accessible axiom file
-    guard let file = Tptp.File(url:url) else {
+    guard let file = Tptp.File(url: url) else {
         Syslog.error { "Axiom \(name) at \(url.path) could not be read or parsed." }
         return nil
     }

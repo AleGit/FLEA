@@ -2,29 +2,29 @@
 
 /// A substitution is a mapping from keys to values, e.g. a dictionary.
 protocol Substitution: ExpressibleByDictionaryLiteral, Sequence, CustomStringConvertible {
-  associatedtype K : Hashable
-  associatedtype V
+    associatedtype K: Hashable
+    associatedtype V
 
-    subscript (key: K) -> V? { get set }
+    subscript(key: K) -> V? { get set }
 
-    init(dictionary: [K:V])
+    init(dictionary: [K: V])
 }
 
 /// A dictionary is a substitution.
-extension Dictionary : Substitution {
-  init(dictionary: [Key:Value]) {
-    self = dictionary
-  }
+extension Dictionary: Substitution {
+    init(dictionary: [Key: Value]) {
+        self = dictionary
+    }
 }
 
 /// A node substitution has a specialized description.
 extension Substitution // K == V not necessary
-where K:Node, V:Node, Iterator == DictionaryIterator<K, V> {
-  var description: String {
-    let pairs = self.map { "\($0)->\($1)"  }.joined(separator:",")
-    return "{\(pairs)}"
-  }
-}
+    where K: Node, V: Node, Iterator == DictionaryIterator<K, V> {
+        var description: String {
+            let pairs = self.map { "\($0)->\($1)" }.joined(separator: ",")
+            return "{\(pairs)}"
+        }
+    }
 
 /// 't * σ' returns the application of substitution σ on term t.
 /// - *caution*: this implementation is more general as
@@ -34,42 +34,41 @@ where K:Node, V:Node, Iterator == DictionaryIterator<K, V> {
 /// - where keys are only variables it matches the definition of substitution
 /// - implicit sharing of nodes MAY happen!
 func *<N: Node, S: Substitution>(t: N, σ: S) -> N
-where N == S.K, N == S.V, S.Iterator == DictionaryIterator<N, N> {
+    where N == S.K, N == S.V, S.Iterator == DictionaryIterator<N, N> {
 
     if let tσ = σ[t] {
-      return tσ // implicit sharing for reference types
+        return tσ // implicit sharing for reference types
     }
 
     guard let nodes = t.nodes, nodes.count > 0 else {
-      return t // implicit sharing for reference types
+        return t // implicit sharing for reference types
     }
 
-    return N(symbol:t.symbol, nodes: nodes.map { $0 * σ })
+    return N(symbol: t.symbol, nodes: nodes.map { $0 * σ })
 }
-
 
 /// concationation of substitutions
 func *<N: Node, S: Substitution>(lhs: S, rhs: S) -> S?
-where N == S.K, N==S.V, S.Iterator==DictionaryIterator<N, N> {
+    where N == S.K, N == S.V, S.Iterator == DictionaryIterator<N, N> {
 
-  var subs = S()
-  for (key, value) in lhs {
-    subs[key] = value * rhs
-  }
-  for (key, value) in rhs {
-    if let term = subs[key] {
-      // allready set
-      guard term == value else {
-        // and different
-        return nil
-      }
-      // but equal
-    } else {
-      // not set yet
-      subs[key] = value
+    var subs = S()
+    for (key, value) in lhs {
+        subs[key] = value * rhs
     }
-  }
-  return subs
+    for (key, value) in rhs {
+        if let term = subs[key] {
+            // allready set
+            guard term == value else {
+                // and different
+                return nil
+            }
+            // but equal
+        } else {
+            // not set yet
+            subs[key] = value
+        }
+    }
+    return subs
 }
 
 /// 't * s' returns the substitution of all variables in t with term s.
@@ -78,10 +77,10 @@ where N == S.K, N==S.V, S.Iterator==DictionaryIterator<N, N> {
 ///     e.g. unshared when N: Sharing does not apply.
 func *<N: Node>(t: N, s: N) -> N {
     guard let nodes = t.nodes else {
-        return s  // implicit sharing for reference types
+        return s // implicit sharing for reference types
     } // any variable is replaced by term s
 
-    return N(symbol:t.symbol, nodes: nodes.map { $0 * s })
+    return N(symbol: t.symbol, nodes: nodes.map { $0 * s })
 }
 
 /// 't⊥' returns the substitution of all variables in t with constant term '⊥'.
@@ -89,16 +88,15 @@ func *<N: Node>(t: N, s: N) -> N {
 /// - All nodes above multiple occurences of constant term '⊥' are fresh,
 ///     eg. unshared when N: Sharing does not apply.
 postfix func ⊥<N: Node>(t: N) -> N
-where N:SymbolStringTyped {
-    return t * N(c:"⊥")
+    where N: SymbolStringTyped {
+    return t * N(c: "⊥")
 }
 
-
 /// add substitution functionality to dictionary of Node:Node mappings
-extension Dictionary where Key:Node, Value:Node { // , Key == Value does not work
+extension Dictionary where Key: Node, Value: Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?
     private var isHomogenous: Bool {
-        return type(of:self.keys.first) == type(of:self.values.first)
+        return type(of: self.keys.first) == type(of: self.values.first)
     }
 
     /// Are *variables* mapped to terms?

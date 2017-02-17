@@ -17,6 +17,7 @@ extension Yices {
     static var free_tau: type_t {
         return namedType("𝛕")
     }
+
     // swiftlint:enable  variable_name
 
     /// Get or create (uninterpreted) type `name`.
@@ -30,8 +31,6 @@ extension Yices {
         return tau
     }
 
-
-
     /// Get or create an uninterpreted global `symbol` of type `term_tau`.
     static func typedSymbol(_ symbol: String, term_tau: type_t) -> term_t {
         assert(!symbol.isEmpty, "a typed symbol must not be empty")
@@ -41,11 +40,10 @@ extension Yices {
             c = yices_new_uninterpreted_term(term_tau)
             yices_set_term_name(c, symbol)
         } else {
-            assert (term_tau == yices_type_of_term(c),
-            // swiftlint:disable line_length
-            "\(String(tau:term_tau), term_tau) != \(String(tau: yices_type_of_term(c)), yices_type_of_term(c)) \(String(term:c)) for '\(symbol)'")
+            assert(term_tau == yices_type_of_term(c),
+                   // swiftlint:disable line_length
+                   "\(String(tau: term_tau), term_tau) != \(String(tau: yices_type_of_term(c)), yices_type_of_term(c)) \(String(term: c)) for '\(symbol)'")
             // swiftlint:enable line_length
-
         }
         return c
     }
@@ -77,13 +75,13 @@ extension Yices {
 
         guard args.count > 0 else { return constant(symbol, term_tau: term_tau) }
 
-        let f = function(symbol, domain:domain(args.count, tau:Yices.free_tau), range: term_tau)
+        let f = function(symbol, domain: domain(args.count, tau: Yices.free_tau), range: term_tau)
         return yices_application(f, UInt32(args.count), args)
     }
 
     /// Get yices children of a yices term.
     static func children(_ term: term_t) -> [term_t] {
-        return (0..<yices_term_num_children(term)).map { yices_term_child(term, $0) }
+        return (0 ..< yices_term_num_children(term)).map { yices_term_child(term, $0) }
     }
 
     static func subterms(_ term: term_t) -> Set<term_t> {
@@ -182,7 +180,7 @@ extension Yices {
 
     static func getValue(_ t: term_t, mdl: OpaquePointer) -> Bool? {
         var val: Int32 = 0
-        if Yices.check (code:yices_get_int32_value(mdl, t, &val), label:"\(#function) : Bool") {
+        if Yices.check(code: yices_get_int32_value(mdl, t, &val), label: "\(#function) : Bool") {
             return val == 0 ? false : true
         } else {
             return nil
@@ -191,7 +189,7 @@ extension Yices {
 
     static func getValue(_ t: term_t, mdl: OpaquePointer) -> Int32? {
         var val: Int32 = 0
-        if Yices.check (code:yices_get_int32_value(mdl, t, &val), label:"\(#function) : Int32") {
+        if Yices.check(code: yices_get_int32_value(mdl, t, &val), label: "\(#function) : Int32") {
             return val
         } else {
             return nil
@@ -201,39 +199,37 @@ extension Yices {
 
 extension Yices {
     static func info(tau: type_t) -> (name: String, infos: [String])? {
-        guard let name = String(tau:tau) else { return nil }
+        guard let name = String(tau: tau) else { return nil }
 
         var infos = [String]()
 
-        if yices_type_is_bool(tau)==1 { infos.append("is_bool") }
-        if yices_type_is_int(tau)==1 { infos.append("is_int") }
-        if yices_type_is_real(tau)==1 { infos.append("is_real") }
-        if yices_type_is_arithmetic(tau)==1 { infos.append("is_arithmetic") }
-        if yices_type_is_bitvector(tau)==1 { infos.append("is_bitvector") }
-        if yices_type_is_tuple(tau)==1 { infos.append("is_tuple") }
-        if yices_type_is_function(tau)==1 { infos.append("is_function") }
-        if yices_type_is_scalar(tau)==1 { infos.append("is_scalar") }
-        if yices_type_is_uninterpreted(tau)==1 { infos.append("is_uninterpreted") }
+        if yices_type_is_bool(tau) == 1 { infos.append("is_bool") }
+        if yices_type_is_int(tau) == 1 { infos.append("is_int") }
+        if yices_type_is_real(tau) == 1 { infos.append("is_real") }
+        if yices_type_is_arithmetic(tau) == 1 { infos.append("is_arithmetic") }
+        if yices_type_is_bitvector(tau) == 1 { infos.append("is_bitvector") }
+        if yices_type_is_tuple(tau) == 1 { infos.append("is_tuple") }
+        if yices_type_is_function(tau) == 1 { infos.append("is_function") }
+        if yices_type_is_scalar(tau) == 1 { infos.append("is_scalar") }
+        if yices_type_is_uninterpreted(tau) == 1 { infos.append("is_uninterpreted") }
 
         return (name, infos)
-
     }
 
     typealias TermInfo = (term_t, term: String,
-    type: (name: String, infos: [String]), children: [term_t])
+                          type: (name: String, infos: [String]), children: [term_t])
 
     static func info(term: term_t) -> TermInfo? {
         let tau = yices_type_of_term(term)
-        guard let name = String(term:term), let type = Yices.info(tau:tau)
+        guard let name = String(term: term), let type = Yices.info(tau: tau)
         else { return nil }
 
         return (term, name, type, Yices.children(term))
-
     }
 
     static func infos(term: term_t) -> [TermInfo] {
         // return Yices.subterms(term).map { Yices.info(term:$0) }.filter { $0 != nil }.map { $0! }
 
-        return [Yices.info(term:term)!] + Yices.children(term).flatMap { Yices.infos(term:$0) }
+        return [Yices.info(term: term)!] + Yices.children(term).flatMap { Yices.infos(term: $0) }
     }
 }

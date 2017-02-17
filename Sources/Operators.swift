@@ -1,11 +1,11 @@
 //  Copyright © 2016 Alexander Maringele. All rights reserved.
 
 /*
-precedencegroup UnificationPrecedence {
-    higherThan: AdditionPrecedence
-    lowerThan: MultiplicationPrecedence
-}
-*/
+ precedencegroup UnificationPrecedence {
+ higherThan: AdditionPrecedence
+ lowerThan: MultiplicationPrecedence
+ }
+ */
 
 /// Construct unifier of left-hand side and right-hand side.
 infix operator =?= // : UnificationPrecedence
@@ -18,7 +18,6 @@ infix operator =?= // : UnificationPrecedence
 
 /// `t⊥` substitutes all veriables in `t` with constant `⊥`.
 postfix operator ⊥
-
 
 // infix operator ≈≈
 

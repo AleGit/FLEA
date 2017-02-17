@@ -13,13 +13,13 @@ public extension String {
         defer {
             yices_free_string(cstring)
         }
-        guard let string = String(validatingUTF8:cstring) else { return nil }
+        guard let string = String(validatingUTF8: cstring) else { return nil }
         self = string
     }
 
     /// Creates a String representation of a yices type
     public init?(tau: type_t) {
-        self.init(tau: tau, width:UInt32.max, height:0, offset: 0)
+        self.init(tau: tau, width: UInt32.max, height: 0, offset: 0)
     }
 
     /// Creates a String representation of a yices term
@@ -32,13 +32,13 @@ public extension String {
             yices_free_string(cstring)
         }
 
-        guard let string = String(validatingUTF8:cstring) else { return nil }
+        guard let string = String(validatingUTF8: cstring) else { return nil }
         self = string
     }
 
     /// Creates a String representation of a yices term
     public init?(term: term_t) {
-        self.init(term: term, width:UInt32.max, height:0, offset: 0)
+        self.init(term: term, width: UInt32.max, height: 0, offset: 0)
     }
 
     /// Creates a String representaion of yices model
@@ -50,12 +50,12 @@ public extension String {
         defer {
             yices_free_string(cstring)
         }
-        guard let string = String(validatingUTF8:cstring) else { return nil }
+        guard let string = String(validatingUTF8: cstring) else { return nil }
         self = string
     }
 
     /// Creates a String representaion of yices model
     public init?(model: OpaquePointer) {
-        self.init(model:model, width:UInt32.max, height:0, offset:0)
+        self.init(model: model, width: UInt32.max, height: 0, offset: 0)
     }
 }

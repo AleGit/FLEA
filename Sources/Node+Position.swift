@@ -2,17 +2,17 @@
 
 // swiftlint:disable line_length
 /**
-A position is a finite sequence of non-negative integers.
-The *root* position is the empty sequence and denoted by `ε`
-and `p+q` denotes the concatenation of positions `p` and `q`.
-We define binary relations <= , <, and || on positions as follows.
-We say that position `p` is above position `q
-if there exists a (necessarily unique) position `r` such that `p+r = q`.
-In that case we define `q\p` as the position r.
-If `p` is above q we also say that `q` is below p or p is a *prefix* of `q`, and we write `p` <= `q`.
-We write `p < q` if `p <= q` and `p != q`. If `p < q` we say that `p` is a proper prefix of `q`.
-Positions `p`, q are parallel, denoted by `p || q`, if neither `p <= q` nor `q <= p`.
-**/
+ A position is a finite sequence of non-negative integers.
+ The *root* position is the empty sequence and denoted by `ε`
+ and `p+q` denotes the concatenation of positions `p` and `q`.
+ We define binary relations <= , <, and || on positions as follows.
+ We say that position `p` is above position `q
+ if there exists a (necessarily unique) position `r` such that `p+r = q`.
+ In that case we define `q\p` as the position r.
+ If `p` is above q we also say that `q` is below p or p is a *prefix* of `q`, and we write `p` <= `q`.
+ We write `p < q` if `p <= q` and `p != q`. If `p < q` we say that `p` is a proper prefix of `q`.
+ Positions `p`, q are parallel, denoted by `p || q`, if neither `p <= q` nor `q <= p`.
+ **/
 
 // swiftlint:enable line_length
 
@@ -53,7 +53,7 @@ extension Node {
     /// Get subterm at position.
     /// With [] the term itself is returned.
     /// With [i] the the subterm with array index i is returned.
-    subscript (position: Position) -> Self? {
+    subscript(position: Position) -> Self? {
         // a) position == []
         guard let (head, tail) = position.decomposing else { return self }
         // b) position != [], but variables has no subnodes at all
@@ -65,7 +65,7 @@ extension Node {
     }
 
     /// Construct a new term by replacing the subterm at position.
-    subscript (term: Self, position: Position) -> Self? {
+    subscript(term: Self, position: Position) -> Self? {
         // a) position == []
         guard let (head, tail) = position.decomposing else { return term }
         // b) position != [], but variables has no subnodes at all
@@ -76,13 +76,13 @@ extension Node {
         guard let subnode = nodes[head][term, Array(tail)] else { return nil }
         nodes[head] = subnode
 
-        return Self(symbol:self.symbol, nodes: nodes)
+        return Self(symbol: self.symbol, nodes: nodes)
     }
 }
 
 // MARK: - Array<Node> + Position
 
-extension Array where Element:Node {
+extension Array where Element: Node {
 
     /// Get term at position in array. (for convenience)
     /// array[[i]] := array[i]
