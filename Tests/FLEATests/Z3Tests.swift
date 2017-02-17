@@ -5,10 +5,9 @@ import Foundation
 
 public class Z3Tests: FleaTestCase {
 
-  /// Collect all tests by hand for Linux.
-  static var allTests: [(String, (Z3Tests) -> () throws -> Void)] {
-    return [
-
-    ]
-  }
+    /// Collect all tests by hand for Linux.
+    static var allTests: [(String, (Z3Tests) -> () throws -> Void)] {
+        return [
+        ]
+    }
 }

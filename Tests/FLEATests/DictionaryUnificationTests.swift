@@ -3,62 +3,61 @@ import XCTest
 @testable import FLEA
 
 public class DictionaryUnificationTests: FleaTestCase {
-  static var allTests: [(String, (DictionaryUnificationTests) -> () throws -> Void)] {
-    return [
-    ("testUnifiable", testUnifiable),
-    ("testNotUnifiable", testNotUnifiable)
-    ]
-  }
-
-  func check<N: Node>(
-    _ lhs:N,
-    _ rhs:N,
-    _ expected:[N:N]? = nil,
-    _ message:String = "",
-    _ file: String = #file,
-    _ function: String = #function,
-    _ line : Int = #line
-  ) where N.Symbol:StringSymbolable {
-    let actual = lhs =?= rhs
-
-    // XCTFail("\n\(nok) \(message).\(file).\(function).\(line)")
-
-    switch (actual, expected) {
-      case (.none, .none):
-        break
-      case (.none, _):
-        XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => nil ≠ \(expected!) \(message)")
-      case (_, .none):
-        XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ nil \(message)")
-      default:
-        print("\(actual!),\(expected!)")
-        XCTAssertEqual(actual!, expected!,
-        "\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ \(expected!) \(message)")
+    static var allTests: [(String, (DictionaryUnificationTests) -> () throws -> Void)] {
+        return [
+            ("testUnifiable", testUnifiable),
+            ("testNotUnifiable", testNotUnifiable),
+        ]
     }
-  }
 
-  func testUnifiable() {
+    func check<N: Node>(
+        _ lhs: N,
+        _ rhs: N,
+        _ expected: [N: N]? = nil,
+        _ message: String = "",
+        _ file: String = #file,
+        _ function: String = #function,
+        _ line: Int = #line
+    ) where N.Symbol: StringSymbolable {
+        let actual = lhs =?= rhs
 
-    check( Q.X, Q.Y, [Q.X : Q.Y])
+        // XCTFail("\n\(nok) \(message).\(file).\(function).\(line)")
 
-    check( Q.Z, Q.fXY, [Q.Z : Q.fXY])
-    check( Q.fXY, Q.Z, [Q.Z : Q.fXY])
+        switch (actual, expected) {
+        case (.none, .none):
+            break
+        case (.none, _):
+            XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => nil ≠ \(expected!) \(message)")
+        case (_, .none):
+            XCTFail("\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ nil \(message)")
+        default:
+            print("\(actual!),\(expected!)")
+            XCTAssertEqual(actual!, expected!,
+                           "\n\(nok):\(line) \(lhs) =?= \(rhs) => \(actual!) ≠ \(expected!) \(message)")
+        }
+    }
 
-    check( Q.fXY, Q.ffaaZ, [Q.X:Q.faa, Q.Y:Q.Z])
-    check( Q.ffaaZ, Q.fXY, [Q.X:Q.faa, Q.Z:Q.Y])
+    func testUnifiable() {
 
-    check( Q.fXX, Q.fYZ, [Q.X:Q.Z, Q.Y:Q.Z])
-    check( Q.fYZ, Q.fXX, [Q.Y:Q.X, Q.Z:Q.X])
+        check(Q.X, Q.Y, [Q.X: Q.Y])
 
-    check( Q.fXX, Q.fXZ, [Q.X:Q.Z])
-    check( Q.fXZ, Q.fXX, [Q.Z:Q.X])
-  }
+        check(Q.Z, Q.fXY, [Q.Z: Q.fXY])
+        check(Q.fXY, Q.Z, [Q.Z: Q.fXY])
 
-  func testNotUnifiable() {
-    check( Q.a, Q.b)
+        check(Q.fXY, Q.ffaaZ, [Q.X: Q.faa, Q.Y: Q.Z])
+        check(Q.ffaaZ, Q.fXY, [Q.X: Q.faa, Q.Z: Q.Y])
 
-    check( Q.X, Q.fXY, nil)
-    check( Q.Y, Q.fXY, nil)
+        check(Q.fXX, Q.fYZ, [Q.X: Q.Z, Q.Y: Q.Z])
+        check(Q.fYZ, Q.fXX, [Q.Y: Q.X, Q.Z: Q.X])
 
-  }
+        check(Q.fXX, Q.fXZ, [Q.X: Q.Z])
+        check(Q.fXZ, Q.fXX, [Q.Z: Q.X])
+    }
+
+    func testNotUnifiable() {
+        check(Q.a, Q.b)
+
+        check(Q.X, Q.fXY, nil)
+        check(Q.Y, Q.fXY, nil)
+    }
 }
