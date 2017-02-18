@@ -1,4 +1,4 @@
-//  Copyright © 2016 Alexander Maringele. All rights reserved.
+//  Copyright © 2017 Alexander Maringele. All rights reserved.
 
 /* This file contains extensions for protocol `Node` to alter variable names,
  when symbols are `SymbolStringTyped`:
