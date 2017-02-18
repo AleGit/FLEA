@@ -1,6 +1,8 @@
 import Foundation
 
 extension URL {
+    /// Search for the [TPTP library](http://www.cs.miami.edu/~tptp/) for
+    /// Automated Reasoning with problems and axioms on the local file system.
     static var tptpDirectoryURL: URL? {
 
         // --tptp_root has the highest priority
@@ -15,33 +17,39 @@ extension URL {
             return URL(fileURLWithPath: path)
         }
 
-        // home directory has a medium priority
+        // ~/TPTP in the home directory has a medium priority
         if let url = URL.homeDirectoryURL?.appending(component: "/TPTP"),
             url.isAccessibleDirectory {
             Syslog.notice { "fallback to \(url.relativeString)" }
             return url
         }
 
-        // ~/Downloads has a very low priority
+        // ~/Downloads/TPTP has a very low priority
         if let url = URL.homeDirectoryURL?.appending(component: "/Downloads/TPTP"),
             url.isAccessibleDirectory {
             Syslog.notice { "fallback to \(url.relativeString)" }
             return url
         }
 
+        Syslog.warning { "Accessible TPTP library directory path could not be found." }
+
         return nil
     }
 
+    /// Get the home path from einvironment.
     static var homeDirectoryURL: URL? {
-
         guard let path = CommandLine.Environment.getValue(for: "HOME") else {
+            Syslog.warning { "HOME path variable was not available available." }
             return nil
         }
         return URL(fileURLWithPath: path)
     }
 
+    /// Get the process specific configuration file path for logging
     static var loggingConfigurationURL: URL? {
-        // --config path/to/file
+        print("Search for logging configuration for process:", CommandLine.name)
+
+        // --config path/to/file has the highest priority
         if let path = CommandLine.options["--config"]?.first, path.isAccessible {
             return URL(fileURLWithPath: path)
         }
@@ -50,29 +58,33 @@ extension URL {
         // FLEA_CONFIG not supported yet
         // logging.<name.extension> not supperted yet
 
-        if CommandLine.name.hasSuffix(".xctest") {
-            let url = URL(fileURLWithPath: "Configs/xctest.logging")
-            if url.isAccessible { return url }
+        // Choose logging file name by process name
+        let directory = "Configs/"
+        let name = URL(fileURLWithPath: CommandLine.name).lastPathComponent
+        let suffix = ".logging"
 
-            print("\(url) is not accessible") // logging is not active at this point
+        var paths = [
+            "\(directory)\(name)\(suffix)",
+            "\(directory)default\(suffix)",
+        ]
+
+        print(CommandLine.name)
+
+        if CommandLine.name.contains("/debug/") {
+            paths.insert("\(directory)\(name).debug\(suffix)", at: 0)
+        } else if CommandLine.name.contains("/release/") {
+            paths.insert("\(directory)\(name).release\(suffix)", at: 0)
         }
-
-        let url = URL(fileURLWithPath: CommandLine.name)
-
-        let name = url.lastPathComponent
-        if !name.isEmpty {
-            #if DEBUG
-                let degubUrl = URL(fileURLWithPath: "Configs/\(name).debug.logging")
-                if url.isAccessible { return degubUrl }
-            #endif
-
-            let url = URL(fileURLWithPath: "Configs/\(name).logging")
-            if url.isAccessible { return url }
-
-            print("\(url) is not accessible") // logging is not active at this point
+        for path in paths {
+            let url = URL(fileURLWithPath: path)
+            if url.isAccessible {
+                print("\(url) is an accessible logging configuration file.")
+                return url
+            }
+            print("\(url) is not accessible.")
         }
-
-        return URL(fileURLWithPath: "Configs/default.logging")
+        print("No accessible logging configuration file was found.")
+        return nil
     }
 }
 
