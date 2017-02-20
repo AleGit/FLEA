@@ -26,4 +26,14 @@ public class DemoTests: FleaTestCase {
         // XCTAssertEqual(12,Demo.Problem.smartNode(show:false),nok)
         // XCTAssertEqual(12,Demo.Problem.kinNode(show:false),nok)
     }
+
+    func _testSimple() {
+        let f = Demo.Problem.simpleNode
+
+        print("utileMeasure 'Demo.Problem.simpleNode'")
+        let (result, runtime) = FLEA.utileMeasure(f:f)
+        XCTAssertTrue(result > 0, nok)
+        print("RUNTIME OF 'Demo.Problem.simpleNode'", runtime)
+
+    }
 }

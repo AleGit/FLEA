@@ -385,7 +385,7 @@ extension Syslog {
     ) {
         guard Syslog.loggable(.info, file, function, line), condition() else {
 
-            if CommandLine.options["--prinfo"]?.first == "active", condition() {
+            if CommandLine.options["--prinfo"]?.first == "active" || CommandLine.name.hasSuffix("test"), condition() {
                 print("\(loggingTime()) <Print,Info>: \(URL(fileURLWithPath: file).lastPathComponent)[\(line):\(column)].\(function) { \(message()) }")
             }
             return
