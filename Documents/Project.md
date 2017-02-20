@@ -109,9 +109,10 @@ The scripts must be started in the root directory of the project, e.g.
 
 ##Command line options
 
-- `--demo`
+- `--demo` show list of demos er execute demo
 - `--problem`   problem file name (without path or file extension)
 - `--tptp_root` absolute path to directory with axiom and problem folders
+- `--prinfo active` Syslog.prinfo() prints messages befor syslog configuration is read.
 ```
 Axioms   Problems    README
 ```
