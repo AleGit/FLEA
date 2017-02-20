@@ -140,7 +140,7 @@ extension Q {
             FLEA.Tptp.File(url: url)
         }
         guard let tptpFile = parseResult else {
-            print("\(url.relativePath) could not be parsed.")
+            print("\(url.relativePath) could not be parsed (is not a valid tptp file).")
             return [N]()
         }
         print("parse time: \(parseTime) '\(url.relativePath)'")

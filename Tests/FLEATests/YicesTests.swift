@@ -25,7 +25,7 @@ public class YicesTests: YicesTestCase {
         }
 
         guard let file = Tptp.File(url: url) else {
-            XCTFail("\(nok) '\(url.relativePath)' could not be parsed.")
+            XCTFail("\(nok) '\(url.relativePath)' could not be parsed (is not a valid tptp file).")
             return
         }
 

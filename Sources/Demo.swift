@@ -418,7 +418,7 @@ func demoParse<N: Node>(problem: String, show: Bool = Demo.show) -> [N]
         Tptp.File(url: url)
     }
     guard let tptpFile = parseResult else {
-        if show { print("\(url.relativePath) could not be parsed.") }
+        if show { print("\(url.relativePath) could not be parsed (is not a valid tptp file).") }
         return [N]()
     }
     if show { print("parse time: \(parseTime) '\(url.relativePath)'") }
