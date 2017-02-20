@@ -1,7 +1,11 @@
 #!/bin/bash
 
-cp Scripts/XTests.swift Tests/FLEATests/XTests.swift
+function finish {
+  rm Tests/FLEATests/DemoTests.swift
+}
+trap finish EXIT
+
+cp Scripts/XTests.swift Tests/FLEATests/DemoTests.swift
 
 Scripts/tests.sh "$@"
 
-rm Tests/FLEATests/XTests.swift

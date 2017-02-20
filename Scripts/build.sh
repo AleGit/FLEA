@@ -10,6 +10,12 @@
 #
 # `$ Scripts/build.sh -c release -Xlinker -L/usr/local/lib`
 
+# 3. remove `main.swift` from `Sources`
+function finish {
+  rm Sources/main.swift
+}
+trap finish EXIT
+
 # 1. copy `main.swift` into the `Sources` folder
 cp Scripts/main.swift Sources/main.swift
 
@@ -18,5 +24,4 @@ cp Scripts/main.swift Sources/main.swift
 #    * -Xlinker -L/usr/local/lib
 swift build "$@"
 
-# 3. remove `main.swift` from `Sources`
-rm Sources/main.swift
+
