@@ -11,6 +11,7 @@ public class URLTests: FleaTestCase {
             ("testPaths", testPaths),
             ("testTypes", testTypes),
             ("testFileManager", testFileManager),
+            ("testURL", testURL),
         ]
     }
 
@@ -151,9 +152,28 @@ public class URLTests: FleaTestCase {
         print(url)
     }
 
+    /// Test assumes that tptp directory and config file resides within home directory of process user
     func testURL() {
-        print(URL.tptpDirectoryURL as Any)
-        print(URL.homeDirectoryURL as Any)
-        print(URL.loggingConfigurationURL as Any)
+        guard let home = URL.homeDirectoryURL else {
+            XCTFail("Home directory was not found \(nok)")
+            return
+        }
+
+        let tilde = URL(fileURLWithPath:"~") // "~" is NOT the path to home
+        XCTAssertNotEqual(tilde, home,"~ = \(tilde.path) \(nok)")
+        XCTAssertTrue(tilde.path.hasPrefix(home.path),"\(home.path) ⋢ \(tilde.path) \(nok)")
+        XCTAssertFalse(tilde.isAccessible,"\(tilde.path) is accessible \(nok)")
+        
+        if let url = URL.loggingConfigurationURL {
+            XCTAssertTrue(url.path.hasPrefix(home.path),"\(home.path) ⋢ \(url.path) \(nok)")
+        } else {
+            XCTFail("Logging configuration file was not found. \(nok)")
+        }
+
+        if let url = URL.tptpDirectoryURL {
+            XCTAssertTrue(url.path.hasPrefix(home.path),"\(home.path) ⋢ \(url.path) \(nok)")
+        } else {
+            XCTFail("Tptp directory was not found. \(nok)")
+        }
     }
 }
