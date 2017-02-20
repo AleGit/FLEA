@@ -115,19 +115,15 @@ struct Syslog {
         defer { Syslog.active = true }
 
         // reminder: the logging is not active
-        #if DEBUG
-            print(#function, #line, "reading CONFIGURATION started")
-            defer { print(#function, #line, "reading CONFIGURATION finished") }
-        #endif
+        Syslog.prinfo { "reading CONFIGURATION started" }
+        defer { Syslog.prinfo { "reading CONFIGURATION finished" } }
 
         // read configuration file line by line, but
         // ignore comments (#...) and empty lines (whitespace only)
         guard let entries = URL.loggingConfigurationURL?.path.lines(predicate: {
             !($0.hasPrefix("#") || $0.isEmpty)
         }), entries.count > 0 else {
-            #if DEBUG
-                print("CONFIGURATION file has NO entries (comments and whitespace only)")
-            #endif
+            Syslog.prinfo { "CONFIGURATION file has NO entries (comments and whitespace only)" }
             return nil
         }
 
@@ -140,9 +136,7 @@ struct Syslog {
             guard components.count == 2,
                 let key = components.first?.trimmingWhitespace.pealing,
                 let last = components.last else {
-                #if DEBUG
-                    print(#function, #line, ">>> invalid CONFIGURATION entry ! \(entry) \(components) <<<")
-                #endif
+                Syslog.prinfo { "invalid CONFIGURATION entry ! \(entry) \(components)" }
                 continue
             }
 
@@ -153,9 +147,7 @@ struct Syslog {
             }
             cnfg[key] = p
 
-            #if DEGUB
-                print(entry, key, p)
-            #endif
+            Syslog.prinfo { "\(entry), \(key), \(p)" }
         }
 
         #if DEBUG
@@ -298,14 +290,13 @@ extension Syslog {
         file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
         message: () -> String
     ) {
-        // swiftlint:disable line_length
         if errcode != 0 {
             Syslog.sysLog(priority: priority,
                           args: line, column) {
                 #if os(OSX)
-                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d] \(function) '%m' \(message())"
+                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
                 #elseif os(Linux)
-                    return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d] \(function) '%m' \(message())"
+                    return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
                 #else
                     assert(false, "unknown os")
                     return "unknown os"
@@ -315,16 +306,15 @@ extension Syslog {
             Syslog.sysLog(priority: priority,
                           args: line, column) {
                 #if os(OSX)
-                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d] \(function) \(message())"
+                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
                 #elseif os(Linux)
-                    return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d] \(function) \(message())"
+                    return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
                 #else
                     assert(false, "unknown os")
                     return "unknown os"
                 #endif
             }
         }
-        // swiftlint:enable line_length
     }
 
     static func multiple(errcode: Int32 = 0, condition: () -> Bool = { true },
@@ -385,6 +375,21 @@ extension Syslog {
                      message: () -> String
     ) {
         guard Syslog.loggable(.info, file, function, line), condition() else { return }
+        log(.info, errcode: errcode,
+            file: file, function: function, line: line, column: column, message: message)
+    }
+
+    static func prinfo(errcode: Int32 = 0, condition: @autoclosure () -> Bool = true,
+                       file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
+                       message: () -> String
+    ) {
+        guard Syslog.loggable(.info, file, function, line), condition() else {
+
+            if CommandLine.options["--prinfo"]?.first == "active", condition() {
+                print("\(loggingTime()) <Print,Info>: \(URL(fileURLWithPath: file).lastPathComponent)[\(line):\(column)].\(function) { \(message()) }")
+            }
+            return
+        }
         log(.info, errcode: errcode,
             file: file, function: function, line: line, column: column, message: message)
     }

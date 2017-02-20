@@ -150,4 +150,10 @@ public class URLTests: FleaTestCase {
 
         print(url)
     }
+
+    func testURL() {
+        print(URL.tptpDirectoryURL as Any)
+        print(URL.homeDirectoryURL as Any)
+        print(URL.loggingConfigurationURL as Any)
+    }
 }
