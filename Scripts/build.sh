@@ -12,8 +12,10 @@
 
 # 3. remove `main.swift` from `Sources`
 function finish {
+  # main.swift MUST NOT remain in Sources
   rm Sources/main.swift
 }
+# ensure cleanup
 trap finish EXIT
 
 # 1. copy `main.swift` into the `Sources` folder

@@ -11,7 +11,7 @@ public class DemoTests: FleaTestCase {
 
     func testAll() {
         print("*** run all demos ***")
-        Demo.all()
-        print("*** all demos done ***")
+        let count = Demo.all()
+        print("*** \(count) demos done ***")
     }
 }
