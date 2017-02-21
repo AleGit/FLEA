@@ -48,8 +48,27 @@ public class StringLiteralTests: FleaTestCase {
         XCTAssertEqual(fofn.nodes!.first!.symbol.type, .predicate(1), "\(nok) fofn :: \(fofn)")
         XCTAssertEqual("~(p(f(X)))", fofn.description, nok)
 
+        let npfX: LocalSimpleNode = "@fof ~p(f(X))"
+        XCTAssertEqual(npfX.symbol.type, .negation, "\(nok) fofn :: \(fofn)")
+        XCTAssertEqual(npfX.nodes!.first!.symbol.type, .predicate(1), "\(nok) fofn :: \(fofn)")
+        XCTAssertEqual("~(p(f(X)))", npfX.description, nok)
+
         let fofe: LocalSimpleNode = "@fof p=X"
         XCTAssertEqual(fofe.symbol.type, .equation, "\(nok) fofe :: \(fofe)")
+        XCTAssertEqual("p=X", fofe.description, nok)
+
+        let cnfe: LocalSimpleNode = "@cnf p=X"
+        XCTAssertEqual(cnfe.symbol.type, .disjunction, "\(nok) cnfe :: \(cnfe)")
+        XCTAssertEqual(cnfe.nodes!.first!.symbol.type, .equation, "\(nok) cnfe :: \(cnfe)")
+        XCTAssertEqual("(p=X)", cnfe.description, nok)
+
+        let cnfne: LocalSimpleNode = "@cnf p!=X"
+        XCTAssertEqual(cnfne.symbol.type, .disjunction, "\(nok) cnfne :: \(cnfne)")
+        XCTAssertEqual(cnfne.nodes!.first!.symbol.type, .inequation, "\(nok) cnfne :: \(cnfne)")
+        XCTAssertEqual("(p!=X)", cnfne.description, nok)
+
+        let peX: LocalSimpleNode = "p=X"
+        XCTAssertEqual(peX.symbol.type, .equation, "\(nok) peX :: \(peX)")
         XCTAssertEqual("p=X", fofe.description, nok)
 
         let clause: LocalSimpleNode = "@cnf ~p(f(X))"
