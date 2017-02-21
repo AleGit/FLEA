@@ -35,7 +35,7 @@ final class Proverlet<N: Node>: Prover
 
         // read and parse the main (problem) file
 
-        guard let (url, file) = URLAndFile(problem: name) else { return nil }
+        guard let file = Tptp.File(problem: name), let url = file.url else { return nil }
 
         parsedClauses = file.nameRoleClauseTriples()
         parsedFiles.append((url.path, parsedClauses.count))

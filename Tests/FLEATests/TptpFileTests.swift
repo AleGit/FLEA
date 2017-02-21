@@ -62,7 +62,7 @@ public class TptpFileTests: FleaTestCase {
     func testProblems() {
         for (problem, count, runtime) in [
             ("Problems/PUZ001+1", 14, 0.1),
-
+            
             ("PUZ001-1", 12, 0.1),
             ("HWV001-1", 42, 0.1),
             ("HWV002-1", 51, 0.1),
@@ -74,7 +74,7 @@ public class TptpFileTests: FleaTestCase {
             // ("HWV008-1", 10, 0.1),
             ("HWV009-1", 3, 0.1),
             ("HWV010-1", 3, 0.1),
-
+            
             ("HWV011-1", 3, 0.1),
             ("HWV012-1", 4, 0.1),
             ("HWV013-1", 6, 0.1),
@@ -83,10 +83,10 @@ public class TptpFileTests: FleaTestCase {
             ("HWV016-1", 6, 0.1),
             ("HWV017-1", 7, 0.1),
             ("HWV018-1", 6, 0.1),
-
+            
             ("HWV019-1", 5, 0.1),
             ("HWV020-1", 6, 0.1),
-
+            
             ("HWV039+1", 744, 0.12),
             // ("HWV067-1",94241,20.0)
         ] {

@@ -55,7 +55,7 @@ final class ProverY<N: Node>: Prover
     init?(problem name: String) {
         Syslog.info { "problem name = \(name)" }
 
-        guard let (url, file) = URLAndFile(problem: name) else { return nil }
+        guard let file = Tptp.File(problem: name), let url = file.url else { return nil }
 
         clauses = file.nameRoleClauseTriples()
         let includes = file.includeSelectionURLTriples(url: url)

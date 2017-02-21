@@ -15,7 +15,7 @@ extension Tptp {
 
         /// intiialize with the content of a file referenced by file path
         private init?(path: FilePath) {
-            Syslog.notice { "TptpFile(path:\(path))" }
+            Syslog.notice { "Tptp.File(path:\(path))" }
             guard let size = path.fileSize, size > 0 else {
                 return nil
             }
@@ -40,6 +40,34 @@ extension Tptp {
                 // - memory an parse string of type .file
                 return nil
             }
+        }
+
+        /// Searches for a problem by name, convention, and TPTP Path,
+        /// e.g. "PUZ001-1" => ~/TPTP/Problems/PUZ001-1p
+        /// It will return
+        /// - a pair with the problem file url and content if successful
+        /// - nil if problem file could not be located, read or parsed.
+        convenience init?(problem name: String) {
+            Syslog.info { "Tptp.File(problem:\(name))" }
+            guard let url = URL(fileURLWithProblem: name) else {
+                Syslog.error { "Problem \(name) could not be found." }
+                return nil
+            }
+            self.init(url: url)
+        }
+
+        /// Search and parse an axiom file by name, problem url, conventions, and TPTP Path,
+        /// e.g. the search starts relatively to the problem file.
+        /// It will return
+        /// - a pair with the axiom file url and content if successful
+        /// - nil if axiom file could not be located, read or parsed.
+        @available(*, deprecated, message: "- unused, see TPTP.File.includeSelectionURLTriples -")
+        convenience init?(axiom name: String, problemURL: URL?) {
+            guard let url = URL(fileURLWithAxiom: name, problemURL: problemURL) else {
+                Syslog.error { "Axiom \(name) could not be found. (Problem: \(problemURL?.path))" }
+                return nil
+            }
+            self.init(url: url)
         }
 
         // initialize with the content of string
@@ -109,10 +137,15 @@ extension Tptp {
             return t
         }
 
-        /// The path to the parsed file is store in the root.
-        var path: FilePath {
-            guard let cstring = root?.pointee.symbol else { return "n/a" }
-            return String(validatingUTF8: cstring) ?? "n/a"
+        /// The path to the parsed file is stored in the root.
+        var path: FilePath? {
+            guard let cstring = root?.pointee.symbol else { return nil }
+            return String(validatingUTF8: cstring) ?? nil
+        }
+
+        var url: URL? {
+            guard let path = self.path else { return nil }
+            return URL(fileURLWithPath: path)
         }
 
         /// The sequence of parsed <TPTP_input> nodes.
@@ -194,19 +227,27 @@ extension Tptp {
             }
         }
 
+        /// return a list of triples with local file name, formula selection, and file URL
+        /// from <include> entries like "include('Axioms/SYN000+0.ax',[ia1,ia3]).":
+        /// e.g.("'Axioms/SYN000+0.ax'", ["ia1","ia3"], "${HOME}/TPTP/Axioms/SYN000+0.ax")
         func includeSelectionURLTriples(url: URL) -> [(String, [String], URL)] {
+            // <include> ::= include(<file_name><formula_selection>).
+
             return self.includes.flatMap {
-                guard let name = $0.symbol,
-                    let axiomURL = URL(fileURLWithAxiom: name, problemURL: url) else {
-                    let symbol = $0.symbol ?? "'n/a'"
-                    Syslog.error { "Include file \(symbol) was not found." }
-                    assert(false, "Include file \(symbol) was not found.")
+                // <file_name> ::= <single_quoted>
+                guard let name = $0.symbol else {
+                    Syslog.error { "<include> entry has no <file_name>." }
                     return nil
                 }
+                guard let fileURL = URL(fileURLWithAxiom: name, problemURL: url) else {
+                    Syslog.error { "fileURL for \(name) was not found. (problemURL: \(url.path))" }
+                    return nil
+                }
+                // <formula_selection> ::= ,[<name_list>] | <null>
                 let selection = $0.children.flatMap {
                     $0.symbol
                 }
-                return (name, selection, axiomURL)
+                return (name, selection, fileURL)
             }
         }
 

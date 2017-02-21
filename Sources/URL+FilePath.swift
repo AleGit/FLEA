@@ -76,12 +76,12 @@ extension URL {
         for path in paths {
             let url = URL(fileURLWithPath: path)
             if url.isAccessible {
-                Syslog.prinfo {"'\(url.path)' is an accessible logging configuration file." }
+                Syslog.prinfo { "'\(url.path)' is an accessible logging configuration file." }
                 return url
             }
-            Syslog.prinfo {"'\(url.path)' is not accessible." }
+            Syslog.prinfo { "'\(url.path)' is not accessible." }
         }
-        Syslog.prinfo {"No accessible logging configuration file was found." }
+        Syslog.prinfo { "No accessible logging configuration file was found." }
         return nil
     }
 }

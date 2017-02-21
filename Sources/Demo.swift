@@ -9,15 +9,15 @@ public struct Demo {
     static var show: Bool = true
 
     static let demos = [
-        "all" : (Demo.all, "run All demos"),
+        "all": (Demo.all, "run All demos"),
         "cnf": (Demo.Problem.parseCnf, "Parse \(cnfProblem) (cnf)"),
         "fof": (Demo.Problem.parseFof, "Parse \(fofProblem) (fof)"),
-
+        
         "simple": (Demo.Problem.simpleNode, "Parse \(hwvProblem) with simple node(expensive)"),
         "sharing": (Demo.Problem.sharingNode, "Parse \(hwvProblem) with sharing node (expensive)"),
         "smart": (Demo.Problem.smartNode, "Parse \(hwvProblem) with smart node (expensive)"),
         "kin": (Demo.Problem.kinNode, "Parse \(hwvProblem) with kin node (expensive)"),
-
+        
         "broken": (Demo.Problem.broken, "Parse invalid file"),
         "pool": (Demo.sharing, "Node sharing (verbose)"),
         "mgu": (Demo.Unification.demo, "Unfication"),
@@ -25,13 +25,13 @@ public struct Demo {
     ]
 
     public static func all() -> Int? {
-        for (key,pair) in Demo.demos {
+        for (key, pair) in Demo.demos {
             guard key != "all" else { continue }
             print("--------- --------- --------- --------- --------- --------- --------- --------- --------- ")
             let (f, description) = pair
 
             print("\nmeasure key:'\(key)', description:'\(description)'")
-            let (result, runtime) = utileMeasure(f:f)
+            let (result, runtime) = utileMeasure(f: f)
             print("key:'\(key)', result:'\(result)', runtime:'\(runtime)'")
         }
         print("--------- --------- --------- --------- --------- --------- --------- --------- --------- ")
@@ -172,8 +172,6 @@ extension Demo {
 
         lazy var hashValue: Int = self.defaultHashValue
     }
-
-
 
     final class VerboseNode: SymbolStringTyped, Sharing, Node {
         static var counter = 0

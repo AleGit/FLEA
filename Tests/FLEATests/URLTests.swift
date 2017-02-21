@@ -159,19 +159,19 @@ public class URLTests: FleaTestCase {
             return
         }
 
-        let tilde = URL(fileURLWithPath:"~") // "~" is NOT the path to home
-        XCTAssertNotEqual(tilde, home,"~ = \(tilde.path) \(nok)")
-        XCTAssertTrue(tilde.path.hasPrefix(home.path),"\(home.path) ⋢ \(tilde.path) \(nok)")
-        XCTAssertFalse(tilde.isAccessible,"\(tilde.path) is accessible \(nok)")
-        
+        let tilde = URL(fileURLWithPath: "~") // "~" is NOT the path to home
+        XCTAssertNotEqual(tilde, home, "~ = \(tilde.path) \(nok)")
+        XCTAssertTrue(tilde.path.hasPrefix(home.path), "\(home.path) ⋢ \(tilde.path) \(nok)")
+        XCTAssertFalse(tilde.isAccessible, "\(tilde.path) is accessible \(nok)")
+
         if let url = URL.loggingConfigurationURL {
-            XCTAssertTrue(url.path.hasPrefix(home.path),"\(home.path) ⋢ \(url.path) \(nok)")
+            XCTAssertTrue(url.path.hasPrefix(home.path), "\(home.path) ⋢ \(url.path) \(nok)")
         } else {
             XCTFail("Logging configuration file was not found. \(nok)")
         }
 
         if let url = URL.tptpDirectoryURL {
-            XCTAssertTrue(url.path.hasPrefix(home.path),"\(home.path) ⋢ \(url.path) \(nok)")
+            XCTAssertTrue(url.path.hasPrefix(home.path), "\(home.path) ⋢ \(url.path) \(nok)")
         } else {
             XCTFail("Tptp directory was not found. \(nok)")
         }
