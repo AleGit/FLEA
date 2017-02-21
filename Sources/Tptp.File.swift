@@ -37,16 +37,14 @@ extension Tptp {
                 Syslog.error { "\(url) is not a file URL!" }
                 // TODO: Download file into
                 // - canonical place and parse the saved file
-                // - memory an parse string of type .file
+                // - memory and parse string of type .file
                 return nil
             }
         }
 
         /// Searches for a problem by name, convention, and TPTP Path,
         /// e.g. "PUZ001-1" => ~/TPTP/Problems/PUZ001-1p
-        /// It will return
-        /// - a pair with the problem file url and content if successful
-        /// - nil if problem file could not be located, read or parsed.
+        /// It will return nil if problem file could not be located, read or parsed.
         convenience init?(problem name: String) {
             Syslog.info { "Tptp.File(problem:\(name))" }
             guard let url = URL(fileURLWithProblem: name) else {
@@ -58,9 +56,7 @@ extension Tptp {
 
         /// Search and parse an axiom file by name, problem url, conventions, and TPTP Path,
         /// e.g. the search starts relatively to the problem file.
-        /// It will return
-        /// - a pair with the axiom file url and content if successful
-        /// - nil if axiom file could not be located, read or parsed.
+        /// It will return nil if axiom file could not be located, read or parsed.
         @available(*, deprecated, message: "- unused, see TPTP.File.includeSelectionURLTriples -")
         convenience init?(axiom name: String, problemURL: URL?) {
             guard let url = URL(fileURLWithAxiom: name, problemURL: problemURL) else {
@@ -98,9 +94,9 @@ extension Tptp {
 
                 code = prlcParseString(string, &store, &root, PRLC_FOF)
 
-                /// include statements, e.g.
+                /// the content of include statements, e.g.
                 /// - "'Axioms/PUZ001-0.ax'"
-                /// - "'Axioms/PUZ002-0.ax,[a,b,c]'"
+                /// - "'Axioms/SYN000-0.ax',[ia1,ia3]"
                 /// Σ -> include(Σ).
                 /// http://www.cs.miami.edu/~tptp/TPTP/SyntaxBNF.html#include
             case .include:

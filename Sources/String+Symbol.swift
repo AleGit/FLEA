@@ -46,13 +46,16 @@ extension String {
             return (self, .undefined)
         }
 
+        // ANNOTATED
+
         if self.hasPrefix("@") {
             for (prefix, type) in [
                 "@cnf ": Tptp.SymbolType.cnf,
                 "@fof ": Tptp.SymbolType.fof,
-                
+
                 "@include ": Tptp.SymbolType.include,
                 "@file ": Tptp.SymbolType.file,
+
             ] {
                 if self.hasPrefix(prefix) {
                     let s = self.substring(from: self.range(of: prefix)!.upperBound)
@@ -62,6 +65,10 @@ extension String {
             Syslog.warning { "Undefined annotation in \(self)" }
         }
 
+        // HEURISTICS
+
+        // not annotated strings with connectives are fof.
+
         if self.containsOne([
             "?", "!", "~", "-->",
             "&", "|", "=>", "<=>", "=",
@@ -69,6 +76,8 @@ extension String {
         ]) {
             return (self, .fof)
         }
+
+        // not annotated strings without connectives are terms.
 
         return (self, .function(-1)) // .function(_) or .variable
     }
