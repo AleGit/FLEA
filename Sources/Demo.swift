@@ -12,12 +12,12 @@ public struct Demo {
         "all": (Demo.all, "run All demos"),
         "cnf": (Demo.Problem.parseCnf, "Parse \(cnfProblem) (cnf)"),
         "fof": (Demo.Problem.parseFof, "Parse \(fofProblem) (fof)"),
-
+        
         "simple": (Demo.Problem.simpleNode, "Parse \(hwvProblem) with simple node(expensive)"),
         "sharing": (Demo.Problem.sharingNode, "Parse \(hwvProblem) with sharing node (expensive)"),
         "smart": (Demo.Problem.smartNode, "Parse \(hwvProblem) with smart node (expensive)"),
         "kin": (Demo.Problem.kinNode, "Parse \(hwvProblem) with kin node (expensive)"),
-
+        
         "broken": (Demo.Problem.broken, "Parse invalid file"),
         "pool": (Demo.sharing, "Node sharing (verbose)"),
         "mgu": (Demo.Unification.demo, "Unfication"),

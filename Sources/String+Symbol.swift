@@ -52,7 +52,7 @@ extension String {
             for (prefix, type) in [
                 "@cnf ": Tptp.SymbolType.cnf,
                 "@fof ": Tptp.SymbolType.fof,
-
+                
                 "@include ": Tptp.SymbolType.include,
                 "@file ": Tptp.SymbolType.file,
 
