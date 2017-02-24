@@ -4,7 +4,7 @@ extension Node {
     /// Simple calculation for a consistent hash value,
     /// (i.e. equal nodes have an eqqul hash value)
     /// *Complexity*: O(n)
-    /// causes too many collisions
+    @available(*, deprecated, message: "- would cause too many collisions -")
     var simpleHashValue: Int {
         guard let nodes = self.nodes else {
             return self.symbol.hashValue
@@ -13,7 +13,7 @@ extension Node {
     }
 
     /// Default calculation for a consistent hash value,
-    /// (i.e. equal nodes have an eqqul hash value)
+    /// (i.e. equal nodes have an equal hash value)
     /// *Complexity*: O(n)
     /// significant less collisions than simpleHashValue
     /// TODO: find reference for this idea
@@ -23,7 +23,6 @@ extension Node {
             return self.symbol.hashValue
         }
         return nodes.reduce(5381 &+ self.symbol.hashValue) {
-            // ($0 << 5) &+ $0 &+ $1.hashValue
             ($0 << 4) &+ $0 &+ $1.hashValue // less collisions than with $0 << 5
         }
     }
