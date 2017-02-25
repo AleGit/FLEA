@@ -17,12 +17,14 @@ public class KinNodeTests: FleaTestCase {
     private final class LocalKinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
         ExpressibleByStringLiteral {
         typealias S = Int
-        static var symbols = StringIntegerTable<S>()
-        static var pool = WeakSet<LocalKinIntNode>()
-        var folks = WeakSet<LocalKinIntNode>()
+        typealias N = LocalKinIntNode
 
-        var symbol: S = LocalKinIntNode.symbolize(string: Tptp.wildcard, type: .variable)
-        var nodes: [LocalKinIntNode]?
+        static var symbols = StringIntegerTable<S>()
+        static var pool = WeakSet<N>()
+        var folks = WeakSet<N>()
+
+        var symbol: S = -1 // N.symbolize(string: Tptp.wildcard, type: .variable)
+        var nodes: [N]?
     }
 
     /// accumulate four distict nodes

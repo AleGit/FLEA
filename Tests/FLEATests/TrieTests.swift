@@ -88,7 +88,7 @@ public class TrieTests: FleaTestCase {
         typealias T = FLEA.TrieClass
 
         let wildcard = N.symbolize(string:Tptp.wildcard, type:.variable)
-        XCTAssertEqual(wildcard, -1, nok)
+        XCTAssertEqual(wildcard, -1, "Integer symbol wildcard MUST be -1 \(nok)")
 
         let X = "X" as N
         let fX = "f(X)" as N // 1

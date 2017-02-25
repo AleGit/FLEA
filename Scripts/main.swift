@@ -11,11 +11,12 @@ private final class TheNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
     ExpressibleByStringLiteral {
     typealias S = Int
     typealias N = TheNode
+    
     static var symbols = StringIntegerTable<S>() // protocol SymbolTabulating
     static var pool = WeakSet<N>() // protocol Sharing
     // var folks = WeakSet<N>()                  // protocol Kin
 
-    var symbol: S = N.symbolize(string: Tptp.wildcard, type: .variable)
+    var symbol: S = -1 // N.symbolize(string: Tptp.wildcard, type: .variable) -> -1
     var nodes: [N]? // protocol Node
 
     var description: String { // protocol Node : CustomStringConvertible

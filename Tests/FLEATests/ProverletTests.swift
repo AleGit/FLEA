@@ -20,11 +20,12 @@ public class ProverletTests: YicesTestCase {
         ExpressibleByStringLiteral {
         typealias S = Int
         typealias N = TestNode
+        
         static var symbols = StringIntegerTable<S>()
         static var pool = WeakSet<N>()
         // var folks = WeakSet<N>() // protocol Kin
 
-        var symbol: S = N.symbolize(string: Tptp.wildcard, type: .variable)
+        var symbol: S = -1 // N.symbolize(string: Tptp.wildcard, type: .variable)
         var nodes: [N]?
 
         var description: String { return defaultDescription }
