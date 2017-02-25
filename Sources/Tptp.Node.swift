@@ -34,7 +34,7 @@ struct Tptp {
 
         static var symbols = StringIntegerTable<I>()
 
-        var symbol: Int = N.symbolize(string: wildcard, type: .variable)
+        var symbol: Int = N.symbolize(name: wildcard, type: .variable)
         var nodes: [N]?
     }
 
@@ -67,7 +67,7 @@ struct Tptp {
         static var symbols = StringIntegerTable<I>()
         static var pool = Set<N>()
 
-        var symbol: Int = N.symbolize(string: wildcard, type: .variable)
+        var symbol: Int = N.symbolize(name: wildcard, type: .variable)
         var nodes: [N]?
 
         lazy var hashValue: Int = self.defaultHashValue
@@ -100,7 +100,7 @@ struct Tptp {
         static var symbols = StringIntegerTable<Int>()
         static var pool = WeakSet<N>()
 
-        var symbol: Int = SmartIntNode.symbolize(string: wildcard, type: .variable)
+        var symbol: Int = SmartIntNode.symbolize(name: wildcard, type: .variable)
         var nodes: [N]?
 
         lazy var hashValue: Int = self.defaultHashValue
@@ -136,7 +136,7 @@ struct Tptp {
         static var pool = WeakSet<N>()
         var folks = WeakSet<N>()
 
-        var symbol: Int = N.symbolize(string: wildcard, type: .variable)
+        var symbol: Int = N.symbolize(name: wildcard, type: .variable)
         var nodes: [N]?
 
         lazy var hashValue: Int = self.defaultHashValue

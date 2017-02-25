@@ -19,7 +19,7 @@ extension Node where Self: SymbolNameTyped {
             Syslog.error(condition: type != .variable) {
                 "Node(symbol:\(self.symbol), nodes:nil) must not be of type \(type)."
             }
-            let symbol = Self.symbolize(string: "\(string)\(separator)\(suffix)", type: type)
+            let symbol = Self.symbolize(name: "\(string)\(separator)\(suffix)", type: type)
             return Self(symbol: symbol, nodes: nil)
         }
 
@@ -37,7 +37,7 @@ extension Node where Self: SymbolNameTyped {
 
             // check if variable string was already desuffixed to name
             if let name = mappings[string] {
-                return Self(symbol: Self.symbolize(string: name, type: .variable), nodes: nil)
+                return Self(symbol: Self.symbolize(name: name, type: .variable), nodes: nil)
             }
 
             // split string, e.g. "x_3" -> ["x","3"] if separator was "_"
@@ -61,7 +61,7 @@ extension Node where Self: SymbolNameTyped {
 
             mappings[string] = name
 
-            return Self(symbol: Self.symbolize(string: name, type: .variable), nodes: nil)
+            return Self(symbol: Self.symbolize(name: name, type: .variable), nodes: nil)
         }
 
         return Self(symbol: self.symbol, nodes: nodes.map {
@@ -107,7 +107,7 @@ extension Node where Self: SymbolNameTyped {
 
         // variable symbol is unknown so far
         let symbol = Self.symbolize(
-            string: "\(prefix)\(separator)\(renamings.count + offset)",
+            name: "\(prefix)\(separator)\(renamings.count + offset)",
             type: .variable)
         renamings[self.symbol] = symbol
         return Self(variable: symbol)

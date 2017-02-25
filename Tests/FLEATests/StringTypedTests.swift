@@ -17,7 +17,7 @@ public class StringTypedTests: FleaTestCase {
         static var symbols = StringIntegerTable<Int>()
         static var pool = WeakSet<N>()
 
-        var symbol: Int = LocalSmartIntNode.symbolize(string: "*", type: .variable)
+        var symbol: Int = LocalSmartIntNode.symbolize(name: "*", type: .variable)
         var nodes: [N]?
 
         lazy var hashValue: Int = self.defaultHashValue

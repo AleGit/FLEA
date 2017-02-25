@@ -69,7 +69,7 @@ public class YicesTests: YicesTestCase {
     }
 
     func testEmptyClause() {
-        let symbol = Node.symbolize(string: "|", type: .disjunction)
+        let symbol = Node.symbolize(name: "|", type: .disjunction)
         let empty = Node(symbol: symbol, nodes: [Node]())
 
         let context = Yices.Context()

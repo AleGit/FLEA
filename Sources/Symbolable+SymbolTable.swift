@@ -32,7 +32,7 @@ protocol SymbolNameTyped {
     associatedtype Symbol: Hashable
 
     var symbolStringType: StringType { get }
-    static func symbolize(string: String, type: Tptp.SymbolType) -> Symbol
+    static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol
 }
 
 /// A string symbolable type contains its string representation and its symbol type.

@@ -18,7 +18,7 @@ public class SharingNodeTests: FleaTestCase {
         typealias S = Tptp.Symbol
         static var pool = Set<LocalSharingNode>()
 
-        var symbol: S = LocalSharingNode.symbolize(string: "*", type: .variable)
+        var symbol: S = LocalSharingNode.symbolize(name: "*", type: .variable)
         var nodes: [LocalSharingNode]?
 
         deinit {

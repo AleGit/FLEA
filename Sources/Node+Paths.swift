@@ -1,6 +1,6 @@
 extension Node where Self: SymbolNameTyped {
     static var joker: Symbol {
-        return Self.symbolize(string: Tptp.wildcard, type: .variable)
+        return Self.symbolize(name: Tptp.wildcard, type: .variable)
     }
 
     /// Prefix paths from root to leaves.
@@ -44,15 +44,15 @@ extension Node where Self: SymbolNameTyped {
             negated = paths.map { Array($0.suffix(from: 2)) }
 
         case .equation:
-            let symbol = Self.symbolize(string: "!=", type: .inequation)
+            let symbol = Self.symbolize(name: "!=", type: .inequation)
             negated = paths.map { [.symbol(symbol)] + $0.suffix(from: 1) }
 
         case .inequation:
-            let symbol = Self.symbolize(string: "=", type: .equation)
+            let symbol = Self.symbolize(name: "=", type: .equation)
             negated = leafPaths.map { [.symbol(symbol)] + $0.suffix(from: 1) }
 
         case .predicate:
-            let symbol = Self.symbolize(string: "~", type: .negation)
+            let symbol = Self.symbolize(name: "~", type: .negation)
             negated = paths.map { [.symbol(symbol), .hop(0)] + $0 }
 
         default:
@@ -104,15 +104,15 @@ extension Node where Symbol == Int, Self: SymbolNameTyped {
             negated = paths.map { Array($0.suffix(from: 2)) }
 
         case .equation:
-            let symbol = Self.symbolize(string: "!=", type: .inequation)
+            let symbol = Self.symbolize(name: "!=", type: .inequation)
             negated = paths.map { [symbol] + $0.suffix(from: 1) }
 
         case .inequation:
-            let symbol = Self.symbolize(string: "=", type: .equation)
+            let symbol = Self.symbolize(name: "=", type: .equation)
             negated = leafPaths.map { [symbol] + $0.suffix(from: 1) }
 
         case .predicate:
-            let symbol = Self.symbolize(string: "~", type: .negation)
+            let symbol = Self.symbolize(name: "~", type: .negation)
             negated = paths.map { [symbol, 0] + $0 }
 
         default:
@@ -132,7 +132,7 @@ extension Node where Self: SymbolNameTyped {
     var preorderTraversalSymbols: [Symbol] {
         guard let nodes = self.nodes else {
             // a variable leaf
-            return [Self.symbolize(string: Tptp.wildcard, type: .variable)]
+            return [Self.symbolize(name: Tptp.wildcard, type: .variable)]
         }
         guard nodes.count > 0 else {
             // a constant (function) leaf

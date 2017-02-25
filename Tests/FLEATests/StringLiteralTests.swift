@@ -18,7 +18,7 @@ public class StringLiteralTests: FleaTestCase {
     private final class LocalSimpleNode: SymbolNameTyped, Node, ExpressibleByStringLiteral {
         typealias S = Tptp.Symbol
 
-        var symbol: S = LocalSimpleNode.symbolize(string: "*", type: .variable)
+        var symbol: S = LocalSimpleNode.symbolize(name: "*", type: .variable)
         var nodes: [LocalSimpleNode]?
 
         lazy var hashValue: Int = self.defaultHashValue

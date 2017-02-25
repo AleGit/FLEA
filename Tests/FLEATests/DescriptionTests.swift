@@ -19,7 +19,7 @@ public class DescriptionTests: FleaTestCase {
         static var pool = WeakSet<LocalKinIntNode>()
         var folks = WeakSet<LocalKinIntNode>()
 
-        var symbol: S = LocalKinIntNode.symbolize(string: "*", type: .variable)
+        var symbol: S = LocalKinIntNode.symbolize(name: "*", type: .variable)
         var nodes: [LocalKinIntNode]?
 
         lazy var description: String = self.defaultDescription
@@ -41,7 +41,7 @@ public class DescriptionTests: FleaTestCase {
         let X = LocalKinIntNode(v: "X")
         let fXa = LocalKinIntNode(f: "f", [X, a])
 
-        let equals = LocalKinIntNode.symbolize(string: "=", type: .equation)
+        let equals = LocalKinIntNode.symbolize(name: "=", type: .equation)
         let a_X = LocalKinIntNode(symbol: equals, nodes: [a, X])
 
         XCTAssertEqual("1-a-function(0)", a.debugDescription, nok)

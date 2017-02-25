@@ -18,7 +18,7 @@ public class SmartNodeTests: FleaTestCase {
         typealias S = Tptp.Symbol // choose the symbol
         static var pool = WeakSet<LocalSmartNode>()
 
-        var symbol: S = LocalSmartNode.symbolize(string: "*", type: .variable)
+        var symbol: S = LocalSmartNode.symbolize(name: "*", type: .variable)
         var nodes: [LocalSmartNode]?
 
         lazy var hashValue: Int = self.defaultHashValue

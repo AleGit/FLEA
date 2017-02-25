@@ -21,7 +21,7 @@ public class NodePathsTests: FleaTestCase {
         static var pool = WeakSet<LocalKinIntNode>()
         var folks = WeakSet<LocalKinIntNode>()
 
-        var symbol: S = LocalKinIntNode.symbolize(string: "*", type: .variable)
+        var symbol: S = LocalKinIntNode.symbolize(name: "*", type: .variable)
         var nodes: [LocalKinIntNode]?
 
         deinit {

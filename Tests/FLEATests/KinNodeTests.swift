@@ -23,13 +23,13 @@ public class KinNodeTests: FleaTestCase {
         static var pool = WeakSet<N>()
         var folks = WeakSet<N>()
 
-        var symbol: S = -1 // N.symbolize(string: Tptp.wildcard, type: .variable)
+        var symbol: S = -1 // N.symbolize(name: Tptp.wildcard, type: .variable)
         var nodes: [N]?
     }
 
     /// accumulate four distict nodes
     func testEqualityX() {
-        let symbol = LocalKinIntNode.symbolize(string: "*", type: .variable)
+        let symbol = LocalKinIntNode.symbolize(name: "*", type: .variable)
         XCTAssertEqual(-1, symbol)
 
         let X: LocalKinIntNode = "X"

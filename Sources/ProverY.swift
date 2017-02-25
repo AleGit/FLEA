@@ -42,7 +42,7 @@ final class ProverY<N: Node>: Prover
     fileprivate var deadline: AbsoluteTime = 0.0
     fileprivate var context = Yices.Context()
 
-    fileprivate let wildcardSymbol = N.symbolize(string: "*", type: .variable)
+    fileprivate let wildcardSymbol = N.symbolize(name: "*", type: .variable)
 
     var fileCount: Int { return files.count }
     var clauseCount: Int { return clauses.count }

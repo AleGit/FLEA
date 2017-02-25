@@ -16,7 +16,7 @@ private final class TheNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
     static var pool = WeakSet<N>() // protocol Sharing
     // var folks = WeakSet<N>()                  // protocol Kin
 
-    var symbol: S = -1 // N.symbolize(string: Tptp.wildcard, type: .variable) -> -1
+    var symbol: S = -1 // N.symbolize(name: Tptp.wildcard, type: .variable) -> -1
     var nodes: [N]? // protocol Node
 
     var description: String { // protocol Node : CustomStringConvertible

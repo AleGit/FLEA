@@ -62,18 +62,18 @@ extension Node where Self: SymbolNameTyped {
         case .equation:
             assert(self.nodes?.count == 2)
             return Self(
-                symbol: Self.symbolize(string: "!=", type: .inequation),
+                symbol: Self.symbolize(name: "!=", type: .inequation),
                 nodes: [self.nodes!.first!, self.nodes!.last!])
 
         case .inequation:
             assert(self.nodes?.count == 2)
             return Self(
-                symbol: Self.symbolize(string: "=", type: .equation),
+                symbol: Self.symbolize(name: "=", type: .equation),
                 nodes: [self.nodes!.first!, self.nodes!.last!])
 
         case .predicate:
             return Self(
-                symbol: Self.symbolize(string: "~", type: .negation),
+                symbol: Self.symbolize(name: "~", type: .negation),
                 nodes: [self])
 
         default:
@@ -96,7 +96,7 @@ extension Node where Self: SymbolNameTyped {
         case .inequation:
             assert(self.nodes?.count == 2)
             return Self(
-                symbol: Self.symbolize(string: "!=", type: .inequation),
+                symbol: Self.symbolize(name: "!=", type: .inequation),
                 nodes: [self.nodes!.first!, self.nodes!.last!])
 
         case .predicate:

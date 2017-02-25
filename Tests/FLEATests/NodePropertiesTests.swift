@@ -29,7 +29,7 @@ public class NodePropertiesTests: FleaTestCase {
         static var pool = WeakSet<LocalKinIntNode>() // : Sharing
         var folks = WeakSet<LocalKinIntNode>() // : Kin
 
-        var symbol: Int = LocalKinIntNode.symbolize(string: "*", type: .variable) // : Node
+        var symbol: Int = LocalKinIntNode.symbolize(name: "*", type: .variable) // : Node
         var nodes: [LocalKinIntNode]? // : Node
 
         // lazy evaluation and memorizing of node dimensions

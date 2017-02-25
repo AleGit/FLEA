@@ -5,7 +5,7 @@ extension Node where Self: SymbolNameTyped {
     init(tree: TreeNodeRef) {
         let type = Tptp.SymbolType(of: tree)
 
-        let symbol = Self.symbolize(string: tree.symbol ?? "n/a", type: type)
+        let symbol = Self.symbolize(name: tree.symbol ?? "n/a", type: type)
 
         switch tree.type {
         case PRLC_VARIABLE:

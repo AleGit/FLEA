@@ -17,22 +17,22 @@ extension Tptp {
 // swiftlint:disable variable_name
 extension Node where Self: SymbolNameTyped {
     init(v: String) {
-        let s = Self.symbolize(string: v, type: .variable)
+        let s = Self.symbolize(name: v, type: .variable)
         self.init(variable: s)
     }
 
     init(c: String) {
-        let s = Self.symbolize(string: c, type: .function(0))
+        let s = Self.symbolize(name: c, type: .function(0))
         self.init(constant: s)
     }
 
     init(f: String, _ nodes: [Self]) {
-        let s = Self.symbolize(string: f, type: .function(nodes.count))
+        let s = Self.symbolize(name: f, type: .function(nodes.count))
         self.init(symbol: s, nodes: nodes)
     }
 
     init(p: String, _ nodes: [Self]) {
-        let s = Self.symbolize(string: p, type: .predicate(nodes.count))
+        let s = Self.symbolize(name: p, type: .predicate(nodes.count))
         self.init(symbol: s, nodes: nodes)
     }
 }
