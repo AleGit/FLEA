@@ -1,4 +1,4 @@
-/// String MUST NOT be StringSymbolable because it cannot store the SymbolType reliable.
+/// String MUST NOT be TypedName because it cannot store the SymbolType reliable.
 
 extension String {
     static var stringTypes = [

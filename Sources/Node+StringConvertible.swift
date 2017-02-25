@@ -100,7 +100,7 @@ extension Node where Symbol == Tptp.Symbol {
  }
  */
 
-extension Node where Symbol: StringSymbolable {
+extension Node where Symbol: TypedName {
     var debugDescription: String {
         // with reliable string and type information we use it
         return buildDebugDescription(string: "\(self.symbol)-\(self.symbol.name)-\(self.symbol.type)")

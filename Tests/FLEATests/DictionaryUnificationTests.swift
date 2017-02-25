@@ -18,7 +18,7 @@ public class DictionaryUnificationTests: FleaTestCase {
         _ file: String = #file,
         _ function: String = #function,
         _ line: Int = #line
-    ) where N.Symbol: StringSymbolable {
+    ) where N.Symbol: TypedName {
         let actual = lhs =?= rhs
 
         // XCTFail("\n\(nok) \(message).\(file).\(function).\(line)")

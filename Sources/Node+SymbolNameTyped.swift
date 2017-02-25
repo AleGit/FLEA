@@ -2,12 +2,12 @@
 
 /* This file contains extensions for protocol `Node`
  to implement protocol `SymbolNameTyped` when
- - Node.Symbol is `StringSymbolable` (almost deprecated) or
+ - Node.Symbol is `TypedName` (almost deprecated) or
  - Node is `SymbolTabulating`, i.e. uses a symbol table (preferred)
  */
 
 /// default implementations for SymbolNameTyped
-extension Node where Symbol: StringSymbolable {
+extension Node where Symbol: TypedName {
     var symbolNameType: (String, Tptp.SymbolType) {
         return (self.symbol.name, self.symbol.type)
     }

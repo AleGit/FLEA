@@ -21,7 +21,7 @@ public class UnificationTests: FleaTestCase {
         _ function: String = #function,
         _ line: Int = #line
     )
-        where S.K == N, S.V == N, S: Equatable, N.Symbol: StringSymbolable,
+        where S.K == N, S.V == N, S: Equatable, N.Symbol: TypedName,
         S.Iterator == DictionaryIterator<N, N> {
         let actual: S? = lhs =?= rhs
 

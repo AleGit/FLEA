@@ -4,8 +4,8 @@
  and a `Self.Symbol` <-> `(String,SymbolType)` conversion,
  default implementations are provided for types that
  - either adopt `SymbolTabulating`
- - or use Self.Symbol : StringSymbolable
- 2. _protocol_ `StringSymbolable`, i.e. a _symbol_ (type)
+ - or use Self.Symbol : TypedName
+ 2. _protocol_ `TypedName`, i.e. a _symbol_ (type)
  with a `Self` <-> (String,SymbolType)` conversion.
  3. _typealias_ `StringType = (String,SymbolType)`
  4. _protocol_ `SymbolTable`, i.e. a type
@@ -15,7 +15,7 @@
 
  ### Proposals
  1. Rename `SymbolNameTyped` to ?
- 2. Rename `StringSymbolable` to `StringTyped`,
+ 2. Rename `TypedName` to `StringTyped`,
  since `where Self.Symbol : StringTyped` is nice to read.
  3. Rename `StringType` to `StringTypePair`,
  `StringSymbolType`, `StringSymbolTypePair` for more clarity.
@@ -25,7 +25,7 @@
 
 /// Symbol string typed nodes can convert symbols to pairs of string and type,
 /// and vice versa e.g.
-/// - extension Node where Symbol:StringSymbolable {
+/// - extension Node where Symbol:TypedName {
 /// - extension Node where Self:SymbolTabulating, Symbols.Symbol == Symbol
 /// This unifies code for nodes with string typed symbols or symbol tables.
 protocol SymbolNameTyped {
@@ -36,7 +36,7 @@ protocol SymbolNameTyped {
 }
 
 /// A string symbolable type contains its string representation and its symbol type.
-protocol StringSymbolable {
+protocol TypedName {
     var name: String { get }
     var type: Tptp.SymbolType { get }
 

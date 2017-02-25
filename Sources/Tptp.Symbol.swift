@@ -3,7 +3,7 @@ import CTptpParsing
 // MARK: - Tptp.Symbol
 
 extension Tptp {
-    struct Symbol: StringSymbolable {
+    struct Symbol: TypedName {
         let name: String
         let type: SymbolType
 
@@ -139,89 +139,89 @@ extension Tptp.SymbolType {
     // swiftlint:disable function_body_length
     init(of node: TreeNodeRef) {
 
-        guard let string = node.symbol else {
+        guard let name = node.symbol else {
             self = .undefined
             return
         }
         let type = node.type
 
-        switch (string, type) {
+        switch (name, type) {
 
             /* logical symbols */
 
         case ("!", _):
-            assert(type == PRLC_QUANTIFIER, "'\(string)' is not a quantifier \(type).")
+            assert(type == PRLC_QUANTIFIER, "'\(name)' is not a quantifier \(type).")
             self = .universal
             // assert (string.symbolType == Tptp.SymbolType.universal)
 
         case ("?", _):
-            assert(type == PRLC_QUANTIFIER, "'\(string)' is not a quantifier \(type).")
+            assert(type == PRLC_QUANTIFIER, "'\(name)' is not a quantifier \(type).")
             self = .existential
             // assert (string.symbolType == Tptp.SymbolType.existential)
 
         case ("~", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .negation
             // assert (string.symbolType == Tptp.SymbolType.negation)
 
         case ("|", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .disjunction
             // assert (string.symbolType == Tptp.SymbolType.disjunction)
 
         case ("&", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .conjunction
             // assert (string.symbolType == Tptp.SymbolType.conjunction)
 
         case ("=>", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .implication
             // assert (string.symbolType == Tptp.SymbolType.implication)
 
         case ("<=", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .reverseimpl
             // assert (string.symbolType == Tptp.SymbolType.reverseimpl)
 
         case ("<=>", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .bicondition
             // assert (string.symbolType == Tptp.SymbolType.bicondition)
 
         case ("<~>", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .xor
             // assert (string.symbolType == Tptp.SymbolType.xor)
 
         case ("~&", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .nand
             // assert (string.symbolType == Tptp.SymbolType.nand)
 
         case ("~|", _):
-            assert(type == PRLC_CONNECTIVE, "'\(string)' is not a connective \(type).")
+            assert(type == PRLC_CONNECTIVE, "'\(name)' is not a connective \(type).")
             self = .nor
             // assert (string.symbolType == Tptp.SymbolType.nor)
 
             /* error */
         case (_, PRLC_CONNECTIVE):
-            assert(false, "Unknown connective '\(string)'")
+            assert(false, "Unknown connective '\(name)'")
             self = .undefined
 
         case ("=", _):
-            assert(type == PRLC_EQUATIONAL, "'\(string)' is not equational \(type).")
+            assert(type == PRLC_EQUATIONAL, "'\(name)' is not equational \(type).")
             self = .equation
             // assert (string.symbolType == Tptp.SymbolType.equation)
 
         case ("!=", _):
-            assert(type == PRLC_EQUATIONAL, "'\(string)' is not equational \(type).")
+            assert(type == PRLC_EQUATIONAL, "'\(name)' is not equational \(type).")
             self = .inequation
             // assert (string.symbolType == Tptp.SymbolType.inequation)
 
             /* error */
         case (_, PRLC_EQUATIONAL):
-            assert(false, "Unknown equational '\(string)'")
+            assert(false, "Unknown equational '\(name)'")
             self = .undefined
 
         case (_, PRLC_PREDICATE):
