@@ -4,11 +4,11 @@ import CTptpParsing
 
 extension Tptp {
     struct Symbol: StringSymbolable {
-        let string: String
+        let name: String
         let type: SymbolType
 
-        init(_ string: String, _ type: SymbolType) {
-            self.string = string
+        init(_ name: String, _ type: SymbolType) {
+            self.name = name
             self.type = type
         }
     }
@@ -263,24 +263,24 @@ extension Tptp.SymbolType {
 extension Tptp.Symbol: Hashable {
     /// Hashable
     var hashValue: Int {
-        return self.string.hashValue
+        return self.name.hashValue
     }
 }
 
 /// Tptp.Symbol : Hashable : Equatable
 func == (lhs: Tptp.Symbol, rhs: Tptp.Symbol) -> Bool {
-    return lhs.string == rhs.string && lhs.type == rhs.type
+    return lhs.name == rhs.name && lhs.type == rhs.type
 }
 
 extension Tptp.Symbol: CustomStringConvertible {
     /// CustomStringConvertible
     var description: String {
-        return self.string
+        return self.name
     }
 }
 
 extension Tptp.Symbol: CustomDebugStringConvertible {
     var debugDescription: String {
-        return "\(self.string)-\(self.type)"
+        return "\(self.name)-\(self.type)"
     }
 }

@@ -37,7 +37,7 @@ protocol SymbolNameTyped {
 
 /// A string symbolable type contains its string representation and its symbol type.
 protocol StringSymbolable {
-    var string: String { get }
+    var name: String { get }
     var type: Tptp.SymbolType { get }
 
     init(_ string: String, _ type: Tptp.SymbolType)

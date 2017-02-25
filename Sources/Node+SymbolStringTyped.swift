@@ -9,7 +9,7 @@
 /// default implementations for SymbolNameTyped
 extension Node where Symbol: StringSymbolable {
     var symbolNameType: (String, Tptp.SymbolType) {
-        return (self.symbol.string, self.symbol.type)
+        return (self.symbol.name, self.symbol.type)
     }
 
     static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol {
