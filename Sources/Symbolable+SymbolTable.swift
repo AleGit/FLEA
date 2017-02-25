@@ -88,7 +88,7 @@ extension Int: GenericInteger {}
 typealias StringType = (String, Tptp.SymbolType)
 
 /// A string symbol table that maps (string,type) to an integer symbol.
-struct StringIntegerTable<I: GenericInteger>: SymbolTable {
+struct StringIntegerTable<I: GenericInteger>: SymbolTable where I:SignedInteger {
     typealias Key = String
     typealias Symbol = I
 

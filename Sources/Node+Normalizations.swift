@@ -174,11 +174,4 @@ extension Node where Self: SymbolStringTyped {
         }
         return Self(symbol: self.symbol, nodes: children)
     }
-
-
-    /// flatten a clause,
-    func flattened() -> Self {
-        let (s,t) = self.sy
-
-    }
 }
