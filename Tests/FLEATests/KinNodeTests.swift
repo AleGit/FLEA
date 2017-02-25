@@ -35,10 +35,10 @@ public class KinNodeTests: FleaTestCase {
         let fX = "f(X)" as LocalKinIntNode
         let fa = "f(a)" as LocalKinIntNode
 
-        XCTAssertEqual("-6-X-variable", X.debugDescription, nok)
-        XCTAssertEqual("7-a-function(0)", a.debugDescription, nok)
-        XCTAssertEqual("8-f-function(1)(-6-X-variable)", fX.debugDescription, nok)
-        XCTAssertEqual("8-f-function(1)(7-a-function(0))", fa.debugDescription, nok)
+        XCTAssertEqual("5-X-variable", X.debugDescription, nok)
+        XCTAssertEqual("6-a-function(0)", a.debugDescription, nok)
+        XCTAssertEqual("7-f-function(1)(5-X-variable)", fX.debugDescription, nok)
+        XCTAssertEqual("7-f-function(1)(6-a-function(0))", fa.debugDescription, nok)
 
         // check if folks are set correctly
 

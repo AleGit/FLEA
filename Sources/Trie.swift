@@ -254,7 +254,7 @@ extension TrieStore {
     func unifiables(paths: [[Leap]], wildcard: Leap) -> Set<Value>? {
 
         guard let (first, reminder) = paths.decomposing else {
-            assert(false, "SHOULD not call \(#function) with empty list of paths")
+            Syslog.error { "SHOULD not call \(#function) with empty list of paths" }
             return allValues // correct, but useless
         }
 

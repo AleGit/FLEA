@@ -88,14 +88,14 @@ extension Int: GenericInteger {}
 typealias StringType = (String, Tptp.SymbolType)
 
 /// A string symbol table that maps (string,type) to an integer symbol.
-struct StringIntegerTable<I: GenericInteger>: SymbolTable where I:SignedInteger {
+struct StringIntegerTable<I: GenericInteger>: SymbolTable {
     typealias Key = String
     typealias Symbol = I
 
     private(set) var isEquational: Bool = false
 
-    private var symbols = [String: I]()
-    private var strings = [I: StringType]()
+    private var symbols = [ Tptp.wildcard : I(-1) ]
+    private var strings = [ I(-1) : (Tptp.wildcard, Tptp.SymbolType.variable) ]
 
     // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
     mutating func insert(_ string: Key, _ type: Tptp.SymbolType) -> Symbol {
@@ -117,7 +117,7 @@ struct StringIntegerTable<I: GenericInteger>: SymbolTable where I:SignedInteger 
             break
         }
 
-        let ivalue: I = I(1 + symbols.count) * (type == .variable ? -1 : 1)
+        let ivalue: I = I(symbols.count)
 
         symbols[string] = ivalue
         strings[ivalue] = (string, type)
