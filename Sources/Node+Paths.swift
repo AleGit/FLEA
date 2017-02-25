@@ -132,6 +132,7 @@ extension Node where Self: SymbolNameTyped {
     var preorderTraversalSymbols: [Symbol] {
         guard let nodes = self.nodes else {
             // a variable leaf
+            // assert(false, "shoot the messanger!")
             return [Self.symbolize(name: Tptp.wildcard, type: .variable)]
         }
         guard nodes.count > 0 else {
@@ -142,4 +143,21 @@ extension Node where Self: SymbolNameTyped {
         // an intermediate node
         return nodes.reduce([self.symbol]) { $0 + $1.preorderTraversalSymbols }
     }
+}
+
+extension Node where Self: SymbolNameTyped, Self.Symbol == Int {
+    var preorderTraversalSymbols: [Symbol] {
+        guard let nodes = self.nodes else {
+            // a variable leaf
+            return [-1]
+        }
+        guard nodes.count > 0 else {
+            // a constant (function) leaf
+            return [self.symbol]
+        }
+
+        // an intermediate node
+        return nodes.reduce([self.symbol]) { $0 + $1.preorderTraversalSymbols }
+    }
+
 }
