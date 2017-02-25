@@ -31,7 +31,7 @@
 protocol SymbolNameTyped {
     associatedtype Symbol: Hashable
 
-    var symbolStringType: StringType { get }
+    var symbolNameType: StringType { get }
     static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol
 }
 

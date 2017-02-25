@@ -35,7 +35,7 @@ extension Node where Self: SymbolNameTyped {
         let paths = leafPaths
 
         let negated: [[SymHop<Symbol>]]
-        let (_, type) = self.symbolStringType
+        let (_, type) = self.symbolNameType
 
         switch type {
 
@@ -95,7 +95,7 @@ extension Node where Symbol == Int, Self: SymbolNameTyped {
         let paths = leafPaths
 
         let negated: [[Int]]
-        let (_, type) = self.symbolStringType
+        let (_, type) = self.symbolNameType
 
         switch type {
 

@@ -15,7 +15,7 @@ extension Node {
 
 extension Node where Self: SymbolNameTyped {
     var defaultDescription: String {
-        let (string, type) = self.symbolStringType
+        let (string, type) = self.symbolNameType
         return buildDescription(string: string, type: type)
     }
 }
@@ -95,7 +95,7 @@ extension Node where Symbol == Tptp.Symbol {
  extension Node where Self:SymbolNameTyped {
  var debugDescription: String {
  return buildDebugDescription(string:"\(self.symbol)")
- // return buildDebugDescription(string:"\(self.symbol)-\(self.symbolStringType)")
+ // return buildDebugDescription(string:"\(self.symbol)-\(self.symbolNameType)")
  }
  }
  */

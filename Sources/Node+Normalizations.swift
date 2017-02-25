@@ -15,7 +15,7 @@ extension Node where Self: SymbolNameTyped {
     /// Constructs a new tree where a suffix is appended to all variable names
     func appending<T: Any>(separator: String = "_", suffix: T) -> Self {
         guard let nodes = self.nodes else {
-            let (string, type) = self.symbolStringType
+            let (string, type) = self.symbolNameType
             Syslog.error(condition: type != .variable) {
                 "Node(symbol:\(self.symbol), nodes:nil) must not be of type \(type)."
             }
@@ -30,7 +30,7 @@ extension Node where Self: SymbolNameTyped {
     private func desuffixing(separator: String,
                              mappings: inout Dictionary<String, String>) -> Self {
         guard let nodes = self.nodes else {
-            let (string, type) = self.symbolStringType
+            let (string, type) = self.symbolNameType
             Syslog.error(condition: type != .variable) {
                 "Node with nil nodes must be of type variable."
             }

@@ -15,7 +15,7 @@ extension Yices {
     static func clause<N: Node>(_ clause: N) -> Tuple
         where N: SymbolNameTyped {
 
-        let (_, type) = clause.symbolStringType
+        let (_, type) = clause.symbolNameType
 
         switch type {
         case .disjunction:
@@ -89,7 +89,7 @@ extension Yices {
 
         // By default a symbol is a predicate symbol
         // if it is not predefined or registered.
-        let (literalSymbolString, type) = literal.symbolStringType
+        let (literalSymbolString, type) = literal.symbolNameType
 
         switch type {
         case .negation:
@@ -127,7 +127,7 @@ extension Yices {
         where N: SymbolNameTyped {
         // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
-        let (termSymbolString, _) = term.symbolStringType
+        let (termSymbolString, _) = term.symbolNameType
 
         guard let nodes = term.nodes else {
             return Yices.🚧 // substitute all variables with global constant '⊥'

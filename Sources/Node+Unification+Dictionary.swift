@@ -53,7 +53,7 @@ func =?=<N: Node>(lhs: N, rhs: N) -> [N: N]? {
 
 extension Node where Self: SymbolNameTyped {
     var negated: Self? {
-        let (_, type) = self.symbolStringType
+        let (_, type) = self.symbolNameType
         switch type {
         case .negation:
             assert(self.nodes?.count == 1)
@@ -82,7 +82,7 @@ extension Node where Self: SymbolNameTyped {
     }
 
     var unnegating: Self {
-        let (_, type) = self.symbolStringType
+        let (_, type) = self.symbolNameType
         switch type {
 
         case .negation:

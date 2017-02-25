@@ -55,7 +55,7 @@ public class SmartNodeTests: FleaTestCase {
         XCTAssertEqual(5, N.pool.count, "\(nok)  \(#function) \(count) ≠ 5 smart nodes accumulated.")
         XCTAssertTrue(ffa == g)
 
-        XCTAssertFalse(N.pool.one { $0.symbolStringType.0 == "Y" }) /// Y must not be stored
+        XCTAssertFalse(N.pool.one { $0.symbolNameType.0 == "Y" }) /// Y must not be stored
     }
 
     /// accumulate four distict nodes

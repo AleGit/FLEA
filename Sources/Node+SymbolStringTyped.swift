@@ -8,7 +8,7 @@
 
 /// default implementations for SymbolNameTyped
 extension Node where Symbol: StringSymbolable {
-    var symbolStringType: (String, Tptp.SymbolType) {
+    var symbolNameType: (String, Tptp.SymbolType) {
         return (self.symbol.string, self.symbol.type)
     }
 
@@ -20,7 +20,7 @@ extension Node where Symbol: StringSymbolable {
 /// default implementations for SymbolNameTyped
 extension Node where Self: SymbolTabulating,
     Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
-    var symbolStringType: (String, Tptp.SymbolType) {
+    var symbolNameType: (String, Tptp.SymbolType) {
         return Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
     }
 
