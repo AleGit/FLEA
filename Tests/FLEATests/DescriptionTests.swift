@@ -15,7 +15,7 @@ public class DescriptionTests: FleaTestCase {
     private final class LocalKinIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Kin, Node {
         typealias S = Int
 
-        static var symbols = StringIntegerTable<S>()
+        static var symbols = IntegerSymbolTable<S>()
         static var pool = WeakSet<LocalKinIntNode>()
         var folks = WeakSet<LocalKinIntNode>()
 

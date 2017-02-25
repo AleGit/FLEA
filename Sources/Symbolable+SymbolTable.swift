@@ -1,33 +1,10 @@
-/*
- ### Tasks: find better names for (some) protocols and typealias
- 1. _protocol_ `SymbolNameTyped`, i.e. a type with a symbol
- and a `Self.Symbol` <-> `(String,SymbolType)` conversion,
- default implementations are provided for types that
- - either adopt `SymbolTabulating`
- - or use Self.Symbol : TypedName
- 2. _protocol_ `TypedName`, i.e. a _symbol_ (type)
- with a `Self` <-> (String,SymbolType)` conversion.
- 3. _typealias_ `StringType = (String,SymbolType)`
- 4. _protocol_ `SymbolTable`, i.e. a type
- with a 'Key' -> 'Symbol' mapping. (Key type is usually `String`)
- 5. _protocol_ `SymbolTabulating`, i.e. a type that stores symbols
- (strings, types) in a symbol table.
-
- ### Proposals
- 1. Rename `SymbolNameTyped` to ?
- 2. Rename `TypedName` to `StringTyped`,
- since `where Self.Symbol : StringTyped` is nice to read.
- 3. Rename `StringType` to `StringTypePair`,
- `StringSymbolType`, `StringSymbolTypePair` for more clarity.
- 4.
- 5.
- */
-
-/// Symbol string typed nodes can convert symbols to pairs of string and type,
-/// and vice versa e.g.
-/// - extension Node where Symbol:TypedName {
-/// - extension Node where Self:SymbolTabulating, Symbols.Symbol == Symbol
-/// This unifies code for nodes with string typed symbols or symbol tables.
+/// Symbol name typed nodes can convert their symbol 
+/// to a pair of name and type, and vice versa.
+/// - extension Node where Symbol:TypedName, 
+///   i.e. the symbol itself does the conversion
+/// - extension Node where Self:SymbolTabulating, Symbols.Symbol == Symbol, 
+///   i.e. a symbol table does the conversion
+/// This unifies code for nodes with name typed symbols and symbol tables.
 protocol SymbolNameTyped {
     associatedtype Symbol: Hashable
 
@@ -35,7 +12,7 @@ protocol SymbolNameTyped {
     static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol
 }
 
-/// A string symbolable type contains its string representation and its symbol type.
+/// A typed name is a symbol that contains its symbol name and its symbol type.
 protocol TypedName {
     var name: String { get }
     var type: Tptp.SymbolType { get }
@@ -43,8 +20,7 @@ protocol TypedName {
     init(_ string: String, _ type: Tptp.SymbolType)
 }
 
-/// A symbol table maps symbols to pairs of string and type, and vice versa.
-/// (usually type of `Key` is `String`)
+/// A symbol table maps symbols to pairs of keys (names) and types, and vice versa.
 protocol SymbolTable {
     associatedtype Key: Hashable // usually the symbol as parsed, i.e. a string
     associatedtype Symbol: Hashable // usually a small structure, e.g. an integer
@@ -88,7 +64,7 @@ extension Int: GenericInteger {}
 typealias StringType = (String, Tptp.SymbolType)
 
 /// A string symbol table that maps (string,type) to an integer symbol.
-struct StringIntegerTable<I: GenericInteger>: SymbolTable {
+struct IntegerSymbolTable<I: GenericInteger>: SymbolTable {
     typealias Key = String
     typealias Symbol = I
 

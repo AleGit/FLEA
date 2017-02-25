@@ -12,7 +12,7 @@ private final class TheNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
     typealias S = Int
     typealias N = TheNode
 
-    static var symbols = StringIntegerTable<S>() // protocol SymbolTabulating
+    static var symbols = IntegerSymbolTable<S>() // protocol SymbolTabulating
     static var pool = WeakSet<N>() // protocol Sharing
     // var folks = WeakSet<N>()                  // protocol Kin
 

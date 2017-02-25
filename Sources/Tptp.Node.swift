@@ -32,9 +32,9 @@ struct Tptp {
         ExpressibleByStringLiteral {
         typealias N = SimpleIntNode
 
-        static var symbols = StringIntegerTable<I>()
+        static var symbols = IntegerSymbolTable<I>()
 
-        var symbol: Int = N.symbolize(name: wildcard, type: .variable)
+        var symbol = -1 // : Int = N.symbolize(name: wildcard, type: .variable)
         var nodes: [N]?
     }
 
@@ -64,7 +64,7 @@ struct Tptp {
         ExpressibleByStringLiteral {
         typealias N = Tptp.SharingIntNode
 
-        static var symbols = StringIntegerTable<I>()
+        static var symbols = IntegerSymbolTable<I>()
         static var pool = Set<N>()
 
         var symbol: Int = N.symbolize(name: wildcard, type: .variable)
@@ -97,7 +97,7 @@ struct Tptp {
         ExpressibleByStringLiteral {
         typealias N = Tptp.SmartIntNode
 
-        static var symbols = StringIntegerTable<Int>()
+        static var symbols = IntegerSymbolTable<Int>()
         static var pool = WeakSet<N>()
 
         var symbol: Int = SmartIntNode.symbolize(name: wildcard, type: .variable)
@@ -132,7 +132,7 @@ struct Tptp {
         ExpressibleByStringLiteral {
         typealias N = Tptp.KinIntNode
 
-        static var symbols = StringIntegerTable<Int>()
+        static var symbols = IntegerSymbolTable<Int>()
         static var pool = WeakSet<N>()
         var folks = WeakSet<N>()
 

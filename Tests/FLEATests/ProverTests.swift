@@ -21,7 +21,7 @@ public class ProverTests: YicesTestCase {
         typealias S = Int
         typealias N = TestNode
 
-        static var symbols = StringIntegerTable<S>()
+        static var symbols = IntegerSymbolTable<S>()
         static var pool = WeakSet<N>()
         // var folks = WeakSet<N>() // protocol Kin
 

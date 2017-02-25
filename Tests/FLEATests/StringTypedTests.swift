@@ -14,7 +14,7 @@ public class StringTypedTests: FleaTestCase {
     private final class LocalSmartIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
         ExpressibleByStringLiteral {
 
-        static var symbols = StringIntegerTable<Int>()
+        static var symbols = IntegerSymbolTable<Int>()
         static var pool = WeakSet<N>()
 
         var symbol: Int = LocalSmartIntNode.symbolize(name: "*", type: .variable)

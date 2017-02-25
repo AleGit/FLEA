@@ -19,7 +19,7 @@ public class KinNodeTests: FleaTestCase {
         typealias S = Int
         typealias N = LocalKinIntNode
 
-        static var symbols = StringIntegerTable<S>()
+        static var symbols = IntegerSymbolTable<S>()
         static var pool = WeakSet<N>()
         var folks = WeakSet<N>()
 

@@ -16,7 +16,7 @@ public class SymbolTabledNodeTests: FleaTestCase {
         var nodes: [LocalNode]?
 
         static var pool = Set<LocalNode>()
-        static var symbols = StringIntegerTable<Int>()
+        static var symbols = IntegerSymbolTable<Int>()
     }
 
     public override func tearDown() {

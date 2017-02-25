@@ -17,7 +17,7 @@ public class NodePathsTests: FleaTestCase {
     private final class LocalKinIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Kin, Node,
         ExpressibleByStringLiteral {
         typealias S = Int
-        static var symbols = StringIntegerTable<Int>()
+        static var symbols = IntegerSymbolTable<Int>()
         static var pool = WeakSet<LocalKinIntNode>()
         var folks = WeakSet<LocalKinIntNode>()
 
