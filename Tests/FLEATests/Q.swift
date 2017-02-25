@@ -52,7 +52,7 @@ struct Q {
 
     typealias S = Tptp.Symbol
 
-    final class SimpleNode: SymbolStringTyped, FLEA.Node,
+    final class SimpleNode: SymbolNameTyped, FLEA.Node,
         ExpressibleByStringLiteral {
         typealias N = SimpleNode
 
@@ -60,7 +60,7 @@ struct Q {
         var nodes: [N]?
     }
 
-    final class SharingNode: SymbolStringTyped, Sharing, FLEA.Node,
+    final class SharingNode: SymbolNameTyped, Sharing, FLEA.Node,
         ExpressibleByStringLiteral {
         typealias N = SharingNode
 
@@ -72,7 +72,7 @@ struct Q {
         lazy var hashValue: Int = self.defaultHashValue
     }
 
-    final class SmartNode: SymbolStringTyped, Sharing, FLEA.Node,
+    final class SmartNode: SymbolNameTyped, Sharing, FLEA.Node,
         ExpressibleByStringLiteral {
         typealias N = SmartNode
 
@@ -85,7 +85,7 @@ struct Q {
         var description: String { return self.defaultDescription }
     }
 
-    final class KinNode: SymbolStringTyped, Sharing, Kin, FLEA.Node, ExpressibleByStringLiteral {
+    final class KinNode: SymbolNameTyped, Sharing, Kin, FLEA.Node, ExpressibleByStringLiteral {
         typealias N = KinNode
 
         static var pool = WeakSet<N>()
@@ -128,7 +128,7 @@ struct Q {
 
 extension Q {
     static func parse<N: FLEA.Node>(problem: String) -> [N]
-        where N: SymbolStringTyped {
+        where N: SymbolNameTyped {
         print("N:Node == \(String(reflecting: N.self))")
 
         guard let url = URL(fileURLWithProblem: problem) else {

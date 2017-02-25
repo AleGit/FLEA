@@ -6,7 +6,7 @@ import CYices
 /// until an unsatisfiable set of ground instances was found or no new clauses could be inferred.
 /// The procedure may not terminate or may consume to much space and time.
 final class Proverlet<N: Node>: Prover
-    where N: SymbolStringTyped {
+    where N: SymbolNameTyped {
     /// List of (file path, number of clauses) pairs.
     fileprivate var parsedFiles = [(String, Int)]()
 

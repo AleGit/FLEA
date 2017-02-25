@@ -15,7 +15,7 @@ public class StringLiteralTests: FleaTestCase {
     }
 
     // local private adoption of protocol to avoid any side affects
-    private final class LocalSimpleNode: SymbolStringTyped, Node, ExpressibleByStringLiteral {
+    private final class LocalSimpleNode: SymbolNameTyped, Node, ExpressibleByStringLiteral {
         typealias S = Tptp.Symbol
 
         var symbol: S = LocalSimpleNode.symbolize(string: "*", type: .variable)

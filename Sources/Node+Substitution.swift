@@ -88,7 +88,7 @@ func *<N: Node>(t: N, s: N) -> N {
 /// - All nodes above multiple occurences of constant term '⊥' are fresh,
 ///     eg. unshared when N: Sharing does not apply.
 postfix func ⊥<N: Node>(t: N) -> N
-    where N: SymbolStringTyped {
+    where N: SymbolNameTyped {
     return t * N(c: "⊥")
 }
 

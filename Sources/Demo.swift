@@ -115,7 +115,7 @@ extension Demo {
 
 extension Demo {
 
-    final class SimpleNode: SymbolStringTyped, Node,
+    final class SimpleNode: SymbolNameTyped, Node,
         ExpressibleByStringLiteral {
         typealias N = SimpleNode
 
@@ -123,7 +123,7 @@ extension Demo {
         var nodes: [N]?
     }
 
-    final class SharingNode: SymbolStringTyped, Sharing, Node {
+    final class SharingNode: SymbolNameTyped, Sharing, Node {
         static var counter = 0
 
         static var pool = Set<Demo.SharingNode>()
@@ -150,7 +150,7 @@ extension Demo {
         }
     }
 
-    final class SmartNode: SymbolStringTyped, Sharing, Node,
+    final class SmartNode: SymbolNameTyped, Sharing, Node,
         ExpressibleByStringLiteral {
         typealias N = Demo.SmartNode
 
@@ -163,7 +163,7 @@ extension Demo {
         var description: String { return self.defaultDescription }
     }
 
-    final class KinNode: SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
+    final class KinNode: SymbolNameTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
         typealias N = Demo.KinNode
 
         static var pool = WeakSet<N>()
@@ -175,7 +175,7 @@ extension Demo {
         lazy var hashValue: Int = self.defaultHashValue
     }
 
-    final class VerboseNode: SymbolStringTyped, Sharing, Node {
+    final class VerboseNode: SymbolNameTyped, Sharing, Node {
         static var counter = 0
 
         static var pool = Set<Demo.VerboseNode>()
@@ -249,7 +249,7 @@ extension Demo {
 }
 
 private func demoShow<N: Node>(nodes: [N])
-    where N: AnyObject, N: SymbolStringTyped {
+    where N: AnyObject, N: SymbolNameTyped {
     print("nodes:\(nodes).count=\(nodes.count)")
 
     for s in Set(nodes) {
@@ -406,7 +406,7 @@ extension Demo {
 }
 
 func demoParse<N: Node>(problem: String, show: Bool = Demo.show) -> [N]
-    where N: SymbolStringTyped {
+    where N: SymbolNameTyped {
     if show { print("N:Node == \(String(reflecting: N.self))") }
 
     guard let url = URL(fileURLWithProblem: problem) else {
@@ -447,11 +447,11 @@ func demoParse<N: Node>(problem: String, show: Bool = Demo.show) -> [N]
 extension Demo {
 
     struct Prover {
-        private final class TestNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+        private final class TestNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
             ExpressibleByStringLiteral {
             typealias S = Int
             typealias N = TestNode
-            
+
             static var symbols = StringIntegerTable<S>()
             static var pool = WeakSet<N>()
             // var folks = WeakSet<N>() // protocol Kin

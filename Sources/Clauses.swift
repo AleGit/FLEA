@@ -21,7 +21,7 @@ protocol ClauseCollection {
 }
 
 final class Clauses<N: Node>: ClauseCollection
-    where N: SymbolStringTyped {
+    where N: SymbolNameTyped {
     typealias Clause = N
     typealias Literal = N
     typealias ClauseReference = Int

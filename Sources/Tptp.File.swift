@@ -127,7 +127,7 @@ extension Tptp {
 
         /// Transform the C tree representation into a Swift representation.
         func ast<N: Node>() -> N?
-            where N: SymbolStringTyped {
+            where N: SymbolNameTyped {
             guard let tree = self.root else { return nil }
             let t: N = N(tree: tree)
             return t
@@ -202,7 +202,7 @@ extension Tptp {
 
         func nameRoleClauseTriples<N: Node>(predicate: (String, Tptp.Role) -> Bool = { _, _ in true })
             -> [(String, Tptp.Role, N)]
-            where N: SymbolStringTyped {
+            where N: SymbolNameTyped {
             return self.cnfs.flatMap {
                 guard let name = $0.symbol,
                     let child = $0.child,

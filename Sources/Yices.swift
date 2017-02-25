@@ -63,7 +63,7 @@ extension Yices {
         }
 
         func insure<N: Node>(clause: N) -> Yices.Tuple
-            where N: SymbolStringTyped {
+            where N: SymbolNameTyped {
             let triple = Yices.clause(clause)
             yices_assert_formula(context, triple.0)
             return triple

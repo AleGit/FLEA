@@ -18,7 +18,7 @@ import CYices
 /// A instantiation-based prover that uses yices as satisfiablity checker modulo QF_EUF
 /// quantifier free, equalitiy, uninterpreted functions
 final class ProverY<N: Node>: Prover
-    where N: SymbolStringTyped {
+    where N: SymbolNameTyped {
     /// keep a history of read files
     fileprivate var files = Array<(String, URL, Int, Int)>()
 

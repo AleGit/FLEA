@@ -1,4 +1,4 @@
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
     static var joker: Symbol {
         return Self.symbolize(string: Tptp.wildcard, type: .variable)
     }
@@ -66,7 +66,7 @@ extension Node where Self: SymbolStringTyped {
     }
 }
 
-extension Node where Symbol == Int, Self: SymbolStringTyped {
+extension Node where Symbol == Int, Self: SymbolNameTyped {
     var joker: Symbol {
         return -1
     }
@@ -127,7 +127,7 @@ extension Node where Symbol == Int, Self: SymbolStringTyped {
     }
 }
 
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
     /// The list of symbols in the node tree in depth-first tree traversal.
     var preorderTraversalSymbols: [Symbol] {
         guard let nodes = self.nodes else {

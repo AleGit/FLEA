@@ -14,7 +14,7 @@ public class SmartNodeTests: FleaTestCase {
     }
 
     // local private adoption of protocol to avoid any side affects
-    private final class LocalSmartNode: SymbolStringTyped, Sharing, Node {
+    private final class LocalSmartNode: SymbolNameTyped, Sharing, Node {
         typealias S = Tptp.Symbol // choose the symbol
         static var pool = WeakSet<LocalSmartNode>()
 

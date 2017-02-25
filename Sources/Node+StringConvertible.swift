@@ -13,7 +13,7 @@ extension Node {
     }
 }
 
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
     var defaultDescription: String {
         let (string, type) = self.symbolStringType
         return buildDescription(string: string, type: type)
@@ -92,7 +92,7 @@ extension Node where Symbol == Tptp.Symbol {
 }
 
 /* compile error !?, but shoul unify code below
- extension Node where Self:SymbolStringTyped {
+ extension Node where Self:SymbolNameTyped {
  var debugDescription: String {
  return buildDebugDescription(string:"\(self.symbol)")
  // return buildDebugDescription(string:"\(self.symbol)-\(self.symbolStringType)")

@@ -1,6 +1,6 @@
 // ExpressibleByStringLiteral : ExtendedGraphemeClusterLiteralConvertible  : UnicodeScalarLiteralConvertible
 
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
 
     /// _UnicodeScalarLiteralConvertible_
     init(unicodeScalarLiteral value: StringLiteralType) {

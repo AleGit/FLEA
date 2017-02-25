@@ -1,12 +1,12 @@
 //  Copyright © 2017 Alexander Maringele. All rights reserved.
 
 /* This file contains extensions for protocol `Node`
- to implement protocol `SymbolStringTyped` when
+ to implement protocol `SymbolNameTyped` when
  - Node.Symbol is `StringSymbolable` (almost deprecated) or
  - Node is `SymbolTabulating`, i.e. uses a symbol table (preferred)
  */
 
-/// default implementations for SymbolStringTyped
+/// default implementations for SymbolNameTyped
 extension Node where Symbol: StringSymbolable {
     var symbolStringType: (String, Tptp.SymbolType) {
         return (self.symbol.string, self.symbol.type)
@@ -17,7 +17,7 @@ extension Node where Symbol: StringSymbolable {
     }
 }
 
-/// default implementations for SymbolStringTyped
+/// default implementations for SymbolNameTyped
 extension Node where Self: SymbolTabulating,
     Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
     var symbolStringType: (String, Tptp.SymbolType) {

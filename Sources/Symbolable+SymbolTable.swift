@@ -1,6 +1,6 @@
 /*
  ### Tasks: find better names for (some) protocols and typealias
- 1. _protocol_ `SymbolStringTyped`, i.e. a type with a symbol
+ 1. _protocol_ `SymbolNameTyped`, i.e. a type with a symbol
  and a `Self.Symbol` <-> `(String,SymbolType)` conversion,
  default implementations are provided for types that
  - either adopt `SymbolTabulating`
@@ -14,7 +14,7 @@
  (strings, types) in a symbol table.
 
  ### Proposals
- 1. Rename `SymbolStringTyped` to ?
+ 1. Rename `SymbolNameTyped` to ?
  2. Rename `StringSymbolable` to `StringTyped`,
  since `where Self.Symbol : StringTyped` is nice to read.
  3. Rename `StringType` to `StringTypePair`,
@@ -28,7 +28,7 @@
 /// - extension Node where Symbol:StringSymbolable {
 /// - extension Node where Self:SymbolTabulating, Symbols.Symbol == Symbol
 /// This unifies code for nodes with string typed symbols or symbol tables.
-protocol SymbolStringTyped {
+protocol SymbolNameTyped {
     associatedtype Symbol: Hashable
 
     var symbolStringType: StringType { get }

@@ -51,7 +51,7 @@ func =?=<N: Node>(lhs: N, rhs: N) -> [N: N]? {
     return mgu
 }
 
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
     var negated: Self? {
         let (_, type) = self.symbolStringType
         switch type {

@@ -12,7 +12,7 @@ public class DescriptionTests: FleaTestCase {
     }
 
     // local private adoption of protocol to avoid any side affects
-    private final class LocalKinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node {
+    private final class LocalKinIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Kin, Node {
         typealias S = Int
 
         static var symbols = StringIntegerTable<S>()

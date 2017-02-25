@@ -11,7 +11,7 @@ public class StringTypedTests: FleaTestCase {
         ]
     }
 
-    private final class LocalSmartIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+    private final class LocalSmartIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
         ExpressibleByStringLiteral {
 
         static var symbols = StringIntegerTable<Int>()

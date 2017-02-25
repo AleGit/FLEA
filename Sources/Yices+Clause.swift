@@ -13,7 +13,7 @@ extension Yices {
     /// Return a yices clause and yices literals from a node clause.
     /// The children of `yicesClause` may be different from `yicesLiterals`
     static func clause<N: Node>(_ clause: N) -> Tuple
-        where N: SymbolStringTyped {
+        where N: SymbolNameTyped {
 
         let (_, type) = clause.symbolStringType
 
@@ -49,7 +49,7 @@ extension Yices {
     /// * `p ≡ [ ⊥ ~= ⊥, p ]`
     /// * `[p,q,q,q,q] ≡ [ p, q, ⊥ ~= ⊥, p,q ]`
     static func clause<N: Node>(_ literals: [N]) -> Tuple
-        where N: SymbolStringTyped {
+        where N: SymbolNameTyped {
         /* (yicesClause: type_t, yicesLiterals:[type_t], alignedYicesLiterals:[type_t]) */
         let yicesLiterals = literals.map { self.literal($0) }
         var copy = yicesLiterals
@@ -80,7 +80,7 @@ extension Yices {
     /// - an inequation
     /// - a predicatate term or a proposition constant
     private static func literal<N: Node>(_ literal: N) -> term_t
-        where N: SymbolStringTyped {
+        where N: SymbolNameTyped {
 
         guard let nodes = literal.nodes
         else {
@@ -124,7 +124,7 @@ extension Yices {
 
     /// Build uninterpreted function term from term.
     private static func term<N: Node>(_ term: N) -> term_t
-        where N: SymbolStringTyped {
+        where N: SymbolNameTyped {
         // assert(term.isTerm,"'\(#function)(\(term))' Argument must be a term, but it is not.")
 
         let (termSymbolString, _) = term.symbolStringType
@@ -145,7 +145,7 @@ extension Yices {
     /// Build (constant) predicate or function.
     private static func application<N: Node>(_ symbolString: String,
                                              nodes: [N], term_tau: type_t) -> term_t
-        where N: SymbolStringTyped {
+        where N: SymbolNameTyped {
 
         guard nodes.count > 0 else {
             return constant(symbolString, term_tau: term_tau)

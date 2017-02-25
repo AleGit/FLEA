@@ -10,7 +10,7 @@ public class SymbolTabledNodeTests: FleaTestCase {
             ("testF2", testF2),
         ]
     } // local private adoption of protocol to avoid any side affects
-    private final class LocalNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+    private final class LocalNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
         ExpressibleByStringLiteral {
         var symbol: Int = LocalNode.symbolize(string: "*", type: .variable)
         var nodes: [LocalNode]?

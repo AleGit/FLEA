@@ -23,7 +23,7 @@ public class NodePropertiesTests: FleaTestCase {
     }
 
     // local private adoption of protocol to avoid any side affects
-    private final class LocalKinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+    private final class LocalKinIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Kin, Node,
         ExpressibleByStringLiteral {
         static var symbols = StringIntegerTable<Int>() // : SymbolTabulating
         static var pool = WeakSet<LocalKinIntNode>() // : Sharing

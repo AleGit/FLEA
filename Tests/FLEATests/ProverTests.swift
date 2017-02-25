@@ -16,11 +16,11 @@ public class ProverTests: YicesTestCase {
     }
 
     // local private adoption of protocol to avoid any side affects
-    private final class TestNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+    private final class TestNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
         ExpressibleByStringLiteral {
         typealias S = Int
         typealias N = TestNode
-        
+
         static var symbols = StringIntegerTable<S>()
         static var pool = WeakSet<N>()
         // var folks = WeakSet<N>() // protocol Kin

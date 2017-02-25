@@ -1,6 +1,6 @@
 import CTptpParsing
 
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
     /// symbol string types can be easily initilized with a tree node reference
     init(tree: TreeNodeRef) {
         let type = Tptp.SymbolType(of: tree)

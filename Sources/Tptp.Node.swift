@@ -8,7 +8,7 @@ struct Tptp {
     typealias DefaultNode = SmartIntNode // choose an implementation
 
     /* sample implementations of protocol `Node` and related protocols
-     - SymbolStringTyped
+     - SymbolNameTyped
      - SymbolTabulating
      - Sharing
      - Kin
@@ -17,7 +17,7 @@ struct Tptp {
     /* simple *************************************************************************/
 
     @available(*, deprecated, message: "- Tptp.SimpleNode is for demo purposes only -")
-    final class SimpleNode: SymbolStringTyped, Node,
+    final class SimpleNode: SymbolNameTyped, Node,
         ExpressibleByStringLiteral {
         typealias N = SimpleNode
 
@@ -28,7 +28,7 @@ struct Tptp {
     /// The simplest node implementation with an integer symbol and a symbol table.
     /// sharing is possible but happens by accident,
     /// i.e. equal nodes may or may not reference the same object
-    final class SimpleIntNode: SymbolStringTyped, SymbolTabulating, Node,
+    final class SimpleIntNode: SymbolNameTyped, SymbolTabulating, Node,
         ExpressibleByStringLiteral {
         typealias N = SimpleIntNode
 
@@ -42,7 +42,7 @@ struct Tptp {
 
     @available(*, deprecated, message:
         "- Tptp.SharingNode suffers from node accumulation and is for demo purposes only -")
-    final class SharingNode: SymbolStringTyped, Sharing, Node,
+    final class SharingNode: SymbolNameTyped, Sharing, Node,
         ExpressibleByStringLiteral {
         typealias N = Tptp.SharingNode
 
@@ -60,7 +60,7 @@ struct Tptp {
     ///   i.e. all nodes stay in memory (node accumulation)
     @available(*, deprecated, message:
         "- Tptp.SharingIntNode suffers from node accumulation and is for demo purposes only -")
-    final class SharingIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+    final class SharingIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
         ExpressibleByStringLiteral {
         typealias N = Tptp.SharingIntNode
 
@@ -76,7 +76,7 @@ struct Tptp {
     /* sharing (weak) *************************************************************************/
 
     @available(*, deprecated, message: "- Tptp.SmartNode is for demo purposes only -")
-    final class SmartNode: SymbolStringTyped, Sharing, Node,
+    final class SmartNode: SymbolNameTyped, Sharing, Node,
         ExpressibleByStringLiteral {
         typealias N = Tptp.SmartNode
 
@@ -93,7 +93,7 @@ struct Tptp {
     /// - the sharing is automatic and perfect for ground terms
     /// - all (sub)nodes are weakly referenced by a `pool` (a setlike collection),
     ///   i.e. nodes only stay in memory when they are referenced outside the pool too.
-    final class SmartIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Node,
+    final class SmartIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
         ExpressibleByStringLiteral {
         typealias N = Tptp.SmartIntNode
 
@@ -109,7 +109,7 @@ struct Tptp {
     /* sharing and kin (weak) *************************************************************************/
 
     @available(*, deprecated, message: "- Tptp.KinNode is for demo purposes only -")
-    final class KinNode: SymbolStringTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
+    final class KinNode: SymbolNameTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
         typealias N = Tptp.KinNode
 
         static var pool = WeakSet<N>()
@@ -128,7 +128,7 @@ struct Tptp {
     /// - all (sub)nodes are weakly referenced by a `pool` (a setlike collection),
     ///   i.e. nodes only stay in memory when they are referenced outside the pool too.
     /// - all predecessors are weakly referenced, i.e. no retain cycles occur.
-    final class KinIntNode: SymbolStringTyped, SymbolTabulating, Sharing, Kin, Node,
+    final class KinIntNode: SymbolNameTyped, SymbolTabulating, Sharing, Kin, Node,
         ExpressibleByStringLiteral {
         typealias N = Tptp.KinIntNode
 

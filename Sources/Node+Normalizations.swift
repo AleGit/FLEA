@@ -1,7 +1,7 @@
 //  Copyright © 2017 Alexander Maringele. All rights reserved.
 
 /* This file contains extensions for protocol `Node` to alter variable names,
- when symbols are `SymbolStringTyped`:
+ when symbols are `SymbolNameTyped`:
  - append same (separator and) suffix to all variable names
  - remove separator and suffix from variable names
  - normalize variable names with common symbol, (separator), and increasing suffix
@@ -9,7 +9,7 @@
  - denormalize variable names by renaming variable names with list of symbols by preorder traversing
  */
 
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
     // implies Symbol: Hashable
 
     /// Constructs a new tree where a suffix is appended to all variable names

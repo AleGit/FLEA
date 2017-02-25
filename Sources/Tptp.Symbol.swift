@@ -15,7 +15,7 @@ extension Tptp {
 }
 
 // swiftlint:disable variable_name
-extension Node where Self: SymbolStringTyped {
+extension Node where Self: SymbolNameTyped {
     init(v: String) {
         let s = Self.symbolize(string: v, type: .variable)
         self.init(variable: s)

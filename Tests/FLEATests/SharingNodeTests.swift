@@ -14,7 +14,7 @@ public class SharingNodeTests: FleaTestCase {
     }
 
     // local private adoption of protocol to avoid any side affects
-    private final class LocalSharingNode: SymbolStringTyped, Sharing, Node {
+    private final class LocalSharingNode: SymbolNameTyped, Sharing, Node {
         typealias S = Tptp.Symbol
         static var pool = Set<LocalSharingNode>()
 
