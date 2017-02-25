@@ -8,7 +8,7 @@
 protocol SymbolNameTyped {
     associatedtype Symbol: Hashable
 
-    var symbolNameType: StringType { get }
+    var symbolNameType: (String, Tptp.SymbolType) { get }
     static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol
 }
 
@@ -60,9 +60,6 @@ extension Int32: GenericInteger {}
 // extension Int8 : GenericInteger {}
 extension Int: GenericInteger {}
 
-/// A (string,type) pair to be mapped to a symbol
-typealias StringType = (String, Tptp.SymbolType)
-
 /// A string symbol table that maps (string,type) to an integer symbol.
 struct IntegerSymbolTable<I: GenericInteger>: SymbolTable {
     typealias Key = String
@@ -71,15 +68,15 @@ struct IntegerSymbolTable<I: GenericInteger>: SymbolTable {
     private(set) var isEquational: Bool = false
 
     private var symbols = [ Tptp.wildcard : I(-1) ]
-    private var strings = [ I(-1) : (Tptp.wildcard, Tptp.SymbolType.variable) ]
+    private var names = [ I(-1) : (Tptp.wildcard, Tptp.SymbolType.variable) ]
 
     // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
-    mutating func insert(_ string: Key, _ type: Tptp.SymbolType) -> Symbol {
-        if let symbol = symbols[string] {
-            // the symbol is allready in the table, check for consitentcy
+    mutating func insert(_ name: String, _ type: Tptp.SymbolType) -> Symbol {
+        if let symbol = symbols[name] {
 
-            guard let (s, t) = strings[symbol], s == string, type == t else {
-                Syslog.error { "\nSymbol '\(symbol)' (\(string),\(type)) <⚡️> \(strings[symbol]))\n" }
+            // consitency check
+            guard let (s, t) = names[symbol], s == name, type == t else {
+                Syslog.error { "\nSymbol '\(symbol)' (\(name),\(type)) <⚡️> \(names[symbol]))\n" }
                 return symbol
             }
 
@@ -93,48 +90,48 @@ struct IntegerSymbolTable<I: GenericInteger>: SymbolTable {
             break
         }
 
-        let ivalue: I = I(symbols.count)
+        let symbol: I = I(symbols.count)
 
-        symbols[string] = ivalue
-        strings[ivalue] = (string, type)
+        symbols[name] = symbol
+        names[symbol] = (name, type)
 
-        return ivalue
+        return symbol
     }
 
-    subscript(value: I) -> StringType? {
-        return strings[value]
+    subscript(symbol: I) -> (String, Tptp.SymbolType)? {
+        return names[symbol]
     }
 
-    subscript(value: Key) -> (Symbol, Tptp.SymbolType)? {
-        guard let symbol = symbols[value] else {
+    subscript(name: String) -> (Symbol, Tptp.SymbolType)? {
+        guard let symbol = symbols[name] else {
             return nil
         }
-        guard let (_, type) = strings[symbol] else {
+        guard let (_, type) = names[symbol] else {
             return (symbol, .undefined)
         }
         return (symbol, type)
     }
 
-    mutating func remove(_ string: Key) -> (Symbol, Tptp.SymbolType)? {
-        guard let (symbol, type) = self[string] else {
+    mutating func remove(_ name: String) -> (Symbol, Tptp.SymbolType)? {
+        guard let (symbol, type) = self[name] else {
             return nil
         }
 
-        symbols[string] = nil
-        strings[symbol] = nil
+        symbols[name] = nil
+        names[symbol] = nil
 
         return (symbol, type)
     }
 
     mutating func clear() {
-        symbols.removeAll()
-        strings.removeAll()
+        symbols = [ Tptp.wildcard : I(-1) ]
+        names = [ I(-1) : (Tptp.wildcard, Tptp.SymbolType.variable) ]
     }
 }
 
 /// A string symbol table that maps (string,type) to the same string symbol:
 /// Only the symbol type needs to be stored.
-struct StringStringTable: SymbolTable {
+struct StringSymbolTable: SymbolTable {
     typealias Key = String
     typealias Symbol = String
 
@@ -165,7 +162,7 @@ struct StringStringTable: SymbolTable {
         return nil
     }
 
-    subscript(value: String) -> StringType? {
+    subscript(value: String) -> (String, Tptp.SymbolType)? {
         guard let type = types[value] else { return nil }
         return (value, type)
     }
