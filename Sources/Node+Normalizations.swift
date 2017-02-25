@@ -28,40 +28,44 @@ extension Node where Self: SymbolStringTyped {
 
     // Constructs a new tree where suffixes are removed from variable names
     private func desuffixing(separator: String,
-                             mappings: inout Dictionary<String, String>, symbols: inout Set<String>) -> Self {
+                             mappings: inout Dictionary<String, String>) -> Self {
         guard let nodes = self.nodes else {
             let (string, type) = self.symbolStringType
             Syslog.error(condition: type != .variable) {
                 "Node with nil nodes must be of type variable."
             }
 
-            if let symbol = mappings[string] {
-                return Self(symbol: Self.symbolize(string: symbol, type: .variable), nodes: nil)
+            // check if variable string was already desuffixed to name
+            if let name = mappings[string] {
+                return Self(symbol: Self.symbolize(string: name, type: .variable), nodes: nil)
             }
 
+            // split string, e.g. "x_3" -> ["x","3"] if separator was "_"
             let components = string.components(separatedBy: separator)
 
             Syslog.error(condition: components.count > 2) {
                 "Can not handle \(string) with \(components.count) components."
             }
 
-            guard let symbol = components.first else {
+            guard let name = components.first else {
                 Syslog.error { "Can not handle \(string) with no components." }
                 return self
             }
 
-            if symbols.contains(symbol) {
-                return self // no renaming
+            guard !mappings.values.contains(name) else {
+                Syslog.warning { "\(mappings) did not contain string key '\(string)', but contains name value '\(name)'." } // -> warning
+                Syslog.error(condition: mappings.values.contains(string)) { "\(mappings) contains string key '\(string)' as name value."}
+                mappings[string] = string
+                return self
             }
 
-            mappings[string] = symbol
-            symbols.insert(symbol)
+            mappings[string] = name
 
-            return Self(symbol: Self.symbolize(string: symbol, type: .variable), nodes: nil)
+            return Self(symbol: Self.symbolize(string: name, type: .variable), nodes: nil)
         }
 
         return Self(symbol: self.symbol, nodes: nodes.map {
-            $0.desuffixing(separator: separator, mappings: &mappings, symbols: &symbols) }
+            $0.desuffixing(separator: separator, mappings: &mappings) }
         )
     }
 
@@ -70,8 +74,7 @@ extension Node where Self: SymbolStringTyped {
     func desuffixing(separator: String = "_") -> Self {
         Syslog.error(condition: separator.isEmpty) { "Must not use empty suffix separator" }
         var m = Dictionary<String, String>()
-        var s = Set<String>()
-        return desuffixing(separator: separator, mappings: &m, symbols: &s)
+        return desuffixing(separator: separator, mappings: &m)
     }
 
     /* prefix normalization */
