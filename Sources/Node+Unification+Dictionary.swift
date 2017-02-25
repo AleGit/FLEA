@@ -5,7 +5,7 @@
 /// Otherwise it returns *nil*. (specialized for Dictionary)
 func =?=<N: Node>(lhs: N, rhs: N) -> [N: N]? {
     // delete
-    if lhs == rhs {
+    guard lhs != rhs else {
         return [N: N]() // trivially unifiable, empty unifier
     }
 

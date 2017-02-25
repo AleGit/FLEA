@@ -44,14 +44,18 @@ protocol StringSymbolable {
 }
 
 /// A symbol table maps symbols to pairs of string and type, and vice versa.
-/// (usually Key == String)
+/// (usually type of `Key` is `String`)
 protocol SymbolTable {
     associatedtype Key: Hashable // usually the symbol as parsed, i.e. a string
     associatedtype Symbol: Hashable // usually a small structure, e.g. an integer
 
+    /// insert a key with type and get the symbol.
     mutating func insert(_ key: Key, _ type: Tptp.SymbolType) -> Symbol
+    
+    /// remove key and get symbol with type
     mutating func remove(_ key: Key) -> (Symbol, Tptp.SymbolType)?
 
+    /// get key and type of symbol
     subscript(symbol: Symbol) -> (Key, Tptp.SymbolType)? { get }
 
     var isEquational: Bool { get }
@@ -83,7 +87,7 @@ extension Int: GenericInteger {}
 /// A (string,type) pair to be mapped to a symbol
 typealias StringType = (String, Tptp.SymbolType)
 
-/// A string symbol tabple that maps (string,type) to an integer symbol.
+/// A string symbol table that maps (string,type) to an integer symbol.
 struct StringIntegerTable<I: GenericInteger>: SymbolTable {
     typealias Key = String
     typealias Symbol = I
