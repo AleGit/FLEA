@@ -21,7 +21,7 @@ public class NodePathsTests: FleaTestCase {
         static var pool = WeakSet<LocalKinIntNode>()
         var folks = WeakSet<LocalKinIntNode>()
 
-        var symbol: S = LocalKinIntNode.symbolize(name: "*", type: .variable)
+        var symbol: S = -1 // LocalKinIntNode.symbolize(name: "*", type: .variable)
         var nodes: [LocalKinIntNode]?
 
         deinit {
@@ -48,6 +48,8 @@ public class NodePathsTests: FleaTestCase {
         let _$ = LocalKinIntNode.symbols.insert("*", .variable)
         let a$ = a.symbol
 
+        XCTAssertEqual(-1, _$, nok)
+
         let count = LocalKinIntNode.pool.count
         XCTAssertEqual(count, 6, "\(nok)  \(#function) \(count) ≠ 4 smart nodes accumulated.")
 
@@ -68,10 +70,14 @@ public class NodePathsTests: FleaTestCase {
             nok
         )
 
+        let actualPaths = ggfXfaX.preorderTraversalSymbols
+
+        Syslog.notice { "\(actualPaths)" }
+
         // #endif
         XCTAssertEqual(
             [g$, g$, f$, _$, f$, a$, _$],
-            ggfXfaX.preorderTraversalSymbols, nok
+            actualPaths, nok
         )
     }
 

@@ -9,6 +9,7 @@ extension Node where Self: SymbolNameTyped {
     /// a=f(x,b) -> { =.0.a, =.1.f.0.*, =.1.f.1.b}
     var leafPaths: [[SymHop<Symbol>]] {
         guard let nodes = self.nodes else {
+            // Syslog.warning { "Generic method should not be called." }
             return [[.symbol(Self.joker)]]
         }
         guard nodes.count > 0 else {
@@ -75,7 +76,9 @@ extension Node where Symbol == Int, Self: SymbolNameTyped {
     /// f(x,g(a,y)) -> { f.1.*, f.2.g.1.a, f.2.g.2.* }
     /// g(f(x,y),b) -> { g.1.f.1.*, g.1.f.2.*, g.2.b}
     var leafPaths: [[Int]] {
+         
         guard let nodes = self.nodes else {
+            Syslog.notice { "Specific (Symbol == Int) method was called." }
             return [[Self.joker]]
         }
         guard nodes.count > 0 else {
@@ -132,7 +135,7 @@ extension Node where Self: SymbolNameTyped {
     var preorderTraversalSymbols: [Symbol] {
         guard let nodes = self.nodes else {
             // a variable leaf
-            // assert(false, "shoot the messanger!")
+            Syslog.warning { "Generic method should not be called." }
             return [Self.symbolize(name: Tptp.wildcard, type: .variable)]
         }
         guard nodes.count > 0 else {
@@ -149,6 +152,7 @@ extension Node where Self: SymbolNameTyped, Self.Symbol == Int {
     var preorderTraversalSymbols: [Symbol] {
         guard let nodes = self.nodes else {
             // a variable leaf
+            Syslog.notice { "Specific (Symbol == Int) method was called." }
             return [-1]
         }
         guard nodes.count > 0 else {
