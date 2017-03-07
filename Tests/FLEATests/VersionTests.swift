@@ -10,7 +10,7 @@ public class VersionTests: FleaTestCase {
         return [
             ("testZ3VersionString", testZ3VersionString),
             ("testZ3Version", testZ3Version),
-            
+
             ("testYicesVersionString", testZ3VersionString),
             ("testYicesVersion", testZ3Version),
         ]
@@ -21,10 +21,10 @@ public class VersionTests: FleaTestCase {
         let versionString = Z3Basics.versionString
         XCTAssertTrue(versionString.hasPrefix("4."), nok)
         Syslog.warning(condition: versionString != expected) {
-            "\n\(nok) actual z3 version \(versionString) does not match \(expected)"
+            "\(nok) Installed z3 version \(versionString) does not match \(expected) \(nok)"
         }
         Syslog.info(condition: versionString == expected) {
-            "\n\(ok) actual z3 version \(versionString) matches exactly"
+            "\(ok) Installed z3 version \(versionString) matches exactly \(ok)"
         }
     }
 
@@ -37,10 +37,10 @@ public class VersionTests: FleaTestCase {
         let versionString = Yices.versionString
         XCTAssertTrue(versionString.hasPrefix("2."), nok)
         Syslog.warning(condition: versionString != expected) {
-            "\n\(nok) actual yices version \(versionString) does not match \(expected)"
+            "\(nok) Installed yices version \(versionString) does not match \(expected) \(nok)"
         }
         Syslog.info(condition: versionString == expected) {
-            "\n\(ok) actual yices version \(versionString) matches exactly."
+            "\(ok) Installed yices version \(versionString) matches exactly. \(ok)"
         }
     }
 
