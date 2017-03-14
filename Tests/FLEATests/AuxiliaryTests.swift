@@ -4,17 +4,17 @@ import XCTest
 public class AuxiliaryTests: FleaTestCase {
     static var allTests: [(String, (AuxiliaryTests) -> () throws -> Void)] {
         return [
-            ("testDecomposing", testDecomposing),
-            ("testAllOneCount", testAllOneCount),
-            ("testUppercased", testUppercased),
-            ("testContains", testContains),
+            ("testCollectionDecomposing", testCollectionDecomposing),
+            ("testSequence", testSequence),
+            ("testAllOneCount", testAllOneCount), // Sequence
+            ("testStringIsUppercased", testStringIsUppercased),
+            ("testStringContainsAllOne", testStringContainsAllOne),
             ("testIds", testIds),
-            ("testMemoize", testMemoize),
         ]
     }
 
-    func testDecomposing() {
-        Syslog.info { "*#* info *#*" }
+    /// test auxiliary extensions of collections
+    func testCollectionDecomposing() {
         let array = [11, 12, 13]
         guard let (h1, t1) = array.decomposing else {
             XCTFail(nok)
@@ -34,6 +34,21 @@ public class AuxiliaryTests: FleaTestCase {
         XCTAssertEqual(13, h3, nok)
 
         XCTAssertNil(t3.decomposing, nok)
+    }
+
+    /// test auxiliary extensions of sequences
+    func testSequence() {
+        let names = ["Äbel", "Bärta", "Cornelium", "Doris", "Earnest"]
+
+        XCTAssertTrue(names.all { $0.characters.count > 3 }, "Not all names has more than three characters. \(nok)" )
+        XCTAssertFalse(names.all { $0.characters.count > 4 }, "All numbers has more than four characters. \(nok)")
+
+        XCTAssertTrue(names.one { $0.characters.count > 8 }, "No name has more than eight characters. \(nok)" )
+        XCTAssertFalse(names.one { $0.characters.count > 9 }, "A name has more than nine characters. \(nok)")
+
+        XCTAssertEqual(names.count, names.count { $0.characters.count > 3 }, nok)
+        XCTAssertEqual(2, names.count { $0.characters.count > 5 }, nok)
+        XCTAssertEqual(0, names.count { $0.characters.count > 9 }, nok)
     }
 
     func testAllOneCount() {
@@ -83,7 +98,7 @@ public class AuxiliaryTests: FleaTestCase {
         XCTAssertEqual(0, array.count { $0 < 1 }, nok)
     }
 
-    func testUppercased() {
+    func testStringIsUppercased() {
         let u = "Flea"
         let l = "flea"
 
@@ -103,32 +118,34 @@ public class AuxiliaryTests: FleaTestCase {
         XCTAssertFalse(ä.isUppercased(at: ä.startIndex), nok)
     }
 
-    func testContains() {
-        let string = "Héllo, Wörld!"
-        let ε = ""
+    func testStringContainsAllOne() {
+        let string = "Héllo, Wörld!" // a non-empty string
+        let ε = "" // the empty string
 
-        // a string contains all characters of an empty collection
+        // a string contains ALL characters of an empty collection
         XCTAssertTrue(string.containsAll([String]()), nok)
         XCTAssertTrue(ε.containsAll([String]()), nok)
 
-        // a string contains no character of an empty collection
+        // An arbitrary string does NOT contain ONE character of an empty collection.
         XCTAssertFalse(string.containsOne([String]()), nok)
         XCTAssertFalse(ε.containsOne([String]()), nok)
 
-        // a string contains all of its characters
+        // An arbitrary string contains ALL of its characters.
         XCTAssertTrue(string.containsAll(string.characters.map { String($0) }), nok)
         XCTAssertTrue(ε.containsAll(ε.characters.map { String($0) }), nok)
 
-        // a string contains one of its characters
+        // A non-empty string contains ONE of its characters.
         XCTAssertTrue(string.containsOne(string.characters.map { String($0) }), nok)
-        // a empty string contains not one of its characters
+        // ⚠️  The empty string does NOT contain ONE of its characters.
         XCTAssertFalse(ε.containsOne(ε.characters.map { String($0) }), nok)
 
+        // A non-empty string MAY contain ONE or ALL characters of a non-empty collection.
         XCTAssertTrue(string.containsOne(["x", "ä", "é"]), nok)
         XCTAssertFalse(string.containsAll(["x", "ä", "é"]), nok)
         XCTAssertFalse(string.containsOne(["x", "ä", "?"]), nok)
         XCTAssertTrue(string.containsAll(["o", "ö", "!"]), nok)
 
+        // The empty string does NOT contain ALL or ONE characters of a non-empty collection.
         XCTAssertFalse(ε.containsOne(["x", "ä", "é"]), nok)
         XCTAssertFalse(ε.containsAll(["x", "ä", "é"]), nok)
         XCTAssertFalse(ε.containsOne(["x", "ä", "?"]), nok)
@@ -153,37 +170,5 @@ public class AuxiliaryTests: FleaTestCase {
         XCTAssertEqual(€a, "?")
         let a€a = "?"
         XCTAssertEqual(a€a, "?")
-    }
-
-    func testMemoize() {
-
-        let n = 37
-
-        let value = [ -1, n, n / 2, n / 3, n / 4, n / 5, 2, 1, 0]
-        print(value)
-
-        let (result0, time0) = utileMeasure {
-            value.map { fibonacci($0) }
-        }
-
-        print(result0, time0.2)
-
-        let (result1, time1) = utileMeasure {
-
-            value.map { fib1($0) }
-        }
-
-        print(result1, time1.2, time1.2 / time0.2)
-        let (result2, time2) = utileMeasure {
-
-            value.map { fib2($0) }
-        }
-
-        print(result2, time2.2)
-
-        XCTAssertEqual(result0, result1, nok)
-        XCTAssertEqual(result0, result2, nok)
-        XCTAssertTrue(time0 < time1, nok)
-        XCTAssertTrue(time2 < time1, nok)
     }
 }

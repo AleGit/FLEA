@@ -203,48 +203,4 @@ func ==<T: Hashable, U: Hashable>(lhs: Pair<T, U>, rhs: Pair<T, U>) -> Bool {
     return lhs.values == rhs.values
 }
 
-func memoize<T: Hashable, U>(body: @escaping ((T) -> U, T) -> U) -> (T) -> U {
-    var memo = [T: U]()
-    var result: ((T) -> U)!
-    result = { key in
-        if let q = memo[key] { return q }
-        let r = body(result, key)
-        memo[key] = r
-        return r
-    }
-    return result
-}
 
-let fibonacci = memoize { (f0: (Int) -> Int, n: Int) in
-    n < 2 ? max(0, n) : f0(n - 1) + f0(n - 2)
-}
-
-func memoize2<U>(body: @escaping ((Int) -> U, Int) -> U) -> (Int) -> U {
-    var memo = [U]()
-    var result: ((Int) -> U)!
-    result = { key in
-        if key < 0 {
-            return body(result, 0)
-        } else {
-            while memo.count <= key {
-                memo.append(body(result, memo.count))
-            }
-            return memo[key]
-        }
-    }
-    return result
-}
-
-func fib1(_ value: Int) -> Int {
-    guard value > 1 else {
-        // 0, 1
-        return max(0, value)
-    }
-    // 0 + 1, 1+1, 2+1, 3+2, 5+3
-
-    return fib1(value - 2) + fib1(value - 1)
-}
-
-let fib2 = memoize2 { (fibu2: (Int) -> Int, n: Int) in
-    return n < 2 ? n : fibu2(n - 1) + fibu2(n - 2)
-}
