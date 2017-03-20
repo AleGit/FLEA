@@ -40,10 +40,10 @@ public class AuxiliaryTests: FleaTestCase {
     func testSequence() {
         let names = ["Äbel", "Bärta", "Cornelium", "Doris", "Earnest"]
 
-        XCTAssertTrue(names.all { $0.characters.count > 3 }, "Not all names has more than three characters. \(nok)" )
+        XCTAssertTrue(names.all { $0.characters.count > 3 }, "Not all names has more than three characters. \(nok)")
         XCTAssertFalse(names.all { $0.characters.count > 4 }, "All numbers has more than four characters. \(nok)")
 
-        XCTAssertTrue(names.one { $0.characters.count > 8 }, "No name has more than eight characters. \(nok)" )
+        XCTAssertTrue(names.one { $0.characters.count > 8 }, "No name has more than eight characters. \(nok)")
         XCTAssertFalse(names.one { $0.characters.count > 9 }, "A name has more than nine characters. \(nok)")
 
         XCTAssertEqual(names.count, names.count { $0.characters.count > 3 }, nok)

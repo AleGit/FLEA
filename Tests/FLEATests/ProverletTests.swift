@@ -77,7 +77,7 @@ public class ProverletTests: YicesTestCase {
             // " X != Y | s(X)=s(Y) ",
             // For all natural numbers m and n, m = n if and only if S(m) = S(n). That is, S is an injection.
             " s(X)!=s(Y) | X = Y ",
-            
+
             "@cnf s(X) != zero",
 
             // " ~natural(X) | s(X)!=zero "

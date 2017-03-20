@@ -37,7 +37,7 @@ public class ProverTests: YicesTestCase {
             return nil
         }
 
-        func run(timeout: TimeInterval) -> Bool? {
+        func run(timeout _: TimeInterval) -> Bool? {
             return nil
         }
 

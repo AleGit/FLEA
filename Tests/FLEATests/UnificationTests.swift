@@ -17,8 +17,8 @@ public class UnificationTests: FleaTestCase {
         _ rhs: N,
         _ expected: S? = nil,
         _ message: String = "",
-        _ file: String = #file,
-        _ function: String = #function,
+        _: String = #file,
+        _: String = #function,
         _ line: Int = #line
     )
         where S.K == N, S.V == N, S: Equatable, N.Symbol: TypedName,

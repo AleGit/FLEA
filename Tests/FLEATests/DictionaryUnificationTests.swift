@@ -15,8 +15,8 @@ public class DictionaryUnificationTests: FleaTestCase {
         _ rhs: N,
         _ expected: [N: N]? = nil,
         _ message: String = "",
-        _ file: String = #file,
-        _ function: String = #function,
+        _: String = #file,
+        _: String = #function,
         _ line: Int = #line
     ) where N.Symbol: TypedName {
         let actual = lhs =?= rhs

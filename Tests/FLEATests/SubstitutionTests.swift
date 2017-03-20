@@ -45,14 +45,14 @@ final class Instantiator<N: Node>: Substitution, Equatable {
     init(dictionaryLiteral elements: (N, N)...) {
         self.init()
         for (key, value) in elements {
-            self.storage[key] = value
+            storage[key] = value
         }
     }
 
     convenience
     init(dictionary: [N: N]) {
         self.init()
-        self.storage = dictionary
+        storage = dictionary
     }
 
     func makeIterator() -> DictionaryIterator<N, N> {
