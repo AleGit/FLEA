@@ -69,7 +69,7 @@ extension UnsafeMutablePointer where Pointee: TreeNodeProtocol {
     // }
 
     func children<T>(where predicate: @escaping (TreeNodeRef) -> Bool = { _ in true }, data: @escaping (TreeNodeRef) -> T) -> UtileSequence<TreeNodeRef, T> {
-        return UtileSequence(first: self.child, step: { $0.sibling }, where: predicate, data: data)
+        return UtileSequence(first: child, step: { $0.sibling }, where: predicate, data: data)
     }
 
     var children: UtileSequence<TreeNodeRef, TreeNodeRef> {

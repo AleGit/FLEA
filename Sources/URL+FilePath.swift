@@ -92,11 +92,11 @@ extension URL {
 
     fileprivate mutating func deleteLastComponents(downTo cmp: String) {
         var deleted = false
-        while !deleted && self.lastPathComponent != "/" {
-            if self.lastPathComponent == cmp {
+        while !deleted && lastPathComponent != "/" {
+            if lastPathComponent == cmp {
                 deleted = true
             }
-            self.deleteLastPathComponent()
+            deleteLastPathComponent()
         }
     }
 
@@ -107,12 +107,12 @@ extension URL {
     }
 
     fileprivate mutating func append(extension pex: String, delete: Bool = true) {
-        let pe = self.pathExtension
+        let pe = pathExtension
         guard pe != pex else { return } // nothing to do
 
-        if delete { self.deletePathExtension() }
+        if delete { deletePathExtension() }
 
-        self.appendPathExtension(pex)
+        appendPathExtension(pex)
     }
 
     fileprivate func appending(extension pex: String, delete: Bool = true) -> URL {
@@ -122,7 +122,7 @@ extension URL {
     }
 
     fileprivate mutating func append(component cmp: String) {
-        self.appendPathComponent(cmp)
+        appendPathComponent(cmp)
     }
 
     fileprivate func appending(component cmp: String) -> URL {
@@ -138,15 +138,15 @@ extension URL {
                       foo: ((String) -> String)? = nil) {
 
         self = URL(fileURLWithPath: name)
-        self.append(extension: pex)
+        append(extension: pex)
 
         var names = [name]
-        let rs = self.relativePath
+        let rs = relativePath
         if !names.contains(rs) {
             names.append(rs)
         }
 
-        let lastComponent = self.lastPathComponent
+        let lastComponent = lastPathComponent
         if !lastComponent.isEmpty {
             if !names.contains(lastComponent) {
                 names.append(lastComponent)

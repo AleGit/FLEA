@@ -25,6 +25,6 @@ extension Node where Self: SymbolTabulating,
     }
 
     static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol {
-        return self.symbols.insert(name, type)
+        return symbols.insert(name, type)
     }
 }

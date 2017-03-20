@@ -118,7 +118,7 @@ extension Yices {
         func selectIndex<C: Collection>(literals: C) -> Int?
             where C.Iterator.Element == term_t {
             for (index, literal) in literals.enumerated() {
-                if self.implies(formula: literal) {
+                if implies(formula: literal) {
                     return index
                 }
             }

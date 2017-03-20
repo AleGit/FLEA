@@ -1,8 +1,8 @@
-/// Symbol name typed nodes can convert their symbol 
+/// Symbol name typed nodes can convert their symbol
 /// to a pair of name and type, and vice versa.
-/// - extension Node where Symbol:TypedName, 
+/// - extension Node where Symbol:TypedName,
 ///   i.e. the symbol itself does the conversion
-/// - extension Node where Self:SymbolTabulating, Symbols.Symbol == Symbol, 
+/// - extension Node where Self:SymbolTabulating, Symbols.Symbol == Symbol,
 ///   i.e. a symbol table does the conversion
 /// This unifies code for nodes with name typed symbols and symbol tables.
 protocol SymbolNameTyped {
@@ -27,12 +27,12 @@ protocol SymbolTable {
 
     /// insert a key with type and get the symbol.
     mutating func insert(_ key: Key, _ type: Tptp.SymbolType) -> Symbol
-    
+
     /// remove key and get symbol with type
     mutating func remove(_ key: Key) -> (Symbol, Tptp.SymbolType)?
 
     /// get key and type of symbol
-    subscript(symbol: Symbol) -> (Key, Tptp.SymbolType)? { get }
+    subscript(_: Symbol) -> (Key, Tptp.SymbolType)? { get }
 
     var isEquational: Bool { get }
 }
@@ -67,8 +67,8 @@ struct IntegerSymbolTable<I: GenericInteger>: SymbolTable {
 
     private(set) var isEquational: Bool = false
 
-    private var symbols = [ Tptp.wildcard : I(-1) ]
-    private var names = [ I(-1) : (Tptp.wildcard, Tptp.SymbolType.variable) ]
+    private var symbols = [Tptp.wildcard: I(-1)]
+    private var names = [I(-1): (Tptp.wildcard, Tptp.SymbolType.variable)]
 
     // mutating func insert(_ key: Key, _ type:Tptp.SymbolType) -> Symbol
     mutating func insert(_ name: String, _ type: Tptp.SymbolType) -> Symbol {
@@ -124,7 +124,7 @@ struct IntegerSymbolTable<I: GenericInteger>: SymbolTable {
     }
 
     mutating func clear() {
-        symbols = [ Tptp.wildcard : I(-1) ]
-        names = [ I(-1) : (Tptp.wildcard, Tptp.SymbolType.variable) ]
+        symbols = [Tptp.wildcard: I(-1)]
+        names = [I(-1): (Tptp.wildcard, Tptp.SymbolType.variable)]
     }
 }

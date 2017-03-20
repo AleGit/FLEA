@@ -5,7 +5,7 @@ protocol Substitution: ExpressibleByDictionaryLiteral, Sequence, CustomStringCon
     associatedtype K: Hashable
     associatedtype V
 
-    subscript(key: K) -> V? { get set }
+    subscript(_: K) -> V? { get set }
 
     init(dictionary: [K: V])
 }

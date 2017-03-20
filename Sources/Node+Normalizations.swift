@@ -15,7 +15,7 @@ extension Node where Self: SymbolNameTyped {
     /// Constructs a new tree where a suffix is appended to all variable names
     func appending<T: Any>(separator: String = "_", suffix: T) -> Self {
         guard let nodes = self.nodes else {
-            let (string, type) = self.symbolNameType
+            let (string, type) = symbolNameType
             Syslog.error(condition: type != .variable) {
                 "Node(symbol:\(self.symbol), nodes:nil) must not be of type \(type)."
             }
@@ -23,14 +23,14 @@ extension Node where Self: SymbolNameTyped {
             return Self(symbol: symbol, nodes: nil)
         }
 
-        return Self(symbol: self.symbol, nodes: nodes.map { $0.appending(suffix: suffix) })
+        return Self(symbol: symbol, nodes: nodes.map { $0.appending(suffix: suffix) })
     }
 
     // Constructs a new tree where suffixes are removed from variable names
     private func desuffixing(separator: String,
                              mappings: inout Dictionary<String, String>) -> Self {
         guard let nodes = self.nodes else {
-            let (string, type) = self.symbolNameType
+            let (string, type) = symbolNameType
             Syslog.error(condition: type != .variable) {
                 "Node with nil nodes must be of type variable."
             }
@@ -54,7 +54,7 @@ extension Node where Self: SymbolNameTyped {
 
             guard !mappings.values.contains(name) else {
                 Syslog.warning { "\(mappings) did not contain string key '\(string)', but contains name value '\(name)'." } // -> warning
-                Syslog.error(condition: mappings.values.contains(string)) { "\(mappings) contains string key '\(string)' as name value."}
+                Syslog.error(condition: mappings.values.contains(string)) { "\(mappings) contains string key '\(string)' as name value." }
                 mappings[string] = string
                 return self
             }
@@ -64,7 +64,7 @@ extension Node where Self: SymbolNameTyped {
             return Self(symbol: Self.symbolize(name: name, type: .variable), nodes: nil)
         }
 
-        return Self(symbol: self.symbol, nodes: nodes.map {
+        return Self(symbol: symbol, nodes: nodes.map {
             $0.desuffixing(separator: separator, mappings: &mappings) }
         )
     }
@@ -87,8 +87,8 @@ extension Node where Self: SymbolNameTyped {
     func normalized<T: Any>(prefix: T, separator: String = "", offset: Int = 0) -> Self {
         var renamings = Dictionary<Symbol, Symbol>()
 
-        return self.normalized(prefix: prefix, separator: separator, offset: offset,
-                               renamings: &renamings)
+        return normalized(prefix: prefix, separator: separator, offset: offset,
+                          renamings: &renamings)
     }
 
     private func normalized<T: Any>(prefix: T, separator: String, offset: Int,
@@ -120,19 +120,19 @@ extension Node where Self: SymbolNameTyped {
     /// - f(X,Y,g(Y)).normalized() -> (f(□,□,g(□)), [X,Y,Y])
     func normalized(hole: String = "□") -> (Self, Array<Self.Symbol>) {
         var symbols = Array<Self.Symbol>()
-        let result = self.normalized(hole: hole, symbols: &symbols)
+        let result = normalized(hole: hole, symbols: &symbols)
         return (result, symbols)
     }
 
     /// To be called by func normalized(hole: String = "□") only.
     private func normalized(hole: String = "□", symbols: inout Array<Self.Symbol>) -> Self {
         guard let nodes = self.nodes else {
-            symbols.append(self.symbol)
+            symbols.append(symbol)
             return Self(v: hole)
         }
 
         guard nodes.count > 0 else {
-            return Self(constant: self.symbol)
+            return Self(constant: symbol)
         }
 
         var children = [Self]()
@@ -140,7 +140,7 @@ extension Node where Self: SymbolNameTyped {
             children.append(node.normalized(hole: hole, symbols: &symbols))
         }
 
-        return Self(symbol: self.symbol, nodes: children)
+        return Self(symbol: symbol, nodes: children)
     }
 
     /// Constructs a tree where all variables are renamed with elements of a list of symbols
@@ -152,7 +152,7 @@ extension Node where Self: SymbolNameTyped {
     /// - (f(X,Y,g(X)).denormalizing(with:[A,B,C,E]) -> f(A,B,g(C))
     func denormalizing(with symbols: Array<Self.Symbol>) -> Self? {
         var copy = symbols
-        let result = self.denormalized(symbols: &copy)
+        let result = denormalized(symbols: &copy)
 
         Syslog.warning(condition: copy.count > 0) {
             "\(self) has more variable positions than\n\(symbols) has members"
@@ -175,6 +175,6 @@ extension Node where Self: SymbolNameTyped {
             }
             children.append(child)
         }
-        return Self(symbol: self.symbol, nodes: children)
+        return Self(symbol: symbol, nodes: children)
     }
 }

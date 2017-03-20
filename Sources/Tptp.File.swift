@@ -112,7 +112,7 @@ extension Tptp {
                 code = -1
             }
 
-            guard code == 0 && self.store != nil && self.root != nil else {
+            guard code == 0 && store != nil && root != nil else {
                 return nil
             }
         }
@@ -203,7 +203,7 @@ extension Tptp {
         func nameRoleClauseTriples<N: Node>(predicate: (String, Tptp.Role) -> Bool = { _, _ in true })
             -> [(String, Tptp.Role, N)]
             where N: SymbolNameTyped {
-            return self.cnfs.flatMap {
+            return cnfs.flatMap {
                 guard let name = $0.symbol,
                     let child = $0.child,
                     let string = child.symbol,
@@ -229,7 +229,7 @@ extension Tptp {
         func includeSelectionURLTriples(url: URL) -> [(String, [String], URL)] {
             // <include> ::= include(<file_name><formula_selection>).
 
-            return self.includes.flatMap {
+            return includes.flatMap {
                 // <file_name> ::= <single_quoted>
                 guard let name = $0.symbol else {
                     Syslog.error { "<include> entry has no <file_name>." }

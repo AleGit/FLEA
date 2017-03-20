@@ -38,12 +38,13 @@ extension Node {
     /// - if their symbols are equal
     /// - if their children are equal
     func isEqual(to other: Self) -> Bool {
-        guard self.symbol == other.symbol else { return false }
-        if self.nodes == nil && other.nodes == nil { return true }
+        guard symbol == other.symbol else { return false }
+        if nodes == nil && other.nodes == nil { return true }
 
         guard let lnodes = self.nodes, let rnodes = other.nodes else {
-            print(self, self)
-            return false }
+            Syslog.warning { "\(self) and \(other) has the same root symbol." }
+            return false
+        }
 
         return lnodes == rnodes
     }

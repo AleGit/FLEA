@@ -113,7 +113,7 @@ extension Proverlet {
      ad 9. insert literal l_j_k -> c_j to selected literal index,
 
      */
-    func run(timeout: TimeInterval) -> Bool? {
+    func run(timeout _: TimeInterval) -> Bool? {
         Syslog.fail { "MISSING IMPLEMENTATION" }
 
         return nil

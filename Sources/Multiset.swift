@@ -22,7 +22,7 @@ public struct Multiset<T: Hashable> {
     public init() {}
 
     /// Constructs a multiset from a sequence, such as an array.
-    public init<S: Sequence>(_ elements: S) where S.Iterator.Element == T{
+    public init<S: Sequence>(_ elements: S) where S.Iterator.Element == T {
         for e in elements {
             insert(e)
         }
@@ -31,7 +31,7 @@ public struct Multiset<T: Hashable> {
     // MARK: Querying a Multiset
 
     /// Number of elements stored in the multiset, including multiple copies.
-    public fileprivate(set) var count = 0
+    fileprivate(set) public var count = 0
 
     /// Returns `true` if and only if `count == 0`.
     public var isEmpty: Bool {
@@ -126,7 +126,7 @@ extension Multiset: Sequence {
     public func makeIterator() -> AnyIterator<T> {
         var keyValueGenerator = members.makeIterator()
         var elementCount = 0
-        var element : T? = nil
+        var element: T?
         return AnyIterator {
             if elementCount > 0 {
                 elementCount -= 1
@@ -148,7 +148,7 @@ extension Multiset: CustomStringConvertible {
     /// A string containing a suitable textual
     /// representation of the multiset.
     public var description: String {
-        return "[" + map{"\($0)"}.joined(separator: ", ") + "]"
+        return "[" + map { "\($0)" }.joined(separator: ", ") + "]"
     }
 }
 

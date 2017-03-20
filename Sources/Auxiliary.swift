@@ -18,17 +18,17 @@ extension Collection where Iterator.Element == SubSequence.Iterator.Element {
 extension Sequence {
     /// check if a predicate holds for all members of a sequence
     func all(_ predicate: (Iterator.Element) -> Bool) -> Bool {
-        return self.reduce(true) { $0 && predicate($1) }
+        return reduce(true) { $0 && predicate($1) }
     }
 
     /// check if a predicate holds for at least one member of a sequence
     func one(_ predicate: (Iterator.Element) -> Bool) -> Bool {
-        return self.reduce(false) { $0 || predicate($1) }
+        return reduce(false) { $0 || predicate($1) }
     }
 
     /// count the members of a sequence where a predicate holds
     func count(_ predicate: (Iterator.Element) -> Bool = { _ in true }) -> Int {
-        return self.reduce(0) { $0 + (predicate($1) ? 1 : 0) }
+        return reduce(0) { $0 + (predicate($1) ? 1 : 0) }
     }
 }
 
@@ -52,8 +52,8 @@ extension String {
     func isUppercased(at: Index) -> Bool {
         // swiftlint:enable variable_name
 
-        let range = at ..< self.index(after: at)
-        return self.rangeOfCharacter(from: .uppercaseLetters, options: [], range: range) != nil
+        let range = at ..< index(after: at)
+        return rangeOfCharacter(from: .uppercaseLetters, options: [], range: range) != nil
     }
 }
 
@@ -83,7 +83,7 @@ struct UtileIterator<S, T>: IteratorProtocol {
     /// hence the functions `step`, `predicate`, and `data` may escape their context.
     init(first: S?, step: @escaping (S) -> S?, where
         predicate: @escaping (S) -> Bool = { _ in true }, data: @escaping (S) -> T) {
-        self.this = first
+        this = first
         self.step = step
         self.data = data
         self.predicate = predicate
@@ -91,7 +91,7 @@ struct UtileIterator<S, T>: IteratorProtocol {
 
     mutating func next() -> T? {
         while let current = self.this {
-            self.this = step(current)
+            this = step(current)
 
             if predicate(current) {
                 return data(current)
@@ -112,7 +112,7 @@ struct UtileSequence<S, T>: Sequence {
     /// hence the functions `step`, `predicate`, and `data` may escape their context.
     init(first: S?, step: @escaping (S) -> S?, where
         predicate: @escaping (S) -> Bool = { _ in true }, data: @escaping (S) -> T) {
-        self.this = first
+        this = first
         self.step = step
         self.predicate = predicate
         self.data = data
@@ -202,5 +202,3 @@ struct Pair<T: Hashable, U: Hashable>: Hashable, CustomStringConvertible {
 func ==<T: Hashable, U: Hashable>(lhs: Pair<T, U>, rhs: Pair<T, U>) -> Bool {
     return lhs.values == rhs.values
 }
-
-

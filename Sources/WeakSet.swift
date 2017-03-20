@@ -130,7 +130,7 @@ extension WeakSet: IteratorProtocol {
             entries.count > 0 else {
             // no valid entries at all
             contents[first.0] = nil
-            return self.next()
+            return next()
         }
 
         defer {
@@ -163,7 +163,7 @@ extension WeakSet: ExpressibleByArrayLiteral {
     init(arrayLiteral: T...) {
         self.init()
         for element in arrayLiteral {
-            _ = self.insert(element)
+            _ = insert(element)
         }
     }
 }
@@ -172,7 +172,7 @@ extension WeakSet {
     init(set: Set<T>) {
         self.init()
         for s in set {
-            _ = self.insert(s)
+            _ = insert(s)
         }
     }
 }

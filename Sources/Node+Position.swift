@@ -76,7 +76,7 @@ extension Node {
         guard let subnode = nodes[head][term, Array(tail)] else { return nil }
         nodes[head] = subnode
 
-        return Self(symbol: self.symbol, nodes: nodes)
+        return Self(symbol: symbol, nodes: nodes)
     }
 }
 
@@ -91,7 +91,7 @@ extension Array where Element: Node {
         // a) position == [], but an array is not of type Node
         guard let (head, tail) = position.decomposing else { return nil }
         // b) node does not have a subnode at given position
-        guard 0 <= head && head < self.count else { return nil }
+        guard 0 <= head && head < count else { return nil }
         // c)
         return self[head][Position(tail)]
     }

@@ -124,9 +124,9 @@ func == (lhs: Tptp.SymbolType, rhs: Tptp.SymbolType) -> Bool {
 
          (.undefined, .undefined):
         return true
-    case (.predicate(let larity), .predicate(let rarity)):
+    case let (.predicate(larity), .predicate(rarity)):
         return larity == rarity
-    case (.function(let larity), .function(let rarity)):
+    case let (.function(larity), .function(rarity)):
         return larity == rarity
     default:
         return false

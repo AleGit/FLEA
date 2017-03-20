@@ -43,7 +43,7 @@ protocol Trie {
     /// Get (or set) subnode with step.
     /// For efficiency the Setter MUST NOT store an empty trie,
     /// i.e. trie where no value is stored at any node.
-    subscript(step: Leap) -> Self? { get set }
+    subscript(_: Leap) -> Self? { get set }
 
     /// get values at one trie node
     var values: ValueS { get }
@@ -70,7 +70,7 @@ extension Trie {
         where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
         C.SubSequence: Collection, C.SubSequence.SubSequence == C.SubSequence {
         self.init() // initialize trie
-        _ = self.insert(value, at: path)
+        _ = insert(value, at: path)
     }
 
     /// Inserts value at path. Possibly missing subtrie is created.
@@ -80,7 +80,7 @@ extension Trie {
         where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
         C.SubSequence: Collection, C.SubSequence.SubSequence == C.SubSequence {
         guard let (head, tail) = path.decomposing else {
-            return self.insert(newMember)
+            return insert(newMember)
         }
 
         if self[head] == nil {
@@ -98,7 +98,7 @@ extension Trie {
         where C.Iterator.Element == Leap, C.SubSequence.Iterator.Element == Leap,
         C.SubSequence: Collection, C.SubSequence.SubSequence == C.SubSequence {
         guard let (head, tail) = path.decomposing else {
-            return self.remove(member)
+            return remove(member)
         }
         guard var trie = self[head] else { return nil }
         let removedMember = trie.remove(member, at: tail)
