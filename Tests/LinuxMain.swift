@@ -9,7 +9,7 @@ XCTMain([
     testCase(CTptpParsingApiTests.allTests),
     testCase(CYicesApiTests.allTests),
 
-    testCase(DemoTests.allTests),
+    // testCase(DemoTests.allTests),
     testCase(DescriptionTests.allTests),
     testCase(DictionarySubstitutionTests.allTests),
     testCase(DictionaryUnificationTests.allTests),
