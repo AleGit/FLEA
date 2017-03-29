@@ -12,34 +12,34 @@ class CYicesApiTests: FleaTestCase {
     func testTypes() {
 
         XCTAssertEqual(
-            "(()) -> ()",
+            "() -> ()",
             "\(type(of: yices_init))")
 
         XCTAssertEqual(
-            "(()) -> ()",
+            "() -> ()",
             "\(type(of: yices_exit))")
 
         XCTAssertEqual(
-            "(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ImplicitlyUnwrappedOptional<OpaquePointer>",
-            "\(type(of: yices_new_context))")
+            "\n (ImplicitlyUnwrappedOptional<OpaquePointer>) -> ImplicitlyUnwrappedOptional<OpaquePointer>",
+            "\n \(type(of: yices_new_context))", "3 \(nok)")
         XCTAssertEqual(
-            "(ImplicitlyUnwrappedOptional<OpaquePointer>) -> ()",
-            "\(type(of: yices_free_context))")
+            "\n (ImplicitlyUnwrappedOptional<OpaquePointer>) -> ()",
+            "\n \(type(of: yices_free_context))", "4 \(nok)")
 
         XCTAssertEqual(
-            "(()) -> Int32",
+            "() -> Int32",
             "\(type(of: yices_bool_type))")
         XCTAssertEqual(
-            "(Int32) -> Int32",
-            "\(type(of: yices_new_uninterpreted_term))")
+            "\n (Int32) -> Int32",
+            "\n \(type(of: yices_new_uninterpreted_term))", "6 \(nok)")
         XCTAssertEqual(
-            "((Int32, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>)) -> Int32",
+            "(Int32, ImplicitlyUnwrappedOptional<UnsafePointer<Int8>>) -> Int32",
             "\(type(of: yices_set_term_name))")
         XCTAssertEqual(
-            "((UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>, Int32)) -> Int32",
+            "(UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>, Int32) -> Int32",
             "\(type(of: yices_function_type))")
         XCTAssertEqual(
-            "((Int32, UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>)) -> Int32",
+            "(Int32, UInt32, ImplicitlyUnwrappedOptional<UnsafePointer<Int32>>) -> Int32",
             "\(type(of: yices_application))")
     }
 
