@@ -39,10 +39,12 @@ public class CommandLineTests: FleaTestCase {
     }
 
     func testIfSwift() {
-        #if swift(>=3.1)
-            print(nok, "Swift >= 3.1")
+        #if swift(>=3.2) 
+            print(nok, "Swift >= 3.2")
+        #elseif swift(>=3.1)
+            print(ok, "Swift >= 3.1")
         #elseif swift(>=3.0)
-            print(ok, "Swift [3.0,3.1)")
+            print(nok, "Swift [3.0,3.1)")
         #elseif swift(>=2.3)
             print(nok, "Swift [2.3,3.0)")
         #elseif swift(>=2.2)

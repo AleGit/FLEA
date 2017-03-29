@@ -1,0 +1,24 @@
+{
+  "autoPin": true,
+  "pins": [
+    {
+      "package": "CTptpParsing",
+      "reason": null,
+      "repositoryURL": "https://github.com/AleGit/CTptpParsing.git",
+      "version": "1.0.0"
+    },
+    {
+      "package": "CYices",
+      "reason": null,
+      "repositoryURL": "https://github.com/AleGit/CYices.git",
+      "version": "1.0.0"
+    },
+    {
+      "package": "CZ3Api",
+      "reason": null,
+      "repositoryURL": "https://github.com/AleGit/CZ3Api.git",
+      "version": "1.0.0"
+    }
+  ],
+  "version": 1
+}
