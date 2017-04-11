@@ -1,6 +1,7 @@
 /// String MUST NOT be TypedName because it cannot store the SymbolType reliable.
 
 extension String {
+    static var NIL = "<nil>"
     static var stringTypes = [
         "!": Tptp.SymbolType.universal,
         "∀": Tptp.SymbolType.universal,

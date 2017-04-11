@@ -76,7 +76,7 @@ struct IntegerSymbolTable<I: GenericInteger>: SymbolTable {
 
             // consitency check
             guard let (s, t) = names[symbol], s == name, type == t else {
-                Syslog.error { "\nSymbol '\(symbol)' (\(name),\(type)) <⚡️> \(names[symbol]))\n" }
+                Syslog.error { "\nSymbol '\(symbol)' (\(name),\(type)) <⚡️> \(String(describing:names[symbol]))\n" }
                 return symbol
             }
 

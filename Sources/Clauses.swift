@@ -224,7 +224,7 @@ final class Clauses<N: Node>: ClauseCollection
         for (clauseReference, literalIndex) in pendingLiterals {
             let literalReference = Pair(clauseReference, literalIndex)
             for clause in derivations(literalReference: literalReference) {
-                let (a, b) = insert(clause: clause)
+                let (_, _) = insert(clause: clause)
                 /*
                  if a {
                  print(b, clause)

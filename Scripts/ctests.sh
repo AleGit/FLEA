@@ -7,5 +7,5 @@
 # $1 should be the name of a test class without suffix `Tests`, eg. `Trie` for class `TrieTests`
 # $2 should be the name of a test function in $1, without the prefix `test`, e.g. `Unifiables` for function `testUnifiables`
 
-swift build --clean
+swift package clean
 Scripts/tests.sh $1 $2

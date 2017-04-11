@@ -33,7 +33,7 @@ public struct Demo {
 
             print("\nmeasure key:'\(key)', description:'\(description)'")
             let (result, runtime) = utileMeasure(f: f)
-            print("key:'\(key)', result:'\(result)', runtime:'\(runtime)'")
+            print("key:'\(key)', result:'\(String(describing:result))', runtime:'\(runtime)'")
             count += 1
         }
         print("--------- --------- --------- --------- --------- --------- --------- --------- --------- ")

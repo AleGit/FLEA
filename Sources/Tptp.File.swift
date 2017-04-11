@@ -60,7 +60,7 @@ extension Tptp {
         @available(*, deprecated, message: "- unused, see TPTP.File.includeSelectionURLTriples -")
         convenience init?(axiom name: String, problemURL: URL?) {
             guard let url = URL(fileURLWithAxiom: name, problemURL: problemURL) else {
-                Syslog.error { "Axiom \(name) could not be found. (Problem: \(problemURL?.path))" }
+                Syslog.error { "Axiom \(name) could not be found. (Problem: \(problemURL?.path ?? String.NIL))" }
                 return nil
             }
             self.init(url: url)
@@ -119,7 +119,7 @@ extension Tptp {
 
         /// free dynammically allocated memory
         deinit {
-            Syslog.debug { "'\(self.path)' memory freed." }
+            Syslog.debug { "'\(self.path ?? String.NIL)' memory freed." }
             if let store = store {
                 prlcDestroyStore(store)
             }
@@ -210,7 +210,7 @@ extension Tptp {
                     let role = Tptp.Role(rawValue: string),
                     let cnf = child.sibling else {
                     let symbol = $0.symbol ?? "n/a"
-                    Syslog.error { "Invalid cnf \(symbol) in \(self.path)" }
+                    Syslog.error { "Invalid cnf \(symbol) in '\(self.path ?? String.NIL)'" }
                     return nil
                 }
                 guard predicate(name, role) else {

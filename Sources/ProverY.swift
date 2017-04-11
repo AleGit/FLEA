@@ -138,7 +138,7 @@ extension ProverY {
         defer { processedClauseIndices.insert(clauseIndex) }
 
         Syslog.error(condition: insuredClauses[clauseIndex] != nil) {
-            "clause #\(clauseIndex) \(insuredClauses[clauseIndex])! already insured." }
+            "clause #\(clauseIndex) \(insuredClauses[clauseIndex]!) already insured." }
 
         insuredClauses[clauseIndex] = context.insure(clause: clauses[clauseIndex].2)
 
