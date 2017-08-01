@@ -61,18 +61,16 @@ This will enable the unit tests to find problem and axiom files.
 to the full path to the unpacked `TPTP-v6.4.0` directory.)
 - Clone, build and run [FLEA](https://github.com/AleGit/FLEA) tests:
 ```
+$ git clone https://github.com/AleGit/CTptpParsing
+$ cd CTptpParsing
+$ sudo make install
+$ cd ..
 $ git clone https://github.com/AleGit/FLEA
 $ cd FLEA
-$ swift build                                       # fails after download
-$ pushd Packages/CTptpParsing-1.0.0                 # or 1.0.1 or ...
-$ sudo make install                                 # install tptp parsing lib
-$ popd
 $ swift build -Xlinker -L/usr/local/lib             # linker path to tptp parsing lib
 $ swift test -l                                     # list all tests
 $ swift test                                        # run all tests
 ```
-The first (failing) `swift build` is necessary to download the system packages.
-But it cannot succeed because the parsing lib is not installed yet.
 
 - Run all tests / tests in `class NodeTests` / `NodeTests.testInit()` only:
 ```
