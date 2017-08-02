@@ -17,14 +17,16 @@ public class VersionTests: FleaTestCase {
     }
 
     func testZ3VersionString() {
-        let expected = "4.5.1.0"
+        let name = "z3"
+        let expectedPrefix = "4.5"
+        let expectedVersion = "4.5.1.0"
         let versionString = Z3Basics.versionString
-        XCTAssertTrue(versionString.hasPrefix("4."), nok)
-        Syslog.warning(condition: versionString != expected) {
-            "\(nok) Installed z3 version \(versionString) does not match \(expected) \(nok)"
+        XCTAssertTrue(versionString.hasPrefix(expectedPrefix), "\(nok) Installed \(name) '\(versionString)' does not have version prefix '\(expectedPrefix)'")
+        Syslog.warning(condition: versionString != expectedVersion) {
+            "\(nok) Installed \(name) '\(versionString)' does not match '\(expectedVersion)' \(nok)"
         }
-        Syslog.info(condition: versionString == expected) {
-            "\(ok) Installed z3 version \(versionString) matches exactly \(ok)"
+        Syslog.info(condition: versionString == expectedVersion) {
+            "\(ok) Installed \(name) '\(versionString)' matches exactly \(ok)"
         }
     }
 
@@ -33,14 +35,17 @@ public class VersionTests: FleaTestCase {
     }
 
     func testYicesVersionString() {
-        let expected = "2.5.1"
+        let name = "yices"
+        let expectedPrefix = "2.5"
+
+        let expectedVersion = "2.5.2"
         let versionString = Yices.versionString
-        XCTAssertTrue(versionString.hasPrefix("2."), nok)
-        Syslog.warning(condition: versionString != expected) {
-            "\(nok) Installed yices version \(versionString) does not match \(expected) \(nok)"
+        XCTAssertTrue(versionString.hasPrefix(expectedPrefix), "\(nok) Installed \(name) '\(versionString)' does not have version prefix '\(expectedPrefix)'")
+        Syslog.warning(condition: versionString != expectedVersion) {
+            "\(nok) Installed \(name) '\(versionString)' does not match '\(expectedVersion)' \(nok)"
         }
-        Syslog.info(condition: versionString == expected) {
-            "\(ok) Installed yices version \(versionString) matches exactly. \(ok)"
+        Syslog.info(condition: versionString == expectedVersion) {
+            "\(ok) Installed \(name) '\(versionString)' matches exactly \(ok)"
         }
     }
 
