@@ -1,0 +1,34 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CTptpParsing",
+        "repositoryURL": "https://github.com/AleGit/CTptpParsing.git",
+        "state": {
+          "branch": null,
+          "revision": "0c4aaf404442abd6f3cf877e1c1b136737d7a387",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "CYices",
+        "repositoryURL": "https://github.com/AleGit/CYices.git",
+        "state": {
+          "branch": null,
+          "revision": "173cd9b6ea5fe0357f2952350970fddba9bf9f1f",
+          "version": "1.0.0"
+        }
+      },
+      {
+        "package": "CZ3Api",
+        "repositoryURL": "https://github.com/AleGit/CZ3Api.git",
+        "state": {
+          "branch": null,
+          "revision": "3285a2159c22cfb6a6d188a88bc67ce0d313b58d",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
