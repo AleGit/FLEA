@@ -38,5 +38,7 @@ then
   echo "swift test -s ${T}"
   swift test -Xlinker -L/usr/local/lib -s $T
 else
-  swift test -Xswiftc -suppress-warnings -Xlinker -L/usr/local/lib
+  # swift test -Xswiftc -warnings-as-errors -Xlinker -L/usr/local/lib
+  swift test -Xlinker -L/usr/local/lib
+  # swift test -Xswiftc -suppress-warnings -Xlinker -L/usr/local/lib
 fi
