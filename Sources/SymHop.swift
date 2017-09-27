@@ -32,7 +32,7 @@ extension SymHop: CustomStringConvertible {
 }
 
 /// Make SymHop equatable.
-func ==<S: Hashable>(lhs: SymHop<S>, rhs: SymHop<S>) -> Bool {
+func ==<S>(lhs: SymHop<S>, rhs: SymHop<S>) -> Bool {
     switch (lhs, rhs) {
     case let (.symbol(lsymbol), .symbol(rsymbol)):
         return lsymbol == rsymbol

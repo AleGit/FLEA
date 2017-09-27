@@ -199,6 +199,6 @@ struct Pair<T: Hashable, U: Hashable>: Hashable, CustomStringConvertible {
 }
 
 // comparison function for conforming to Equatable protocol
-func ==<T: Hashable, U: Hashable>(lhs: Pair<T, U>, rhs: Pair<T, U>) -> Bool {
+func ==<T, U>(lhs: Pair<T, U>, rhs: Pair<T, U>) -> Bool {
     return lhs.values == rhs.values
 }
