@@ -2,7 +2,7 @@
 
 import Foundation
 
-extension Collection where Iterator.Element == SubSequence.Iterator.Element {
+extension Collection {
     /// Split a collection in a pair of its first element and the remaining elements.
     ///
     /// - [] -> nil
