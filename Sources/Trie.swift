@@ -291,17 +291,17 @@ extension TrieStore {
 // MARK: concrete value trie type
 
 struct TrieStruct<K: Hashable, V: Hashable>: TrieStore {
-    typealias Key = K
+    typealias Leap = K
     typealias Value = V
-    var trieStore = [Key: TrieStruct<Key, Value>]()
-    var valueStore = Set<Value>()
+    var trieStore = [Leap: TrieStruct<K, V>]()
+    var valueStore = Set<V>()
 }
 
 // MARK: concrete reference trie type
 
 final class TrieClass<K: Hashable, V: Hashable>: TrieStore {
-    typealias Key = K
+    typealias Leap = K
     typealias Value = V
-    var trieStore = [Key: TrieClass<Key, Value>]()
+    var trieStore = [Leap: TrieClass<Leap, Value>]()
     var valueStore = Set<Value>()
 }
