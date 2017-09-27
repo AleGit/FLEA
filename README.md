@@ -35,12 +35,12 @@ $ ls /usr/local/include
 
 
 
-- Intstall latest [Swift 3 Release](https://swift.org/download/#using-downloads)
+- Intstall [Swift 4 Release](https://swift.org/download/#using-downloads)
 and check:
 ```
 $ swift -version
-Apple Swift version 3.0.2 (swiftlang-800.0.63 clang-800.0.42.1) # Mac
-Swift version 3.0.2 (swift-3.0.2-RELEASE)                       # Linux
+Apple Swift version 4.0 (swiftlang-900.0.65 clang-900.0.37) # Mac
+Swift version 4.0 (swift-4.0-RELEASE)                       # Linux
 
 $ xcode-select -p          # Mac only
 /Applications/Xcode.app/Contents/Developer
