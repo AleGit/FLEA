@@ -19,14 +19,9 @@
 if [ "$1" = "--help" ]
 then
   echo ${0}' considers up to two arguments.'
-  echo ${0} '<1> <2>'
-  echo '<1>' the test class name without the suffix 'Tests'
-  echo '<2>' the test name without the perfix 'test'
-  echo '0 => swift test'
-  echo '1 => swift test -s FLEATests.<1>Tests'
-  echo '2 => swift test -s FLEATests.<1>Tests/test<2>'
-  echo e.g. \$ ${0} Node Init
-  echo '=> swift test -s FLEATests.NodeTests/testInit'
+  echo 'a) '${0} '                 => swift test'
+  echo 'b) '${0} '<regex>          => swift test --filter <regex>'
+  echo 'c) '${0} '<Class> <Func>   => swift test --filter <Class>Tests/test<Func>'
 elif [ -n "$2" ]
 then
   T="FLEATests.${1}Tests/test${2}"
@@ -35,10 +30,10 @@ then
   echo "DONE: swift test --filter ${T}"
 elif [ -n "$1" ]
 then
-  T="FLEATests.${1}Tests"
-  echo "START: swift test --filter ${T}"
-  swift test -Xlinker -L/usr/local/lib --filter $T
-  echo "DONE: swift test --filter ${T}"
+  # T="FLEATests.${1}Tests"
+  echo "START: swift test --filter ${1}"
+  swift test -Xlinker -L/usr/local/lib --filter $1
+  echo "DONE: swift test --filter ${1}"
 else
   # swift test -Xswiftc -warnings-as-errors -Xlinker -L/usr/local/lib
   swift test -Xlinker -L/usr/local/lib
