@@ -120,34 +120,34 @@ public class TrieTests: FleaTestCase {
         }
 
         var unifiables = trie.unifiables(paths: X.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set(0 ..< terms.count), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set(0 ..< terms.count), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: fX.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 1, 2, 3, 4, 5]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 1, 2, 3, 4, 5]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: fc.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 1, 2]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 1, 2]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: fd.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 1, 3]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 1, 3]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: fgXY.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 1, 4, 5]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 1, 4, 5]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: fgXfY.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 1, 4, 5]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 1, 4, 5]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: gXY.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 6, 7, 8, 9, 10, 11]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 6, 7, 8, 9, 10, 11]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: gXd.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 6, 7, 8, 9, 10]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 6, 7, 8, 9, 10]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: gcY.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 6, 7, 8, 9, 11]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 6, 7, 8, 9, 11]), unifiables, "\(nok) \(String(describing:unifiables))")
 
         unifiables = trie.unifiables(paths: gcd.leafPaths, wildcard: wildcard)
-        XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(unifiables)")
+        XCTAssertEqual(Set([0, 6, 7, 8, 9]), unifiables, "\(nok) \(String(describing:unifiables))")
     }
 
     func testPrefixes() {
@@ -163,12 +163,12 @@ public class TrieTests: FleaTestCase {
         }
 
         var matches = trie.unifiables(paths: [["a"]], wildcard: "*")
-        XCTAssertEqual(Set(["a", "aa", "ab", "*"]), matches, "\(nok) \(matches)")
+        XCTAssertEqual(Set(["a", "aa", "ab", "*"]), matches, "\(nok) \(String(describing:matches))")
 
         matches = trie.unifiables(paths: [["*"]], wildcard: "*")
-        XCTAssertEqual(all, matches, "\(nok) \(matches)")
+        XCTAssertEqual(all, matches, "\(nok) \(String(describing:matches))")
 
         matches = trie.unifiables(paths: [["a", "*"]], wildcard: "*")
-        XCTAssertEqual(Set(["a", "aa", "ab", "*"]), matches, "\(nok) \(matches)")
+        XCTAssertEqual(Set(["a", "aa", "ab", "*"]), matches, "\(nok) \(String(describing:matches))")
     }
 }

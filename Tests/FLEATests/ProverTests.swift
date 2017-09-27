@@ -65,7 +65,7 @@ public class ProverTests: YicesTestCase {
                 theProver.run(timeout: 100.0)
             }
             XCTAssertEqual(true, result, "\(nok) \(problem)")
-            print("problem:", problem, result, runtime,
+            print("problem:", problem, result as Any, runtime,
                   "clauses:", theProver.clauseCount, "ensured:", theProver.insuredClausesCount)
         }
     }

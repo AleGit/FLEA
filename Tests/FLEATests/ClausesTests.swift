@@ -51,13 +51,13 @@ public class ClausesTests: YicesTestCase {
     }
 
     func testLiterals() {
-        let (clause1, literals1, shuffled1) = Yices.clause("p(X)|p(Z)|q(Y)" as TestNode)
-        let (clause2, literals2, shuffled2) = Yices.clause("q(X)|p(Y)" as TestNode)
-        let (clause3, literals3, shuffled3) = Yices.clause("p(X)|q(Y)" as TestNode)
+        let (clause1, _, _) = Yices.clause("p(X)|p(Z)|q(Y)" as TestNode)
+        let (clause2, _, _) = Yices.clause("q(X)|p(Y)" as TestNode)
+        let (clause3, _, _) = Yices.clause("p(X)|q(Y)" as TestNode)
 
-        let (clause4, literals4, shuffled4) = Yices.clause("~p(X)|p(Z)|q(Y)" as TestNode)
-        let (clause5, literals5, shuffled5) = Yices.clause("q(X)|~p(Y)" as TestNode)
-        let (clause6, literals6, shuffled6) = Yices.clause("~p(X)|q(Y)" as TestNode)
+        let (clause4, _, _) = Yices.clause("~p(X)|p(Z)|q(Y)" as TestNode)
+        let (clause5, _, _) = Yices.clause("q(X)|~p(Y)" as TestNode)
+        let (clause6, _, _) = Yices.clause("~p(X)|q(Y)" as TestNode)
 
         XCTAssertEqual(clause1, clause2, nok)
         XCTAssertEqual(clause1, clause3, nok)

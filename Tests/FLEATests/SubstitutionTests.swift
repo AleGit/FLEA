@@ -65,6 +65,6 @@ final class Instantiator<N: Node>: Substitution, Equatable {
     }
 }
 
-func ==<N: Node>(lhs: Instantiator<N>, rhs: Instantiator<N>) -> Bool {
+func ==<N>(lhs: Instantiator<N>, rhs: Instantiator<N>) -> Bool {
     return lhs.storage == rhs.storage
 }

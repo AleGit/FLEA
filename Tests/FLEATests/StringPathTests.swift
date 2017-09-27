@@ -106,9 +106,9 @@ public class StringPathTests: FleaTestCase {
         let utf16idx = cidx.samePosition(in: path.utf16)
 
         print(cidx)
-        print(uidx)
-        print(utf8idx)
-        print(utf16idx)
+        print(uidx!)
+        print(utf8idx!)
+        print(utf16idx!)
 
         let name = "Marie Curie"
         let firstSpace = name.characters.index(of: " ")!
