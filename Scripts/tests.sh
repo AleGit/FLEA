@@ -30,13 +30,15 @@ then
 elif [ -n "$2" ]
 then
   T="FLEATests.${1}Tests/test${2}"
-  echo "swift test -s ${T}"
-  swift test -Xlinker -L/usr/local/lib -s $T
+  echo "START: swift test --filter ${T}"
+  swift test -Xlinker -L/usr/local/lib --filter $T
+  echo "DONE: swift test --filter ${T}"
 elif [ -n "$1" ]
 then
   T="FLEATests.${1}Tests"
-  echo "swift test -s ${T}"
-  swift test -Xlinker -L/usr/local/lib -s $T
+  echo "START: swift test --filter ${T}"
+  swift test -Xlinker -L/usr/local/lib --filter $T
+  echo "DONE: swift test --filter ${T}"
 else
   # swift test -Xswiftc -warnings-as-errors -Xlinker -L/usr/local/lib
   swift test -Xlinker -L/usr/local/lib
