@@ -1,22 +1,22 @@
 # FLEA *library*, *tests, and binary*
-**F**irst order **L**ogic with **E**quality theorem **A**ttesting
+**F**irst order **L**ogic with **E**quality theorem **A**ttester
 
 - *still in development*
 
 ### Platforms:
-- Mac (OS X El Capitan, macOS Sierra)
-- Linux 64-bit (Ubuntu 14.04, 15.10, 16.04)
+- Mac (macOS Sierra, macOS High Sierra)
+- Linux 64-bit (Ubuntu 16.04)
 
 ### Prerequisites
 
 [Yices](http://yices.csl.sri.com),
 [Z3](https://github.com/Z3Prover/z3),
-and [Swift 3](https://swift.org/) have to be installed.
+and [Swift 4](https://swift.org/) have to be installed.
 
 - Install [Yices](http://yices.csl.sri.com) and check:
 ```
 $ yices -V
-Yices 2.5.1
+Yices 2.5.2
 ```
 
 - Install [Z3](https://github.com/Z3Prover/z3) and check:
@@ -91,5 +91,5 @@ $ .build/release/FLEA --problem PUZ001-1 --timeout 1
 ```
 
 [1]: The script creates a copy of  `Scripts/main.swift` in `Sources` and envokes `swift build` afterwards.
-When the build is done the script removes `Sources/main.swift`. 
+When the build is done the script removes `Sources/main.swift`.
 Otherwise `Sources/main.swift` and `Tests/LinuxMain.swift` would clash when building tests on Linux.
