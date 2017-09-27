@@ -14,25 +14,21 @@ protocol Trie {
 
     /// creates a trie with one value at path.
     init<C: Collection>(with: Value, at path: C)
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection
+        where C.Iterator.Element == Leap, C.SubSequence: Collection
 
     /// inserts one value at Leap path
     mutating func insert<C: Collection>(_ newMember: Value, at path: C)
         -> (inserted: Bool, memberAfterInsert: Value)
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection
+        where C.Iterator.Element == Leap, C.SubSequence: Collection
 
     /// removes and returns one value at Leap path,
     /// if path or value do not exist trie stays unchanged and nil is returned
     mutating func remove<C: Collection>(_ value: Value, at path: C) -> Value?
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection
+        where C.Iterator.Element == Leap, C.SubSequence: Collection
 
     /// returns all values at path
     func retrieve<C: Collection>(from path: C) -> ValueS?
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection
+        where C.Iterator.Element == Leap, C.SubSequence: Collection
 
     /// stores one value at trie node
     mutating func insert(_ newMember: Value) -> (inserted: Bool, memberAfterInsert: Value)
@@ -67,8 +63,7 @@ extension Trie {
 
     /// Create a new trie with one value at path.
     init<C: Collection>(with value: Value, at path: C)
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection {
+        where C.Iterator.Element == Leap, C.SubSequence: Collection {
         self.init() // initialize trie
         _ = insert(value, at: path)
     }
@@ -77,8 +72,7 @@ extension Trie {
     @discardableResult
     mutating func insert<C: Collection>(_ newMember: Value, at path: C)
         -> (inserted: Bool, memberAfterInsert: Value)
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection {
+        where C.Iterator.Element == Leap, C.SubSequence: Collection {
         guard let (head, tail) = path.decomposing else {
             return insert(newMember)
         }
@@ -95,8 +89,7 @@ extension Trie {
     /// if path does not exist or value was not stored at path.
     /// Empty subtries are removed.
     mutating func remove<C: Collection>(_ member: Value, at path: C) -> Value?
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection {
+        where C.Iterator.Element == Leap, C.SubSequence: Collection {
         guard let (head, tail) = path.decomposing else {
             return remove(member)
         }
@@ -108,8 +101,7 @@ extension Trie {
 
     /// Returns values at path or nil if path does not exist.
     func retrieve<C: Collection>(from path: C) -> ValueS?
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection {
+        where C.Iterator.Element == Leap, C.SubSequence: Collection {
         guard let (head, tail) = path.decomposing else {
             return values
         }
@@ -190,8 +182,7 @@ extension TrieStore {
     /// Leap == Int => wildcard must not conflict with positions, i.e. wildcard < 0
     /// Leap == SymHop<String> => wildcard = SymHop.symbol("*")
     private func values<C: Collection>(prefix path: C, wildcard: Leap) -> Set<Value>?
-        where C.SubSequence.Iterator.Element == Leap,
-        C.SubSequence: Collection {
+        where C.Iterator.Element == Leap, C.SubSequence: Collection {
         guard let (head, tail) = path.decomposing, head != wildcard else {
             // empty path, i.e. a) leave node or b) wildcard
             assert(
