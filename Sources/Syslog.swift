@@ -296,7 +296,7 @@ extension Syslog {
                 #if os(OSX)
                     return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
                 #elseif os(Linux)
-                    return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
+                    return "\(Syslog.loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
                 #else
                     assert(false, "unknown os")
                     return "unknown os"
@@ -308,7 +308,7 @@ extension Syslog {
                 #if os(OSX)
                     return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
                 #elseif os(Linux)
-                    return "\(loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
+                    return "\(Syslog.loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
                 #else
                     assert(false, "unknown os")
                     return "unknown os"
@@ -386,7 +386,7 @@ extension Syslog {
         guard Syslog.loggable(.info, file, function, line), condition() else {
 
             if CommandLine.options["--prinfo"]?.first == "active" || CommandLine.name.hasSuffix("test"), condition() {
-                print("\(loggingTime()) <Print,Info>: \(URL(fileURLWithPath: file).lastPathComponent)[\(line):\(column)].\(function) { \(message()) }")
+                print("\(Syslog.loggingTime()) <Print,Info>: \(URL(fileURLWithPath: file).lastPathComponent)[\(line):\(column)].\(function) { \(message()) }")
             }
             return
         }
@@ -402,4 +402,14 @@ extension Syslog {
         log(.debug, errcode: errcode,
             file: file, function: function, line: line, column: column, message: message)
     }
+}
+
+extension Syslog {
+    fileprivate static func loggingTime() -> String {
+    var t = time(nil) // : time_t
+    let tm = localtime(&t) // : struct tm *
+    var s = [CChar](repeating: 0, count: 64) // : char s[64];
+    strftime(&s, s.count, "%F %T %z", tm)
+    return String(cString: s)
+}
 }
