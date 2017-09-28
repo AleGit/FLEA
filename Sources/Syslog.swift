@@ -281,25 +281,28 @@ extension Syslog {
         file: String = #file, function: String = #function, line: Int = #line, column: Int = #column,
         message: () -> String
     ) {
-        if errcode != 0 {
+        switch errcode {
+        case 0:
+            // format string contains "%d %d" for line, column
             Syslog.vSysLog(priority: priority,
-                          args: line, column) {
+                           args: line, column) {
                 #if os(OSX)
-                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
+                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
                 #elseif os(Linux)
-                    return "\(Syslog.loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
+                    return "\(Syslog.loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
                 #else
                     assert(false, "unknown os")
                     return "unknown os"
                 #endif
             }
-        } else {
+        default:
+            // format string contains "%d %d %m" for line, column, and error code message
             Syslog.vSysLog(priority: priority,
-                          args: line, column) {
+                           args: line, column) {
                 #if os(OSX)
-                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
+                    return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
                 #elseif os(Linux)
-                    return "\(Syslog.loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
+                    return "\(Syslog.loggingTime()) <\(priority)>: \(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
                 #else
                     assert(false, "unknown os")
                     return "unknown os"
@@ -397,10 +400,10 @@ extension Syslog {
 
 extension Syslog {
     fileprivate static func loggingTime() -> String {
-    var t = time(nil) // : time_t
-    let tm = localtime(&t) // : struct tm *
-    var s = [CChar](repeating: 0, count: 64) // : char s[64];
-    strftime(&s, s.count, "%F %T %z", tm)
-    return String(cString: s)
-}
+        var t = time(nil) // : time_t
+        let tm = localtime(&t) // : struct tm *
+        var s = [CChar](repeating: 0, count: 64) // : char s[64];
+        strftime(&s, s.count, "%F %T %z", tm)
+        return String(cString: s)
+    }
 }
