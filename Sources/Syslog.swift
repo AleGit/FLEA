@@ -267,16 +267,7 @@ extension Syslog {
 
     /*  void syslog(int priority, const char *format, ...); */
     /*  void vsyslog(int priority, const char *format, va_list ap); */
-
-    fileprivate static func syslog(
-        priority: Int32, message: String,
-        args: CVarArg...) {
-        withVaList(args) {
-            vsyslog(priority, message, $0)
-        }
-    }
-
-    fileprivate static func sysLog(
+    fileprivate static func vSysLog(
         priority: Priority, args: CVarArg...,
         message: () -> String
     ) {
@@ -291,7 +282,7 @@ extension Syslog {
         message: () -> String
     ) {
         if errcode != 0 {
-            Syslog.sysLog(priority: priority,
+            Syslog.vSysLog(priority: priority,
                           args: line, column) {
                 #if os(OSX)
                     return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) '%m' { \(message()) }"
@@ -303,7 +294,7 @@ extension Syslog {
                 #endif
             }
         } else {
-            Syslog.sysLog(priority: priority,
+            Syslog.vSysLog(priority: priority,
                           args: line, column) {
                 #if os(OSX)
                     return "\(URL(fileURLWithPath: file).lastPathComponent)[%d:%d].\(function) { \(message()) }"
