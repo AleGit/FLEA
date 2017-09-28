@@ -120,7 +120,7 @@ func ==<T: Trie>(lhs: T, rhs: T) -> Bool
 
 // MARK: - trie with hashable leaps and values
 
-protocol TrieStore: Trie, Equatable where Self.Leap : Hashable, Self.Value : Hashable {
+protocol TrieStore: Trie, Equatable where Self.Leap: Hashable, Self.Value: Hashable {
     var trieStore: [Leap: Self] { set get }
     var valueStore: Set<Value> { set get }
 }
@@ -157,18 +157,18 @@ extension TrieStore {
     }
 
     var values: Set<Value> {
-        return self.valueStore
+        return valueStore
     }
 
     /// Complexity : O(n)
     var allValues: Set<Value> {
-        return self.valueStore.union(
+        return valueStore.union(
             trieStore.values.flatMap { $0.allValues }
         )
     }
 
     var leaps: Set<Leap> {
-        return Set(self.trieStore.keys)
+        return Set(trieStore.keys)
     }
 
     var tries: [Self] {

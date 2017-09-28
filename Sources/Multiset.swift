@@ -31,7 +31,7 @@ public struct Multiset<T: Hashable> {
     // MARK: Querying a Multiset
 
     /// Number of elements stored in the multiset, including multiple copies.
-    fileprivate(set) public var count = 0
+    public fileprivate(set) var count = 0
 
     /// Returns `true` if and only if `count == 0`.
     public var isEmpty: Bool {

@@ -20,7 +20,7 @@ extension Tptp {
                 return nil
             }
             let code = prlcParsePath(path, &store, &root)
-            guard code == 0 && self.store != nil && self.root != nil else {
+            guard code == 0 && store != nil && root != nil else {
                 return nil
             }
         }
@@ -154,7 +154,7 @@ extension Tptp {
         /// Symbols (C-strings / UTF8) are uniquely stored in a single memory block,
         /// i.e. the symbols are separated by exactly one `\0`
         private var symbols: UtileSequence<CStringRef, String?> {
-            let first = prlcFirstSymbol(self.store!)
+            let first = prlcFirstSymbol(store!)
             let step = {
                 (cstring: CStringRef) in
                 prlcNextSymbol(self.store!, cstring)
@@ -169,7 +169,7 @@ extension Tptp {
 
         /// The sequence of stored tree nodes from first to last.
         private var nodes: UtileSequence<TreeNodeRef, TreeNodeRef> {
-            let first = prlcFirstTreeNode(self.store!)
+            let first = prlcFirstTreeNode(store!)
             let step = {
                 (treeNode: TreeNodeRef) in
                 prlcNextTreeNode(self.store!, treeNode)
@@ -248,7 +248,7 @@ extension Tptp {
         }
 
         var containsIncludes: Bool {
-            return self.includes.reduce(false) { _, _ in true }
+            return includes.reduce(false) { _, _ in true }
         }
     }
 }

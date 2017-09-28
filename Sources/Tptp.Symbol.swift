@@ -263,7 +263,7 @@ extension Tptp.SymbolType {
 extension Tptp.Symbol: Hashable {
     /// Hashable
     var hashValue: Int {
-        return self.name.hashValue
+        return name.hashValue
     }
 }
 
@@ -275,12 +275,12 @@ func == (lhs: Tptp.Symbol, rhs: Tptp.Symbol) -> Bool {
 extension Tptp.Symbol: CustomStringConvertible {
     /// CustomStringConvertible
     var description: String {
-        return self.name
+        return name
     }
 }
 
 extension Tptp.Symbol: CustomDebugStringConvertible {
     var debugDescription: String {
-        return "\(self.name)-\(self.type)"
+        return "\(name)-\(type)"
     }
 }

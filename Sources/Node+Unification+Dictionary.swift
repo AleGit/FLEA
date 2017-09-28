@@ -53,20 +53,20 @@ func =?=<N: Node>(lhs: N, rhs: N) -> [N: N]? {
 
 extension Node where Self: SymbolNameTyped {
     var negated: Self? {
-        let (_, type) = self.symbolNameType
+        let (_, type) = symbolNameType
         switch type {
         case .negation:
-            assert(self.nodes?.count == 1)
-            return self.nodes?.first
+            assert(nodes?.count == 1)
+            return nodes?.first
 
         case .equation:
-            assert(self.nodes?.count == 2)
+            assert(nodes?.count == 2)
             return Self(
                 symbol: Self.symbolize(name: "!=", type: .inequation),
                 nodes: [self.nodes!.first!, self.nodes!.last!])
 
         case .inequation:
-            assert(self.nodes?.count == 2)
+            assert(nodes?.count == 2)
             return Self(
                 symbol: Self.symbolize(name: "=", type: .equation),
                 nodes: [self.nodes!.first!, self.nodes!.last!])
@@ -82,19 +82,19 @@ extension Node where Self: SymbolNameTyped {
     }
 
     var unnegating: Self {
-        let (_, type) = self.symbolNameType
+        let (_, type) = symbolNameType
         switch type {
 
         case .negation:
-            assert(self.nodes?.count == 1)
-            return self.nodes!.first!
+            assert(nodes?.count == 1)
+            return nodes!.first!
 
         case .equation:
-            assert(self.nodes?.count == 2)
+            assert(nodes?.count == 2)
             return self
 
         case .inequation:
-            assert(self.nodes?.count == 2)
+            assert(nodes?.count == 2)
             return Self(
                 symbol: Self.symbolize(name: "!=", type: .inequation),
                 nodes: [self.nodes!.first!, self.nodes!.last!])

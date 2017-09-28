@@ -6,16 +6,16 @@ extension Node {
 
     /// possible usage: lazy var description = defaultDescritpion
     var defaultDescription: String {
-        let s = "\(self.symbol)"
+        let s = "\(symbol)"
         // without reliable symbol type information, everything is a prefix function.
         // empty parenthesis will be ommitted, e.g. for variables, constants, predicates.
-        return self.buildDescription(string: s, type: .function(self.nodes?.count ?? -1))
+        return buildDescription(string: s, type: .function(nodes?.count ?? -1))
     }
 }
 
 extension Node where Self: SymbolNameTyped {
     var defaultDescription: String {
-        let (string, type) = self.symbolNameType
+        let (string, type) = symbolNameType
         return buildDescription(string: string, type: type)
     }
 }
@@ -74,20 +74,20 @@ extension Node {
 extension Node {
     var debugDescription: String {
         // without reliable string and type information we just use string interpolation
-        return buildDebugDescription(string: "\(self.symbol)")
+        return buildDebugDescription(string: "\(symbol)")
     }
 }
 
 extension Node where Symbol == String {
     var debugDescription: String {
         assert(false, "Do not use symole String as Node.Symbol")
-        return buildDebugDescription(string: self.symbol)
+        return buildDebugDescription(string: symbol)
     }
 }
 
 extension Node where Symbol == Tptp.Symbol {
     var debugDescription: String {
-        return buildDebugDescription(string: "\(self.symbol.debugDescription)")
+        return buildDebugDescription(string: "\(symbol.debugDescription)")
     }
 }
 
@@ -103,15 +103,15 @@ extension Node where Symbol == Tptp.Symbol {
 extension Node where Symbol: TypedName {
     var debugDescription: String {
         // with reliable string and type information we use it
-        return buildDebugDescription(string: "\(self.symbol)-\(self.symbol.name)-\(self.symbol.type)")
+        return buildDebugDescription(string: "\(symbol)-\(symbol.name)-\(symbol.type)")
     }
 }
 
 extension Node where Self: SymbolTabulating, Symbol == Self.Symbols.Symbol,
     Self.Symbols.Key == String {
     var debugDescription: String {
-        let (string, type) = Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
+        let (string, type) = Self.symbols[self.symbol] ?? ("\(symbol)", .undefined)
 
-        return buildDebugDescription(string: "\(self.symbol)-\(string)-\(type)")
+        return buildDebugDescription(string: "\(symbol)-\(string)-\(type)")
     }
 }

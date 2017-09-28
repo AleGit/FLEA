@@ -33,7 +33,7 @@ public struct Demo {
 
             print("\nmeasure key:'\(key)', description:'\(description)'")
             let (result, runtime) = utileMeasure(f: f)
-            print("key:'\(key)', result:'\(String(describing:result))', runtime:'\(runtime)'")
+            print("key:'\(key)', result:'\(String(describing: result))', runtime:'\(runtime)'")
             count += 1
         }
         print("--------- --------- --------- --------- --------- --------- --------- --------- --------- ")
@@ -143,10 +143,10 @@ extension Demo {
         var debugDescription: String {
             guard let nodes = self.nodes?.map({ $0.description }), nodes.count > 0
             else {
-                return "\(self.symbol)'\(self.c)"
+                return "\(symbol)'\(c)"
             }
             let tuple = nodes.map { $0 }.joined(separator: ",")
-            return "\(self.symbol)'\(self.c)(\(tuple))"
+            return "\(symbol)'\(c)(\(tuple))"
         }
     }
 
@@ -160,7 +160,7 @@ extension Demo {
         var nodes: [N]?
 
         lazy var hashValue: Int = self.defaultHashValue
-        var description: String { return self.defaultDescription }
+        var description: String { return defaultDescription }
     }
 
     final class KinNode: SymbolNameTyped, Sharing, Kin, Node, ExpressibleByStringLiteral {
@@ -190,7 +190,7 @@ extension Demo {
         }()
 
         init() {
-            print("\(#function)#\(self.c)")
+            print("\(#function)#\(c)")
         }
 
         lazy var hashValue: Int = self.defaultHashValue
@@ -199,10 +199,10 @@ extension Demo {
         var debugDescription: String {
             guard let nodes = self.nodes?.map({ $0.description }), nodes.count > 0
             else {
-                return "\(self.symbol)'\(self.c)"
+                return "\(symbol)'\(c)"
             }
             let tuple = nodes.map { $0 }.joined(separator: ",")
-            return "\(self.symbol)'\(self.c)(\(tuple))"
+            return "\(symbol)'\(c)(\(tuple))"
         }
 
         deinit {

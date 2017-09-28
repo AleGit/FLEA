@@ -86,7 +86,7 @@ struct Tptp {
         var nodes: [N]?
 
         lazy var hashValue: Int = self.defaultHashValue
-        var description: String { return self.defaultDescription }
+        var description: String { return defaultDescription }
     }
 
     /// A smarter sharing node implementation with an integer symbol and a symbol table.

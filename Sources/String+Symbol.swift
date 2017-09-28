@@ -34,7 +34,7 @@ extension String {
         if let type = String.stringTypes[self] {
             return type
         }
-        if self.isUppercased(at: self.startIndex) {
+        if isUppercased(at: startIndex) {
             return .variable
         }
         return .undefined
@@ -43,13 +43,13 @@ extension String {
     /// String literals to be converted to nodes can be annotated
     /// with the type of its root node to avoid ambiguity.
     var tptpStringLiteralType: (String, Tptp.SymbolType) {
-        if self.isEmpty {
+        if isEmpty {
             return (self, .undefined)
         }
 
         // ANNOTATED
 
-        if self.hasPrefix("@") {
+        if hasPrefix("@") {
             for (prefix, type) in [
                 "@cnf ": Tptp.SymbolType.cnf,
                 "@fof ": Tptp.SymbolType.fof,
@@ -58,8 +58,8 @@ extension String {
                 "@file ": Tptp.SymbolType.file,
 
             ] {
-                if self.hasPrefix(prefix) {
-                    let s = self.substring(from: self.range(of: prefix)!.upperBound)
+                if hasPrefix(prefix) {
+                    let s = substring(from: range(of: prefix)!.upperBound)
                     return (s, type)
                 }
             }
@@ -70,7 +70,7 @@ extension String {
 
         // not annotated strings with connectives are fof.
 
-        if self.containsOne([
+        if containsOne([
             "?", "!", "~", "-->",
             "&", "|", "=>", "<=>", "=",
             "~&", "~|", "<=", "<~>", "~=",

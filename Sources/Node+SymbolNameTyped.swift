@@ -9,7 +9,7 @@
 /// default implementations for SymbolNameTyped
 extension Node where Symbol: TypedName {
     var symbolNameType: (String, Tptp.SymbolType) {
-        return (self.symbol.name, self.symbol.type)
+        return (symbol.name, symbol.type)
     }
 
     static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol {
@@ -21,7 +21,7 @@ extension Node where Symbol: TypedName {
 extension Node where Self: SymbolTabulating,
     Symbol == Self.Symbols.Symbol, Self.Symbols.Key == String {
     var symbolNameType: (String, Tptp.SymbolType) {
-        return Self.symbols[self.symbol] ?? ("\(self.symbol)", .undefined)
+        return Self.symbols[self.symbol] ?? ("\(symbol)", .undefined)
     }
 
     static func symbolize(name: String, type: Tptp.SymbolType) -> Symbol {

@@ -2,7 +2,7 @@
 
 extension Node {
     var isVariable: Bool {
-        return self.nodes == nil
+        return nodes == nil
     }
 
     var isConstant: Bool {
@@ -63,23 +63,23 @@ extension Node {
 
 extension Node {
     var subnodes: Set<Self> {
-        return self.defaultSubnodes
+        return defaultSubnodes
     }
 
     var variables: Set<Self> {
-        return self.defaultVariables
+        return defaultVariables
     }
 
     var height: Int {
-        return self.dimensions.height
+        return dimensions.height
     }
 
     var width: Int {
-        return self.dimensions.width
+        return dimensions.width
     }
 
     var size: Int {
-        return self.dimensions.size
+        return dimensions.size
     }
 
     var dimensions: Dimensions {

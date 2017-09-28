@@ -7,9 +7,9 @@ extension Node {
     @available(*, deprecated, message: "- would cause too many collisions -")
     var simpleHashValue: Int {
         guard let nodes = self.nodes else {
-            return self.symbol.hashValue
+            return symbol.hashValue
         }
-        return nodes.reduce(self.symbol.hashValue) { ($0 &* 2) &+ $1.hashValue }
+        return nodes.reduce(symbol.hashValue) { ($0 &* 2) &+ $1.hashValue }
     }
 
     /// Default calculation for a consistent hash value,
@@ -20,9 +20,9 @@ extension Node {
     /// e.g. http://stackoverflow.com/questions/1988665/hashing-a-tree-structure
     var defaultHashValue: Int {
         guard let nodes = self.nodes else {
-            return self.symbol.hashValue
+            return symbol.hashValue
         }
-        return nodes.reduce(5381 &+ self.symbol.hashValue) {
+        return nodes.reduce(5381 &+ symbol.hashValue) {
             ($0 << 4) &+ $0 &+ $1.hashValue // less collisions than with $0 << 5
         }
     }

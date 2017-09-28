@@ -20,11 +20,11 @@ extension Dictionary: Substitution {
 /// A node substitution has a specialized description.
 extension Substitution // K == V not necessary
     where K: Node, V: Node, Iterator == DictionaryIterator<K, V> {
-        var description: String {
-            let pairs = self.map { "\($0)->\($1)" }.joined(separator: ",")
-            return "{\(pairs)}"
-        }
+    var description: String {
+        let pairs = map { "\($0)->\($1)" }.joined(separator: ",")
+        return "{\(pairs)}"
     }
+}
 
 /// 't * σ' returns the application of substitution σ on term t.
 /// - *caution*: this implementation is more general as
@@ -96,26 +96,26 @@ postfix func ⊥<N: Node>(t: N) -> N
 extension Dictionary where Key: Node, Value: Node { // , Key == Value does not work
     /// Do the runtime types of keys and values match?
     private var isHomogenous: Bool {
-        return type(of: self.keys.first) == type(of: self.values.first)
+        return type(of: keys.first) == type(of: values.first)
     }
 
     /// Are *variables* mapped to terms?
     private var allKeysAreVariables: Bool {
-        return Array(self.keys).reduce(true) {
+        return Array(keys).reduce(true) {
             $0 && $1.nodes == nil
         }
     }
 
     /// Are terms mapped to *variables*?
     private var allValuesAreVariables: Bool {
-        return Array(self.values).reduce(true) {
+        return Array(values).reduce(true) {
             $0 && $1.nodes == nil
         }
     }
 
     /// Are distinct terms mapped to *distinguishable* terms?
     private var isInjective: Bool {
-        return self.keys.count == Set(self.values).count
+        return keys.count == Set(values).count
     }
 
     /// A substitution maps variables to terms.

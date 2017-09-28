@@ -16,7 +16,7 @@ extension Node where Self: SymbolNameTyped {
             return [[.symbol(self.symbol)]]
         }
 
-        let sym = SymHop.symbol(self.symbol)
+        let sym = SymHop.symbol(symbol)
 
         var ps = [[SymHop<Symbol>]]()
         for (i, node) in nodes.enumerated() {
@@ -36,12 +36,12 @@ extension Node where Self: SymbolNameTyped {
         let paths = leafPaths
 
         let negated: [[SymHop<Symbol>]]
-        let (_, type) = self.symbolNameType
+        let (_, type) = symbolNameType
 
         switch type {
 
         case .negation:
-            assert(self.nodes?.count == 1)
+            assert(nodes?.count == 1)
             negated = paths.map { Array($0.suffix(from: 2)) }
 
         case .equation:
@@ -98,12 +98,12 @@ extension Node where Symbol == Int, Self: SymbolNameTyped {
         let paths = leafPaths
 
         let negated: [[Int]]
-        let (_, type) = self.symbolNameType
+        let (_, type) = symbolNameType
 
         switch type {
 
         case .negation:
-            assert(self.nodes?.count == 1)
+            assert(nodes?.count == 1)
             negated = paths.map { Array($0.suffix(from: 2)) }
 
         case .equation:
@@ -153,7 +153,7 @@ extension Node where Self: SymbolNameTyped, Self.Symbol == Int {
         guard let nodes = self.nodes else {
             // a variable leaf
             Syslog.notice { "Specific (Symbol == Int) method was called." }
-            return [ -1]
+            return [-1]
         }
         guard nodes.count > 0 else {
             // a constant (function) leaf
