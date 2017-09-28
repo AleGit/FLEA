@@ -60,7 +60,7 @@ final class Instantiator<N: Node>: Substitution, Equatable {
     }
 
     var description: String {
-        let pairs = self.map { "\($0)->\($1)" }.joined(separator: ",")
+        let pairs = map { "\($0)->\($1)" }.joined(separator: ",")
         return "\(type(of: self)) {\(pairs)}"
     }
 }
