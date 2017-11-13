@@ -54,7 +54,7 @@ public class StringPathTests: FleaTestCase {
         #endif
 
         XCTAssertEqual(
-            Array(path.characters), [
+            Array(path), [
                 "/", "/", "P",
                 "α", "t", "h", "/", "T", "o", "/", "N",
                 "Ö", "W", "H", "E", "R", "E", "/",
@@ -89,18 +89,18 @@ public class StringPathTests: FleaTestCase {
     func testLengths() {
 
         XCTAssertEqual(18, ascii.unicodeScalars.count, nok)
-        XCTAssertEqual(18, ascii.characters.count, nok)
+        XCTAssertEqual(18, ascii.count, nok)
         XCTAssertEqual(18, ascii.utf16.count, nok)
         XCTAssertEqual(18, ascii.utf8.count, nok)
 
         XCTAssertEqual(18, path.unicodeScalars.count, nok)
-        XCTAssertEqual(18, path.characters.count, nok)
+        XCTAssertEqual(18, path.count, nok)
         XCTAssertEqual(18, path.utf16.count, nok)
         XCTAssertEqual(20, path.utf8.count, nok)
     }
 
     func testIndices() {
-        let cidx = path.characters.index(of: "Ö")!
+        let cidx = path.index(of: "Ö")!
         let uidx = cidx.samePosition(in: path.unicodeScalars)
         let utf8idx = cidx.samePosition(in: path.utf8)
         let utf16idx = cidx.samePosition(in: path.utf16)
@@ -111,8 +111,8 @@ public class StringPathTests: FleaTestCase {
         print(utf16idx!)
 
         let name = "Marie Curie"
-        let firstSpace = name.characters.index(of: " ")!
-        let firstName = String(name.characters.prefix(upTo: firstSpace))
+        let firstSpace = name.index(of: " ")!
+        let firstName = String(name.prefix(upTo: firstSpace))
         XCTAssertEqual("Marie", firstName, nok)
     }
 

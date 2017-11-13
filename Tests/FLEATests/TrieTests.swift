@@ -159,7 +159,7 @@ public class TrieTests: FleaTestCase {
         ])
 
         for s in all {
-            trie.insert(s, at: s.characters)
+            trie.insert(s, at: s)
         }
 
         var matches = trie.unifiables(paths: [["a"]], wildcard: "*")

@@ -140,8 +140,8 @@ struct Syslog {
                 continue
             }
 
-            let lastIndex = last.characters.index(of: ("#")) ?? last.characters.endIndex
-            let value = String(last.characters.prefix(upTo: lastIndex)).trimmingWhitespace.pealing
+            let lastIndex = last.index(of: ("#")) ?? last.endIndex
+            let value = String(last.prefix(upTo: lastIndex)).trimmingWhitespace.pealing
             guard let p = Priority(string: value) else {
                 continue
             }

@@ -40,15 +40,15 @@ public class AuxiliaryTests: FleaTestCase {
     func testSequence() {
         let names = ["Äbel", "Bärta", "Cornelium", "Doris", "Earnest"]
 
-        XCTAssertTrue(names.all { $0.characters.count > 3 }, "Not all names has more than three characters. \(nok)")
-        XCTAssertFalse(names.all { $0.characters.count > 4 }, "All numbers has more than four characters. \(nok)")
+        XCTAssertTrue(names.all { $0.count > 3 }, "Not all names has more than three characters. \(nok)")
+        XCTAssertFalse(names.all { $0.count > 4 }, "All numbers has more than four characters. \(nok)")
 
-        XCTAssertTrue(names.one { $0.characters.count > 8 }, "No name has more than eight characters. \(nok)")
-        XCTAssertFalse(names.one { $0.characters.count > 9 }, "A name has more than nine characters. \(nok)")
+        XCTAssertTrue(names.one { $0.count > 8 }, "No name has more than eight characters. \(nok)")
+        XCTAssertFalse(names.one { $0.count > 9 }, "A name has more than nine characters. \(nok)")
 
-        XCTAssertEqual(names.count, names.count { $0.characters.count > 3 }, nok)
-        XCTAssertEqual(2, names.count { $0.characters.count > 5 }, nok)
-        XCTAssertEqual(0, names.count { $0.characters.count > 9 }, nok)
+        XCTAssertEqual(names.count, names.count { $0.count > 3 }, nok)
+        XCTAssertEqual(2, names.count { $0.count > 5 }, nok)
+        XCTAssertEqual(0, names.count { $0.count > 9 }, nok)
     }
 
     func testAllOneCount() {
@@ -108,7 +108,7 @@ public class AuxiliaryTests: FleaTestCase {
         let ü = "ÜbÉr"
         let ä = "älter"
 
-        print(ü, ü.characters.map { $0 })
+        print(ü, ü.map { $0 })
 
         XCTAssertTrue(ü.isUppercased(at: ü.startIndex), nok)
         XCTAssertFalse(ü.isUppercased(at: ü.index(after: ü.startIndex)))
@@ -131,13 +131,13 @@ public class AuxiliaryTests: FleaTestCase {
         XCTAssertFalse(ε.containsOne([String]()), nok)
 
         // An arbitrary string contains ALL of its characters.
-        XCTAssertTrue(string.containsAll(string.characters.map { String($0) }), nok)
-        XCTAssertTrue(ε.containsAll(ε.characters.map { String($0) }), nok)
+        XCTAssertTrue(string.containsAll(string.map { String($0) }), nok)
+        XCTAssertTrue(ε.containsAll(ε.map { String($0) }), nok)
 
         // A non-empty string contains ONE of its characters.
-        XCTAssertTrue(string.containsOne(string.characters.map { String($0) }), nok)
+        XCTAssertTrue(string.containsOne(string.map { String($0) }), nok)
         // ⚠️  The empty string does NOT contain ONE of its characters.
-        XCTAssertFalse(ε.containsOne(ε.characters.map { String($0) }), nok)
+        XCTAssertFalse(ε.containsOne(ε.map { String($0) }), nok)
 
         // A non-empty string MAY contain ONE or ALL characters of a non-empty collection.
         XCTAssertTrue(string.containsOne(["x", "ä", "é"]), nok)
