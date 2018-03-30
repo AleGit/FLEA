@@ -2,7 +2,7 @@
 
 # build an run FLEA
 
-swift build --clean
+swift package clean
 Scripts/build_release.sh
 
 

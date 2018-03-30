@@ -41,7 +41,7 @@ func process(problem: String) {
         theProver.run(timeout: 60.0)
     }
 
-    print(result, runtime, "clauses:", theProver.clauseCount,
+    print("\(result)", runtime, "clauses:", theProver.clauseCount,
           "ensured:", theProver.insuredClausesCount)
 }
 
