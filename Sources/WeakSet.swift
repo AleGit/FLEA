@@ -34,7 +34,7 @@ extension Set: PartialSetAlgebra {} // Set : SetAlgebra : PartialSetAlgebra
 
 /// A marker protocol for collections with weak references to objects.
 /// A type adopting this protocol MUST NOT hold strong references to its elements.
-/// A set can not adopt the protocol.
+/// A set MUST NOT adopt this protocol.
 protocol WeakPartialSetAlgebra: PartialSetAlgebra {}
 
 /// A weak set is a collection of weak references
