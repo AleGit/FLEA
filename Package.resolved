@@ -6,7 +6,7 @@
         "repositoryURL": "https://github.com/AleGit/CTptpParsing.git",
         "state": {
           "branch": null,
-          "revision": "0c4aaf404442abd6f3cf877e1c1b136737d7a387",
+          "revision": "845d7ee03afe3ed22ee37164cf08d5d8ce9dd541",
           "version": "1.0.0"
         }
       },
@@ -15,7 +15,7 @@
         "repositoryURL": "https://github.com/AleGit/CYices.git",
         "state": {
           "branch": null,
-          "revision": "173cd9b6ea5fe0357f2952350970fddba9bf9f1f",
+          "revision": "ea1c2ee764574911e09b3479069d90cce5c51cf0",
           "version": "1.0.0"
         }
       },
@@ -24,7 +24,7 @@
         "repositoryURL": "https://github.com/AleGit/CZ3Api.git",
         "state": {
           "branch": null,
-          "revision": "3285a2159c22cfb6a6d188a88bc67ce0d313b58d",
+          "revision": "a262fd127d7f77a05d46a27c14c723e371d4bed9",
           "version": "1.0.0"
         }
       }

@@ -1,10 +1,12 @@
+// swift-tools-version:4.0
+
 import PackageDescription
 
 let package = Package(
 	name:"FLEA",
 	dependencies: [
-		.Package(url:"https://github.com/AleGit/CTptpParsing.git", majorVersion: 1 ),
-		.Package(url:"https://github.com/AleGit/CYices.git", majorVersion: 1 ),
-		.Package(url:"https://github.com/AleGit/CZ3Api.git", majorVersion: 1 )
+		.package(url:"https://github.com/AleGit/CTptpParsing.git", from: "1.0.0" ),
+		.package(url:"https://github.com/AleGit/CYices.git", from: "1.0.0" ),
+		.package(url:"https://github.com/AleGit/CZ3Api.git", from: "1.0.0" )
 	]
 )
