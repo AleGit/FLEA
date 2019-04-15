@@ -11,11 +11,12 @@ let package = Package(
 	],
 	targets: [
         .target(
-            name: "FLEA", 
-			path: "Sources"),
+            name: "FLEA"),
+		.target(
+			name: "FLEARunner", dependencies: ["FLEA"]
+		),
         .testTarget(
             name: "FLEATests",
-            dependencies: ["FLEA"], 
-			path: "Tests"),
+            dependencies: ["FLEA"]),
     ]
 )

@@ -44,15 +44,15 @@ protocol SymbolTabulating {
 }
 
 /// Integers that can be initialized with an `Int` value.
-protocol GenericInteger: Integer {
+protocol GenericInteger: SignedInteger {
     init(_ value: Int)
 }
 
-extension UInt64: GenericInteger {}
-extension UInt32: GenericInteger {}
+// extension UInt64: GenericInteger {}
+// extension UInt32: GenericInteger {}
 // extension UInt16 : GenericInteger {}
 // extension UInt8 : GenericInteger {}
-extension UInt: GenericInteger {}
+// extension UInt: GenericInteger {}
 
 extension Int64: GenericInteger {}
 extension Int32: GenericInteger {}

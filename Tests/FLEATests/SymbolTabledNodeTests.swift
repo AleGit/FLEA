@@ -6,8 +6,8 @@ public class SymbolTabledNodeTests: FleaTestCase {
     /// Collect all tests by hand for Linux.
     static var allTests: [(String, (SymbolTabledNodeTests) -> () throws -> Void)] {
         return [
-            ("testF1", testF1),
-            ("testF2", testF2),
+            // ("testF1", testF1),
+            // ("testF2", testF2),
         ]
     } // local private adoption of protocol to avoid any side affects
     private final class LocalNode: SymbolNameTyped, SymbolTabulating, Sharing, Node,
@@ -27,7 +27,7 @@ public class SymbolTabledNodeTests: FleaTestCase {
 
     let key = "f"
 
-    func testF1() {
+    func _testF1() {
         let fa = LocalNode(f: key, [LocalNode(c: "a")])
         XCTAssertEqual("f(a)", fa.description)
 
@@ -42,7 +42,7 @@ public class SymbolTabledNodeTests: FleaTestCase {
         XCTAssertEqual(LocalNode.symbols["f"]?.1, FLEA.Tptp.SymbolType.function(2), nok)
     }
 
-    func testF2() {
+    func _testF2() {
         let f = "f(f(a,b,c),Y,Z)=g(X)&p(X)" as LocalNode
         XCTAssertEqual("(f(f(a,b,c),Y,Z)=g(X)&p(X))", f.description, nok)
         XCTAssertEqual(LocalNode.symbols["f"]?.1, FLEA.Tptp.SymbolType.function(3), nok)

@@ -106,7 +106,7 @@ extension Yices {
             let tau = yices_type_of_term(formula)
 
             Syslog.error(condition: yices_type_is_bool(tau) == 0) {
-                _ in
+                () in
                 let s = String(term: formula) ?? "\(formula) n/a"
                 let t = String(tau: tau) ?? "\(tau) n/a"
 

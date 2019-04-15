@@ -153,8 +153,8 @@ public class AuxiliaryTests: FleaTestCase {
     }
 
     func testIds() {
-        let $ = "$"
-        XCTAssertEqual($, "$")
+        let `$` = "$"
+        XCTAssertEqual(`$`, "$")
         let a$ = "a$"
         XCTAssertEqual(a$, "a$")
         // let $a = "$a" // error: expected numeric value following '$'

@@ -42,7 +42,7 @@ extension Yices {
         } else {
             assert(term_tau == yices_type_of_term(c),
                    // swiftlint:disable line_length
-                   "\(String(tau: term_tau), term_tau) != \(String(tau: yices_type_of_term(c)), yices_type_of_term(c)) \(String(term: c) ?? String.NIL) for '\(symbol)'")
+                   "\((String(tau: term_tau), term_tau)) != \((String(tau: yices_type_of_term(c)), yices_type_of_term(c))) \(String(term: c) ?? String.NIL) for '\(symbol)'")
             // swiftlint:enable line_length
         }
         return c

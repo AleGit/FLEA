@@ -8,8 +8,8 @@ public class SharingNodeTests: FleaTestCase {
     /// Collect all tests by hand for Linux.
     static var allTests: [(String, (SharingNodeTests) -> () throws -> Void)] {
         return [
-            ("testEqualityX", testEqualityX),
-            ("testEqualityY", testEqualityY),
+            // ("testEqualityX", testEqualityX),
+            // ("testEqualityY", testEqualityY),
         ]
     }
 
@@ -27,7 +27,7 @@ public class SharingNodeTests: FleaTestCase {
     }
 
     /// accumulate additional four distict nodes
-    func testEqualityX() {
+    func _testEqualityX() {
 
         let X = LocalSharingNode(v: "X")
         let a = LocalSharingNode(c: "a")
@@ -49,7 +49,7 @@ public class SharingNodeTests: FleaTestCase {
     }
 
     /// accumulate additional four distict nodes
-    func testEqualityY() {
+    func _testEqualityY() {
 
         let X = LocalSharingNode(v: "Y")
         let a = LocalSharingNode(c: "a")

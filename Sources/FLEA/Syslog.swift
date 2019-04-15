@@ -244,7 +244,7 @@ extension Syslog {
     /* int setlogmask(int maskpri); */
 
     fileprivate static func setLogMask() -> Int32 {
-        let mask = Syslog.activePriorities.reduce(0) { $0 + (1 << $1.priority) }
+        let mask = Syslog.activePriorities.reduce(Int32(0)) { $0 + (1 << $1.priority) }
         return setlogmask(mask)
     }
 

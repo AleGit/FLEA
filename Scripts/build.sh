@@ -11,15 +11,15 @@
 # `$ Scripts/build.sh -c release -Xlinker -L/usr/local/lib`
 
 # 3. remove `main.swift` from `Sources`
-function finish {
+# function finish {
   # main.swift MUST NOT remain in Sources
-  rm Sources/main.swift
-}
+  # rm Sources/main.swift
+# }
 # ensure cleanup
-trap finish EXIT
+# trap finish EXIT
 
 # 1. copy `main.swift` into the `Sources` folder
-cp Scripts/main.swift Sources/main.swift
+# cp Scripts/main.swift Sources/main.swift
 
 # 2. build the binary with arguments of the script, e.g.
 #    * -c release
